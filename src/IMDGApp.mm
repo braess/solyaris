@@ -27,9 +27,11 @@ void IMDGApp::setup() {
     
     // components
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    float wwidth = window.frame.size.width;
+    //float wheight = window.frame.size.height;
     
     // IMDG
-    CGRect frameIMDG = CGRectMake(0, 0, 300, 300);
+    CGRect frameIMDG = CGRectMake(wwidth-240, -5, 240, 130);
     imdgViewController = [[IMDGViewController alloc] initWithFrame:frameIMDG];
     imdgViewController.imdgApp = this;
 	[window addSubview:imdgViewController.view];
@@ -131,6 +133,7 @@ void IMDGApp::test() {
     DLog();
     
     // graph
+    graph.reset();
     graph.test();
     
 }

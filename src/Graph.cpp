@@ -32,9 +32,35 @@ Graph::Graph(int w, int h, int d) {
 }
 
 
+/**
+ * Resize.
+ */
+void Graph::resize(int w, int h, int d) {
+    FLog();
+    
+    // size
+    width = w;
+    height = h;
+    
+    // direction
+    direction = d;
+    
+}
+
+
 
 #pragma mark -
 #pragma mark Sketch
+
+/**
+ * Resets the graph.
+ */
+void Graph::reset() {
+    
+    // clear
+    edges.clear();
+    nodes.clear();
+}
 
 /**
  * Updates the graph.
@@ -147,50 +173,7 @@ void Graph::touchEnded(Vec2d tpos, int tid){
 #pragma mark -
 #pragma mark Business
 
-/**
- * Test setup.
- */
-void Graph::test() {
-    DLog();
-    
-    // nodes
-    Rand::randomize();
-    for (int i = 0; i < 5; i++) {
-        this->addNode(Node( Rand::randFloat(0,788),  Rand::randFloat(0,1024), 30));
-    }
-    
-    // edges
-     for (int i1 = 0; i1 < 5; i1++) {
-         int i2 =  Rand::randFloat(0, 5);
-         if (i1 != i2) {
-             
-             // node
-             Node &n1 = nodes.at(i1);
-             Node &n2 = nodes.at(i2);
-             
-             // edge
-             this->addEdge(Edge(n1,n2));
-             
-         }
-	}
 
-}
-
-
-/**
- * Resize.
- */
-void Graph::resize(int w, int h, int d) {
-    FLog();
-    
-    // size
-    width = w;
-    height = h;
-    
-    // direction
-    direction = d;
-    
-}
 
 
 /**
@@ -241,4 +224,34 @@ void Graph::repulse() {
         // edge
 		e->repulse();
 	}
+}
+
+
+/**
+ * Test setup.
+ */
+void Graph::test() {
+    DLog();
+    
+    // nodes
+    Rand::randomize();
+    for (int i = 0; i < 5; i++) {
+        this->addNode(Node( Rand::randFloat(0,788),  Rand::randFloat(0,1024), 30));
+    }
+    
+    // edges
+    for (int i1 = 0; i1 < 5; i1++) {
+        int i2 =  Rand::randFloat(0, 5);
+        if (i1 != i2) {
+            
+            // node
+            Node &n1 = nodes.at(i1);
+            Node &n2 = nodes.at(i2);
+            
+            // edge
+            this->addEdge(Edge(n1,n2));
+            
+        }
+	}
+    
 }

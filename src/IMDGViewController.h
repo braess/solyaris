@@ -15,21 +15,29 @@ CPP_CLASS(IMDGApp);
 /**
  * IMDG ViewController.
  */
-@interface IMDGViewController : UIViewController {
+@interface IMDGViewController : UIViewController <UISearchBarDelegate> {
     
     // app
     IMDGApp *imdgApp;
     
     // ui
-    UIButton *buttonMovie;
+    UISearchBar *_searchBar;
+    UIButton *_buttonMovie;
+    UIButton *_buttonActor;
+    UIButton *_buttonDirector;
     
 }
 
 // Properties
 @property (assign) IMDGApp *imdgApp;
+@property (nonatomic, retain) UISearchBar *searchBar;
 @property (nonatomic, retain) UIButton *buttonMovie;
+@property (nonatomic, retain) UIButton *buttonActor;
+@property (nonatomic, retain) UIButton *buttonDirector;
 
 // Action Methods
 - (void)actionMovie:(id)sender;
+- (void)actionActor:(id)sender;
+- (void)actionDirector:(id)sender;
 
 @end

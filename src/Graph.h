@@ -42,8 +42,10 @@ class Graph {
     public:
     Graph();
     Graph(int w, int h, int d);
+    void resize(int w, int h, int d);
     
     // sketch
+    void reset();
     void update();
     void draw();
     
@@ -54,7 +56,6 @@ class Graph {
     
     // business
     void test();
-    void resize(int w, int h, int d);
     void attract();
     void repulse();
     void addNode(Node n);
