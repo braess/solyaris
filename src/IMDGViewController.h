@@ -25,6 +25,7 @@ CPP_CLASS(IMDGApp);
     UIButton *_buttonMovie;
     UIButton *_buttonActor;
     UIButton *_buttonDirector;
+     UIButton *_buttonReset;
     
 }
 
@@ -34,10 +35,12 @@ CPP_CLASS(IMDGApp);
 @property (nonatomic, retain) UIButton *buttonMovie;
 @property (nonatomic, retain) UIButton *buttonActor;
 @property (nonatomic, retain) UIButton *buttonDirector;
+@property (nonatomic, retain) UIButton *buttonReset;
 
 // Action Methods
 - (void)actionMovie:(id)sender;
 - (void)actionActor:(id)sender;
 - (void)actionDirector:(id)sender;
+- (void)actionReset:(id)sender;
 
 @end

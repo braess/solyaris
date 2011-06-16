@@ -33,6 +33,7 @@
 @synthesize buttonMovie=_buttonMovie;
 @synthesize buttonActor=_buttonActor;
 @synthesize buttonDirector=_buttonDirector;
+@synthesize buttonReset=_buttonReset;
 
 
 #pragma mark -
@@ -75,30 +76,35 @@
     // size
 	float fwidth = self.view.frame.size.width;
 	float fheight = self.view.frame.size.height;
-    float border = 15;
+    float border = 10;
+    float inset = 5;
     
     
-    // labels
-    float lheight = 15;
+    // title
+    float theight = 15;
+    float twidth = 200;
     
     // buttons
-    float bwidth = 67;
-    float bheight = 25;
-    float binset = 5;
+    float bwidth = 60;
+    float bheight = 24;
+    
+    // icons
+    float iwidth = 24;
+    float iheight = 24;
     
     // search
+    float swidth = 300;
     float sheight = 30;
     
     
     // background
-    UIView *background = [[UIView alloc] initWithFrame:CGRectMake(0, -border, fwidth+border, fheight+border)];
+    UIView *background = [[UIView alloc] initWithFrame:CGRectMake(0, 0, fwidth, fheight)];
     background.backgroundColor = [UIColor colorWithRed:76/255.0 green:86/255.0 blue:100/255.0 alpha:120/255.0];
-    background.layer.cornerRadius = border;
     [self.view addSubview:background];
     
     
     // title
-    UILabel *lblTitle = [[UILabel alloc] initWithFrame:CGRectMake(border, border, fwidth-border, lheight)];
+    UILabel *lblTitle = [[UILabel alloc] initWithFrame:CGRectMake(border, inset, twidth, theight)];
     lblTitle.backgroundColor = [UIColor clearColor];
     lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
     lblTitle.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:210/255.0];
@@ -107,7 +113,7 @@
     [self.view addSubview:lblTitle];
     
     // claim
-    UILabel *lblClaim = [[UILabel alloc] initWithFrame:CGRectMake(border, border+lheight, fwidth-border, lheight)];
+    UILabel *lblClaim = [[UILabel alloc] initWithFrame:CGRectMake(border, inset+theight-1, twidth, theight)];
     lblClaim.backgroundColor = [UIColor clearColor];
     lblClaim.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     lblClaim.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:210/255.0];
@@ -115,8 +121,10 @@
     lblClaim.text = NSLocalizedString(@"The Internet Movie Database Graph",@"The Internet Movie Database Graph");
     [self.view addSubview:lblClaim];
     
+
+    
     // search bar
-    UISearchBar *sBar = [[UISearchBar alloc] initWithFrame:CGRectMake(border-7, fheight-border-bheight-binset-sheight, fwidth-2*border+14, sheight)];
+    UISearchBar *sBar = [[UISearchBar alloc] initWithFrame:CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0)+1.5, swidth, sheight)];
     sBar.barStyle = UIBarStyleBlackTranslucent;
     sBar.alpha = kAlpha;
     sBar.showsCancelButton = NO;
@@ -137,8 +145,8 @@
     
     // button movie (187,176,130)
 	UIButton *btnMovie = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnMovie.frame = CGRectMake(border, fheight-border-bheight, bwidth, bheight);
-    btnMovie.layer.cornerRadius = binset/2.0;
+    btnMovie.frame = CGRectMake(fwidth*0.5+swidth*0.5+inset, (fheight-bheight)/2.0, bwidth, bheight);
+    btnMovie.layer.cornerRadius = 3;
     btnMovie.layer.masksToBounds = YES;
     btnMovie.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     btnMovie.titleLabel.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:210/255.0];
@@ -155,8 +163,8 @@
     
     // button actor (130,153,147)
 	UIButton *btnActor = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnActor.frame = CGRectMake(border+bwidth+binset, fheight-border-bheight, bwidth, bheight);
-    btnActor.layer.cornerRadius = binset/2.0;
+    btnActor.frame = CGRectMake(fwidth*0.5+swidth*0.5+2*inset+bwidth, (fheight-bheight)/2.0, bwidth, bheight);
+    btnActor.layer.cornerRadius = 3;
     btnActor.layer.masksToBounds = YES;
     btnActor.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     btnActor.titleLabel.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:210/255.0];
@@ -173,8 +181,8 @@
     
     // button director (94,118,117)
 	UIButton *btnDirector = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnDirector.frame = CGRectMake(border+2*bwidth+2*binset, fheight-border-bheight, bwidth, bheight);
-    btnDirector.layer.cornerRadius = binset/2.0;
+    btnDirector.frame = CGRectMake(fwidth*0.5+swidth*0.5+3*inset+2*bwidth, (fheight-bheight)/2.0, bwidth, bheight);
+    btnDirector.layer.cornerRadius = 3;
     btnDirector.layer.masksToBounds = YES;
     btnDirector.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     btnDirector.titleLabel.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:210/255.0];
@@ -187,6 +195,16 @@
 	self.buttonDirector = btnDirector;
 	[self.view addSubview:_buttonDirector];
 	[btnDirector release];
+    
+    
+    // button reset
+	UIButton *btnReset = [UIButton buttonWithType:UIButtonTypeCustom]; 
+	btnReset.frame = CGRectMake(fwidth-inset-iwidth, (fheight-iheight)/2.0, iwidth, iheight);
+	[btnReset setImage:[UIImage imageNamed:@"btn_reset.png"] forState:UIControlStateNormal];
+	[btnReset addTarget:self action:@selector(actionReset:) forControlEvents:UIControlEventTouchUpInside];
+	self.buttonReset = btnReset;
+	[self.view addSubview:_buttonReset];
+	[btnReset release];
     
   
 }
@@ -246,10 +264,13 @@
     // search
 	
     // hide keyboard
-    [searchBar resignFirstResponder];
+    [_searchBar resignFirstResponder];
     
     // inactive
     _searchBar.alpha = kAlpha;
+    
+    // test
+    imdgApp->test();
 }
 
 #pragma mark -
@@ -261,6 +282,16 @@
  */
 - (void)actionMovie:(id)sender {
 	DLog();
+    
+    // search
+	
+    // hide keyboard
+    [_searchBar resignFirstResponder];
+    
+    // inactive
+    _searchBar.alpha = kAlpha;
+    
+    // test
     imdgApp->test();
 }
 
@@ -269,6 +300,16 @@
  */
 - (void)actionActor:(id)sender {
 	DLog();
+    
+    // search
+	
+    // hide keyboard
+    [_searchBar resignFirstResponder];
+    
+    // inactive
+    _searchBar.alpha = kAlpha;
+    
+    // test
     imdgApp->test();
 }
 
@@ -277,7 +318,36 @@
  */
 - (void)actionDirector:(id)sender {
 	DLog();
+    
+    // search
+	
+    // hide keyboard
+    [_searchBar resignFirstResponder];
+    
+    // inactive
+    _searchBar.alpha = kAlpha;
+    
+    // test
     imdgApp->test();
+}
+
+
+/*
+ * Action Reset.
+ */
+- (void)actionReset:(id)sender {
+	DLog();
+    
+    // search
+	
+    // hide keyboard
+    [_searchBar resignFirstResponder];
+    
+    // inactive
+    _searchBar.alpha = kAlpha;
+    
+    // test
+    imdgApp->reset();
 }
 
 
@@ -293,6 +363,9 @@
     // ui
     [_searchBar release];
     [_buttonMovie release];
+    [_buttonActor release];
+    [_buttonDirector release];
+    [_buttonReset release];
 	
 	
 	// release global

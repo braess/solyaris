@@ -52,15 +52,6 @@ void Graph::resize(int w, int h, int d) {
 #pragma mark -
 #pragma mark Sketch
 
-/**
- * Resets the graph.
- */
-void Graph::reset() {
-    
-    // clear
-    edges.clear();
-    nodes.clear();
-}
 
 /**
  * Updates the graph.
@@ -99,6 +90,17 @@ void Graph::draw() {
     for(vector<Edge>::iterator e = edges.begin(); e != edges.end(); ++e ){
 		e->draw();
 	}
+}
+
+
+/**
+ * Resets the graph.
+ */
+void Graph::reset() {
+    
+    // clear
+    edges.clear();
+    nodes.clear();
 }
 
 
@@ -172,8 +174,6 @@ void Graph::touchEnded(Vec2d tpos, int tid){
 
 #pragma mark -
 #pragma mark Business
-
-
 
 
 /**

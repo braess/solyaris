@@ -21,8 +21,37 @@ using namespace ci;
  * Graph.
  */
 class Graph {
+        
+    // public
+    public:
     
-    // Fields
+    // Graph
+    Graph();
+    Graph(int w, int h, int d);
+    void resize(int w, int h, int d);
+    
+    // Sketch
+    void reset();
+    void update();
+    void draw();
+    
+    // Touch
+	void touchBegan(Vec2d tpos, int tid);
+    void touchMoved(Vec2d tpos, Vec2d ppos, int tid);
+    void touchEnded(Vec2d tpos, int tid);
+    
+    // Business
+    void test();
+    void attract();
+    void repulse();
+    void addNode(Node n);
+    void addEdge(Edge e);
+    
+    
+    // private
+    private:
+    
+    // size
     int width;
     int height;
     int direction;
@@ -36,30 +65,6 @@ class Graph {
     
     // movement
     Vec2d movement;
-    
-        
-    // Methods
-    public:
-    Graph();
-    Graph(int w, int h, int d);
-    void resize(int w, int h, int d);
-    
-    // sketch
-    void reset();
-    void update();
-    void draw();
-    
-    // touch
-	void touchBegan(Vec2d tpos, int tid);
-    void touchMoved(Vec2d tpos, Vec2d ppos, int tid);
-    void touchEnded(Vec2d tpos, int tid);
-    
-    // business
-    void test();
-    void attract();
-    void repulse();
-    void addNode(Node n);
-    void addEdge(Edge e);
     
     
 };

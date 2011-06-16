@@ -31,7 +31,7 @@ void IMDGApp::setup() {
     //float wheight = window.frame.size.height;
     
     // IMDG
-    CGRect frameIMDG = CGRectMake(wwidth-240, -5, 240, 130);
+    CGRect frameIMDG = CGRectMake(0, 0, wwidth, 40);
     imdgViewController = [[IMDGViewController alloc] initWithFrame:frameIMDG];
     imdgViewController.imdgApp = this;
 	[window addSubview:imdgViewController.view];
@@ -57,6 +57,10 @@ void IMDGApp::prepareSettings(Settings *settings) {
     settings->enableMultiTouch();
 }
 
+
+
+#pragma mark -
+#pragma mark Sketch
 
 /*
  * Cinder update.
@@ -86,6 +90,21 @@ void IMDGApp::draw() {
 
 }
 
+
+/*
+ * Cinder reset.
+ */
+void IMDGApp::reset() {
+
+    // graph
+    graph.reset();
+    
+}
+
+
+
+#pragma mark -
+#pragma mark Touch
 
 /*
  * Cinder touch events.

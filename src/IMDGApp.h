@@ -22,14 +22,21 @@ using namespace ci::app;
  * IMDG App.
  */
 class IMDGApp : public AppCocoaTouch {
+    
+    // Methods
+    public:
 
     // Cinder
-    public:
     void prepareSettings(Settings *settings);
 	void setup();
+    
+    // Sketch
 	void update();
 	void draw();
+    void reset();
     
+    
+    // Touch
     void touchesBegan(TouchEvent event);
 	void touchesMoved(TouchEvent event);
 	void touchesEnded(TouchEvent event);
@@ -37,11 +44,14 @@ class IMDGApp : public AppCocoaTouch {
     // Business
     void test();
     
-    // View controllers
-	IMDGViewController *imdgViewController;
     
     // Fields
     private:
+    
+    // View controllers
+	IMDGViewController *imdgViewController;
+    
+    // Graph
     Graph graph;
     
     // color

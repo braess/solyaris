@@ -20,31 +20,20 @@ using namespace ci;
  */
 class Node {
     
-    // Fields
-    double perimeter;
-    double damping;
-    double strength;
-    double ramp;
-    double mvelocity;
-    double speed;
     
-    // color
-    ColorA bg;
-    
-    
-    // Methods
+    // public
     public:
     
-    // object
+    // Node
     Node();
     Node(double x, double y, double r); 
     
-    // sketch
+    // Sketch
     void update();
     void draw();
     
     
-    // business
+    // Business
     void attract(Node &n);
     void moveTo(double x, double y);
     void moveTo(Vec2d p);
@@ -59,7 +48,22 @@ class Node {
     float mass;
 	Vec2d velocity;
     
-    // states
+    // States
     bool selected;
+    
+    
+    // private 
+    private:
+    
+    // Parameters
+    double perimeter;
+    double damping;
+    double strength;
+    double ramp;
+    double mvelocity;
+    double speed;
+    
+    // Color
+    ColorA bg;
 
 };

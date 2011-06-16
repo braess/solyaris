@@ -19,30 +19,34 @@ using namespace ci;
  */
 class Edge {
     
-    // Fields
+    
+    // public
+    public:
+    
+    // Edge
+    Edge();
+    Edge(Node &n1, Node &n2); 
+    
+    // Sketch
+    void update();
+    void draw();
+    
+    // Business
+    void repulse();
+    
+    // Public Fields
+    Node *node1;
+    Node *node2;
+    
+    
+    // private
+    private:
+    
+    // parameters
     double length;
     double stiffness;
     double damping;
     
     // color
     ColorA stroke;
-    
-    
-    // Methods
-    public:
-    
-    // object
-    Edge();
-    Edge(Node &n1, Node &n2); 
-    
-    // sketch
-    void update();
-    void draw();
-    
-    // business
-    void repulse();
-    
-    // Public Fields
-    Node *node1;
-    Node *node2;
 };
