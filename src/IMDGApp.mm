@@ -12,6 +12,35 @@
 #pragma mark Cinder
 
 /*
+ * Cinder Setup.
+ */
+void IMDGApp::setup() {
+    DLog();
+    
+    // graph
+    graph = Graph(768,1024,0);
+    
+    
+    // sketch
+    bg = Color(30.0/255.0, 30.0/255.0, 30.0/255.0);
+    
+    
+    // components
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    
+    // IMDG
+    CGRect frameIMDG = CGRectMake(0, 0, 300, 300);
+    imdgViewController = [[IMDGViewController alloc] initWithFrame:frameIMDG];
+    imdgViewController.imdgApp = this;
+	[window addSubview:imdgViewController.view];
+	[window bringSubviewToFront:imdgViewController.view];
+    [imdgViewController loadView];
+	[imdgViewController viewWillAppear:NO];
+
+}
+
+
+/*
  * Cinder settings.
  */
 void IMDGApp::prepareSettings(Settings *settings) {
@@ -24,22 +53,6 @@ void IMDGApp::prepareSettings(Settings *settings) {
     
     // device
     settings->enableMultiTouch();
-}
-
-
-/*
- * Cinder Setup.
- */
-void IMDGApp::setup() {
-    DLog();
-    
-    // graph
-    graph = Graph(768,1024,0);
-    graph.test();
-    
-    // sketch
-    bg = Color(30.0/255.0, 30.0/255.0, 30.0/255.0);
-
 }
 
 
@@ -105,6 +118,21 @@ void IMDGApp::touchesEnded( TouchEvent event ){
         // graph
         graph.touchEnded(touch->getPos(),touch->getId());
     }
+}
+
+
+#pragma mark -
+#pragma mark Business
+
+/*
+ * Test.
+ */
+void IMDGApp::test() {
+    DLog();
+    
+    // graph
+    graph.test();
+    
 }
 
 CINDER_APP_COCOA_TOUCH( IMDGApp, RendererGl )

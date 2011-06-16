@@ -8,7 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		00CFDF6B1138442D0091E310 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CFDF6A1138442D0091E310 /* CoreGraphics.framework */; };
-		18EFCAD6139AB12A002081B7 /* IMDGApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18EFCAD5139AB12A002081B7 /* IMDGApp.cpp */; };
+		1804C6D513AA193F00417D32 /* IMDGViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1804C6D413AA193F00417D32 /* IMDGViewController.mm */; };
+		1804C6E613AA279800417D32 /* btn_info.png in Resources */ = {isa = PBXBuildFile; fileRef = 1804C6E413AA279800417D32 /* btn_info.png */; };
+		1804C6E713AA279800417D32 /* btn_info@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1804C6E513AA279800417D32 /* btn_info@2x.png */; };
+		18EFCAD6139AB12A002081B7 /* IMDGApp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 18EFCAD5139AB12A002081B7 /* IMDGApp.mm */; };
 		18EFCADD139AB197002081B7 /* icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 18EFCADA139AB197002081B7 /* icon-72.png */; };
 		18EFCADE139AB197002081B7 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 18EFCADB139AB197002081B7 /* icon.png */; };
 		18EFCADF139AB197002081B7 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18EFCADC139AB197002081B7 /* icon@2x.png */; };
@@ -33,7 +36,11 @@
 
 /* Begin PBXFileReference section */
 		00CFDF6A1138442D0091E310 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		18EFCAD5139AB12A002081B7 /* IMDGApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IMDGApp.cpp; path = src/IMDGApp.cpp; sourceTree = "<group>"; };
+		1804C6D313AA193F00417D32 /* IMDGViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMDGViewController.h; path = src/IMDGViewController.h; sourceTree = "<group>"; };
+		1804C6D413AA193F00417D32 /* IMDGViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = IMDGViewController.mm; path = src/IMDGViewController.mm; sourceTree = "<group>"; };
+		1804C6E413AA279800417D32 /* btn_info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_info.png; path = Assets/btn_info.png; sourceTree = "<group>"; };
+		1804C6E513AA279800417D32 /* btn_info@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn_info@2x.png"; path = "Assets/btn_info@2x.png"; sourceTree = "<group>"; };
+		18EFCAD5139AB12A002081B7 /* IMDGApp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = IMDGApp.mm; path = src/IMDGApp.mm; sourceTree = "<group>"; };
 		18EFCADA139AB197002081B7 /* icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-72.png"; sourceTree = "<group>"; };
 		18EFCADB139AB197002081B7 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		18EFCADC139AB197002081B7 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
@@ -87,11 +94,38 @@
 		00CFDFA7113848F40091E310 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				1804C6CE13AA17B100417D32 /* app */,
 				18EFCAF2139AB734002081B7 /* graph */,
 				18EFCAF1139AB535002081B7 /* IMDGApp.h */,
-				18EFCAD5139AB12A002081B7 /* IMDGApp.cpp */,
+				18EFCAD5139AB12A002081B7 /* IMDGApp.mm */,
 			);
 			name = Source;
+			sourceTree = "<group>";
+		};
+		1804C6CE13AA17B100417D32 /* app */ = {
+			isa = PBXGroup;
+			children = (
+				1804C6D313AA193F00417D32 /* IMDGViewController.h */,
+				1804C6D413AA193F00417D32 /* IMDGViewController.mm */,
+			);
+			name = app;
+			sourceTree = "<group>";
+		};
+		1804C6E213AA277200417D32 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				1804C6E313AA277B00417D32 /* buttons */,
+			);
+			name = Assets;
+			sourceTree = "<group>";
+		};
+		1804C6E313AA277B00417D32 /* buttons */ = {
+			isa = PBXGroup;
+			children = (
+				1804C6E413AA279800417D32 /* btn_info.png */,
+				1804C6E513AA279800417D32 /* btn_info@2x.png */,
+			);
+			name = buttons;
 			sourceTree = "<group>";
 		};
 		18EFCAD7139AB179002081B7 /* default */ = {
@@ -147,6 +181,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				1804C6E213AA277200417D32 /* Assets */,
 				00CFDFA7113848F40091E310 /* Source */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -246,6 +281,8 @@
 				18EFCAE7139AB1BA002081B7 /* Default-Portrait.png in Resources */,
 				18EFCAE8139AB1BA002081B7 /* Default.png in Resources */,
 				18EFCAE9139AB1BA002081B7 /* Default@2x.png in Resources */,
+				1804C6E613AA279800417D32 /* btn_info.png in Resources */,
+				1804C6E713AA279800417D32 /* btn_info@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,10 +293,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18EFCAD6139AB12A002081B7 /* IMDGApp.cpp in Sources */,
+				18EFCAD6139AB12A002081B7 /* IMDGApp.mm in Sources */,
 				18EFCAF9139AB745002081B7 /* Edge.cpp in Sources */,
 				18EFCAFA139AB745002081B7 /* Graph.cpp in Sources */,
 				18EFCAFB139AB745002081B7 /* Node.cpp in Sources */,
+				1804C6D513AA193F00417D32 /* IMDGViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

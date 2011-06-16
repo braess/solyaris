@@ -5,13 +5,17 @@
 //  Created by CNPP on 4.6.2011.
 //  Copyright 2011 Beat Raess. All rights reserved.
 //
+#import <UIKit/UIKit.h>
 #include "cinder/app/AppCocoaTouch.h"
 #include "Graph.h"
+#include "IMDGViewController.h"
+
 
 // namespace
 using namespace std;
 using namespace ci;
 using namespace ci::app;
+
 
 
 /**
@@ -26,9 +30,15 @@ class IMDGApp : public AppCocoaTouch {
 	void update();
 	void draw();
     
-    void	touchesBegan( TouchEvent event );
-	void	touchesMoved( TouchEvent event );
-	void	touchesEnded( TouchEvent event );
+    void touchesBegan(TouchEvent event);
+	void touchesMoved(TouchEvent event);
+	void touchesEnded(TouchEvent event);
+    
+    // Business
+    void test();
+    
+    // View controllers
+	IMDGViewController *imdgViewController;
     
     // Fields
     private:
