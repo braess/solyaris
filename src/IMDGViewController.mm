@@ -9,6 +9,7 @@
 #import "IMDGViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "IMDGApp.h"
+#import "IMDGConstants.h"
 
 /**
  * IMDG ViewController.
@@ -48,10 +49,13 @@
 	if ((self = [super init])) {
 		GLog();
         
-        
         // view
         self.view = [[[UIView alloc] initWithFrame:frame] autorelease];
         self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        
+        // api
+        api = [[API_IMDB alloc] init];
+        api.delegate = self;
         
 		// return
 		return self;
@@ -199,12 +203,28 @@
     
     // button reset
 	UIButton *btnReset = [UIButton buttonWithType:UIButtonTypeCustom]; 
-	btnReset.frame = CGRectMake(fwidth-inset-iwidth, (fheight-iheight)/2.0, iwidth, iheight);
+	btnReset.frame = CGRectMake(fwidth-inset-iwidth-2, (fheight-iheight)/2.0, iwidth, iheight);
 	[btnReset setImage:[UIImage imageNamed:@"btn_reset.png"] forState:UIControlStateNormal];
 	[btnReset addTarget:self action:@selector(actionReset:) forControlEvents:UIControlEventTouchUpInside];
 	self.buttonReset = btnReset;
 	[self.view addSubview:_buttonReset];
 	[btnReset release];
+    
+    
+    // popover
+    SearchResultViewController *srViewController = [[SearchResultViewController alloc] initWithStyle:UITableViewStylePlain];
+    srViewController.delegate = self;
+    srViewController.view.frame = CGRectMake(0, 0, 320, 480);
+	[srViewController.view setAutoresizingMask: (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight) ];
+	_searchResultViewController = [srViewController retain];
+    
+    
+	UINavigationController *sNavigationController = [[UINavigationController alloc] initWithRootViewController:srViewController];
+	UIPopoverController *sPopoverController = [[UIPopoverController alloc] initWithContentViewController:sNavigationController];
+	[sPopoverController setPopoverContentSize:CGSizeMake(srViewController.view.frame.size.width, srViewController.view.frame.size.height)];
+    sPopoverController.contentViewController.view.alpha = 0.9f;
+	_searchResultsPopoverController = [sPopoverController retain];
+	[sPopoverController release];
     
   
 }
@@ -229,6 +249,62 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return NO;
 }
+
+
+#pragma mark -
+#pragma mark API Delegate
+
+/*
+ * Search result.
+ */
+- (void)searchResult:(Search *)result {
+    DLog();
+    
+    
+    // results
+    [_searchResultViewController showResults:result];
+    
+	
+	// pop it
+	[_searchResultsPopoverController presentPopoverFromRect:CGRectMake(400, 40, 30, 30) inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+}
+
+
+#pragma mark -
+#pragma mark SearchResult Delegate
+
+
+/* 
+ * Result selected.
+ */
+- (void)selectedResult:(SearchResult*)result {
+    DLog();
+    
+    // hide keyboard
+    [_searchBar resignFirstResponder];
+    
+    // inactive
+    _searchBar.alpha = kAlpha;
+    
+    // dismiss popover
+    [_searchResultsPopoverController dismissPopoverAnimated:YES];
+    
+    // test
+    imdgApp->test();
+}
+
+/*
+ * Cancel search.
+ */
+- (void)cancelSearch {
+    DLog();
+    
+    // cancel search
+    
+    // dismiss popover
+    [_searchResultsPopoverController dismissPopoverAnimated:YES];
+}
+
 
 
 
@@ -269,8 +345,27 @@
     // inactive
     _searchBar.alpha = kAlpha;
     
-    // test
-    imdgApp->test();
+    // search
+    [self search:[_searchBar text] type:typeMovie];
+    
+}
+
+
+#pragma mark -
+#pragma mark Business
+
+/**
+ * Performs the search.
+ */
+- (void)search:(NSString*)s type:(NSString*)t {
+    DLog();
+    
+    // reset
+    [_searchResultViewController resetResults];
+    
+    // api
+    [api search:s type:t];
+    
 }
 
 #pragma mark -
@@ -284,15 +379,7 @@
 	DLog();
     
     // search
-	
-    // hide keyboard
-    [_searchBar resignFirstResponder];
-    
-    // inactive
-    _searchBar.alpha = kAlpha;
-    
-    // test
-    imdgApp->test();
+    [self search:[_searchBar text] type:typeMovie];
 }
 
 /*
@@ -302,15 +389,7 @@
 	DLog();
     
     // search
-	
-    // hide keyboard
-    [_searchBar resignFirstResponder];
-    
-    // inactive
-    _searchBar.alpha = kAlpha;
-    
-    // test
-    imdgApp->test();
+    [self search:[_searchBar text] type:typeActor];
 }
 
 /*
@@ -320,15 +399,7 @@
 	DLog();
     
     // search
-	
-    // hide keyboard
-    [_searchBar resignFirstResponder];
-    
-    // inactive
-    _searchBar.alpha = kAlpha;
-    
-    // test
-    imdgApp->test();
+    [self search:[_searchBar text] type:typeDirector];
 }
 
 
@@ -345,6 +416,9 @@
     
     // inactive
     _searchBar.alpha = kAlpha;
+    
+    // results
+    [_searchResultsPopoverController dismissPopoverAnimated:YES];
     
     // test
     imdgApp->reset();

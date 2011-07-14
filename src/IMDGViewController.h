@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "SearchResultViewController.h"
+#import "API_IMDB.h"
 
 // Declarations
 CPP_CLASS(IMDGApp);
@@ -15,17 +16,24 @@ CPP_CLASS(IMDGApp);
 /**
  * IMDG ViewController.
  */
-@interface IMDGViewController : UIViewController <UISearchBarDelegate> {
+@interface IMDGViewController : UIViewController <UISearchBarDelegate, APIDelegate, SearchResultDelegate> {
     
     // app
     IMDGApp *imdgApp;
+    API_IMDB *api;
+    
+    // controllers
+    SearchResultViewController *_searchResultViewController;
     
     // ui
     UISearchBar *_searchBar;
     UIButton *_buttonMovie;
     UIButton *_buttonActor;
     UIButton *_buttonDirector;
-     UIButton *_buttonReset;
+    UIButton *_buttonReset;
+    
+    // popover
+	UIPopoverController *_searchResultsPopoverController;
     
 }
 
@@ -42,5 +50,8 @@ CPP_CLASS(IMDGApp);
 - (void)actionActor:(id)sender;
 - (void)actionDirector:(id)sender;
 - (void)actionReset:(id)sender;
+
+// Business Methods
+- (void)search:(NSString*)q type:(NSString*)t;
 
 @end
