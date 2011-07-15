@@ -54,8 +54,8 @@
         self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         
         // api
-        api = [[API_IMDB alloc] init];
-        api.delegate = self;
+        imdb = [[IMDB alloc] init];
+        imdb.delegate = self;
         
 		// return
 		return self;
@@ -257,7 +257,7 @@
 /*
  * Search result.
  */
-- (void)searchResult:(Search *)result {
+- (void)searchResult:(Search*)result {
     DLog();
     
     
@@ -270,6 +270,31 @@
 }
 
 
+/*
+ * Loaded movie.
+ */
+- (void)loadedMovie:(Movie*)movie {
+    DLog();
+
+}
+
+/*
+ * Loaded actor.
+ */
+- (void)loadedActor:(Actor*)actor {
+    DLog();
+    
+}
+
+/*
+ * Loaded director.
+ */
+- (void)loadedDirector:(Director*)director {
+    DLog();
+    
+}
+
+
 #pragma mark -
 #pragma mark SearchResult Delegate
 
@@ -277,7 +302,7 @@
 /* 
  * Result selected.
  */
-- (void)selectedResult:(SearchResult*)result {
+- (void)selectedResult:(SearchResult*)result type:(NSString*)type {
     DLog();
     
     // hide keyboard
@@ -289,8 +314,21 @@
     // dismiss popover
     [_searchResultsPopoverController dismissPopoverAnimated:YES];
     
-    // test
-    imdgApp->test();
+    // movie
+    if ([type isEqualToString:typeMovie]) {
+        [imdb movie:result.id];
+    }
+    
+    // actor
+    if ([type isEqualToString:typeActor]) {
+        [imdb actor:result.id];
+    }
+    
+    // director
+    if ([type isEqualToString:typeDirector]) {
+        [imdb director:result.id];
+    }
+
 }
 
 /*
@@ -326,7 +364,7 @@
  * Text changed.
  */
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    FLog();
+    GLog();
 }
 
 
@@ -364,7 +402,7 @@
     [_searchResultViewController resetResults];
     
     // api
-    [api search:s type:t];
+    [imdb search:s type:t];
     
 }
 

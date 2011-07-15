@@ -10,14 +10,19 @@
 		00CFDF6B1138442D0091E310 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CFDF6A1138442D0091E310 /* CoreGraphics.framework */; };
 		1804C6D513AA193F00417D32 /* IMDGViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1804C6D413AA193F00417D32 /* IMDGViewController.mm */; };
 		1804C6E613AA279800417D32 /* btn_info.png in Resources */ = {isa = PBXBuildFile; fileRef = 1804C6E413AA279800417D32 /* btn_info.png */; };
-		1819227213C72C2100C89C74 /* API_IMDB.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1819227113C72C2100C89C74 /* API_IMDB.mm */; };
+		1810366E13D07124003F0810 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 1810366D13D07124003F0810 /* SearchResult.m */; };
+		1810367113D07125003F0810 /* MovieDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = 1810367013D07125003F0810 /* MovieDirector.m */; };
+		1810367413D07125003F0810 /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 1810367313D07125003F0810 /* Search.m */; };
+		1810367713D07125003F0810 /* MovieActor.m in Sources */ = {isa = PBXBuildFile; fileRef = 1810367613D07125003F0810 /* MovieActor.m */; };
+		1810367A13D07125003F0810 /* Actor.m in Sources */ = {isa = PBXBuildFile; fileRef = 1810367913D07125003F0810 /* Actor.m */; };
+		1810367D13D07125003F0810 /* Movie.m in Sources */ = {isa = PBXBuildFile; fileRef = 1810367C13D07125003F0810 /* Movie.m */; };
+		1810368013D07125003F0810 /* Director.m in Sources */ = {isa = PBXBuildFile; fileRef = 1810367F13D07125003F0810 /* Director.m */; };
+		1819227213C72C2100C89C74 /* IMDB.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1819227113C72C2100C89C74 /* IMDB.mm */; };
 		1819227413C72CEB00C89C74 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1819227313C72CEB00C89C74 /* CoreData.framework */; };
 		1819227713C72F9700C89C74 /* IMDG.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1819227513C72F9700C89C74 /* IMDG.xcdatamodeld */; };
 		183B97AE13C6EA1700B7563D /* SearchResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183B97AD13C6EA1700B7563D /* SearchResultViewController.m */; };
 		183E774013CF3346005C47F4 /* search.php in Resources */ = {isa = PBXBuildFile; fileRef = 183E773F13CF3346005C47F4 /* search.php */; };
 		183E774213CF33AB005C47F4 /* config.php in Resources */ = {isa = PBXBuildFile; fileRef = 183E774113CF33AB005C47F4 /* config.php */; };
-		183E774B13CF463A005C47F4 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 183E774A13CF463A005C47F4 /* SearchResult.m */; };
-		18EA547913C758D40097B20B /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EA547813C758D40097B20B /* Search.m */; };
 		18EE9EF113C7483C00BA13CF /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EE9ED913C7483C00BA13CF /* NSObject+SBJson.m */; };
 		18EE9EF213C7483C00BA13CF /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EE9EDC13C7483C00BA13CF /* SBJsonParser.m */; };
 		18EE9EF313C7483C00BA13CF /* SBJsonStreamParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EE9EDE13C7483C00BA13CF /* SBJsonStreamParser.m */; };
@@ -61,19 +66,29 @@
 		1804C6D313AA193F00417D32 /* IMDGViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMDGViewController.h; path = src/IMDGViewController.h; sourceTree = "<group>"; };
 		1804C6D413AA193F00417D32 /* IMDGViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = IMDGViewController.mm; path = src/IMDGViewController.mm; sourceTree = "<group>"; };
 		1804C6E413AA279800417D32 /* btn_info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_info.png; path = Assets/btn_info.png; sourceTree = "<group>"; };
-		1819227013C72C2100C89C74 /* API_IMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = API_IMDB.h; path = src/API_IMDB.h; sourceTree = "<group>"; };
-		1819227113C72C2100C89C74 /* API_IMDB.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = API_IMDB.mm; path = src/API_IMDB.mm; sourceTree = "<group>"; };
+		1810366C13D07124003F0810 /* SearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchResult.h; path = src/SearchResult.h; sourceTree = "<group>"; };
+		1810366D13D07124003F0810 /* SearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchResult.m; path = src/SearchResult.m; sourceTree = "<group>"; };
+		1810366F13D07125003F0810 /* MovieDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MovieDirector.h; path = src/MovieDirector.h; sourceTree = "<group>"; };
+		1810367013D07125003F0810 /* MovieDirector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MovieDirector.m; path = src/MovieDirector.m; sourceTree = "<group>"; };
+		1810367213D07125003F0810 /* Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Search.h; path = src/Search.h; sourceTree = "<group>"; };
+		1810367313D07125003F0810 /* Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Search.m; path = src/Search.m; sourceTree = "<group>"; };
+		1810367513D07125003F0810 /* MovieActor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MovieActor.h; path = src/MovieActor.h; sourceTree = "<group>"; };
+		1810367613D07125003F0810 /* MovieActor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MovieActor.m; path = src/MovieActor.m; sourceTree = "<group>"; };
+		1810367813D07125003F0810 /* Actor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Actor.h; path = src/Actor.h; sourceTree = "<group>"; };
+		1810367913D07125003F0810 /* Actor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Actor.m; path = src/Actor.m; sourceTree = "<group>"; };
+		1810367B13D07125003F0810 /* Movie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Movie.h; path = src/Movie.h; sourceTree = "<group>"; };
+		1810367C13D07125003F0810 /* Movie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Movie.m; path = src/Movie.m; sourceTree = "<group>"; };
+		1810367E13D07125003F0810 /* Director.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Director.h; path = src/Director.h; sourceTree = "<group>"; };
+		1810367F13D07125003F0810 /* Director.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Director.m; path = src/Director.m; sourceTree = "<group>"; };
+		1819227013C72C2100C89C74 /* IMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMDB.h; path = src/IMDB.h; sourceTree = "<group>"; };
+		1819227113C72C2100C89C74 /* IMDB.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = IMDB.mm; path = src/IMDB.mm; sourceTree = "<group>"; };
 		1819227313C72CEB00C89C74 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		1819227613C72F9700C89C74 /* IMDG.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = IMDG.xcdatamodel; sourceTree = "<group>"; };
 		183B97AC13C6EA1700B7563D /* SearchResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchResultViewController.h; path = src/SearchResultViewController.h; sourceTree = "<group>"; };
 		183B97AD13C6EA1700B7563D /* SearchResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchResultViewController.m; path = src/SearchResultViewController.m; sourceTree = "<group>"; };
 		183E773F13CF3346005C47F4 /* search.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; name = search.php; path = src/_api/search.php; sourceTree = "<group>"; };
 		183E774113CF33AB005C47F4 /* config.php */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.php; name = config.php; path = src/_api/config.php; sourceTree = "<group>"; };
-		183E774913CF463A005C47F4 /* SearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchResult.h; path = src/SearchResult.h; sourceTree = "<group>"; };
-		183E774A13CF463A005C47F4 /* SearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchResult.m; path = src/SearchResult.m; sourceTree = "<group>"; };
 		18EA546713C757210097B20B /* APIKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APIKeys.h; path = src/APIKeys.h; sourceTree = "<group>"; };
-		18EA547713C758D40097B20B /* Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Search.h; path = src/Search.h; sourceTree = "<group>"; };
-		18EA547813C758D40097B20B /* Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Search.m; path = src/Search.m; sourceTree = "<group>"; };
 		18EE9ED413C73E6500BA13CF /* IMDGConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMDGConstants.h; path = src/IMDGConstants.h; sourceTree = "<group>"; };
 		18EE9ED713C7483C00BA13CF /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSON.h; path = src/SBJSON/JSON.h; sourceTree = "<group>"; };
 		18EE9ED813C7483C00BA13CF /* NSObject+SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+SBJson.h"; path = "src/SBJSON/NSObject+SBJson.h"; sourceTree = "<group>"; };
@@ -202,8 +217,8 @@
 		1819226813C72B2C00C89C74 /* api */ = {
 			isa = PBXGroup;
 			children = (
-				1819227013C72C2100C89C74 /* API_IMDB.h */,
-				1819227113C72C2100C89C74 /* API_IMDB.mm */,
+				1819227013C72C2100C89C74 /* IMDB.h */,
+				1819227113C72C2100C89C74 /* IMDB.mm */,
 				18EE9F1913C7515B00BA13CF /* search.json */,
 				183E773F13CF3346005C47F4 /* search.php */,
 				183E774113CF33AB005C47F4 /* config.php */,
@@ -214,10 +229,20 @@
 		1819227813C731F200C89C74 /* model */ = {
 			isa = PBXGroup;
 			children = (
-				18EA547713C758D40097B20B /* Search.h */,
-				18EA547813C758D40097B20B /* Search.m */,
-				183E774913CF463A005C47F4 /* SearchResult.h */,
-				183E774A13CF463A005C47F4 /* SearchResult.m */,
+				1810367E13D07125003F0810 /* Director.h */,
+				1810367F13D07125003F0810 /* Director.m */,
+				1810367B13D07125003F0810 /* Movie.h */,
+				1810367C13D07125003F0810 /* Movie.m */,
+				1810367813D07125003F0810 /* Actor.h */,
+				1810367913D07125003F0810 /* Actor.m */,
+				1810367513D07125003F0810 /* MovieActor.h */,
+				1810367613D07125003F0810 /* MovieActor.m */,
+				1810367213D07125003F0810 /* Search.h */,
+				1810367313D07125003F0810 /* Search.m */,
+				1810366F13D07125003F0810 /* MovieDirector.h */,
+				1810367013D07125003F0810 /* MovieDirector.m */,
+				1810366C13D07124003F0810 /* SearchResult.h */,
+				1810366D13D07124003F0810 /* SearchResult.m */,
 			);
 			name = model;
 			sourceTree = "<group>";
@@ -450,7 +475,7 @@
 				18EFCAFB139AB745002081B7 /* Node.cpp in Sources */,
 				1804C6D513AA193F00417D32 /* IMDGViewController.mm in Sources */,
 				183B97AE13C6EA1700B7563D /* SearchResultViewController.m in Sources */,
-				1819227213C72C2100C89C74 /* API_IMDB.mm in Sources */,
+				1819227213C72C2100C89C74 /* IMDB.mm in Sources */,
 				1819227713C72F9700C89C74 /* IMDG.xcdatamodeld in Sources */,
 				18EE9EF113C7483C00BA13CF /* NSObject+SBJson.m in Sources */,
 				18EE9EF213C7483C00BA13CF /* SBJsonParser.m in Sources */,
@@ -464,8 +489,13 @@
 				18EE9EFA13C7483C00BA13CF /* SBJsonTokeniser.m in Sources */,
 				18EE9EFB13C7483C00BA13CF /* SBJsonUTF8Stream.m in Sources */,
 				18EE9EFC13C7483C00BA13CF /* SBJsonWriter.m in Sources */,
-				18EA547913C758D40097B20B /* Search.m in Sources */,
-				183E774B13CF463A005C47F4 /* SearchResult.m in Sources */,
+				1810366E13D07124003F0810 /* SearchResult.m in Sources */,
+				1810367113D07125003F0810 /* MovieDirector.m in Sources */,
+				1810367413D07125003F0810 /* Search.m in Sources */,
+				1810367713D07125003F0810 /* MovieActor.m in Sources */,
+				1810367A13D07125003F0810 /* Actor.m in Sources */,
+				1810367D13D07125003F0810 /* Movie.m in Sources */,
+				1810368013D07125003F0810 /* Director.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

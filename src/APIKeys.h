@@ -7,6 +7,9 @@
 //
 
 
-// IMDG 
-#define kIMDGUrl			@"4DkZ5xTqmcrwljHgy1Kzg"
-#define kIMDGKey            @"secret"	
+// API
+#define apiIMDBKey      @"this-is-the-key-to-happiness"
+#define apiIMDBSearch   @"http://imdg.cecinestpasparis.net/api/search.php"
+#define apiIMDBMovie    @"http://imdg.cecinestpasparis.net/api/movie.php"
+#define apiIMDBActor    @"http://imdg.cecinestpasparis.net/api/actor.php"
+#define apiIMDBDirector @"http://imdg.cecinestpasparis.net/api/director.php"

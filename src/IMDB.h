@@ -1,5 +1,5 @@
 //
-//  API_IMDB.h
+//  IMDB.h
 //  IMDG
 //
 //  Created by CNPP on 8.7.2011.
@@ -9,12 +9,15 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "Search.h"
+#import "Movie.h"
+#import "Actor.h"
+#import "Director.h"
 
 
 // alerts
 enum {
-    API_IMDB_AlertFatal,
-	API_IMDB_AlertError
+    IMDB_AlertFatal,
+	IMDB_AlertError
 };
 
 
@@ -23,12 +26,15 @@ enum {
  */
 @protocol APIDelegate <NSObject>
 - (void)searchResult:(Search*)result;
+- (void)loadedMovie:(Movie*)movie;
+- (void)loadedActor:(Actor*)movie;
+- (void)loadedDirector:(Director*)movie;
 @end
 
 /**
  * API IMDB.
  */
-@interface API_IMDB : NSObject {
+@interface IMDB : NSObject <UIAlertViewDelegate> {
     
     // delegate
 	id<APIDelegate>delegate;
@@ -46,6 +52,9 @@ enum {
 
 // Business
 - (void)search:(NSString*)q type:(NSString*)t;
+- (void)movie:(NSNumber*)mid;
+- (void)actor:(NSNumber*)aid;
+- (void)director:(NSNumber*)did;
 
 
 

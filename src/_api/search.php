@@ -1,5 +1,5 @@
 <?php
-require_once("config.php");
+require_once("_config.php");
     
 // check request
 if(isset($_GET['key']) && isset($_GET['query'])) {
@@ -19,47 +19,74 @@ if(isset($_GET['key']) && isset($_GET['query'])) {
         // connect to the db 
         $link = mysql_connect($cfg['db.host'],$cfg['db.user'],$cfg['db.pass']) or die('Cannot connect to the DB');
         mysql_select_db($cfg['db.name'],$link) or die('Cannot select the DB');
+
+		// query term
+		$qt = "";
+		$terms = explode(" ",$param_query);
+		foreach($terms as $t) {
+			$qt .= "+ $t ";
+		}
         
         // query
         $query;
         switch ($param_type) {
             case "movie":
-                $query = "SELECT * FROM movies WHERE title LIKE '%$param_query%' ORDER BY title LIMIT 100";
+				$query = "SELECT * FROM movies WHERE title LIKE '%$param_query%' ORDER BY title LIMIT 100";
                 break;
             case "actor":
-                $query = "SELECT * FROM actors WHERE name LIKE '%$param_query%' ORDER BY name LIMIT 100";
+				$query = "SELECT * FROM actors WHERE MATCH (name) AGAINST ('$qt' IN BOOLEAN MODE) ORDER BY name LIMIT 100";
                 break;
             case "director":
-                $query = "SELECT * FROM directors WHERE name LIKE '%$param_query%' ORDER BY name LIMIT 100";
+				$query = "SELECT * FROM directors WHERE MATCH (name) AGAINST ('$qt' IN BOOLEAN MODE) ORDER BY name LIMIT 100";
                 break;
         }
         
         // query 
         $rows = mysql_query($query,$link) or die('Errant query:  '.$query);
         
-        // create one master array of the records
+        // results
         if(mysql_num_rows($rows)) {
             switch ($param_type) {
+				
+				// movie
                 case "movie":
+
+					// rows
                     while($row = mysql_fetch_assoc($rows)) {
-                        $result = array();
-                        $result['did'] = $row['movieid'];
-                        $result['data'] = $row['title'];
-                        $results[] = $result;
+				
+						// result
+						if (includeMovie($row['title'])) {
+							$result = array();
+	                        $result['id'] = $row['movieid'];
+	                        $result['data'] = $row['title'];
+	                        $results[] = $result;
+						}
                     }
                     break;
+
+				// actor
                 case "actor":
+
+					// rows
                     while($row = mysql_fetch_assoc($rows)) {
+						
+						// result
                         $result = array();
-                        $result['did'] = $row['actorid'];
+                        $result['id'] = $row['actorid'];
                         $result['data'] = $row['name'];
                         $results[] = $result;
                     }
                     break;
+
+				// director
                 case "director":
+					
+					// rows
                     while($row = mysql_fetch_assoc($rows)) {
+						
+						// result
                         $result = array();
-                        $result['did'] = $row['directorid'];
+                        $result['id'] = $row['directorid'];
                         $result['data'] = $row['name'];
                         $results[] = $result;
                     }

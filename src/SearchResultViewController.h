@@ -15,7 +15,7 @@
  * Delegate.
  */
 @protocol SearchResultDelegate <NSObject>
-- (void)selectedResult:(SearchResult*)result;
+- (void)selectedResult:(SearchResult*)result type:(NSString*)type;
 - (void)cancelSearch;
 @end
 
@@ -29,6 +29,7 @@
 	id<SearchResultDelegate>delegate;
     
     // data
+    NSMutableString* _type;
     NSMutableArray* _data;
 }
 

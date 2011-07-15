@@ -11,7 +11,3 @@
 #define typeMovie       @"movie"	
 #define typeActor       @"actor"	
 #define typeDirector    @"director"	
-
-// API
-#define apiIMDBKey      @"this-is-the-key-to-happiness"
-#define apiIMDBSearch   @"http://imdg.cecinestpasparis.net/api/search.php"

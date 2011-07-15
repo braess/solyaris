@@ -2,7 +2,7 @@
 //  Search.h
 //  IMDG
 //
-//  Created by CNPP on 8.7.2011.
+//  Created by CNPP on 15.7.2011.
 //  Copyright (c) 2011 Beat Raess. All rights reserved.
 //
 
@@ -17,6 +17,5 @@
 @property (nonatomic, retain) NSString * query;
 @property (nonatomic, retain) NSString * type;
 @property (nonatomic, retain) NSSet* data;
-- (void)addDataObject:(SearchResult *)value;
 
 @end

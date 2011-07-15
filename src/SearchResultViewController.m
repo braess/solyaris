@@ -39,6 +39,7 @@
 
     
     // data
+    _type = [[NSMutableString alloc] init];
     _data = [[NSMutableArray alloc] init];
 }
 
@@ -55,6 +56,7 @@
     
     
     // data
+    [_type setString:search.type];
     for (SearchResult* s in search.data) {
         [_data addObject:s];
     }
@@ -65,7 +67,7 @@
 	[sorter release];
     
     // title
-    self.navigationItem.title = [NSString stringWithFormat:@"%i %@", [_data count], NSLocalizedString(@"Results", @"Results")];
+    self.navigationItem.title = [NSString stringWithFormat:@"%i %@", [_data count], _type];
     
     // reload
     [self.tableView reloadData];
@@ -157,11 +159,11 @@
  * Selected.
  */
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    GLog();
+    FLog();
     
     // delegate
-	if (delegate != nil && [delegate respondsToSelector:@selector(selectedResult:)]) {
-		[delegate selectedResult:[_data objectAtIndex:indexPath.row]];
+	if (delegate != nil && [delegate respondsToSelector:@selector(selectedResult:type:)]) {
+		[delegate selectedResult:[_data objectAtIndex:indexPath.row] type:_type];
 	}
 }
 
@@ -174,6 +176,7 @@
     GLog();
     
     // data
+    [_type release];
     [_data release];
     
     // super

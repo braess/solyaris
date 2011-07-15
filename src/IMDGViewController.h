@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "SearchResultViewController.h"
-#import "API_IMDB.h"
+#import "IMDB.h"
 
 // Declarations
 CPP_CLASS(IMDGApp);
@@ -20,7 +20,7 @@ CPP_CLASS(IMDGApp);
     
     // app
     IMDGApp *imdgApp;
-    API_IMDB *api;
+    IMDB *imdb;
     
     // controllers
     SearchResultViewController *_searchResultViewController;
