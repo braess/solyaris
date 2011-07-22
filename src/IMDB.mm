@@ -431,7 +431,7 @@ NSString* STORE = @"IMDG.sqlite";
     NSArray *results = [djson objectForKey:@"result"];
     for (NSDictionary *result in results)	{
         SearchResult *sresult = (SearchResult*)[NSEntityDescription insertNewObjectForEntityForName:@"SearchResult" inManagedObjectContext:managedObjectContext];
-        sresult.id = [nf numberFromString:[result objectForKey:@"id"]];
+        sresult.rid = [nf numberFromString:[result objectForKey:@"rid"]];
         sresult.data = [result objectForKey:@"data"];
         [search addDataObject:sresult];
     }
@@ -854,8 +854,9 @@ NSString* STORE = @"IMDG.sqlite";
 			}
 			// quit
 			else {
-				NSLog(@"Aus die Maus.");
-				abort();
+				if (delegate && [delegate respondsToSelector:@selector(quit)]) {
+                    [delegate quit];
+                }
 			}
 			
 			break;

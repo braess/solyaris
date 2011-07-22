@@ -46,6 +46,8 @@ class Graph {
     void repulse();
     void addNode(Node n);
     void addEdge(Edge e);
+    Node* getNode(string nid);
+    void activateNode(Node *n);
     
     
     // private

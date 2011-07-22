@@ -7,6 +7,7 @@
 //
 
 #include "Graph.h"
+#include "cinder/gl/gl.h"
 #include "cinder/Rand.h"
 
 
@@ -81,14 +82,26 @@ void Graph::update() {
  */
 void Graph::draw() {
     
+    // blend
+    gl::enableAlphaBlending();
+    
     // nodes
     for(vector<Node>::iterator n = nodes.begin(); n != nodes.end(); ++n ){
-		n->draw();
+		n->drawNode();
 	}
+    
+    // unblend
+    gl::enableAlphaBlending(true);
+
     
     // edges
     for(vector<Edge>::iterator e = edges.begin(); e != edges.end(); ++e ){
 		e->draw();
+	}
+    
+    // label
+    for(vector<Node>::iterator n = nodes.begin(); n != nodes.end(); ++n ){
+		n->drawLabel();
 	}
 }
 
@@ -105,69 +118,6 @@ void Graph::reset() {
 
 
 
-#pragma mark -
-#pragma mark Touch
-
-/**
- * Touch.
- */
-void Graph::touchBegan(Vec2d tpos, int tid) {
-    FLog();
-    
-    // nodes
-    for(int i = 0; i < nodes.size(); i++){
-        Node n = nodes.at(i);
-        
-        // distance
-		float d = n.pos.distance(tpos);
-        if (d < n.radius) {
-            
-            // selected
-            selected[tid] = i+1; // offset to avoid null comparison
-            FLog("tid = %d, node = %d",tid,selected[tid]-1);
-            
-            // state
-            n.selected = true;
-        }
-	}
-
-
-    
-}
-void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
-    GLog();
-    
-    // node
-    if (selected[tid]) {
-        GLog("tid = %d, node = %d",tid,selected[tid]-1);
-        nodes[selected[tid]-1].moveTo(tpos);
-    }
-    // graph
-    else {
-        
-        // movement
-        movement.set(tpos-ppos);
-    }
-
-}
-void Graph::touchEnded(Vec2d tpos, int tid){
-    FLog();
-    
-    
-    // node
-    if (selected[tid]) {
-        
-        // state
-        nodes.at(selected[tid]-1).selected = false;
-        FLog("tid = %d, node = %d",tid,selected[tid]-1);
-    }
-    else {
-        movement.set(0,0);
-    }
-    
-    // reset
-    selected.erase(tid);
-}
 
 
 
@@ -180,7 +130,7 @@ void Graph::touchEnded(Vec2d tpos, int tid){
  * Adds a node.
  */
 void Graph::addNode(Node n) {
-    DLog();
+    FLog();
 
    // push
    nodes.push_back(n);
@@ -190,10 +140,36 @@ void Graph::addNode(Node n) {
  * Adds an edge.
  */
 void Graph::addEdge(Edge e) {
-    DLog();
+    FLog();
     
     // push
 	edges.push_back(e);
+}
+
+/**
+ * Gets a node.
+ */
+Node* Graph::getNode(string nid) {
+    FLog();
+    
+    // search
+    for(vector<Node>::iterator n = nodes.begin(); n != nodes.end(); n++ ){
+        if (nid.compare(n->nid) == 0) {
+            return &(*n);
+        }
+    }
+    return NULL;
+}
+
+/**
+ * Activates a node.
+ */
+void Graph::activateNode(Node *n) {
+    FLog();
+    
+    // grow
+    n->grow = true;
+    
 }
 
 /**
@@ -236,7 +212,7 @@ void Graph::test() {
     // nodes
     Rand::randomize();
     for (int i = 0; i < 5; i++) {
-        this->addNode(Node( Rand::randFloat(0,788),  Rand::randFloat(0,1024), 30));
+        this->addNode(Node("nid", Rand::randFloat(0,788),  Rand::randFloat(0,1024)));
     }
     
     // edges
@@ -254,4 +230,86 @@ void Graph::test() {
         }
 	}
     
+}
+
+
+
+
+#pragma mark -
+#pragma mark Touch
+
+/**
+ * Touch.
+ */
+void Graph::touchBegan(Vec2d tpos, int tid) {
+    GLog();
+    
+    // nodes
+    for(int i = 0; i < nodes.size(); i++){
+        
+        // reference
+        Node &n = nodes.at(i);
+        
+        // distance
+		float d = n.pos.distance(tpos);
+        if (d < n.radius) {
+            
+            // selected
+            selected[tid] = i+1; // offset to avoid null comparison
+            FLog("tid = %d, node = %d",tid,selected[tid]-1);
+            
+            // state
+            n.selected = true;
+            
+            // core
+            if (d > n.core) {
+                for(int j = 0; j < n.children.size(); j++){
+                    
+                    // reference
+                    Node &c = n.children.at(j);
+                    
+                    // distance
+                    float dc = c.pos.distance(tpos);
+                    if (dc < c.radius) {
+                        FLog("child = %d",j);
+                    }
+                }
+            }
+        }
+	}
+    
+}
+void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
+    GLog();
+    
+    // node
+    if (selected[tid]) {
+        GLog("tid = %d, node = %d",tid,selected[tid]-1);
+        nodes[selected[tid]-1].moveTo(tpos);
+    }
+    // graph
+    else {
+        
+        // movement
+        movement.set(tpos-ppos);
+    }
+    
+}
+void Graph::touchEnded(Vec2d tpos, int tid){
+    GLog();
+    
+    
+    // node
+    if (selected[tid]) {
+        
+        // state
+        nodes.at(selected[tid]-1).selected = false;
+        FLog("tid = %d, node = %d",tid,selected[tid]-1);
+    }
+    else {
+        movement.set(0,0);
+    }
+    
+    // reset
+    selected.erase(tid);
 }

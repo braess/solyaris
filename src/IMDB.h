@@ -12,6 +12,8 @@
 #import "Movie.h"
 #import "Actor.h"
 #import "Director.h"
+#import "MovieActor.h"
+#import "MovieDirector.h"
 
 
 // alerts
@@ -29,6 +31,7 @@ enum {
 - (void)loadedMovie:(Movie*)movie;
 - (void)loadedActor:(Actor*)movie;
 - (void)loadedDirector:(Director*)movie;
+- (void)quit;
 @end
 
 /**

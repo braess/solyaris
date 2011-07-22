@@ -6,7 +6,9 @@
 //  Copyright 2011 Beat Raess. All rights reserved.
 //
 #import <UIKit/UIKit.h>
-#include "cinder/app/AppCocoaTouch.h"
+#include "cinder/Cinder.h"
+#include "cinder/app/AppNative.h"
+#include "cinder/System.h"
 #include "Graph.h"
 #include "IMDGViewController.h"
 
@@ -21,7 +23,7 @@ using namespace ci::app;
 /**
  * IMDG App.
  */
-class IMDGApp : public AppCocoaTouch {
+class IMDGApp : public AppNative {
     
     // Methods
     public:
@@ -37,12 +39,15 @@ class IMDGApp : public AppCocoaTouch {
     
     
     // Touch
-    void touchesBegan(TouchEvent event);
-	void touchesMoved(TouchEvent event);
-	void touchesEnded(TouchEvent event);
+    void touchesBegan( TouchEvent event );
+	void touchesMoved( TouchEvent event );
+	void touchesEnded( TouchEvent event );
     
     // Business
     void test();
+    void addNode(Node n);
+    Node* getNode(string nid);
+    void activateNode(Node *n);
     
     
     // Fields

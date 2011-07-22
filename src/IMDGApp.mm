@@ -38,6 +38,9 @@ void IMDGApp::setup() {
 	[window bringSubviewToFront:imdgViewController.view];
     [imdgViewController loadView];
 	[imdgViewController viewWillAppear:NO];
+    
+    // check
+    console() << "MT: " << System::hasMultiTouch() << " Max points: " << System::getMaxMultiTouchPoints() << std::endl;
 
 }
 
@@ -50,7 +53,7 @@ void IMDGApp::prepareSettings(Settings *settings) {
     
     // stage
     settings->setWindowSize(768, 1024);
-    //settings->setFrameRate( 60.0f );
+    //settings->setFrameRate( 24.0f );
     
     
     // device
@@ -76,14 +79,14 @@ void IMDGApp::update() {
  */
 void IMDGApp::draw() {
     
-    // clear
-	gl::clear(bg);
-	gl::enableAlphaBlending();
-	gl::enableDepthRead();
-    
+    // prepare
     gl::setMatricesWindow( getWindowSize() );
 	gl::setViewport( getWindowBounds() );
+    gl::enableDepthWrite();
+    //gl::enableAlphaBlending( false );
     
+    // clear
+	gl::clear(bg);    
     
     // graph
     graph.draw();
@@ -108,7 +111,7 @@ void IMDGApp::reset() {
 
 /*
  * Cinder touch events.
- */
+*/
 void IMDGApp::touchesBegan( TouchEvent event ) {
     GLog();
     
@@ -142,6 +145,7 @@ void IMDGApp::touchesEnded( TouchEvent event ){
 }
 
 
+
 #pragma mark -
 #pragma mark Business
 
@@ -157,4 +161,37 @@ void IMDGApp::test() {
     
 }
 
-CINDER_APP_COCOA_TOUCH( IMDGApp, RendererGl )
+/*
+ * Adds a node.
+ */
+void IMDGApp::addNode(Node n) {
+    DLog();
+    
+    // graph
+    graph.addNode(n);
+    
+}
+
+/*
+ * Gets a node.
+ */
+Node* IMDGApp::getNode(string nid) {
+    DLog();
+    
+    // graph
+    return graph.getNode(nid);
+    
+}
+
+/*
+ * Activates a node.
+ */
+void IMDGApp::activateNode(Node *n) {
+    DLog();
+    
+    // graph
+    graph.activateNode(n);
+    
+}
+
+CINDER_APP_NATIVE( IMDGApp, RendererGl )

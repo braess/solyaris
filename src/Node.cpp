@@ -6,7 +6,9 @@
 //  Copyright 2011 Beat Raess. All rights reserved.
 //
 #include "Node.h"
-#include "cinder/gl/gl.h"
+#include "cinder/Text.h"
+#include "cinder/Rand.h"
+
 
 
 
@@ -17,9 +19,13 @@
  * Creates a Node.
  */
 Node::Node() {
-    Node(0,0,10);
+    Node("nid",0,0);
 }
-Node::Node(double x, double y, double r) {
+Node::Node(string idn, double x, double y) {
+    
+    // node
+    nid = idn;
+    label = "Node";
     
     // fields
     perimeter = 300;
@@ -33,15 +39,43 @@ Node::Node(double x, double y, double r) {
     mpos.set(x,y);
     pos.set(x,y);
     
+    // state
+    selected = false;
+    active = false;
+    grow = false;
+    load = false;
+    visible = true;
+    
     // radius / mass
-    radius = r;
+    core = 10;
+    radius = 30;
     mass = radius * radius * 0.0001f + 0.01f;
     
     // velocity
     velocity.set(0,0);
     
     // color
-    bg = ColorA(1,1,1,0.9);
+    cbg = Color(1,1,1);
+    ctxt = Color(1,1,1);
+    
+    // alpha
+    acore = 0.9;
+    ascore = 1.0;
+    aglow = 0.3;
+    asglow = 0.6;
+
+    
+    // font
+    font = Font("Helvetica",12);
+    
+    
+    TextLayout lbl;
+	lbl.clear(ColorA(0, 0, 0, 0));
+	lbl.setFont(font);
+	lbl.setColor(ctxt);
+	lbl.addCenteredLine("Text Texture");
+	Surface8u rendered = lbl.render(true, true);
+	mTexture = gl::Texture(rendered);
 
 }
 
@@ -73,20 +107,94 @@ void Node::update() {
     
     // update position
     Vec2d dm = mpos - pos;
+    Vec2d ppos = pos;
     pos += dm/speed;
+    
+    // travelling without moving
+    bool moving = false;
+    float mf = 0;
+    if (dm.length() > 5) {
+        moving = true;
+        
+        // randomize
+        Rand::randomize();
+        mf = dm.length() * 0.01;
+    }
+    
+    // children
+    for(vector<Node>::iterator child = children.begin(); child != children.end(); child++ ){
+        // draw
+        if (child->visible) {
+            
+            // follow
+            child->translate(pos - ppos);
+            
+            // randomize
+            if (moving) {
+                child->move(Rand::randFloat(-1,1)*mf,Rand::randFloat(-1,1)*mf);
+            }
+            
+            
+            // update
+            child->update();
+        }
+	}
+
+    
+    // grow
+    if (grow) {
+        
+        // radius
+        radius += 1;
+        if (radius >= growradius) {
+            
+            // stop & activate
+            grow = false;
+            this->activate();
+        }
+    }
     
 }
 
 /**
 * Draws the node.
 */
-void Node::draw() {
+void Node::drawNode() {
     
-    // node
-    glColor4f(bg.r,bg.g,bg.b,bg.a);
+    // glow
+    glColor4f(cbg.r,cbg.g,cbg.b,(selected ? asglow : aglow));
     gl::drawSolidCircle(pos, radius);
+    
+    // core
+    glColor4f(cbg.r,cbg.g,cbg.b,(selected ? ascore : acore));
+    gl::drawSolidCircle(pos, core);
+    
+
+   
+}
+void Node::drawLabel() {
+    
+
+    // active
+    if (active) {
+        
+        // children
+        for(vector<Node>::iterator child = children.begin(); child != children.end(); child++ ){
+            // draw
+            if (child->visible) {
+                child->drawNode();
+                child->drawLabel();
+            }
+        }
+        
+    }
+    
+    // label
+    glColor4f(ctxt.r,ctxt.g,ctxt.b,(selected ? ascore : acore));
+	gl::draw( mTexture, Vec2d(pos.x,pos.y+radius));
 
 }
+
 
 
 
@@ -130,4 +238,43 @@ void Node::moveTo(double x, double y) {
 }
 void Node::moveTo(Vec2d p) {
     mpos.set(p);
+}
+
+/**
+ * Translate.
+ */
+void Node::translate(Vec2d d) {
+    pos += d;
+    mpos += d;
+}
+
+
+/**
+* Adds a child.
+*/
+void Node::addChild(Node n) {
+    GLog();
+    
+    // push
+    children.push_back(n);
+}
+
+/**
+ * Activates the node.
+ */
+void Node::activate() {
+    
+    // children
+    Rand::randomize();
+    for(vector<Node>::iterator child = children.begin(); child != children.end(); child++ ){
+        // position
+        child->moveTo(pos.x+Rand::randFloat(-radius,radius),pos.y+Rand::randFloat(-radius,radius));
+        
+    }
+    
+    // maxx
+    mass = radius * radius * 0.0001f + 0.01f;
+    
+    // active
+    active = true;
 }

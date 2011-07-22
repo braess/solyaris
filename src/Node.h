@@ -6,8 +6,12 @@
 //  Copyright 2011 Beat Raess. All rights reserved.
 //
 #pragma once
+#include "cinder/gl/gl.h"
+#include "cinder/gl/Texture.h"
 #include "cinder/Vector.h"
 #include "cinder/Color.h"
+#include "cinder/Font.h"
+
 
 
 // namespace
@@ -26,11 +30,12 @@ class Node {
     
     // Node
     Node();
-    Node(double x, double y, double r); 
+    Node(string idn, double x, double y); 
     
     // Sketch
     void update();
-    void draw();
+    void drawNode();
+    void drawLabel();
     
     
     // Business
@@ -39,17 +44,29 @@ class Node {
     void moveTo(Vec2d p);
     void move(double dx, double dy);
     void move(Vec2d d);
+    void translate(Vec2d d);
+    void addChild(Node n);
+    void activate();
     
     
     // Public Fields
+    string nid;
+    string label;
+    vector<Node> children;
     Vec2d pos;
     Vec2d mpos;
-    float radius;
+    float core;
+    float radius,growradius;
     float mass;
 	Vec2d velocity;
     
+    
     // States
     bool selected;
+    bool active;
+    bool grow;
+    bool load;
+    bool visible;
     
     
     // private 
@@ -64,6 +81,13 @@ class Node {
     double speed;
     
     // Color
-    ColorA bg;
+    Color cbg;
+    Color ctxt;
+    float acore,ascore;
+    float aglow,asglow;
+    
+    // Font
+    Font font;
+    gl::Texture	mTexture;
 
 };

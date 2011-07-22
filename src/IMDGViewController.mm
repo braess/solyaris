@@ -11,6 +11,14 @@
 #import "IMDGApp.h"
 #import "IMDGConstants.h"
 
+
+/**
+ * Helper Stack.
+ */
+@interface IMDGViewController (HelperStack)
+- (NSString*)makeNodeId:(NSNumber*)nid type:(NSString*)type;
+@end
+
 /**
  * IMDG ViewController.
  */
@@ -141,6 +149,7 @@
             break;
         }
     }
+    sBar.text = @"Kill Bill";
     self.searchBar = sBar;
 	[self.view addSubview:_searchBar];
 	[sBar release];
@@ -275,6 +284,48 @@
  */
 - (void)loadedMovie:(Movie*)movie {
     DLog();
+    
+    // add node
+    NSString *nid = [self makeNodeId:movie.mid type:typeMovie];
+    Node *n = imdgApp->getNode([nid UTF8String]);
+    
+    // check
+    if (n != NULL) {
+        
+        // properties
+        n->label = [movie.title UTF8String];
+        
+        // actors
+        NSSortDescriptor *asorter = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
+        NSArray *actors = [[movie.actors allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:asorter]];
+        [asorter release];
+        int v = 10;
+        for (MovieActor *mactor in actors) {
+            
+            // child
+            NSString *cid = [self makeNodeId:mactor.actor.aid type:typeActor];
+            Node child = Node([cid UTF8String], n->pos.x, n->pos.y);
+            child.radius = 10;
+            child.core = 10;
+            child.label = [mactor.actor.name UTF8String];
+            if (v <= 0) {
+                child.visible = false;
+            }
+            v--;
+            
+            // add
+            n->addChild(child);
+        }
+        
+        // grow radius
+        n->growradius = MIN([actors count]*2,80);
+    }
+    
+
+    
+    // activate
+    imdgApp->activateNode(n);
+
 
 }
 
@@ -292,6 +343,16 @@
 - (void)loadedDirector:(Director*)director {
     DLog();
     
+}
+
+
+/*
+ * Quits the application.
+ */
+- (void)quit {
+    NSLog(@"Aus die Maus.");
+    imdgApp->quit();
+    abort();
 }
 
 
@@ -314,19 +375,29 @@
     // dismiss popover
     [_searchResultsPopoverController dismissPopoverAnimated:YES];
     
+    
+    // add node
+    NSString *nid = [self makeNodeId:result.rid type:type];
+    Node n = Node([nid UTF8String], arc4random() % 768, arc4random() % 768);
+    n.core = 15;
+    n.radius = 30;
+    n.label = [NSLocalizedString(@"Loading...", @"Loading...") UTF8String];
+    n.load = true;
+    imdgApp->addNode(n);
+    
     // movie
     if ([type isEqualToString:typeMovie]) {
-        [imdb movie:result.id];
+        [imdb movie:result.rid];
     }
     
     // actor
     if ([type isEqualToString:typeActor]) {
-        [imdb actor:result.id];
+        [imdb actor:result.rid];
     }
     
     // director
     if ([type isEqualToString:typeDirector]) {
-        [imdb director:result.id];
+        [imdb director:result.rid];
     }
 
 }
@@ -343,6 +414,20 @@
     [_searchResultsPopoverController dismissPopoverAnimated:YES];
 }
 
+
+
+#pragma mark -
+#pragma mark Helpers
+
+/* 
+ * Node id.
+ */
+- (NSString*)makeNodeId:(NSNumber*)nid type:(NSString*)type {
+
+    
+    // make it so
+    return [NSString stringWithFormat:@"%@_%i",type,[nid intValue]];
+}
 
 
 
