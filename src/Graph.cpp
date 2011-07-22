@@ -118,6 +118,71 @@ void Graph::reset() {
 
 
 
+#pragma mark -
+#pragma mark Touch
+
+/**
+ * Touch.
+ */
+void Graph::touchBegan(Vec2d tpos, int tid) {
+    GLog();
+    
+    // nodes
+    for(int i = 0; i < nodes.size(); i++){
+        
+        // reference
+        Node &n = nodes.at(i);
+        
+        // distance
+		float d = n.pos.distance(tpos);
+        if (d < n.radius) {
+            
+            // touched
+            FLog("tid = %d, node = %d",tid,i);
+            touched[tid] = i+1; // offset to avoid null comparison
+            
+            // state
+            n.touchBegan(tpos, tid);
+            
+        }
+	}
+    
+}
+void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
+    GLog();
+    
+    // node
+    if (touched[tid]) {
+        GLog("tid = %d, node = %d",tid,touched[tid]-1);
+        nodes[touched[tid]-1].touchMoved(tpos,ppos,tid);
+    }
+    // graph
+    else {
+        
+        // movement
+        movement.set(tpos-ppos);
+    }
+    
+}
+void Graph::touchEnded(Vec2d tpos, int tid){
+    GLog();
+    
+    
+    // node
+    if (touched[tid]) {
+        
+        // state
+        FLog("tid = %d, node = %d",tid,touched[tid]-1);
+        nodes[touched[tid]-1].touchEnded(tpos, tid);
+    }
+    else {
+        movement.set(0,0);
+    }
+    
+    // reset
+    touched.erase(tid);
+}
+
 
 
 
@@ -233,83 +298,3 @@ void Graph::test() {
 }
 
 
-
-
-#pragma mark -
-#pragma mark Touch
-
-/**
- * Touch.
- */
-void Graph::touchBegan(Vec2d tpos, int tid) {
-    GLog();
-    
-    // nodes
-    for(int i = 0; i < nodes.size(); i++){
-        
-        // reference
-        Node &n = nodes.at(i);
-        
-        // distance
-		float d = n.pos.distance(tpos);
-        if (d < n.radius) {
-            
-            // selected
-            selected[tid] = i+1; // offset to avoid null comparison
-            FLog("tid = %d, node = %d",tid,selected[tid]-1);
-            
-            // state
-            n.selected = true;
-            
-            // core
-            if (d > n.core) {
-                for(int j = 0; j < n.children.size(); j++){
-                    
-                    // reference
-                    Node &c = n.children.at(j);
-                    
-                    // distance
-                    float dc = c.pos.distance(tpos);
-                    if (dc < c.radius) {
-                        FLog("child = %d",j);
-                    }
-                }
-            }
-        }
-	}
-    
-}
-void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
-    GLog();
-    
-    // node
-    if (selected[tid]) {
-        GLog("tid = %d, node = %d",tid,selected[tid]-1);
-        nodes[selected[tid]-1].moveTo(tpos);
-    }
-    // graph
-    else {
-        
-        // movement
-        movement.set(tpos-ppos);
-    }
-    
-}
-void Graph::touchEnded(Vec2d tpos, int tid){
-    GLog();
-    
-    
-    // node
-    if (selected[tid]) {
-        
-        // state
-        nodes.at(selected[tid]-1).selected = false;
-        FLog("tid = %d, node = %d",tid,selected[tid]-1);
-    }
-    else {
-        movement.set(0,0);
-    }
-    
-    // reset
-    selected.erase(tid);
-}

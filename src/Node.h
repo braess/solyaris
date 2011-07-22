@@ -11,6 +11,7 @@
 #include "cinder/Vector.h"
 #include "cinder/Color.h"
 #include "cinder/Font.h"
+#include <map>
 
 
 
@@ -36,6 +37,12 @@ class Node {
     void update();
     void drawNode();
     void drawLabel();
+    
+    
+    // Touch
+	void touchBegan(Vec2d tpos, int tid);
+    void touchMoved(Vec2d tpos, Vec2d ppos, int tid);
+    void touchEnded(Vec2d tpos, int tid);
     
     
     // Business
@@ -72,6 +79,9 @@ class Node {
     // private 
     private:
     
+    // touched nodes
+    map<int, int> touched;
+    
     // Parameters
     double perimeter;
     double damping;
@@ -89,5 +99,6 @@ class Node {
     // Font
     Font font;
     gl::Texture	mTexture;
+    
 
 };

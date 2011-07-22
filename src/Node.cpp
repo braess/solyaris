@@ -197,6 +197,81 @@ void Node::drawLabel() {
 
 
 
+#pragma mark -
+#pragma mark Touch
+
+
+#pragma mark -
+#pragma mark Touch
+
+/**
+ * Touch.
+ */
+void Node::touchBegan(Vec2d tpos, int tid) {
+    GLog();
+    
+    // selected
+    selected = true;
+    
+    
+    // children
+    for(int i = 0; i < children.size(); i++){
+        
+        // reference
+        Node &c = children.at(i);
+        
+        // visible
+        if (c.visible) {
+            
+            // distance
+            float dc = c.pos.distance(tpos);
+            if (dc < c.radius) {
+                
+                // touched
+                FLog("tid = %d, child = %d",tid,i);
+                touched[tid] = i+1; // offset to avoid null comparison
+                
+            }
+        }
+        
+    }
+    
+}
+void Node::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
+    GLog();
+    
+    // child
+    if (touched[tid]) {
+        FLog("tid = %d, child = %d",tid,touched[tid]-1);
+        children[touched[tid]-1].moveTo(tpos);
+    }
+    // node
+    else {
+        this->moveTo(tpos);
+    }
+    
+}
+void Node::touchEnded(Vec2d tpos, int tid){
+    GLog();
+    
+    // child
+    if (touched[tid]) {
+        
+        // state
+        FLog("tid = %d, child = %d",tid,touched[tid]-1);
+    }
+    else {
+        selected = false;
+    }
+    
+    // reset
+    touched.erase(tid);
+
+}
+
+
+
+
 
 #pragma mark -
 #pragma mark Business

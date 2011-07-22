@@ -22889,9 +22889,9 @@
 		<string>PrimaryDocumentVisibleCharacterRange</string>
 		<string>HideAllIssues</string>
 		<string>PrimaryDocumentSelectedCharacterRange</string>
-		<real>333020219.51910502</real>
-		<string>{3384, 1269}</string>
-		<string>{4358, 0}</string>
+		<real>333028471.53913403</real>
+		<string>{1718, 1141}</string>
+		<string>{2785, 0}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -23687,9 +23687,9 @@
 				</dict>
 			</array>
 		</dict>
-		<real>333019446.91022801</real>
-		<string>{552, 899}</string>
-		<string>{1387, 0}</string>
+		<real>333026724.40484703</real>
+		<string>{481, 980}</string>
+		<string>{1348, 0}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -23700,19 +23700,19 @@
 			<array>
 				<dict>
 					<key>CF$UID</key>
-					<integer>844</integer>
+					<integer>1304</integer>
 				</dict>
 				<dict>
 					<key>CF$UID</key>
-					<integer>845</integer>
+					<integer>1305</integer>
 				</dict>
 				<dict>
 					<key>CF$UID</key>
-					<integer>846</integer>
+					<integer>1306</integer>
 				</dict>
 				<dict>
 					<key>CF$UID</key>
-					<integer>847</integer>
+					<integer>1307</integer>
 				</dict>
 			</array>
 			<key>NS.objects</key>
@@ -23735,7 +23735,7 @@
 				</dict>
 			</array>
 		</dict>
-		<real>332956755.207735</real>
+		<real>333025076.30179697</real>
 		<string>{827, 990}</string>
 		<string>{1321, 32}</string>
 		<dict>
@@ -24415,19 +24415,19 @@
 			<array>
 				<dict>
 					<key>CF$UID</key>
-					<integer>844</integer>
+					<integer>1304</integer>
 				</dict>
 				<dict>
 					<key>CF$UID</key>
-					<integer>845</integer>
+					<integer>1305</integer>
 				</dict>
 				<dict>
 					<key>CF$UID</key>
-					<integer>846</integer>
+					<integer>1306</integer>
 				</dict>
 				<dict>
 					<key>CF$UID</key>
-					<integer>847</integer>
+					<integer>1307</integer>
 				</dict>
 			</array>
 			<key>NS.objects</key>
@@ -24450,9 +24450,9 @@
 				</dict>
 			</array>
 		</dict>
-		<real>333013259.89809901</real>
-		<string>{277, 867}</string>
-		<string>{861, 0}</string>
+		<real>333026308.712861</real>
+		<string>{0, 903}</string>
+		<string>{205, 14}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -24498,9 +24498,9 @@
 				</dict>
 			</array>
 		</dict>
-		<real>333019486.61650997</real>
-		<string>{16, 841}</string>
-		<string>{614, 0}</string>
+		<real>333028423.28841102</real>
+		<string>{3651, 1095}</string>
+		<string>{4410, 0}</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -26556,8 +26556,8 @@
 		</dict>
 		<string>IDEDeviceLocation</string>
 		<string>IDEDeviceArchitecture</string>
-		<string>dvtdevice-iphonesimulator:/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator4.3.sdk-iPad</string>
-		<string>i386</string>
+		<string>dvtdevice-iphone:c8327b59a25e795ec20a75fbe5365d9afe4d0338</string>
+		<string>armv7</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -26868,7 +26868,7 @@
 				<integer>1623</integer>
 			</dict>
 			<key>NS.time</key>
-			<real>333020136.93630302</real>
+			<real>333028467.04561198</real>
 		</dict>
 		<dict>
 			<key>$classes</key>
@@ -26879,7 +26879,7 @@
 			<key>$classname</key>
 			<string>NSDate</string>
 		</dict>
-		<string>Today at 11:35 AM</string>
+		<string>Today at 1:54 PM</string>
 		<integer>106</integer>
 		<string>IMDG</string>
 		<dict>
@@ -27201,7 +27201,7 @@
 				<integer>1652</integer>
 			</dict>
 		</dict>
-		<string>file://localhost/Users/cnpp/Documents/workspace/IMDG/IMDG/src/IMDGApp.mm</string>
+		<string>file://localhost/Users/cnpp/Documents/workspace/IMDG/IMDG/src/Graph.h</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -27219,7 +27219,7 @@
 				<integer>1654</integer>
 			</dict>
 		</dict>
-		<string>file://localhost/Users/cnpp/Documents/workspace/IMDG/IMDG/src/IMDGApp.h</string>
+		<string>file://localhost/Users/cnpp/Documents/workspace/IMDG/IMDG/src/SearchResultViewController.m</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -27237,7 +27237,7 @@
 				<integer>1656</integer>
 			</dict>
 		</dict>
-		<string>file://localhost/Users/cnpp/Documents/workspace/IMDG/IMDG/src/Graph.h</string>
+		<string>file://localhost/Users/cnpp/Documents/workspace/IMDG/IMDG/src/IMDGApp.mm</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -27255,7 +27255,7 @@
 				<integer>1658</integer>
 			</dict>
 		</dict>
-		<string>file://localhost/Users/cnpp/Documents/workspace/IMDG/IMDG/src/Edge.cpp</string>
+		<string>file://localhost/Users/cnpp/Documents/workspace/IMDG/IMDG/src/IMDGApp.h</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -27273,7 +27273,7 @@
 				<integer>1660</integer>
 			</dict>
 		</dict>
-		<string>file://localhost/Users/cnpp/Documents/workspace/IMDG/IMDG/src/IMDGViewController.mm</string>
+		<string>file://localhost/Users/cnpp/Documents/workspace/IMDG/IMDG/src/Edge.cpp</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -27291,7 +27291,7 @@
 				<integer>1662</integer>
 			</dict>
 		</dict>
-		<string>file://localhost/Users/cnpp/Documents/workspace/IMDG/IMDG/src/IMDB.h</string>
+		<string>file://localhost/Users/cnpp/Documents/workspace/IMDG/IMDG/src/IMDGViewController.mm</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -27309,7 +27309,7 @@
 				<integer>1664</integer>
 			</dict>
 		</dict>
-		<string>file://localhost/Users/cnpp/Documents/workspace/IMDG/IMDG/src/IMDB.mm</string>
+		<string>file://localhost/Users/cnpp/Documents/workspace/IMDG/IMDG/src/IMDB.h</string>
 		<dict>
 			<key>$class</key>
 			<dict>
@@ -48247,7 +48247,7 @@
 				</dict>
 				<dict>
 					<key>CF$UID</key>
-					<integer>2657</integer>
+					<integer>2652</integer>
 				</dict>
 				<dict>
 					<key>CF$UID</key>
@@ -50588,10 +50588,10 @@
 				</dict>
 			</array>
 		</dict>
-		<real>333020219.52134401</real>
-		<string>{3384, 1269}</string>
-		<string>{4358, 0}</string>
-		<string>Graph::touchBegan(Vec2d tpos, int tid)</string>
+		<real>333028471.54177803</real>
+		<string>{1718, 1141}</string>
+		<string>{2785, 0}</string>
+		<string>Graph::touchEnded(Vec2d tpos, int tid)</string>
 		<string>Xcode.IDEKit.EditorDocument.SourceCode</string>
 		<dict>
 			<key>$class</key>
@@ -51301,7 +51301,7 @@
 			<key>NS.relative</key>
 			<dict>
 				<key>CF$UID</key>
-				<integer>1660</integer>
+				<integer>1662</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -57077,7 +57077,7 @@
 			<key>NS.relative</key>
 			<dict>
 				<key>CF$UID</key>
-				<integer>1660</integer>
+				<integer>1662</integer>
 			</dict>
 		</dict>
 		<dict>

@@ -62,11 +62,11 @@ class Graph {
     vector<Node> nodes;
     vector<Edge> edges;
     
-    // selected nodes
-    map<int, int> selected;
-    
     // movement
     Vec2d movement;
+    
+    // touched nodes
+    map<int, int> touched;
     
     
 };
