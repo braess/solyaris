@@ -287,44 +287,52 @@
     
     // add node
     NSString *nid = [self makeNodeId:movie.mid type:typeMovie];
-    Node *n = imdgApp->getNode([nid UTF8String]);
+    NodePtr node = imdgApp->getNode([nid UTF8String]);
     
     // check
-    if (n != NULL) {
+    if (node != NULL) {
         
         // properties
-        n->label = [movie.title UTF8String];
+        node->renderLabel([movie.title UTF8String]);
         
         // actors
         NSSortDescriptor *asorter = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
         NSArray *actors = [[movie.actors allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:asorter]];
-        [asorter release];
+        //[asorter release];
+        
+        // create nodes
         int v = 10;
         for (MovieActor *mactor in actors) {
             
             // child
             NSString *cid = [self makeNodeId:mactor.actor.aid type:typeActor];
-            Node child = Node([cid UTF8String], n->pos.x, n->pos.y);
-            child.radius = 10;
-            child.core = 10;
-            child.label = [mactor.actor.name UTF8String];
-            if (v <= 0) {
-                child.visible = false;
+            NodePtr child = imdgApp->getNode([cid UTF8String]);
+            if (child != NULL) {
+                 child->show();
             }
-            v--;
+            else {
+                
+                // new child
+                child = imdgApp->createNode([cid UTF8String], node->pos.x, node->pos.y);
+                child->makechild();
+                child->renderLabel([mactor.actor.name UTF8String]);
+                if (v <= 0) {
+                    child->hide();
+                }
+                v--;
+                
+            }
             
-            // add
-            n->addChild(child);
+            // add to node
+            node->addChild(child);
+            
         }
         
-        // grow radius
-        n->growradius = MIN([actors count]*2,80);
+        // loaded
+        node->loaded();
+        
     }
     
-
-    
-    // activate
-    imdgApp->activateNode(n);
 
 
 }
@@ -375,16 +383,13 @@
     // dismiss popover
     [_searchResultsPopoverController dismissPopoverAnimated:YES];
     
-    
+
     // add node
     NSString *nid = [self makeNodeId:result.rid type:type];
-    Node n = Node([nid UTF8String], arc4random() % 768, arc4random() % 768);
-    n.core = 15;
-    n.radius = 30;
-    n.label = [NSLocalizedString(@"Loading...", @"Loading...") UTF8String];
-    n.load = true;
-    imdgApp->addNode(n);
+    NodePtr node = imdgApp->createNode([nid UTF8String], arc4random() % 768, arc4random() % 768);
+    node->load();
     
+
     // movie
     if ([type isEqualToString:typeMovie]) {
         [imdb movie:result.rid];
@@ -399,6 +404,7 @@
     if ([type isEqualToString:typeDirector]) {
         [imdb director:result.rid];
     }
+
 
 }
 
@@ -488,6 +494,28 @@
     
     // api
     [imdb search:s type:t];
+
+    
+    
+    /*
+    // add node
+    NSString *nid = [self makeNodeId:0 type:@"movie"];
+    NodePtr node = imdgApp->createNode([nid UTF8String], arc4random() % 768, arc4random() % 768);
+    node->load = true;
+    
+    NodePtr cnode = imdgApp->getNode([[self makeNodeId:0 type:@"movie"] UTF8String]);
+    std::cout<<"node"<<cnode<<endl;
+    
+    
+    // test
+    for (int i = 0; i < 10; i++) {
+        NSString *cid = [NSString stringWithFormat:@"actor_%i",i];
+        NodePtr child = imdgApp->createNode([cid UTF8String], arc4random() % 768, arc4random() % 768);
+        child->makechild();
+        node->addChild(child);
+    }
+     */
+
     
 }
 

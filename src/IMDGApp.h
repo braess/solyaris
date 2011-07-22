@@ -44,10 +44,8 @@ class IMDGApp : public AppNative {
 	void touchesEnded( TouchEvent event );
     
     // Business
-    void test();
-    void addNode(Node n);
-    Node* getNode(string nid);
-    void activateNode(Node *n);
+    NodePtr createNode(string nid, double x, double y);
+    NodePtr getNode(string nid);
     
     
     // Fields

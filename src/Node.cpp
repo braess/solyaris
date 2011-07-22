@@ -22,10 +22,12 @@ Node::Node() {
     Node("nid",0,0);
 }
 Node::Node(string idn, double x, double y) {
+    GLog();
+    
     
     // node
     nid = idn;
-    label = "Node";
+    
     
     // fields
     perimeter = 300;
@@ -43,11 +45,11 @@ Node::Node(string idn, double x, double y) {
     selected = false;
     active = false;
     grow = false;
-    load = false;
+    loading = false;
     visible = true;
     
     // radius / mass
-    core = 10;
+    core = 20;
     radius = 30;
     mass = radius * radius * 0.0001f + 0.01f;
     
@@ -59,25 +61,20 @@ Node::Node(string idn, double x, double y) {
     ctxt = Color(1,1,1);
     
     // alpha
-    acore = 0.9;
+    acore = 0.85;
     ascore = 1.0;
     aglow = 0.3;
-    asglow = 0.6;
+    asglow = 0.45;
 
     
     // font
-    font = Font("Helvetica",12);
-    
-    
-    TextLayout lbl;
-	lbl.clear(ColorA(0, 0, 0, 0));
-	lbl.setFont(font);
-	lbl.setColor(ctxt);
-	lbl.addCenteredLine("Text Texture");
-	Surface8u rendered = lbl.render(true, true);
-	mTexture = gl::Texture(rendered);
+    font = Font("Helvetica",15);
+    textureLabel = gl::Texture(0,0);
+    offsetLabel = 0;
 
 }
+
+
 
 
 
@@ -88,6 +85,8 @@ Node::Node(string idn, double x, double y) {
 * Updates the node.
 */
 void Node::update() {
+    
+
     
     // limit
     velocity.limit(mvelocity);
@@ -110,37 +109,32 @@ void Node::update() {
     Vec2d ppos = pos;
     pos += dm/speed;
     
-    // travelling without moving
-    bool moving = false;
-    float mf = 0;
-    if (dm.length() > 5) {
-        moving = true;
+
+    
+    // selected
+    if (selected) {
         
         // randomize
         Rand::randomize();
-        mf = dm.length() * 0.01;
-    }
-    
-    // children
-    for(vector<Node>::iterator child = children.begin(); child != children.end(); child++ ){
-        // draw
-        if (child->visible) {
+        float mf = dm.length() * 0.01;
+        
+        // children
+        for (NodeIt child = children.begin(); child != children.end(); ++child) {
             
-            // follow
-            child->translate(pos - ppos);
-            
-            // randomize
-            if (moving) {
-                child->move(Rand::randFloat(-1,1)*mf,Rand::randFloat(-1,1)*mf);
+            // move visible children
+            if ((*child)->visible) {
+                
+                // follow
+                (*child)->translate(pos - ppos);
+                
+                // randomize
+                (*child)->move(Rand::randFloat(-1,1)*mf,Rand::randFloat(-1,1)*mf);
+                
             }
             
-            
-            // update
-            child->update();
         }
-	}
+    }
 
-    
     // grow
     if (grow) {
         
@@ -149,18 +143,27 @@ void Node::update() {
         if (radius >= growradius) {
             
             // stop & activate
-            grow = false;
             this->activate();
         }
     }
+
+    
     
 }
+
+
+
 
 /**
 * Draws the node.
 */
-void Node::drawNode() {
+void Node::draw() {
     
+    
+    // blend
+    gl::enableAlphaBlending();
+    
+
     // glow
     glColor4f(cbg.r,cbg.g,cbg.b,(selected ? asglow : aglow));
     gl::drawSolidCircle(pos, radius);
@@ -168,107 +171,16 @@ void Node::drawNode() {
     // core
     glColor4f(cbg.r,cbg.g,cbg.b,(selected ? ascore : acore));
     gl::drawSolidCircle(pos, core);
-    
 
-   
-}
-void Node::drawLabel() {
     
-
-    // active
-    if (active) {
-        
-        // children
-        for(vector<Node>::iterator child = children.begin(); child != children.end(); child++ ){
-            // draw
-            if (child->visible) {
-                child->drawNode();
-                child->drawLabel();
-            }
-        }
-        
-    }
+    // unblend
+    gl::enableAlphaBlending(true);
     
     // label
-    glColor4f(ctxt.r,ctxt.g,ctxt.b,(selected ? ascore : acore));
-	gl::draw( mTexture, Vec2d(pos.x,pos.y+radius));
+    gl::color(ctxt);
+	gl::draw( textureLabel, Vec2d(pos.x+offsetLabel,pos.y+radius+5));
 
 }
-
-
-
-#pragma mark -
-#pragma mark Touch
-
-
-#pragma mark -
-#pragma mark Touch
-
-/**
- * Touch.
- */
-void Node::touchBegan(Vec2d tpos, int tid) {
-    GLog();
-    
-    // selected
-    selected = true;
-    
-    
-    // children
-    for(int i = 0; i < children.size(); i++){
-        
-        // reference
-        Node &c = children.at(i);
-        
-        // visible
-        if (c.visible) {
-            
-            // distance
-            float dc = c.pos.distance(tpos);
-            if (dc < c.radius) {
-                
-                // touched
-                FLog("tid = %d, child = %d",tid,i);
-                touched[tid] = i+1; // offset to avoid null comparison
-                
-            }
-        }
-        
-    }
-    
-}
-void Node::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
-    GLog();
-    
-    // child
-    if (touched[tid]) {
-        FLog("tid = %d, child = %d",tid,touched[tid]-1);
-        children[touched[tid]-1].moveTo(tpos);
-    }
-    // node
-    else {
-        this->moveTo(tpos);
-    }
-    
-}
-void Node::touchEnded(Vec2d tpos, int tid){
-    GLog();
-    
-    // child
-    if (touched[tid]) {
-        
-        // state
-        FLog("tid = %d, child = %d",tid,touched[tid]-1);
-    }
-    else {
-        selected = false;
-    }
-    
-    // reset
-    touched.erase(tid);
-
-}
-
 
 
 
@@ -279,21 +191,23 @@ void Node::touchEnded(Vec2d tpos, int tid){
 /**
 * Node attraction.
 */
-void Node::attract(Node &n) {
+void Node::attract(NodePtr node) {
     
+
     // distance
-    double d = pos.distance(n.pos);
+    double d = pos.distance((*node).pos);
     if (d > 0 && d < perimeter) {
         
         // force
         double s = pow(d / perimeter, 1 / ramp);
         double m = selected ? mass*2 : mass;
         double force = s * 9 * strength * (1 / (s + 1) + ((s - 3) / 4)) / d;
-        Vec2d df = (pos - n.pos) * (force/m);
+        Vec2d df = (pos - (*node).pos) * (force/m);
         
         // velocity
-        n.velocity += df;
+        (*node).velocity += df;
     }
+
 }
 
 
@@ -327,29 +241,142 @@ void Node::translate(Vec2d d) {
 /**
 * Adds a child.
 */
-void Node::addChild(Node n) {
-    GLog();
+void Node::addChild(NodePtr child) {
+    FLog();
     
     // push
-    children.push_back(n);
+    children.push_back(child);
 }
 
 /**
  * Activates the node.
  */
 void Node::activate() {
+    FLog();
+    
+    // state
+    grow = false;
     
     // children
     Rand::randomize();
-    for(vector<Node>::iterator child = children.begin(); child != children.end(); child++ ){
+    for (NodeIt child = children.begin(); child != children.end(); ++child) {
+        
         // position
-        child->moveTo(pos.x+Rand::randFloat(-radius,radius),pos.y+Rand::randFloat(-radius,radius));
+        (*child)->moveTo(pos.x+Rand::randFloat(-radius,radius),pos.y+Rand::randFloat(-radius,radius));
         
     }
+
     
-    // maxx
+    // mass
     mass = radius * radius * 0.0001f + 0.01f;
     
     // active
     active = true;
+      
+}
+
+/**
+ * Load noad.
+ */
+void Node::load() {
+    FLog();
+    
+    // state
+    loading = true;
+
+    
+}
+void Node::loaded() {
+    FLog();
+    
+    // state
+    loading = false;
+    
+
+    // field
+    growradius = min((int)children.size()*2,80);
+    growradius = 80;
+    grow = true;
+  
+}
+
+
+/**
+ * Shows/Hides the node.
+ */
+void Node::show() {
+    FLog();
+    
+    // state
+    visible = true;
+    
+}
+void Node::hide() {
+    GLog();
+    
+    // state
+    visible = false;
+    
+}
+
+
+/**
+ * Makes the node a child.
+ */
+void Node::makechild() {
+    GLog();
+    
+
+    // child
+    label = "Child";
+    core = 10;
+    radius = 10;
+    
+    // font
+    font = Font("Helvetica",12);
+
+}
+
+/**
+ * Touched.
+ */
+void Node::touched() {
+    FLog();
+    
+    // state
+    selected = true;
+    
+}
+void Node::untouched() {
+    GLog();
+    
+    // state
+    selected = false;
+    
+}
+
+
+/**
+ * Renders the label.
+ */
+void Node::renderLabel(string lbl) {
+    GLog();
+    
+ 
+    // field
+    label = lbl;
+    
+    // text
+    TextLayout tlLabel;
+	tlLabel.clear(ColorA(0, 0, 0, 0));
+	tlLabel.setFont(font);
+	tlLabel.setColor(ctxt);
+	tlLabel.addCenteredLine(label);
+	Surface8u rendered = tlLabel.render(true, true);
+	textureLabel = gl::Texture(rendered);
+    
+    // offset
+    offsetLabel = - textureLabel.getWidth() / 2.0;
+
+    
 }

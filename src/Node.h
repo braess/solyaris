@@ -11,13 +11,22 @@
 #include "cinder/Vector.h"
 #include "cinder/Color.h"
 #include "cinder/Font.h"
-#include <map>
-
-
+#include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/shared_ptr.hpp>
+#include <vector>
 
 // namespace
 using namespace std;
 using namespace ci;
+
+// declarations
+class Node;
+
+
+// typedef
+typedef boost::shared_ptr<Node> NodePtr;
+typedef std::vector<NodePtr> NodeVectorPtr;
+typedef NodeVectorPtr::iterator NodeIt;
 
 
 /**
@@ -35,31 +44,32 @@ class Node {
     
     // Sketch
     void update();
-    void drawNode();
-    void drawLabel();
-    
-    
-    // Touch
-	void touchBegan(Vec2d tpos, int tid);
-    void touchMoved(Vec2d tpos, Vec2d ppos, int tid);
-    void touchEnded(Vec2d tpos, int tid);
+    void draw();
     
     
     // Business
-    void attract(Node &n);
+    void attract(NodePtr node);
     void moveTo(double x, double y);
     void moveTo(Vec2d p);
     void move(double dx, double dy);
     void move(Vec2d d);
     void translate(Vec2d d);
-    void addChild(Node n);
+    void addChild(NodePtr child);
     void activate();
+    void load();
+    void loaded();
+    void hide();
+    void show();
+    void makechild();
+    void touched();
+    void untouched();
+    void renderLabel(string lbl);
     
     
     // Public Fields
     string nid;
     string label;
-    vector<Node> children;
+    NodeVectorPtr children;
     Vec2d pos;
     Vec2d mpos;
     float core;
@@ -71,16 +81,27 @@ class Node {
     // States
     bool selected;
     bool active;
-    bool grow;
-    bool load;
     bool visible;
+    bool grow;
+    bool loading;
     
     
-    // private 
+    
+    // private
     private:
     
-    // touched nodes
-    map<int, int> touched;
+    // Font
+    Font font;
+    gl::Texture	textureLabel;
+    float offsetLabel;
+    
+    
+    // Color
+    Color cbg;
+    Color ctxt;
+    float acore,ascore;
+    float aglow,asglow;
+
     
     // Parameters
     double perimeter;
@@ -90,15 +111,8 @@ class Node {
     double mvelocity;
     double speed;
     
-    // Color
-    Color cbg;
-    Color ctxt;
-    float acore,ascore;
-    float aglow,asglow;
-    
-    // Font
-    Font font;
-    gl::Texture	mTexture;
-    
 
 };
+
+
+

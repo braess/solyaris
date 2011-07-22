@@ -58,23 +58,31 @@ void Graph::resize(int w, int h, int d) {
  * Updates the graph.
  */
 void Graph::update() {
+
     
     // attract
     this->attract();
     
     // repulse
     this->repulse();
+
     
     // nodes
-    for(vector<Node>::iterator n = nodes.begin(); n != nodes.end(); ++n ){
-        n->move(movement.x,movement.y);
-		n->update();
-	}
+    for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
+        
+        // global movement
+        (*node)->move(movement.x,movement.y);
+		
+        // update
+        (*node)->update();
+    }
     
     // edges
     for(vector<Edge>::iterator e = edges.begin(); e != edges.end(); ++e ){
 		e->update();
 	}
+    
+
 }
 
 /**
@@ -82,27 +90,25 @@ void Graph::update() {
  */
 void Graph::draw() {
     
-    // blend
-    gl::enableAlphaBlending();
-    
     // nodes
-    for(vector<Node>::iterator n = nodes.begin(); n != nodes.end(); ++n ){
-		n->drawNode();
-	}
+    for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
+        
+        // draw if visible
+        if ((*node)->visible) {
+            (*node)->draw();
+        }
+    }
     
-    // unblend
-    gl::enableAlphaBlending(true);
-
+    /*
     
     // edges
     for(vector<Edge>::iterator e = edges.begin(); e != edges.end(); ++e ){
 		e->draw();
 	}
+     */
     
-    // label
-    for(vector<Node>::iterator n = nodes.begin(); n != nodes.end(); ++n ){
-		n->drawLabel();
-	}
+    
+
 }
 
 
@@ -128,33 +134,32 @@ void Graph::touchBegan(Vec2d tpos, int tid) {
     GLog();
     
     // nodes
-    for(int i = 0; i < nodes.size(); i++){
-        
-        // reference
-        Node &n = nodes.at(i);
+    for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
         
         // distance
-		float d = n.pos.distance(tpos);
-        if (d < n.radius) {
+		float d = (*node)->pos.distance(tpos);
+        if (d < (*node)->core) {
             
             // touched
-            FLog("tid = %d, node = %d",tid,i);
-            touched[tid] = i+1; // offset to avoid null comparison
+            FLog("tid = %d, node = ",tid);
+            touched[tid] = NodePtr(*node); 
             
             // state
-            n.touchBegan(tpos, tid);
+            touched[tid]->touched();
             
         }
-	}
+    }
+
     
 }
 void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
     GLog();
     
+
     // node
     if (touched[tid]) {
-        GLog("tid = %d, node = %d",tid,touched[tid]-1);
-        nodes[touched[tid]-1].touchMoved(tpos,ppos,tid);
+        GLog("tid = %d, node = ",tid);
+        touched[tid]->moveTo(tpos);
     }
     // graph
     else {
@@ -162,6 +167,7 @@ void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
         // movement
         movement.set(tpos-ppos);
     }
+
     
 }
 void Graph::touchEnded(Vec2d tpos, int tid){
@@ -172,8 +178,8 @@ void Graph::touchEnded(Vec2d tpos, int tid){
     if (touched[tid]) {
         
         // state
-        FLog("tid = %d, node = %d",tid,touched[tid]-1);
-        nodes[touched[tid]-1].touchEnded(tpos, tid);
+        FLog("tid = %d, node = ",tid);
+        touched[tid]->untouched();
     }
     else {
         movement.set(0,0);
@@ -181,6 +187,7 @@ void Graph::touchEnded(Vec2d tpos, int tid){
     
     // reset
     touched.erase(tid);
+
 }
 
 
@@ -194,11 +201,21 @@ void Graph::touchEnded(Vec2d tpos, int tid){
 /**
  * Adds a node.
  */
-void Graph::addNode(Node n) {
+NodePtr Graph::createNode(string nid, double x, double y) {
     FLog();
+    
 
-   // push
-   nodes.push_back(n);
+    
+    // node
+    boost::shared_ptr<Node> node(new Node(nid,x,y));
+    nodes.push_back(node);
+    
+    // node map
+    nmap.insert(make_pair(nid, nodes.size()-1));
+    
+    // return
+    return node;
+
 }
 
 /**
@@ -207,6 +224,7 @@ void Graph::addNode(Node n) {
 void Graph::addEdge(Edge e) {
     FLog();
     
+    
     // push
 	edges.push_back(e);
 }
@@ -214,87 +232,58 @@ void Graph::addEdge(Edge e) {
 /**
  * Gets a node.
  */
-Node* Graph::getNode(string nid) {
+NodePtr Graph::getNode(string nid) {
     FLog();
     
-    // search
-    for(vector<Node>::iterator n = nodes.begin(); n != nodes.end(); n++ ){
-        if (nid.compare(n->nid) == 0) {
-            return &(*n);
-        }
+    // map
+    map<string,int>::iterator it = nmap.find(nid);
+    if(it != nmap.end()) {
+        return NodePtr(nodes.at(it->second));
     }
-    return NULL;
+
+    
+    // nop
+    return NodePtr();
+
 }
 
-/**
- * Activates a node.
- */
-void Graph::activateNode(Node *n) {
-    FLog();
-    
-    // grow
-    n->grow = true;
-    
-}
+
 
 /**
 * Attraction.
 */
 void Graph::attract() {
     
+
     // nodes
-    for(vector<Node>::iterator n1 = nodes.begin(); n1 != nodes.end(); n1++ ){
+    for (NodeIt n1 = nodes.begin(); n1 != nodes.end(); ++n1) {
         
-        // attract
-		for(vector<Node>::iterator n2 = nodes.begin(); n2 != nodes.end(); n2++ ){
-            if (n1 != n2) {
-                n1->attract(*n2);
+        // others
+        for (NodeIt n2 = nodes.begin(); n2 != nodes.end(); ++n2) {
+            
+            // attract
+            if ((*n1)->active && (*n2)->active && (*n1) != (*n2)) {
+                (*n1)->attract(*n2);
             }
-		}
-	}
+        }
+    }
+
+
 }
 
 /**
  * Repulsion.
  */
 void Graph::repulse() {
-    
+    /*
     // edges
     for(vector<Edge>::iterator e = edges.begin(); e != edges.end(); e++ ){
         
         // edge
 		e->repulse();
 	}
+     */
 }
 
-
-/**
- * Test setup.
- */
-void Graph::test() {
-    DLog();
-    
-    // nodes
-    Rand::randomize();
-    for (int i = 0; i < 5; i++) {
-        this->addNode(Node("nid", Rand::randFloat(0,788),  Rand::randFloat(0,1024)));
-    }
-    
-    // edges
-    for (int i1 = 0; i1 < 5; i1++) {
-        int i2 =  Rand::randFloat(0, 5);
-        if (i1 != i2) {
-            
-            // node
-            Node &n1 = nodes.at(i1);
-            Node &n2 = nodes.at(i2);
-            
-            // edge
-            this->addEdge(Edge(n1,n2));
-            
-        }
-	}
-    
-}
 
 

@@ -17,6 +17,7 @@ using namespace std;
 using namespace ci;
 
 
+
 /**
  * Graph.
  */
@@ -41,13 +42,11 @@ class Graph {
     void touchEnded(Vec2d tpos, int tid);
     
     // Business
-    void test();
     void attract();
     void repulse();
-    void addNode(Node n);
+    NodePtr createNode(string nid, double x, double y);
     void addEdge(Edge e);
-    Node* getNode(string nid);
-    void activateNode(Node *n);
+    NodePtr getNode(string nid);
     
     
     // private
@@ -59,14 +58,15 @@ class Graph {
     int direction;
     
     // data
-    vector<Node> nodes;
+    NodeVectorPtr nodes;
+    map<string,int>nmap;
     vector<Edge> edges;
     
     // movement
     Vec2d movement;
     
     // touched nodes
-    map<int, int> touched;
+    map<int, NodePtr> touched;
     
     
 };

@@ -38,9 +38,6 @@ void IMDGApp::setup() {
 	[window bringSubviewToFront:imdgViewController.view];
     [imdgViewController loadView];
 	[imdgViewController viewWillAppear:NO];
-    
-    // check
-    console() << "MT: " << System::hasMultiTouch() << " Max points: " << System::getMaxMultiTouchPoints() << std::endl;
 
 }
 
@@ -149,49 +146,29 @@ void IMDGApp::touchesEnded( TouchEvent event ){
 #pragma mark -
 #pragma mark Business
 
-/*
- * Test.
- */
-void IMDGApp::test() {
-    DLog();
-    
-    // graph
-    graph.reset();
-    graph.test();
-    
-}
+
 
 /*
- * Adds a node.
+ * Creates a node.
  */
-void IMDGApp::addNode(Node n) {
-    DLog();
+NodePtr IMDGApp::createNode(string nid, double x, double y) {
+    GLog();
     
     // graph
-    graph.addNode(n);
+    return graph.createNode(nid,x,y);
     
 }
 
 /*
  * Gets a node.
  */
-Node* IMDGApp::getNode(string nid) {
-    DLog();
+NodePtr IMDGApp::getNode(string nid) {
+    GLog();
     
     // graph
     return graph.getNode(nid);
     
 }
 
-/*
- * Activates a node.
- */
-void IMDGApp::activateNode(Node *n) {
-    DLog();
-    
-    // graph
-    graph.activateNode(n);
-    
-}
 
 CINDER_APP_NATIVE( IMDGApp, RendererGl )
