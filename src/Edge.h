@@ -8,11 +8,22 @@
 #pragma once
 #include "Node.h"
 #include "cinder/Color.h"
+#include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/shared_ptr.hpp>
 
 
 // namespace
 using namespace std;
 using namespace ci;
+
+// declarations
+class Edge;
+
+// typedef
+typedef boost::shared_ptr<Edge> EdgePtr;
+typedef std::vector<EdgePtr> EdgeVectorPtr;
+typedef EdgeVectorPtr::iterator EdgeIt;
+
 
 /**
  * Graph Edge.
@@ -25,7 +36,7 @@ class Edge {
     
     // Edge
     Edge();
-    Edge(Node &n1, Node &n2); 
+    Edge(NodePtr n1, NodePtr n2); 
     
     // Sketch
     void update();
@@ -33,10 +44,18 @@ class Edge {
     
     // Business
     void repulse();
+    void activate();
+    void hide();
+    void show();
     
     // Public Fields
-    Node *node1;
-    Node *node2;
+    NodePtr node1;
+    NodePtr node2;
+    
+    // States
+    bool selected;
+    bool active;
+    bool visible;
     
     
     // private
@@ -48,5 +67,5 @@ class Edge {
     double damping;
     
     // color
-    ColorA stroke;
+    Color cstroke;
 };

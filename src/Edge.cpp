@@ -17,7 +17,7 @@
  */
 Edge::Edge() {
 }
-Edge::Edge(Node &n1, Node &n2) {
+Edge::Edge(NodePtr n1, NodePtr n2) {
     
     // fields
     length = 200;
@@ -25,11 +25,16 @@ Edge::Edge(Node &n1, Node &n2) {
     damping = 0.9;
     
     // nodes
-    node1 = &n1;
-    node2 = &n2;
+    node1 = n1;
+    node2 = n2;
+    
+    // state
+    selected = false;
+    active = false;
+    visible = false;
     
     // color
-    stroke = ColorA(1,1,1,0.9);
+    cstroke = ColorA(1,1,1);
 }
 
 
@@ -50,8 +55,8 @@ void Edge::update() {
 void Edge::draw() {
     
     // node
-    glColor4f(stroke.r, stroke.g, stroke.b, stroke.a);
-    gl::drawLine( node1->pos, node2->pos);
+    gl::color(cstroke);
+    gl::drawLine(node1->pos, node2->pos);
 
 
 }
@@ -72,7 +77,6 @@ void Edge::repulse() {
     diff.safeNormalize();
     diff *= length;
     
-    
     // target
     Vec2d target = node1->pos + diff;
 
@@ -82,9 +86,47 @@ void Edge::repulse() {
     force *= stiffness;
     force *= (1 - damping);
     
-    
     // update velocity
-    node2->velocity += force;
     node1->velocity += force*-1;
+    node2->velocity += force;
 
+}
+
+/**
+ * Activates the edge.
+ */
+void Edge::activate() {
+    FLog();
+    
+    // state
+    active = true;
+    
+}
+
+
+/**
+ * Shows/Hides the edge.
+ */
+void Edge::show() {
+    FLog();
+    
+    // show it
+    if (! visible) {
+        
+        // check if active
+        if (node1->active && node2->active) {
+            this->activate();
+        }
+    }
+    
+    // state
+    visible = true;
+    
+}
+void Edge::hide() {
+    GLog();
+    
+    // state
+    visible = false;
+    
 }

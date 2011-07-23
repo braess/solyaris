@@ -147,16 +147,14 @@ void IMDGApp::touchesEnded( TouchEvent event ){
 #pragma mark Business
 
 
-
 /*
  * Creates a node.
  */
-NodePtr IMDGApp::createNode(string nid, double x, double y) {
+NodePtr IMDGApp::createNode(string nid, string type, double x, double y) {
     GLog();
     
     // graph
-    return graph.createNode(nid,x,y);
-    
+    return graph.createNode(nid,type,x,y);
 }
 
 /*
@@ -167,8 +165,28 @@ NodePtr IMDGApp::getNode(string nid) {
     
     // graph
     return graph.getNode(nid);
-    
 }
+
+/*
+ * Creates an edge.
+ */
+EdgePtr IMDGApp::createEdge(string eid, NodePtr n1, NodePtr n2) {
+    GLog();
+    
+    // graph
+    return graph.createEdge(eid,n1,n2);
+}
+
+/*
+ * Gets an edge.
+ */
+EdgePtr IMDGApp::getEdge(string eid) {
+    GLog();
+    
+    // graph
+    return graph.getEdge(eid);
+}
+
 
 
 CINDER_APP_NATIVE( IMDGApp, RendererGl )

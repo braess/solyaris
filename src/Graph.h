@@ -44,9 +44,10 @@ class Graph {
     // Business
     void attract();
     void repulse();
-    NodePtr createNode(string nid, double x, double y);
-    void addEdge(Edge e);
+    NodePtr createNode(string nid, string type, double x, double y);
     NodePtr getNode(string nid);
+    EdgePtr createEdge(string eid, NodePtr n1, NodePtr n2);
+    EdgePtr getEdge(string eid);
     
     
     // private
@@ -59,10 +60,14 @@ class Graph {
     
     // data
     NodeVectorPtr nodes;
+    EdgeVectorPtr edges;
+    
+    // maps
     map<string,int>nmap;
-    vector<Edge> edges;
+    map<string,int>emap;
     
     // movement
+    bool moved;
     Vec2d movement;
     
     // touched nodes

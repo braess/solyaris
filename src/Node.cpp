@@ -27,6 +27,8 @@ Node::Node(string idn, double x, double y) {
     
     // node
     nid = idn;
+    parent = NodePtr();
+    self = NodePtr(this);
     
     
     // fields
@@ -46,11 +48,11 @@ Node::Node(string idn, double x, double y) {
     active = false;
     grow = false;
     loading = false;
-    visible = true;
+    visible = false;
     
     // radius / mass
-    core = 20;
-    radius = 30;
+    core = 15;
+    radius = 15;
     mass = radius * radius * 0.0001f + 0.01f;
     
     // velocity
@@ -68,12 +70,44 @@ Node::Node(string idn, double x, double y) {
 
     
     // font
-    font = Font("Helvetica",15);
+    font = Font("Helvetica",12);
     textureLabel = gl::Texture(0,0);
     offsetLabel = 0;
 
 }
 
+/**
+ * Node movie.
+ */
+NodeMovie::NodeMovie(): Node::Node()  {    
+}
+NodeMovie::NodeMovie(string idn, double x, double y): Node::Node(idn, x, y) {
+    
+    // color (187,176,130)
+    cbg = Color(187.0/255.0,176.0/255.0,130.0/255.0);
+}
+
+/**
+ * Node actor.
+ */
+NodeActor::NodeActor(): Node::Node()  {    
+}
+NodeActor::NodeActor(string idn, double x, double y): Node::Node(idn, x, y) {
+    
+    // color (130,153,147)
+    cbg = Color(130.0/255.0,153.0/255.0,147.0/255.0);
+}
+
+/**
+ * Node director.
+ */
+NodeDirector::NodeDirector(): Node::Node()  {    
+}
+NodeDirector::NodeDirector(string idn, double x, double y): Node::Node(idn, x, y) {
+    
+    // color (94,118,117)
+    cbg = Color(94.0/255.0,118.0/255.0,117.0/255.0);
+}
 
 
 
@@ -108,32 +142,6 @@ void Node::update() {
     Vec2d dm = mpos - pos;
     Vec2d ppos = pos;
     pos += dm/speed;
-    
-
-    
-    // selected
-    if (selected) {
-        
-        // randomize
-        Rand::randomize();
-        float mf = dm.length() * 0.01;
-        
-        // children
-        for (NodeIt child = children.begin(); child != children.end(); ++child) {
-            
-            // move visible children
-            if ((*child)->visible) {
-                
-                // follow
-                (*child)->translate(pos - ppos);
-                
-                // randomize
-                (*child)->move(Rand::randFloat(-1,1)*mf,Rand::randFloat(-1,1)*mf);
-                
-            }
-            
-        }
-    }
 
     // grow
     if (grow) {
@@ -146,6 +154,32 @@ void Node::update() {
             this->activate();
         }
     }
+    
+    // active
+    if (active && ! moved) {
+        
+        // factor
+        float mf = (dm.length() > 5) ? dm.length() * 0.01 : 0;
+        
+        // children
+        for (NodeIt child = children.begin(); child != children.end(); ++child) {
+            
+            // move visible children
+            if ((*child)->visible && (*child)->parent == self) {
+                
+                // follow
+                (*child)->translate(pos - ppos);
+                
+                // randomize
+                (*child)->move(Rand::randFloat(-1,1)*mf,Rand::randFloat(-1,1)*mf);
+                
+            }
+            
+        }
+    }
+    
+    // reset
+    moved = false;
 
     
     
@@ -189,17 +223,18 @@ void Node::draw() {
 #pragma mark Business
 
 /**
-* Node attraction.
+* Node repulsion.
 */
 void Node::attract(NodePtr node) {
     
 
     // distance
     double d = pos.distance((*node).pos);
-    if (d > 0 && d < perimeter) {
+    double p = active ? perimeter : (2*radius);
+    if (d > 0 && d < p) {
         
         // force
-        double s = pow(d / perimeter, 1 / ramp);
+        double s = pow(d / p, 1 / ramp);
         double m = selected ? mass*2 : mass;
         double force = s * 9 * strength * (1 / (s + 1) + ((s - 3) / 4)) / d;
         Vec2d df = (pos - (*node).pos) * (force/m);
@@ -215,10 +250,12 @@ void Node::attract(NodePtr node) {
  * Move.
  */
 void Node::move(double dx, double dy) {
+    moved = true;
     mpos.x += dx;
     mpos.y += dy;
 }
 void Node::move(Vec2d d) {
+    moved = true;
     mpos += d;
 }
 void Node::moveTo(double x, double y) {
@@ -258,11 +295,31 @@ void Node::activate() {
     grow = false;
     
     // children
+    int nb = 10;
     Rand::randomize();
     for (NodeIt child = children.begin(); child != children.end(); ++child) {
         
-        // position
-        (*child)->moveTo(pos.x+Rand::randFloat(-radius,radius),pos.y+Rand::randFloat(-radius,radius));
+        // parent
+        if ((*child)->parent) {
+            
+            // unhide
+            (*child)->show(false);
+            
+        }
+        // adopt child
+        else {
+            
+            // adopt child
+            (*child)->parent = NodePtr(this);
+            
+            // show
+            if (nb > 0) {
+                (*child)->show(true);
+                nb--;
+            }
+        }
+        
+        
         
     }
 
@@ -282,7 +339,16 @@ void Node::load() {
     FLog();
     
     // state
+    visible = true;
     loading = true;
+    
+    // radius
+    radius = 40;
+    core = 20;
+    
+    // font
+    font = Font("Helvetica",15);
+    this->renderLabel(label);
 
     
 }
@@ -294,8 +360,7 @@ void Node::loaded() {
     
 
     // field
-    growradius = min((int)children.size()*2,80);
-    growradius = 80;
+    growradius = min((int)children.size()*3,150);
     grow = true;
   
 }
@@ -304,8 +369,26 @@ void Node::loaded() {
 /**
  * Shows/Hides the node.
  */
-void Node::show() {
+void Node::show(bool animate) {
     FLog();
+    
+    // show it
+    if (! visible) {
+        
+        // radius & position
+        float r = (*parent).radius * 0.75;
+        Vec2d p = Vec2d((*parent).pos.x+Rand::randFloat(-r,r),(*parent).pos.y+Rand::randFloat(-r,r));
+        
+        // animate
+        if (animate) {
+            this->moveTo(p);
+        }
+        // set position
+        else {
+            this->pos.set(p);
+            this->mpos.set(p);
+        }
+    }
     
     // state
     visible = true;
@@ -320,22 +403,6 @@ void Node::hide() {
 }
 
 
-/**
- * Makes the node a child.
- */
-void Node::makechild() {
-    GLog();
-    
-
-    // child
-    label = "Child";
-    core = 10;
-    radius = 10;
-    
-    // font
-    font = Font("Helvetica",12);
-
-}
 
 /**
  * Touched.

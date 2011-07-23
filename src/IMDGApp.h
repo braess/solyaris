@@ -44,8 +44,10 @@ class IMDGApp : public AppNative {
 	void touchesEnded( TouchEvent event );
     
     // Business
-    NodePtr createNode(string nid, double x, double y);
+    NodePtr createNode(string nid, string type, double x, double y);
     NodePtr getNode(string nid);
+    EdgePtr createEdge(string eid, NodePtr n1, NodePtr n2);
+    EdgePtr getEdge(string eid);
     
     
     // Fields

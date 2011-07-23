@@ -13,7 +13,7 @@
 #include "cinder/Font.h"
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/shared_ptr.hpp>
-#include <vector>
+
 
 // namespace
 using namespace std;
@@ -21,7 +21,6 @@ using namespace ci;
 
 // declarations
 class Node;
-
 
 // typedef
 typedef boost::shared_ptr<Node> NodePtr;
@@ -59,8 +58,7 @@ class Node {
     void load();
     void loaded();
     void hide();
-    void show();
-    void makechild();
+    void show(bool animate);
     void touched();
     void untouched();
     void renderLabel(string lbl);
@@ -69,6 +67,7 @@ class Node {
     // Public Fields
     string nid;
     string label;
+    NodePtr parent;
     NodeVectorPtr children;
     Vec2d pos;
     Vec2d mpos;
@@ -84,11 +83,20 @@ class Node {
     bool visible;
     bool grow;
     bool loading;
+    bool moved;
     
+    // protected
+    protected:
+    
+    // Color
+    Color cbg;
     
     
     // private
     private:
+    
+    // Reference
+    NodePtr self;
     
     // Font
     Font font;
@@ -97,7 +105,6 @@ class Node {
     
     
     // Color
-    Color cbg;
     Color ctxt;
     float acore,ascore;
     float aglow,asglow;
@@ -112,6 +119,33 @@ class Node {
     double speed;
     
 
+};
+class NodeMovie: public Node {
+    
+    // public
+    public:
+    
+    // Node
+    NodeMovie();
+    NodeMovie(string idn, double x, double y);
+};
+class NodeActor: public Node {
+    
+    // public
+    public:
+    
+    // Node
+    NodeActor();
+    NodeActor(string idn, double x, double y);
+};
+class NodeDirector: public Node {
+    
+    // public
+    public:
+    
+    // Node
+    NodeDirector();
+    NodeDirector(string idn, double x, double y);
 };
 
 

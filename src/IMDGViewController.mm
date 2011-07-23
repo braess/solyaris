@@ -17,6 +17,7 @@
  */
 @interface IMDGViewController (HelperStack)
 - (NSString*)makeNodeId:(NSNumber*)nid type:(NSString*)type;
+- (NSString*)makeEdgeId:(NSString*)pid to:(NSString*)cid;
 @end
 
 /**
@@ -298,33 +299,32 @@
         // actors
         NSSortDescriptor *asorter = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
         NSArray *actors = [[movie.actors allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:asorter]];
-        //[asorter release];
+        [asorter release];
         
         // create nodes
-        int v = 10;
         for (MovieActor *mactor in actors) {
             
             // child
             NSString *cid = [self makeNodeId:mactor.actor.aid type:typeActor];
             NodePtr child = imdgApp->getNode([cid UTF8String]);
-            if (child != NULL) {
-                 child->show();
-            }
-            else {
-                
+            bool existing = true;
+            if (child == NULL) {
+                existing = false;
+                 
                 // new child
-                child = imdgApp->createNode([cid UTF8String], node->pos.x, node->pos.y);
-                child->makechild();
+                child = imdgApp->createNode([cid UTF8String],[typeActor UTF8String], node->pos.x, node->pos.y);
                 child->renderLabel([mactor.actor.name UTF8String]);
-                if (v <= 0) {
-                    child->hide();
-                }
-                v--;
-                
             }
             
             // add to node
             node->addChild(child);
+            
+            // create edge
+            NSString *eid = [self makeEdgeId:nid to:cid];
+            EdgePtr edge = imdgApp->createEdge([eid UTF8String],node,child);
+            if (existing) {
+                edge->show();
+            }
             
         }
         
@@ -332,8 +332,6 @@
         node->loaded();
         
     }
-    
-
 
 }
 
@@ -386,7 +384,7 @@
 
     // add node
     NSString *nid = [self makeNodeId:result.rid type:type];
-    NodePtr node = imdgApp->createNode([nid UTF8String], arc4random() % 768, arc4random() % 768);
+    NodePtr node = imdgApp->createNode([nid UTF8String],[type UTF8String], arc4random() % 768, arc4random() % 768);
     node->load();
     
 
@@ -429,10 +427,18 @@
  * Node id.
  */
 - (NSString*)makeNodeId:(NSNumber*)nid type:(NSString*)type {
-
     
     // make it so
     return [NSString stringWithFormat:@"%@_%i",type,[nid intValue]];
+}
+
+/* 
+ * Edge id.
+ */
+- (NSString*)makeEdgeId:(NSString*)pid to:(NSString *)cid {
+    
+    // theres an edge
+    return [NSString stringWithFormat:@"%@_to_%i",pid,cid];
 }
 
 
