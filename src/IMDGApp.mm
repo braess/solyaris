@@ -115,7 +115,23 @@ void IMDGApp::touchesBegan( TouchEvent event ) {
     // touch
     for( vector<TouchEvent::Touch>::const_iterator touch = event.getTouches().begin(); touch != event.getTouches().end(); ++touch ) {
         
-        // graph
+        // taps
+        int taps = [(UITouch*)touch->getNative() tapCount];
+        
+        // double tap
+        if (taps == 2) {
+          
+            // tap graph
+            NodePtr node = graph.doubleTap(touch->getPos(),touch->getId());
+            if (node != NULL) {
+                
+                // tap controller
+                NSString *nid = [NSString stringWithCString:node->nid.c_str() encoding:[NSString defaultCStringEncoding]];
+                [imdgViewController tappedNode:nid];
+            }
+        }
+        
+        // touch
         graph.touchBegan(touch->getPos(),touch->getId());
     }
 }

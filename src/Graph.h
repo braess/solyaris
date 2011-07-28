@@ -41,6 +41,9 @@ class Graph {
     void touchMoved(Vec2d tpos, Vec2d ppos, int tid);
     void touchEnded(Vec2d tpos, int tid);
     
+    // Tap
+    NodePtr doubleTap(Vec2d tpos, int tid);
+    
     // Business
     void attract();
     void repulse();
@@ -52,6 +55,9 @@ class Graph {
     
     // private
     private:
+    
+    // state
+    bool clear;
     
     // size
     int width;
@@ -67,7 +73,6 @@ class Graph {
     map<string,int>emap;
     
     // movement
-    bool moved;
     Vec2d movement;
     
     // touched nodes

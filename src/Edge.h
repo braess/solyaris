@@ -44,22 +44,23 @@ class Edge {
     
     // Business
     void repulse();
-    void activate();
     void hide();
     void show();
+    bool isActive();
+    bool isVisible();
+    void dealloc();
     
     // Public Fields
     NodePtr node1;
     NodePtr node2;
     
-    // States
-    bool selected;
-    bool active;
-    bool visible;
-    
     
     // private
     private:
+    
+    // States
+    bool active;
+    bool visible;
     
     // parameters
     double length;

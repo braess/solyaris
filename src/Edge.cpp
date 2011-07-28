@@ -20,7 +20,7 @@ Edge::Edge() {
 Edge::Edge(NodePtr n1, NodePtr n2) {
     
     // fields
-    length = 200;
+    length = 400;
     stiffness = 0.6;
     damping = 0.9;
     
@@ -29,7 +29,6 @@ Edge::Edge(NodePtr n1, NodePtr n2) {
     node2 = n2;
     
     // state
-    selected = false;
     active = false;
     visible = false;
     
@@ -92,30 +91,22 @@ void Edge::repulse() {
 
 }
 
-/**
- * Activates the edge.
- */
-void Edge::activate() {
-    FLog();
-    
-    // state
-    active = true;
-    
-}
 
 
 /**
  * Shows/Hides the edge.
  */
 void Edge::show() {
-    FLog();
+    GLog();
     
     // show it
     if (! visible) {
         
         // check if active
-        if (node1->active && node2->active) {
-            this->activate();
+        if (node1->isActive() && node2->isActive()) {
+            
+            // state
+            active = true;
         }
     }
     
@@ -129,4 +120,30 @@ void Edge::hide() {
     // state
     visible = false;
     
+}
+
+/**
+ * States.
+ */
+bool Edge::isActive() {
+    return active;
+}
+bool Edge::isVisible() {
+    return visible || ( (node1->isActive() || node1->isSelected()) & (node2->isActive() || node2->isSelected()));
+}
+
+
+
+#pragma mark -
+#pragma mark Memory management
+
+/*
+ * Deallocates used memory.
+ */
+void Edge::dealloc() {
+    GLog();
+    
+    // reset
+    node1.reset();
+    node2.reset();
 }

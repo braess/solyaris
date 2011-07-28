@@ -53,5 +53,6 @@ CPP_CLASS(IMDGApp);
 
 // Business Methods
 - (void)search:(NSString*)q type:(NSString*)t;
+- (void)tappedNode:(NSString*)nid;
 
 @end

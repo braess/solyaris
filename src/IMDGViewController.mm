@@ -341,6 +341,53 @@
 - (void)loadedActor:(Actor*)actor {
     DLog();
     
+    // add node
+    NSString *nid = [self makeNodeId:actor.aid type:typeActor];
+    NodePtr node = imdgApp->getNode([nid UTF8String]);
+    
+    // check
+    if (node != NULL) {
+        
+        // properties
+        node->renderLabel([actor.name UTF8String]);
+        
+        // movies
+        NSSortDescriptor *msorter = [[NSSortDescriptor alloc] initWithKey:@"year" ascending:NO];
+        NSArray *movies = [[actor.movies allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:msorter]];
+        [msorter release];
+        
+        // create nodes
+        for (MovieActor *mactor in movies) {
+            
+            // child
+            NSString *cid = [self makeNodeId:mactor.movie.mid type:typeMovie];
+            NodePtr child = imdgApp->getNode([cid UTF8String]);
+            bool existing = true;
+            if (child == NULL) {
+                existing = false;
+                
+                // new child
+                child = imdgApp->createNode([cid UTF8String],[typeMovie UTF8String], node->pos.x, node->pos.y);
+                child->renderLabel([mactor.movie.title UTF8String]);
+            }
+            
+            // add to node
+            node->addChild(child);
+            
+            // create edge
+            NSString *eid = [self makeEdgeId:nid to:cid];
+            EdgePtr edge = imdgApp->createEdge([eid UTF8String],node,child);
+            if (existing) {
+                edge->show();
+            }
+            
+        }
+        
+        // loaded
+        node->loaded();
+        
+    }
+    
 }
 
 /*
@@ -384,7 +431,10 @@
 
     // add node
     NSString *nid = [self makeNodeId:result.rid type:type];
-    NodePtr node = imdgApp->createNode([nid UTF8String],[type UTF8String], arc4random() % 768, arc4random() % 768);
+    NodePtr node = imdgApp->getNode([nid UTF8String]);
+    if (node == NULL) {
+        node = imdgApp->createNode([nid UTF8String],[type UTF8String], arc4random() % 768, arc4random() % 768);
+    }
     node->load();
     
 
@@ -502,26 +552,13 @@
     [imdb search:s type:t];
 
     
-    
-    /*
-    // add node
-    NSString *nid = [self makeNodeId:0 type:@"movie"];
-    NodePtr node = imdgApp->createNode([nid UTF8String], arc4random() % 768, arc4random() % 768);
-    node->load = true;
-    
-    NodePtr cnode = imdgApp->getNode([[self makeNodeId:0 type:@"movie"] UTF8String]);
-    std::cout<<"node"<<cnode<<endl;
-    
-    
-    // test
-    for (int i = 0; i < 10; i++) {
-        NSString *cid = [NSString stringWithFormat:@"actor_%i",i];
-        NodePtr child = imdgApp->createNode([cid UTF8String], arc4random() % 768, arc4random() % 768);
-        child->makechild();
-        node->addChild(child);
-    }
-     */
+}
 
+/**
+ * Selected a node.
+ */
+- (void)tappedNode:(NSString*)nid {
+    DLog();
     
 }
 

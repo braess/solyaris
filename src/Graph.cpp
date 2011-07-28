@@ -22,14 +22,15 @@ Graph::Graph() {
 }
 Graph::Graph(int w, int h, int d) {
     
+    // state
+    clear = true;
+    
     // fields
     width = w;
     height = h;
     direction = d;
     
-    
     // movement
-    moved = false;
     movement.set(0,0);
 }
 
@@ -60,36 +61,58 @@ void Graph::resize(int w, int h, int d) {
  */
 void Graph::update() {
     
-    // randomize
-    Rand::randomize();
+    // check
+    if (! clear) {
     
-    // attract
-    this->attract();
-    
-    // repulse
-    this->repulse();
-
-    
-    // nodes
-    for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
+        // randomize
+        Rand::randomize();
         
-        // global movement
-        if (moved) {
-            (*node)->move(movement.x,movement.y);
+        // attract
+        this->attract();
+        
+        // repulse
+        this->repulse();
+
+        
+        // nodes
+        for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
+            
+            // active
+            if ((*node)->isActive()) {
+                
+                // global movement
+                (*node)->move(movement.x,movement.y);
+                
+                // update
+                (*node)->update();
+                
+                // node movement
+                Vec2d ndist = (*node)->mpos - (*node)->pos;
+                float nmov = (ndist.length() > 1) ? ndist.length() * 0.01 : 0;
+                
+                // children
+                for (NodeIt child = (*node)->children.begin(); child != (*node)->children.end(); ++child) {
+
+                    // move visible children
+                    if (! (*child)->isActive() && (*child)->isVisible() && (*child)->parent == (*node)) {
+                        
+                        // follow
+                        (*child)->translate((*node)->pos - (*node)->ppos);
+                        
+                        // randomize
+                        (*child)->move(Rand::randFloat(-1,1)*nmov,Rand::randFloat(-1,1)*nmov);
+                        
+                        // update
+                        (*child)->update();
+                        
+                    }
+                    
+                }
+
+            }
+            
         }
-		
-        // update
-        (*node)->update();
     }
-    
-    /* nothing to update?
-    // edges
-    for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
-		
-        // update
-        (*edge)->update();
-    }
-     */
     
 
 }
@@ -99,21 +122,25 @@ void Graph::update() {
  */
 void Graph::draw() {
     
-    // nodes
-    for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
+    // check
+    if (! clear) {
         
-        // draw if visible
-        if ((*node)->visible) {
-            (*node)->draw();
+        // edges
+        for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
+            
+            // draw if visible
+            if ((*edge)->isVisible()) {
+                (*edge)->draw();
+            }
         }
-    }
-    
-    // edges
-    for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
         
-        // draw if visible
-        if ((*edge)->visible) {
-            (*edge)->draw();
+        // nodes
+        for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
+            
+            // draw if visible
+            if ((*node)->isVisible()) {
+                (*node)->draw();
+            }
         }
     }
 
@@ -125,18 +152,24 @@ void Graph::draw() {
  */
 void Graph::reset() {
     
+    // clear
+    clear = true;
+    
+    // deallocate
+    for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
+        (*edge)->dealloc();
+    }
+    for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
+        (*node)->dealloc();
+    }
+    
+    // clear
+    nodes.clear();
+    edges.clear(); // pointer being freed was not allocated
+    
     // reset maps
     nmap.clear();
     emap.clear();
-    
-    // clear
-    for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
-        
-        // null
-        (*edge)->hide();
-    }
-    nodes.clear();
-    //edges.clear(); // pointer being freed was not allocated
     
 }
 
@@ -159,7 +192,7 @@ void Graph::touchBegan(Vec2d tpos, int tid) {
         if (d < (*node)->core) {
             
             // touched
-            FLog("tid = %d, node = ",tid);
+            GLog("tid = %d, node = ",tid);
             touched[tid] = NodePtr(*node); 
             
             // state
@@ -185,7 +218,6 @@ void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
     else {
         
         // movement
-        moved = true;
         movement.set(tpos-ppos);
     }
     
@@ -197,12 +229,11 @@ void Graph::touchEnded(Vec2d tpos, int tid){
     if (touched[tid]) {
         
         // state
-        FLog("tid = %d, node = ",tid);
+        GLog("tid = %d, node = ",tid);
         touched[tid]->untouched();
     }
     // graph
     else {
-        moved = false;
         movement.set(0,0);
     }
     
@@ -212,6 +243,35 @@ void Graph::touchEnded(Vec2d tpos, int tid){
 }
 
 
+#pragma mark -
+#pragma mark Taps
+
+/**
+ * Tapped.
+ */
+NodePtr Graph::doubleTap(Vec2d tpos, int tid) {
+    FLog();
+    
+    // nodes
+    for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
+        // distance
+        float d = (*node)->pos.distance(tpos);
+        if (d < (*node)->core) {
+            
+            // tapped
+            FLog("tid = %d, node = ",tid);
+            (*node)->tapped();
+            
+            // return
+            return (*node);
+                            
+        }
+    }
+    
+    // nop
+    return NodePtr();
+    
+}
 
 
 
@@ -223,7 +283,10 @@ void Graph::touchEnded(Vec2d tpos, int tid){
  * Creates a node.
  */
 NodePtr Graph::createNode(string nid, string type, double x, double y) {
-    FLog();
+    GLog();
+    
+    // state
+    clear = false;
     
     // node map
     nmap.insert(make_pair(nid, nodes.size()));
@@ -256,7 +319,7 @@ NodePtr Graph::createNode(string nid, string type, double x, double y) {
  * Gets a node.
  */
 NodePtr Graph::getNode(string nid) {
-    FLog();
+    GLog();
     
     // find the key
     map<string,int>::iterator it = nmap.find(nid);
@@ -273,7 +336,7 @@ NodePtr Graph::getNode(string nid) {
  * Creates an edge.
  */
 EdgePtr Graph::createEdge(string eid, NodePtr n1, NodePtr n2) {
-    FLog();
+    GLog();
     
     // node
     boost::shared_ptr<Edge> edge(new Edge(n1,n2));
@@ -290,7 +353,7 @@ EdgePtr Graph::createEdge(string eid, NodePtr n1, NodePtr n2) {
  * Gets an edge.
  */
 EdgePtr Graph::getEdge(string eid) {
-    FLog();
+    GLog();
     
     // find the key
     map<string,int>::iterator it = emap.find(eid);
@@ -313,18 +376,18 @@ void Graph::attract() {
         
         // attract others
         for (NodeIt n2 = nodes.begin(); n2 != nodes.end(); ++n2) {
-            if ((*n1)->active && (*n2)->active && (*n1) != (*n2)) {
+            if ((*n1)->isActive() && (*n2)->isActive() && (*n1) != (*n2)) {
                 (*n1)->attract(*n2);
             }
         }
         
         // children
-        if ((*n1)->active) {
+        if ((*n1)->isActive()) {
             
             // brothers & sisters
             for (NodeIt c1 = (*n1)->children.begin(); c1 != (*n1)->children.end(); ++c1) {
                 for (NodeIt c2 = (*n1)->children.begin(); c2 != (*n1)->children.end(); ++c2) {
-                    if ((*c1)->visible && (*c2)->visible && (*c1) != (*c2)) {
+                    if ((*c1)->isVisible() && (*c2)->isVisible() && (*c1) != (*c2)) {
                         (*c1)->attract(*c2);
                     }
                 }
@@ -344,7 +407,7 @@ void Graph::repulse() {
     for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
         
         // active
-        if ((*edge)->active) {
+        if ((*edge)->isActive()) {
             (*edge)->repulse();
         }
     }

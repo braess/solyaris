@@ -37,6 +37,8 @@
 - (Movie*)cachedMovie:(NSNumber*)mid;
 - (Actor*)cachedActor:(NSNumber*)aid;
 - (Director*)cachedDirector:(NSNumber*)did;
+- (MovieActor*)cachedMovieActor:(NSNumber*)mid actor:(NSNumber*)aid;
+- (MovieDirector*)cachedMovieDirector:(NSNumber*)mid director:(NSNumber*)did;
 @end
 
 
@@ -381,6 +383,77 @@ NSString* STORE = @"IMDG.sqlite";
 }
 
 
+
+/*
+ * Cached movie actor.
+ */
+- (MovieActor*)cachedMovieActor:(NSNumber*)mid actor:(NSNumber*)aid {
+    FLog();
+    
+    // context
+    NSManagedObjectContext *moc = [self managedObjectContext];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"MovieActor" inManagedObjectContext:moc];
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    [request setEntity:entityDescription];
+    
+    // predicate
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(mid = %@ && aid = %@)", mid, aid];
+    [request setPredicate:predicate];
+    
+    // limit
+    [request setFetchLimit:1];
+    
+    
+    // fetch
+    NSError *error = nil;
+    NSArray *array = [moc executeFetchRequest:request error:&error];
+    
+    // result
+    MovieActor *mactor = NULL;
+    if (array != nil && [array count] > 0) {
+        mactor = (MovieActor*) [array objectAtIndex:0];
+    }
+    
+    // return
+    return mactor;
+}
+
+
+/*
+ * Cached movie director.
+ */
+- (MovieDirector*)cachedMovieDirector:(NSNumber*)mid director:(NSNumber*)did {
+    FLog();
+    
+    // context
+    NSManagedObjectContext *moc = [self managedObjectContext];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"MovieDirector" inManagedObjectContext:moc];
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    [request setEntity:entityDescription];
+    
+    // predicate
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(mid = %@ && did = %@)", mid, did];
+    [request setPredicate:predicate];
+    
+    // limit
+    [request setFetchLimit:1];
+    
+    
+    // fetch
+    NSError *error = nil;
+    NSArray *array = [moc executeFetchRequest:request error:&error];
+    
+    // result
+    MovieDirector *mdirector = NULL;
+    if (array != nil && [array count] > 0) {
+        mdirector = (MovieDirector*) [array objectAtIndex:0];
+    }
+    
+    // return
+    return mdirector;
+}
+
+
 #pragma mark -
 #pragma mark Query
 
@@ -513,8 +586,12 @@ NSString* STORE = @"IMDG.sqlite";
 
         
         // MovieDirector
-        MovieDirector *mdirector = (MovieDirector*)[NSEntityDescription insertNewObjectForEntityForName:@"MovieDirector" inManagedObjectContext:managedObjectContext];
-        mdirector.addition = [ddirector objectForKey:@"addition"];
+        MovieDirector *mdirector = [self cachedMovieDirector:mid director:did];
+        if (mdirector == NULL) {
+            mdirector = (MovieDirector*)[NSEntityDescription insertNewObjectForEntityForName:@"MovieDirector" inManagedObjectContext:managedObjectContext];
+            mdirector.addition = [ddirector objectForKey:@"addition"];
+            mdirector.year = movie.year;
+        }
         mdirector.director = director;
         
         // add
@@ -524,7 +601,6 @@ NSString* STORE = @"IMDG.sqlite";
     // actors
     NSArray *actors = [djson objectForKey:@"actors"];
     for (NSDictionary *dactor in actors)	{
-        
         
         // Director
         NSNumber *aid = [nf numberFromString:[dactor objectForKey:@"aid"]];
@@ -536,13 +612,21 @@ NSString* STORE = @"IMDG.sqlite";
         }
         
         // MovieActor
-        MovieActor *mactor = (MovieActor*)[NSEntityDescription insertNewObjectForEntityForName:@"MovieActor" inManagedObjectContext:managedObjectContext];
-        mactor.character = [dactor objectForKey:@"character"];
-        mactor.order = [nf numberFromString:[dactor objectForKey:@"order"]];
+        MovieActor *mactor = [self cachedMovieActor:mid actor:aid];
+        if (mactor == NULL) {
+            mactor = (MovieActor*)[NSEntityDescription insertNewObjectForEntityForName:@"MovieActor" inManagedObjectContext:managedObjectContext];
+            mactor.character = [dactor objectForKey:@"character"];
+            mactor.order = [nf numberFromString:[dactor objectForKey:@"order"]];
+            mactor.year = movie.year;
+            mactor.mid = mid;
+            mactor.aid = aid;
+            FLog("set");
+        }
         mactor.actor = actor;
         
         // add
         [movie addActorsObject:mactor];
+
     }
     
     // loaded
@@ -624,12 +708,18 @@ NSString* STORE = @"IMDG.sqlite";
             movie.year = [dmovie objectForKey:@"year"];
         }
         
-        
         // MovieActor
-        MovieActor *mactor = (MovieActor*)[NSEntityDescription insertNewObjectForEntityForName:@"MovieActor" inManagedObjectContext:managedObjectContext];
+        MovieActor *mactor = [self cachedMovieActor:mid actor:aid];
+        if (mactor == NULL) {
+            mactor = (MovieActor*)[NSEntityDescription insertNewObjectForEntityForName:@"MovieActor" inManagedObjectContext:managedObjectContext];
+            mactor.character = [dmovie objectForKey:@"character"];
+            mactor.order = [nf numberFromString:[dmovie objectForKey:@"order"]];
+            mactor.year = movie.year;
+            mactor.mid = mid;
+            mactor.aid = aid;
+        }
         mactor.movie = movie;
-        mactor.character = [dmovie objectForKey:@"character"];
-        mactor.order = [nf numberFromString:[dmovie objectForKey:@"order"]];
+        
         
         // add
         [actor addMoviesObject:mactor];
@@ -713,9 +803,13 @@ NSString* STORE = @"IMDG.sqlite";
             movie.year = [dmovie objectForKey:@"year"];
         }
         
-        
         // MovieDirector
-        MovieDirector *mdirector = (MovieDirector*)[NSEntityDescription insertNewObjectForEntityForName:@"MovieDirector" inManagedObjectContext:managedObjectContext];
+        MovieDirector *mdirector = [self cachedMovieDirector:mid director:did];
+        if (mdirector == NULL) {
+            mdirector = (MovieDirector*)[NSEntityDescription insertNewObjectForEntityForName:@"MovieDirector" inManagedObjectContext:managedObjectContext];
+            mdirector.addition = [dmovie objectForKey:@"addition"];
+            mdirector.year = movie.year;
+        }
         mdirector.movie = movie;
         
         // add
@@ -871,6 +965,22 @@ NSString* STORE = @"IMDG.sqlite";
 	}
 	
 	
+}
+
+
+
+#pragma mark -
+#pragma mark Memory management
+
+
+/*
+ * Deallocates used memory.
+ */
+- (void)dealloc {
+    GLog();
+    
+    // super
+    [super dealloc];
 }
 
 

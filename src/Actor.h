@@ -2,7 +2,7 @@
 //  Actor.h
 //  IMDG
 //
-//  Created by CNPP on 21.7.2011.
+//  Created by CNPP on 28.7.2011.
 //  Copyright (c) 2011 Beat Raess. All rights reserved.
 //
 
@@ -15,8 +15,8 @@
 @private
 }
 @property (nonatomic, retain) NSNumber * loaded;
-@property (nonatomic, retain) NSNumber * aid;
 @property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSNumber * aid;
 @property (nonatomic, retain) NSSet* movies;
 
 @end

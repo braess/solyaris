@@ -28,7 +28,7 @@ Node::Node(string idn, double x, double y) {
     // node
     nid = idn;
     parent = NodePtr();
-    self = NodePtr(this);
+    label = "";
     
     
     // fields
@@ -40,8 +40,9 @@ Node::Node(string idn, double x, double y) {
     speed = 45;
     
     // position
-    mpos.set(x,y);
     pos.set(x,y);
+    ppos.set(x,y);
+    mpos.set(x,y);
     
     // state
     selected = false;
@@ -120,7 +121,6 @@ NodeDirector::NodeDirector(string idn, double x, double y): Node::Node(idn, x, y
 */
 void Node::update() {
     
-
     
     // limit
     velocity.limit(mvelocity);
@@ -140,7 +140,7 @@ void Node::update() {
     
     // update position
     Vec2d dm = mpos - pos;
-    Vec2d ppos = pos;
+    ppos = pos;
     pos += dm/speed;
 
     // grow
@@ -148,38 +148,17 @@ void Node::update() {
         
         // radius
         radius += 1;
+        
+        // mass
+        mass = radius * radius * 0.0001f + 0.01f;
+        
+        // grown
         if (radius >= growradius) {
-            
-            // stop & activate
-            this->activate();
+            this->grown();
         }
-    }
-    
-    // active
-    if (active && ! moved) {
         
-        // factor
-        float mf = (dm.length() > 5) ? dm.length() * 0.01 : 0;
         
-        // children
-        for (NodeIt child = children.begin(); child != children.end(); ++child) {
-            
-            // move visible children
-            if ((*child)->visible && (*child)->parent == self) {
-                
-                // follow
-                (*child)->translate(pos - ppos);
-                
-                // randomize
-                (*child)->move(Rand::randFloat(-1,1)*mf,Rand::randFloat(-1,1)*mf);
-                
-            }
-            
-        }
     }
-    
-    // reset
-    moved = false;
 
     
     
@@ -250,12 +229,10 @@ void Node::attract(NodePtr node) {
  * Move.
  */
 void Node::move(double dx, double dy) {
-    moved = true;
     mpos.x += dx;
     mpos.y += dy;
 }
 void Node::move(Vec2d d) {
-    moved = true;
     mpos += d;
 }
 void Node::moveTo(double x, double y) {
@@ -279,16 +256,16 @@ void Node::translate(Vec2d d) {
 * Adds a child.
 */
 void Node::addChild(NodePtr child) {
-    FLog();
+    GLog();
     
     // push
     children.push_back(child);
 }
 
 /**
- * Activates the node.
+ * Node is grown.
  */
-void Node::activate() {
+void Node::grown() {
     FLog();
     
     // state
@@ -323,12 +300,8 @@ void Node::activate() {
         
     }
 
-    
     // mass
     mass = radius * radius * 0.0001f + 0.01f;
-    
-    // active
-    active = true;
       
 }
 
@@ -341,6 +314,7 @@ void Node::load() {
     // state
     visible = true;
     loading = true;
+    active = true;
     
     // radius
     radius = 40;
@@ -370,7 +344,7 @@ void Node::loaded() {
  * Shows/Hides the node.
  */
 void Node::show(bool animate) {
-    FLog();
+    GLog();
     
     // show it
     if (! visible) {
@@ -424,6 +398,32 @@ void Node::untouched() {
 
 
 /**
+ * Tapped.
+ */
+void Node::tapped() {
+    FLog();
+    
+    // state
+    selected = false;
+    
+}
+
+
+/**
+ * States.
+ */
+bool Node::isActive() {
+    return active;
+}
+bool Node::isVisible() {
+    return visible;
+}
+bool Node::isSelected() {
+    return selected;
+}
+
+
+/**
  * Renders the label.
  */
 void Node::renderLabel(string lbl) {
@@ -446,4 +446,27 @@ void Node::renderLabel(string lbl) {
     offsetLabel = - textureLabel.getWidth() / 2.0;
 
     
+}
+
+
+
+
+
+
+#pragma mark -
+#pragma mark Memory management
+
+/*
+ * Deallocates used memory.
+ */
+void Node::dealloc() {
+    GLog();
+    
+    // reset
+    if (parent != NULL) {
+        parent.reset();
+    }
+    for (NodeIt child = children.begin(); child != children.end(); ++child) {
+        child->reset();
+    }
 }

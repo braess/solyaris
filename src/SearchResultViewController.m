@@ -172,6 +172,10 @@
 #pragma mark -
 #pragma mark Memory management
 
+
+/*
+ * Deallocates used memory.
+ */
 - (void)dealloc {
     GLog();
     

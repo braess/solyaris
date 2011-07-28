@@ -2,7 +2,7 @@
 //  SearchResult.h
 //  IMDG
 //
-//  Created by CNPP on 21.7.2011.
+//  Created by CNPP on 28.7.2011.
 //  Copyright (c) 2011 Beat Raess. All rights reserved.
 //
 

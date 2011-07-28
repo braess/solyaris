@@ -54,14 +54,19 @@ class Node {
     void move(Vec2d d);
     void translate(Vec2d d);
     void addChild(NodePtr child);
-    void activate();
+    void grown();
     void load();
     void loaded();
     void hide();
     void show(bool animate);
     void touched();
     void untouched();
+    void tapped();
     void renderLabel(string lbl);
+    bool isActive();
+    bool isVisible();
+    bool isSelected();
+    void dealloc();
     
     
     // Public Fields
@@ -70,20 +75,13 @@ class Node {
     NodePtr parent;
     NodeVectorPtr children;
     Vec2d pos;
+    Vec2d ppos;
     Vec2d mpos;
     float core;
     float radius,growradius;
     float mass;
 	Vec2d velocity;
-    
-    
-    // States
-    bool selected;
-    bool active;
-    bool visible;
-    bool grow;
-    bool loading;
-    bool moved;
+
     
     // protected
     protected:
@@ -95,8 +93,12 @@ class Node {
     // private
     private:
     
-    // Reference
-    NodePtr self;
+    // States
+    bool selected;
+    bool active;
+    bool visible;
+    bool grow;
+    bool loading;
     
     // Font
     Font font;
