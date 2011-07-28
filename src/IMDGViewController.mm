@@ -323,7 +323,11 @@
             
             // create edge
             NSString *eid = [self makeEdgeId:nid to:cid];
-            EdgePtr edge = imdgApp->createEdge([eid UTF8String],node,child);
+            EdgePtr edge = imdgApp->getEdge([eid UTF8String]);
+            if (edge == NULL) {
+                edge = imdgApp->createEdge([eid UTF8String],node,child);
+                edge->renderLabel([NSLocalizedString(@"Director", @"Director") UTF8String]);
+            }
             if (existing) {
                 edge->show();
             }
@@ -356,7 +360,11 @@
             
             // create edge
             NSString *eid = [self makeEdgeId:nid to:cid];
-            EdgePtr edge = imdgApp->createEdge([eid UTF8String],node,child);
+            EdgePtr edge = imdgApp->getEdge([eid UTF8String]);
+            if (edge == NULL) {
+                edge = imdgApp->createEdge([eid UTF8String],node,child);
+                edge->renderLabel([mactor.character UTF8String]);
+            }
             if (existing) {
                 edge->show();
             }
@@ -412,7 +420,11 @@
             
             // create edge
             NSString *eid = [self makeEdgeId:nid to:cid];
-            EdgePtr edge = imdgApp->createEdge([eid UTF8String],node,child);
+            EdgePtr edge = imdgApp->getEdge([eid UTF8String]);
+            if (edge == NULL) {
+                edge = imdgApp->createEdge([eid UTF8String],node,child);
+                edge->renderLabel([mactor.character UTF8String]);
+            }
             if (existing) {
                 edge->show();
             }
@@ -468,7 +480,11 @@
             
             // create edge
             NSString *eid = [self makeEdgeId:nid to:cid];
-            EdgePtr edge = imdgApp->createEdge([eid UTF8String],node,child);
+            EdgePtr edge = imdgApp->getEdge([eid UTF8String]);
+            if (edge == NULL) {
+                edge = imdgApp->createEdge([eid UTF8String],node,child);
+                edge->renderLabel([NSLocalizedString(@"Director", @"Director") UTF8String]);
+            }
             if (existing) {
                 edge->show();
             }

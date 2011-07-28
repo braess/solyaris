@@ -46,6 +46,7 @@ class Edge {
     void repulse();
     void hide();
     void show();
+    void renderLabel(string lbl);
     bool isActive();
     bool isVisible();
     void dealloc();
@@ -53,6 +54,7 @@ class Edge {
     // Public Fields
     NodePtr node1;
     NodePtr node2;
+    string label;
     
     
     // private
@@ -61,12 +63,25 @@ class Edge {
     // States
     bool active;
     bool visible;
+    bool selected;
     
     // parameters
     double length;
     double stiffness;
     double damping;
     
+    // position
+    Vec2d lpos;
+    
     // color
     Color cstroke;
+    Color cstrokea;
+    Color cstrokes;
+    Color ctxt;
+    Color ctxts;
+    
+    // Font
+    Font font;
+    gl::Texture	textureLabel;
+    float offsetLabel;
 };

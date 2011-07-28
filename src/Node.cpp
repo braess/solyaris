@@ -62,7 +62,8 @@ Node::Node(string idn, double x, double y) {
     
     // color
     cbg = Color(1,1,1);
-    ctxt = Color(1,1,1);
+    ctxt = Color(0.9,0.9,0.9);
+    ctxts = Color(1,1,1);
     
     // alpha
     acore = 0.85;
@@ -157,7 +158,7 @@ void Node::update() {
     if (grow) {
         
         // radius
-        radius += 1;
+        radius += 2;
         
         // mass
         mass = radius * radius * 0.0001f + 0.01f;
@@ -200,7 +201,7 @@ void Node::draw() {
     gl::enableAlphaBlending(true);
     
     // label
-    gl::color(ctxt);
+    selected ? gl::color(ctxts) : gl::color(ctxt);
 	gl::draw( textureLabel, Vec2d(pos.x+offsetLabel,pos.y+radius+5));
 
 }
@@ -472,7 +473,6 @@ void Node::renderLabel(string lbl) {
     // offset
     offsetLabel = - textureLabel.getWidth() / 2.0;
 
-    
 }
 
 

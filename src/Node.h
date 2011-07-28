@@ -106,17 +106,6 @@ class Node {
     bool visible;
     bool grow;
     bool loading;
-    
-    // Font
-    Font font;
-    gl::Texture	textureLabel;
-    float offsetLabel;
-    
-    
-    // Color
-    Color ctxt;
-    float acore,ascore;
-    float aglow,asglow;
 
     
     // Parameters
@@ -127,6 +116,17 @@ class Node {
     double mvelocity;
     double speed;
     
+    
+    // Color
+    Color ctxt;
+    Color ctxts;
+    float acore,ascore;
+    float aglow,asglow;
+    
+    // Font
+    Font font;
+    gl::Texture	textureLabel;
+    float offsetLabel;
 
 };
 class NodeMovie: public Node {

@@ -118,6 +118,13 @@ void IMDGApp::touchesBegan( TouchEvent event ) {
         // taps
         int taps = [(UITouch*)touch->getNative() tapCount];
         
+        // touch
+        if (taps == 1) {
+            
+            // touch graph
+            graph.touchBegan(touch->getPos(),touch->getId());
+        }
+        
         // double tap
         if (taps == 2) {
           
@@ -131,8 +138,6 @@ void IMDGApp::touchesBegan( TouchEvent event ) {
             }
         }
         
-        // touch
-        graph.touchBegan(touch->getPos(),touch->getId());
     }
 }
 void IMDGApp::touchesMoved( TouchEvent event ){

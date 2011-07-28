@@ -7,6 +7,7 @@
 //
 #include "Edge.h"
 #include "cinder/gl/gl.h"
+#include "cinder/Text.h"
 
 
 #pragma mark -
@@ -31,9 +32,23 @@ Edge::Edge(NodePtr n1, NodePtr n2) {
     // state
     active = false;
     visible = false;
+    selected = false;
+    
+    // label position
+    lpos.set(0,0);
     
     // color
-    cstroke = ColorA(1,1,1);
+    cstroke = Color(0.25,0.25,0.25);
+    cstrokea = Color(0.75,0.75,0.75);
+    cstrokes = Color(0.9,0.9,0.9);
+    
+    ctxt = Color(0.9,0.9,0.9);
+    ctxts = Color(1,1,1);
+    
+    // font
+    font = Font("Helvetica",12);
+    textureLabel = gl::Texture(0,0);
+    offsetLabel = 0;
 }
 
 
@@ -45,7 +60,16 @@ Edge::Edge(NodePtr n1, NodePtr n2) {
  * Updates the edge.
  */
 void Edge::update() {
-
+    
+    // selected
+    selected = false;
+    if (node1->isSelected() || node2->isSelected()) {
+        selected = true;
+    }
+    
+    // label position
+    lpos = node1->pos + ((node2->pos - node1->pos) / 2.0);
+    lpos.x += offsetLabel;
 }
 
 /**
@@ -53,10 +77,22 @@ void Edge::update() {
  */
 void Edge::draw() {
     
-    // node
-    gl::color(cstroke);
+    // unblend
+    gl::enableAlphaBlending(true);
+    
+    // color
+    active ? gl::color(cstrokea) : gl::color(cstroke);
+    if (selected) {gl::color(cstrokes);}
+    
+    // line
     gl::drawLine(node1->pos, node2->pos);
-
+    
+    // label
+    if (active || selected) {
+        selected ? gl::color(ctxts) : gl::color(ctxt);
+        gl::draw( textureLabel, lpos);
+    }
+    
 
 }
 
@@ -97,17 +133,13 @@ void Edge::repulse() {
  * Shows/Hides the edge.
  */
 void Edge::show() {
-    GLog();
+    FLog();
     
-    // show it
-    if (! visible) {
+    // check if active
+    if (node1->isActive() && node2->isActive()) {
         
-        // check if active
-        if (node1->isActive() && node2->isActive()) {
-            
-            // state
-            active = true;
-        }
+        // state
+        active = true;
     }
     
     // state
@@ -130,6 +162,31 @@ bool Edge::isActive() {
 }
 bool Edge::isVisible() {
     return visible || ( (node1->isActive() || node1->isSelected()) & (node2->isActive() || node2->isSelected()));
+}
+
+
+/**
+ * Renders the label.
+ */
+void Edge::renderLabel(string lbl) {
+    GLog();
+    
+    
+    // field
+    label = lbl;
+    
+    // text
+    TextLayout tlLabel;
+	tlLabel.clear(ColorA(0, 0, 0, 0));
+	tlLabel.setFont(font);
+	tlLabel.setColor(ctxt);
+	tlLabel.addCenteredLine(label);
+	Surface8u rendered = tlLabel.render(true, true);
+	textureLabel = gl::Texture(rendered);
+    
+    // offset
+    offsetLabel = - textureLabel.getWidth() / 2.0;
+    
 }
 
 

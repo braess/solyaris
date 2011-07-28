@@ -56,9 +56,6 @@ class Graph {
     // private
     private:
     
-    // state
-    bool clear;
-    
     // size
     int width;
     int height;
