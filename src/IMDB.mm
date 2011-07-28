@@ -111,7 +111,7 @@ NSString* STORE = @"IMDG.sqlite";
     DLog();
     
     // queue
-    [queue cancelAllOperations];
+    //[queue cancelAllOperations];
     [queue addOperationWithBlock:^{
         
         
@@ -127,8 +127,8 @@ NSString* STORE = @"IMDG.sqlite";
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             
             // delegate
-            if (delegate != nil && [delegate respondsToSelector:@selector(searchResult:)]) {
-                [delegate searchResult:search];
+            if (delegate != nil && [delegate respondsToSelector:@selector(loadedSearch:)]) {
+                [delegate loadedSearch:search];
             }
 
         }];
@@ -144,7 +144,6 @@ NSString* STORE = @"IMDG.sqlite";
     DLog();
     
     // queue
-    [queue cancelAllOperations];
     [queue addOperationWithBlock:^{
         
         // cache
@@ -175,7 +174,6 @@ NSString* STORE = @"IMDG.sqlite";
     DLog();
     
     // queue
-    [queue cancelAllOperations];
     [queue addOperationWithBlock:^{
         
         // cache
@@ -206,7 +204,6 @@ NSString* STORE = @"IMDG.sqlite";
     DLog();
     
     // queue
-    [queue cancelAllOperations];
     [queue addOperationWithBlock:^{
         
         // cache

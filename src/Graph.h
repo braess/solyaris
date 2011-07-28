@@ -60,6 +60,7 @@ class Graph {
     int width;
     int height;
     int direction;
+    float friction;
     
     // data
     NodeVectorPtr nodes;

@@ -133,10 +133,12 @@ void Edge::repulse() {
  * Shows/Hides the edge.
  */
 void Edge::show() {
-    FLog();
+    GLog();
     
     // check if active
-    if (node1->isActive() && node2->isActive()) {
+    if (node1->isActive() && node2->isActive() 
+        || node1->isActive() && node2->isLoading()
+        || node2->isActive() && node1->isLoading()) {
         
         // state
         active = true;
@@ -161,7 +163,10 @@ bool Edge::isActive() {
     return active;
 }
 bool Edge::isVisible() {
-    return visible || ( (node1->isActive() || node1->isSelected()) & (node2->isActive() || node2->isSelected()));
+    return  active
+            || (visible && ( (node1->isVisible() && ! node2->isLoading()) && (node2->isVisible() && ! node1->isLoading())) ) 
+            || ( (node1->isLoading() && node2->isActive()) || (node2->isLoading() && node1->isActive()) ) 
+            || ( (node1->isActive() || node1->isSelected()) & (node2->isActive() || node2->isSelected()));
 }
 
 

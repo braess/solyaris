@@ -33,12 +33,13 @@ Node::Node(string idn, double x, double y) {
     
     
     // fields
-    perimeter = 300;
+    perimeter = 420;
     damping = 0.5;
     strength = -1;
     ramp = 1.0;
     mvelocity = 10;
     speed = 45;
+    nbchildren = 8;
     
     // position
     pos.set(x,y);
@@ -53,9 +54,9 @@ Node::Node(string idn, double x, double y) {
     visible = false;
     
     // radius / mass
-    core = 15;
-    radius = 15;
-    mass = radius * radius * 0.0001f + 0.01f;
+    core = 12;
+    radius = 12;
+    mass = calcmass();
     
     // velocity
     velocity.set(0,0);
@@ -158,10 +159,10 @@ void Node::update() {
     if (grow) {
         
         // radius
-        radius += 2;
+        radius += 0.5;
         
         // mass
-        mass = radius * radius * 0.0001f + 0.01f;
+        mass = calcmass();
         
         // grown
         if (radius >= growradius) {
@@ -280,10 +281,11 @@ void Node::grown() {
     FLog();
     
     // state
+    loading = false;
     grow = false;
     
     // children
-    int nb = 10;
+    int nb = nbchildren;
     Rand::randomize();
     for (NodeIt child = children.begin(); child != children.end(); ++child) {
         
@@ -312,7 +314,10 @@ void Node::grown() {
     }
 
     // mass
-    mass = radius * radius * 0.0001f + 0.01f;
+    mass = calcmass();
+    
+    // state
+    active = true;
       
 }
 
@@ -325,11 +330,10 @@ void Node::load() {
     // state
     visible = true;
     loading = true;
-    active = true;
     
     // radius
-    radius = 40;
-    core = 20;
+    radius = 30;
+    core = 18;
     
     // font
     font = Font("Helvetica",15);
@@ -339,13 +343,9 @@ void Node::load() {
 }
 void Node::loaded() {
     FLog();
-    
-    // state
-    loading = false;
-    
 
     // field
-    growradius = min((int)children.size()*3,150);
+    growradius = min((int)children.size()*3,90);
     grow = true;
   
 }
@@ -361,7 +361,7 @@ void Node::show(bool animate) {
     if (! visible) {
         
         // radius & position
-        float r = (*parent).radius * 0.75;
+        float r = (*parent).radius * 0.5;
         Vec2d p = Vec2d((*parent).pos.x+Rand::randFloat(-r,r),(*parent).pos.y+Rand::randFloat(-r,r));
         
         // animate
@@ -419,16 +419,19 @@ void Node::tapped() {
     selected = false;
     
     // reposition
-    if (! active) {
+    if (! active && ! loading) {
         
         // distance to parent
         Vec2d pdist =  pos - parent->pos;
-        
-        // unity vector
-        pdist.safeNormalize();
-        
-        // move
-        this->moveTo(pos+pdist*perimeter*1.5);
+        if (pdist.length() < perimeter) {
+            
+            // unity vector
+            pdist.safeNormalize();
+            
+            // move
+            this->moveTo(parent->pos+pdist*perimeter*1.2);
+        }
+    
     }
     
 }
@@ -449,6 +452,7 @@ bool Node::isSelected() {
 bool Node::isLoading() {
     return loading;
 }
+
 
 
 /**
@@ -476,6 +480,12 @@ void Node::renderLabel(string lbl) {
 }
 
 
+/*
+ * Calculates the mass.
+ */
+float Node::calcmass() {
+    return radius * radius * 0.001f + 0.01f;
+}
 
 
 

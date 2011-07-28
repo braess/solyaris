@@ -134,7 +134,15 @@ void IMDGApp::touchesBegan( TouchEvent event ) {
                 
                 // tap controller
                 NSString *nid = [NSString stringWithCString:node->nid.c_str() encoding:[NSString defaultCStringEncoding]];
-                [imdgViewController tappedNode:nid];
+                
+                // load
+                if (! node->isActive()) {
+                    [imdgViewController nodeLoad:nid];
+                }
+                // information
+                else {
+                    [imdgViewController nodeInformation:nid];
+                }
             }
         }
         

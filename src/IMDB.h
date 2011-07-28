@@ -27,7 +27,7 @@ enum {
  * Delegate.
  */
 @protocol APIDelegate <NSObject>
-- (void)searchResult:(Search*)result;
+- (void)loadedSearch:(Search*)result;
 - (void)loadedMovie:(Movie*)movie;
 - (void)loadedActor:(Actor*)movie;
 - (void)loadedDirector:(Director*)movie;

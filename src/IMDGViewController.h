@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SearchResultViewController.h"
 #import "IMDB.h"
+#import "SearchResultViewController.h"
+#import "InformationViewController.h"
 
 // Declarations
 CPP_CLASS(IMDGApp);
@@ -16,7 +17,7 @@ CPP_CLASS(IMDGApp);
 /**
  * IMDG ViewController.
  */
-@interface IMDGViewController : UIViewController <UISearchBarDelegate, APIDelegate, SearchResultDelegate> {
+@interface IMDGViewController : UIViewController <UISearchBarDelegate, APIDelegate, SearchResultDelegate, InformationViewDelegate> {
     
     // app
     IMDGApp *imdgApp;
@@ -53,6 +54,7 @@ CPP_CLASS(IMDGApp);
 
 // Business Methods
 - (void)search:(NSString*)q type:(NSString*)t;
-- (void)tappedNode:(NSString*)nid;
+- (void)nodeInformation:(NSString*)nid;
+- (void)nodeLoad:(NSString*)nid;
 
 @end

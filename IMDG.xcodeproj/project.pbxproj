@@ -17,6 +17,8 @@
 		1800694D13E1792800E71AFD /* Actor.m in Sources */ = {isa = PBXBuildFile; fileRef = 1800694C13E1792800E71AFD /* Actor.m */; };
 		1804C6D513AA193F00417D32 /* IMDGViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1804C6D413AA193F00417D32 /* IMDGViewController.mm */; };
 		1804C6E613AA279800417D32 /* btn_info.png in Resources */ = {isa = PBXBuildFile; fileRef = 1804C6E413AA279800417D32 /* btn_info.png */; };
+		180D8FCD13E1F27800364F54 /* InformationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 180D8FCC13E1F27800364F54 /* InformationViewController.m */; };
+		180D8FD113E1F4DA00364F54 /* bg_texture.png in Resources */ = {isa = PBXBuildFile; fileRef = 180D8FD013E1F4DA00364F54 /* bg_texture.png */; };
 		1819227213C72C2100C89C74 /* IMDB.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1819227113C72C2100C89C74 /* IMDB.mm */; };
 		1819227413C72CEB00C89C74 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1819227313C72CEB00C89C74 /* CoreData.framework */; };
 		1819227713C72F9700C89C74 /* IMDG.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1819227513C72F9700C89C74 /* IMDG.xcdatamodeld */; };
@@ -77,6 +79,9 @@
 		1804C6D313AA193F00417D32 /* IMDGViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMDGViewController.h; path = src/IMDGViewController.h; sourceTree = "<group>"; };
 		1804C6D413AA193F00417D32 /* IMDGViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = IMDGViewController.mm; path = src/IMDGViewController.mm; sourceTree = "<group>"; };
 		1804C6E413AA279800417D32 /* btn_info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_info.png; path = Assets/btn_info.png; sourceTree = "<group>"; };
+		180D8FCB13E1F27800364F54 /* InformationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InformationViewController.h; path = src/InformationViewController.h; sourceTree = "<group>"; };
+		180D8FCC13E1F27800364F54 /* InformationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InformationViewController.m; path = src/InformationViewController.m; sourceTree = "<group>"; };
+		180D8FD013E1F4DA00364F54 /* bg_texture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bg_texture.png; path = Assets/bg_texture.png; sourceTree = "<group>"; };
 		1819227013C72C2100C89C74 /* IMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMDB.h; path = src/IMDB.h; sourceTree = "<group>"; };
 		1819227113C72C2100C89C74 /* IMDB.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = IMDB.mm; path = src/IMDB.mm; sourceTree = "<group>"; };
 		1819227313C72CEB00C89C74 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -187,6 +192,8 @@
 				1804C6D413AA193F00417D32 /* IMDGViewController.mm */,
 				183B97AC13C6EA1700B7563D /* SearchResultViewController.h */,
 				183B97AD13C6EA1700B7563D /* SearchResultViewController.m */,
+				180D8FCB13E1F27800364F54 /* InformationViewController.h */,
+				180D8FCC13E1F27800364F54 /* InformationViewController.m */,
 			);
 			name = app;
 			sourceTree = "<group>";
@@ -194,6 +201,7 @@
 		1804C6E213AA277200417D32 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				180D8FCF13E1F4C800364F54 /* backgrounds */,
 				1804C6E313AA277B00417D32 /* buttons */,
 			);
 			name = Assets;
@@ -206,6 +214,14 @@
 				1804C6E413AA279800417D32 /* btn_info.png */,
 			);
 			name = buttons;
+			sourceTree = "<group>";
+		};
+		180D8FCF13E1F4C800364F54 /* backgrounds */ = {
+			isa = PBXGroup;
+			children = (
+				180D8FD013E1F4DA00364F54 /* bg_texture.png */,
+			);
+			name = backgrounds;
 			sourceTree = "<group>";
 		};
 		1819226813C72B2C00C89C74 /* api */ = {
@@ -447,6 +463,7 @@
 				1804C6E613AA279800417D32 /* btn_info.png in Resources */,
 				18F8192913AA920F00D2F5C3 /* btn_reset.png in Resources */,
 				18EE9EFE13C7487B00BA13CF /* README in Resources */,
+				180D8FD113E1F4DA00364F54 /* bg_texture.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -484,6 +501,7 @@
 				1800694713E1792800E71AFD /* MovieActor.m in Sources */,
 				1800694A13E1792800E71AFD /* SearchResult.m in Sources */,
 				1800694D13E1792800E71AFD /* Actor.m in Sources */,
+				180D8FCD13E1F27800364F54 /* InformationViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -560,7 +578,7 @@
 				PROVISIONING_PROFILE = "687DD4F9-E8F9-4277-A68B-A97D1B37503B";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" include";
 			};
 			name = Debug;
@@ -580,7 +598,7 @@
 				PRODUCT_NAME = imdg;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" include";
 			};
 			name = Release;

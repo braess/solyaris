@@ -12,6 +12,8 @@
 #import "IMDGConstants.h"
 
 
+
+
 /**
  * Helper Stack.
  */
@@ -20,6 +22,7 @@
 - (NSString*)makeEdgeId:(NSString*)pid to:(NSString*)cid;
 - (NSNumber*)toDBId:(NSString*)nid;
 @end
+
 
 /**
  * IMDG ViewController.
@@ -258,7 +261,8 @@
  * Rotate is the new black.
  */
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return NO;
+    // portrait
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 
@@ -266,18 +270,15 @@
 #pragma mark API Delegate
 
 /*
- * Search result.
+ * Loaded search.
  */
-- (void)searchResult:(Search*)result {
+- (void)loadedSearch:(Search*)result {
     DLog();
     
     
     // results
-    [_searchResultViewController showResults:result];
+    [_searchResultViewController searchResultShow:result];
     
-	
-	// pop it
-	[_searchResultsPopoverController presentPopoverFromRect:CGRectMake(400, 40, 30, 30) inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 }
 
 
@@ -514,9 +515,9 @@
 
 
 /* 
- * Result selected.
+ * Search selected.
  */
-- (void)selectedResult:(SearchResult*)result type:(NSString*)type {
+- (void)searchSelected:(SearchResult*)result type:(NSString*)type {
     DLog();
     
     // hide keyboard
@@ -528,39 +529,50 @@
     // dismiss popover
     [_searchResultsPopoverController dismissPopoverAnimated:YES];
     
-
+    // random position
+    CGSize s = [UIScreen mainScreen].applicationFrame.size;
+    int b = 300;
+    int nx = ((s.width/2.0)-b + arc4random() % (2*b));
+    int ny = ((s.height/2.0)-b + arc4random() % (2*b));
+    
+    
     // node
     NSString *nid = [self makeNodeId:result.rid type:type];
     NodePtr node = imdgApp->getNode([nid UTF8String]);
     if (node == NULL) {
-        node = imdgApp->createNode([nid UTF8String],[type UTF8String], arc4random() % 768, arc4random() % 768);
-    }
-    node->load();
-    
-
-    // movie
-    if ([type isEqualToString:typeMovie]) {
-        [imdb movie:result.rid];
+        node = imdgApp->createNode([nid UTF8String],[type UTF8String], nx, ny);
     }
     
-    // actor
-    if ([type isEqualToString:typeActor]) {
-        [imdb actor:result.rid];
-    }
-    
-    // director
-    if ([type isEqualToString:typeDirector]) {
-        [imdb director:result.rid];
+    // active
+    if (! (node->isActive() || node->isLoading())) {
+        
+        // load
+        node->load();
+            
+        // movie
+        if ([type isEqualToString:typeMovie]) {
+            [imdb movie:result.rid];
+        }
+        
+        // actor
+        if ([type isEqualToString:typeActor]) {
+            [imdb actor:result.rid];
+        }
+        
+        // director
+        if ([type isEqualToString:typeDirector]) {
+            [imdb director:result.rid];
+        }
     }
 
 
 }
 
 /*
- * Cancel search.
+ * Search cancel.
  */
-- (void)cancelSearch {
-    DLog();
+- (void)searchCancel {
+    FLog();
     
     // cancel search
     
@@ -569,47 +581,21 @@
 }
 
 
-
 #pragma mark -
-#pragma mark Helpers
+#pragma mark Information Delegate
+
 
 /* 
- * Node id.
+ * Dismiss information.
  */
-- (NSString*)makeNodeId:(NSNumber*)nid type:(NSString*)type {
+- (void)informationDismiss {
+    FLog();
     
-    // make it so
-    return [NSString stringWithFormat:@"%@_%i",type,[nid intValue]];
+    // dismiss modal
+	[self dismissModalViewControllerAnimated:YES];
 }
 
-/* 
- * Edge id.
- */
-- (NSString*)makeEdgeId:(NSString*)pid to:(NSString *)cid {
-    
-    // theres an edge
-    return [NSString stringWithFormat:@"%@_to_%i",pid,cid];
-}
 
-/* 
- * DB ID.
- */
-- (NSNumber*)toDBId:(NSString*)nid {
-    
-    // formatter
-    static NSNumberFormatter *nf;
-    if (nf == nil) {
-        nf = [[NSNumberFormatter alloc] init];
-        [nf setNumberStyle:NSNumberFormatterDecimalStyle];
-    }
-    
-    // parts
-    NSArray *chunks = [nid componentsSeparatedByString: @"_"];
-    
-    // id
-    NSNumber *dbid = [nf numberFromString:[chunks objectAtIndex:1]];
-    return dbid;
-}
 
 
 
@@ -666,29 +652,35 @@
     DLog();
     
     // reset
-    [_searchResultViewController resetResults];
+    [_searchResultViewController searchResultReset];
     
     // api
     [imdb search:s type:t];
+    
+    // framed
+    CGRect srframe = _buttonMovie.frame;
+    if (t == typeActor) {
+        srframe = _buttonActor.frame;
+    }
+    else if (t == typeDirector) {
+        srframe = _buttonDirector.frame;
+    }
+    
+    // pop it
+	[_searchResultsPopoverController presentPopoverFromRect:srframe inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 
     
 }
 
 /**
- * Selected a node.
+ * Loads a node.
  */
-- (void)tappedNode:(NSString*)nid {
+- (void)nodeLoad:(NSString*)nid {
     DLog();
     
     // node
     NodePtr node = imdgApp->getNode([nid UTF8String]);
-    
-    // info
-    if (node->isActive()) {
-        
-    }
-    // load
-    else if (! node->isLoading()) {
+    if (! node->isLoading()) {
         
         // flag
         node->load();
@@ -711,6 +703,86 @@
         if ([type isEqualToString:typeDirector]) {
             [imdb director:dbid];
         }
+        
+    }
+    
+}
+
+/**
+ * Node information.
+ */
+- (void)nodeInformation:(NSString*)nid {
+    DLog();
+    
+    // node
+    NodePtr node = imdgApp->getNode([nid UTF8String]);
+    
+    // info
+    if (node->isActive()) {
+        
+        // info view controller
+        InformationViewController *nfoController = [[InformationViewController alloc] initWithStyle:UITableViewStyleGrouped];
+        nfoController.delegate = self;
+        //nfoController.view.frame = CGRectMake(0, 0, 320, 480);
+        //[nfoController.view setAutoresizingMask: (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight) ];
+        
+        // information
+        nfoController.title = [NSString stringWithCString:node->label.c_str() encoding:[NSString defaultCStringEncoding]];
+        NSMutableArray *movies = [[NSMutableArray alloc] init];
+        NSMutableArray *actors = [[NSMutableArray alloc] init];
+        NSMutableArray *directors = [[NSMutableArray alloc] init];
+        
+        // children
+        for (NodeIt child = node->children.begin(); child != node->children.end(); ++child) {
+            
+            // properties
+            NSString *type = [NSString stringWithCString:(*child)->type.c_str() encoding:[NSString defaultCStringEncoding]];
+            NSString *value = [NSString stringWithCString:(*child)->label.c_str() encoding:[NSString defaultCStringEncoding]];
+            NSString *meta = [NSString stringWithCString:(*child)->type.c_str() encoding:[NSString defaultCStringEncoding]];
+            NSNumber *nid = [self toDBId:[NSString stringWithCString:(*child)->nid.c_str() encoding:[NSString defaultCStringEncoding]]];
+            
+            // information
+            Information *nfo = [[Information alloc] initWithValue:value meta:meta type:type nid:nid];
+            
+            // movie
+            if ([type isEqualToString:typeMovie]) {
+                [movies addObject:nfo];
+            }
+            
+            // actor
+            if ([type isEqualToString:typeActor]) {
+                [actors addObject:nfo];
+            }
+            
+            // director
+            if ([type isEqualToString:typeDirector]) {
+                [directors addObject:nfo];
+            }
+            
+        }
+        
+        // set & release
+        nfoController.movies = movies;
+        nfoController.actors = actors;
+        nfoController.directors = directors;
+
+        
+        
+        // navigation controller
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:nfoController];
+        navController.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture.png"]];
+        navController.navigationBar.barStyle = UIBarStyleBlack;
+        navController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+        navController.modalPresentationStyle = UIModalPresentationFormSheet;
+        
+        
+        // show the navigation controller modally
+        [navController setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
+        [self presentModalViewController:navController animated:YES];
+        
+        // Clean up resources
+        [navController release];
+        [nfoController release];
         
     }
     
@@ -770,6 +842,48 @@
     
     // test
     imdgApp->reset();
+}
+
+
+#pragma mark -
+#pragma mark Helpers
+
+/* 
+ * Node id.
+ */
+- (NSString*)makeNodeId:(NSNumber*)nid type:(NSString*)type {
+    
+    // make it so
+    return [NSString stringWithFormat:@"%@_%i",type,[nid intValue]];
+}
+
+/* 
+ * Edge id.
+ */
+- (NSString*)makeEdgeId:(NSString*)pid to:(NSString *)cid {
+    
+    // theres an edge
+    return [NSString stringWithFormat:@"%@_to_%i",pid,cid];
+}
+
+/* 
+ * DB ID.
+ */
+- (NSNumber*)toDBId:(NSString*)nid {
+    
+    // formatter
+    static NSNumberFormatter *nf;
+    if (nf == nil) {
+        nf = [[NSNumberFormatter alloc] init];
+        [nf setNumberStyle:NSNumberFormatterDecimalStyle];
+    }
+    
+    // parts
+    NSArray *chunks = [nid componentsSeparatedByString: @"_"];
+    
+    // id
+    NSNumber *dbid = [nf numberFromString:[chunks objectAtIndex:1]];
+    return dbid;
 }
 
 

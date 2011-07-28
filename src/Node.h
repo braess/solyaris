@@ -106,6 +106,9 @@ class Node {
     bool visible;
     bool grow;
     bool loading;
+    
+    // Helpers
+    float calcmass();
 
     
     // Parameters
@@ -115,6 +118,7 @@ class Node {
     double ramp;
     double mvelocity;
     double speed;
+    int nbchildren;
     
     
     // Color

@@ -52,7 +52,7 @@
 /**
  * Shows the search results.
  */
-- (void)showResults:(Search*)search {
+- (void)searchResultShow:(Search*)search {
     
     
     // data
@@ -78,7 +78,7 @@
 /**
  * Resets the search results.
  */
-- (void)resetResults {
+- (void)searchResultReset {
     
     // data
     [_data removeAllObjects];
@@ -104,8 +104,8 @@
     FLog();
     
     // cancel
-	if (delegate != nil && [delegate respondsToSelector:@selector(cancelSearch)]) {
-		[delegate cancelSearch];
+	if (delegate != nil && [delegate respondsToSelector:@selector(searchCancel)]) {
+		[delegate searchCancel];
 	}
     
 }
@@ -162,8 +162,8 @@
     FLog();
     
     // delegate
-	if (delegate != nil && [delegate respondsToSelector:@selector(selectedResult:type:)]) {
-		[delegate selectedResult:[_data objectAtIndex:indexPath.row] type:_type];
+	if (delegate != nil && [delegate respondsToSelector:@selector(searchSelected:type:)]) {
+		[delegate searchSelected:[_data objectAtIndex:indexPath.row] type:_type];
 	}
 }
 

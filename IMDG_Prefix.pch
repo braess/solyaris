@@ -28,9 +28,8 @@
 // DLog(@"value: %d", x);
 // Unfortunately this doesn't work DLog(aStringVariable); you have to do this instead DLog(@"%@", aStringVariable);
 #ifdef DEBUG
-#   define THIS_FILE ((strrchr(__FILE__, '/') ?: __FILE__ - 1) + 1)
-#	define DLog(fmt, ...)  printf(("[%s:%d] %s: " fmt "\n"), THIS_FILE, __LINE__, __PRETTY_FUNCTION__, ##__VA_ARGS__);
-#	define FLog(fmt, ...)  printf(("[%s:%d] %s: " fmt "\n"), THIS_FILE, __LINE__, __PRETTY_FUNCTION__, ##__VA_ARGS__);
+#	define DLog(fmt, ...)  printf(("%s: " fmt "\n"), __PRETTY_FUNCTION__, ##__VA_ARGS__);
+#	define FLog(fmt, ...)  printf(("%s: " fmt "\n"), __PRETTY_FUNCTION__, ##__VA_ARGS__);
 #	define GLog(...);
 #else
 #	define DLog(...);
@@ -39,4 +38,4 @@
 #endif
 
 // ALog always displays output regardless of the DEBUG setting
-#define ALog(fmt, ...) printf(("[%s:%d] %s: " fmt "\n"), __FILE__, __LINE__, __PRETTY_FUNCTION__, ##__VA_ARGS__);
+#define ALog(fmt, ...) printf(("%s: " fmt "\n"), __PRETTY_FUNCTION__, ##__VA_ARGS__);

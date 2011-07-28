@@ -15,8 +15,8 @@
  * Delegate.
  */
 @protocol SearchResultDelegate <NSObject>
-- (void)selectedResult:(SearchResult*)result type:(NSString*)type;
-- (void)cancelSearch;
+- (void)searchSelected:(SearchResult*)result type:(NSString*)type;
+- (void)searchCancel;
 @end
 
 
@@ -37,8 +37,8 @@
 @property (assign) id<SearchResultDelegate> delegate;
 
 // Business
-- (void)showResults:(Search*)search;
-- (void)resetResults;
+- (void)searchResultShow:(Search*)search;
+- (void)searchResultReset;
 
 // Actions
 - (void)actionCancel:(id)sender;

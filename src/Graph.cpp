@@ -28,6 +28,7 @@ Graph::Graph(int w, int h, int d) {
     direction = d;
     
     // movement
+    friction = 0.75;
     movement.set(0,0);
 }
 
@@ -72,7 +73,7 @@ void Graph::update() {
     for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
         
         // active
-        if ((*node)->isActive()) {
+        if ((*node)->isActive() || (*node)->isLoading()) {
             
             // global movement
             (*node)->move(movement.x,movement.y);
@@ -217,7 +218,7 @@ void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
     else {
         
         // movement
-        movement.set(tpos-ppos);
+        movement.set((tpos-ppos)*friction);
     }
     
 }
