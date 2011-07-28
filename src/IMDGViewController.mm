@@ -18,6 +18,7 @@
 @interface IMDGViewController (HelperStack)
 - (NSString*)makeNodeId:(NSNumber*)nid type:(NSString*)type;
 - (NSString*)makeEdgeId:(NSString*)pid to:(NSString*)cid;
+- (NSNumber*)toDBId:(NSString*)nid;
 @end
 
 /**
@@ -286,7 +287,7 @@
 - (void)loadedMovie:(Movie*)movie {
     DLog();
     
-    // add node
+    // node
     NSString *nid = [self makeNodeId:movie.mid type:typeMovie];
     NodePtr node = imdgApp->getNode([nid UTF8String]);
     
@@ -295,6 +296,40 @@
         
         // properties
         node->renderLabel([movie.title UTF8String]);
+        
+        
+        // directors
+        NSSortDescriptor *dsorter = [[NSSortDescriptor alloc] initWithKey:@"year" ascending:YES];
+        NSArray *directors = [[movie.directors allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:dsorter]];
+        [dsorter release];
+        
+        // create nodes
+        for (MovieDirector *mdirector in directors) {
+            
+            // child
+            NSString *cid = [self makeNodeId:mdirector.director.did type:typeDirector];
+            NodePtr child = imdgApp->getNode([cid UTF8String]);
+            bool existing = true;
+            if (child == NULL) {
+                existing = false;
+                
+                // new child
+                child = imdgApp->createNode([cid UTF8String],[typeDirector UTF8String], node->pos.x, node->pos.y);
+                child->renderLabel([mdirector.director.name UTF8String]);
+            }
+            
+            // add to node
+            node->addChild(child);
+            
+            // create edge
+            NSString *eid = [self makeEdgeId:nid to:cid];
+            EdgePtr edge = imdgApp->createEdge([eid UTF8String],node,child);
+            if (existing) {
+                edge->show();
+            }
+            
+        }
+        
         
         // actors
         NSSortDescriptor *asorter = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
@@ -328,6 +363,7 @@
             
         }
         
+        
         // loaded
         node->loaded();
         
@@ -341,7 +377,7 @@
 - (void)loadedActor:(Actor*)actor {
     DLog();
     
-    // add node
+    // node
     NSString *nid = [self makeNodeId:actor.aid type:typeActor];
     NodePtr node = imdgApp->getNode([nid UTF8String]);
     
@@ -396,6 +432,54 @@
 - (void)loadedDirector:(Director*)director {
     DLog();
     
+    
+    // node
+    NSString *nid = [self makeNodeId:director.did type:typeDirector];
+    NodePtr node = imdgApp->getNode([nid UTF8String]);
+    
+    // check
+    if (node != NULL) {
+        
+        // properties
+        node->renderLabel([director.name UTF8String]);
+        
+        // movies
+        NSSortDescriptor *msorter = [[NSSortDescriptor alloc] initWithKey:@"year" ascending:NO];
+        NSArray *movies = [[director.movies allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:msorter]];
+        [msorter release];
+        
+        // create nodes
+        for (MovieActor *mactor in movies) {
+            
+            // child
+            NSString *cid = [self makeNodeId:mactor.movie.mid type:typeMovie];
+            NodePtr child = imdgApp->getNode([cid UTF8String]);
+            bool existing = true;
+            if (child == NULL) {
+                existing = false;
+                
+                // new child
+                child = imdgApp->createNode([cid UTF8String],[typeMovie UTF8String], node->pos.x, node->pos.y);
+                child->renderLabel([mactor.movie.title UTF8String]);
+            }
+            
+            // add to node
+            node->addChild(child);
+            
+            // create edge
+            NSString *eid = [self makeEdgeId:nid to:cid];
+            EdgePtr edge = imdgApp->createEdge([eid UTF8String],node,child);
+            if (existing) {
+                edge->show();
+            }
+            
+        }
+        
+        // loaded
+        node->loaded();
+        
+    }
+    
 }
 
 
@@ -429,7 +513,7 @@
     [_searchResultsPopoverController dismissPopoverAnimated:YES];
     
 
-    // add node
+    // node
     NSString *nid = [self makeNodeId:result.rid type:type];
     NodePtr node = imdgApp->getNode([nid UTF8String]);
     if (node == NULL) {
@@ -489,6 +573,26 @@
     
     // theres an edge
     return [NSString stringWithFormat:@"%@_to_%i",pid,cid];
+}
+
+/* 
+ * DB ID.
+ */
+- (NSNumber*)toDBId:(NSString*)nid {
+    
+    // formatter
+    static NSNumberFormatter *nf;
+    if (nf == nil) {
+        nf = [[NSNumberFormatter alloc] init];
+        [nf setNumberStyle:NSNumberFormatterDecimalStyle];
+    }
+    
+    // parts
+    NSArray *chunks = [nid componentsSeparatedByString: @"_"];
+    
+    // id
+    NSNumber *dbid = [nf numberFromString:[chunks objectAtIndex:1]];
+    return dbid;
 }
 
 
@@ -559,6 +663,40 @@
  */
 - (void)tappedNode:(NSString*)nid {
     DLog();
+    
+    // node
+    NodePtr node = imdgApp->getNode([nid UTF8String]);
+    
+    // info
+    if (node->isActive()) {
+        
+    }
+    // load
+    else if (! node->isLoading()) {
+        
+        // flag
+        node->load();
+        
+        // node
+        NSString *type = [NSString stringWithCString:node->type.c_str() encoding:[NSString defaultCStringEncoding]];
+        NSNumber *dbid = [self toDBId:nid];
+        
+        // movie
+        if ([type isEqualToString:typeMovie]) {
+            [imdb movie:dbid];
+        }
+        
+        // actor
+        if ([type isEqualToString:typeActor]) {
+            [imdb actor:dbid];
+        }
+        
+        // director
+        if ([type isEqualToString:typeDirector]) {
+            [imdb director:dbid];
+        }
+        
+    }
     
 }
 

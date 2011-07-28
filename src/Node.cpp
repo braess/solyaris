@@ -29,6 +29,7 @@ Node::Node(string idn, double x, double y) {
     nid = idn;
     parent = NodePtr();
     label = "";
+    type = "Node";
     
     
     // fields
@@ -84,6 +85,9 @@ NodeMovie::NodeMovie(): Node::Node()  {
 }
 NodeMovie::NodeMovie(string idn, double x, double y): Node::Node(idn, x, y) {
     
+    // type
+    type = nodeMovie;
+    
     // color (187,176,130)
     cbg = Color(187.0/255.0,176.0/255.0,130.0/255.0);
 }
@@ -95,6 +99,9 @@ NodeActor::NodeActor(): Node::Node()  {
 }
 NodeActor::NodeActor(string idn, double x, double y): Node::Node(idn, x, y) {
     
+    // type
+    type = nodeActor;
+    
     // color (130,153,147)
     cbg = Color(130.0/255.0,153.0/255.0,147.0/255.0);
 }
@@ -105,6 +112,9 @@ NodeActor::NodeActor(string idn, double x, double y): Node::Node(idn, x, y) {
 NodeDirector::NodeDirector(): Node::Node()  {    
 }
 NodeDirector::NodeDirector(string idn, double x, double y): Node::Node(idn, x, y) {
+    
+    // type
+    type = nodeDirector;
     
     // color (94,118,117)
     cbg = Color(94.0/255.0,118.0/255.0,117.0/255.0);
@@ -355,6 +365,7 @@ void Node::show(bool animate) {
         
         // animate
         if (animate) {
+            this->pos.set((*parent).pos);
             this->moveTo(p);
         }
         // set position
@@ -406,6 +417,19 @@ void Node::tapped() {
     // state
     selected = false;
     
+    // reposition
+    if (! active) {
+        
+        // distance to parent
+        Vec2d pdist =  pos - parent->pos;
+        
+        // unity vector
+        pdist.safeNormalize();
+        
+        // move
+        this->moveTo(pos+pdist*perimeter*1.5);
+    }
+    
 }
 
 
@@ -420,6 +444,9 @@ bool Node::isVisible() {
 }
 bool Node::isSelected() {
     return selected;
+}
+bool Node::isLoading() {
+    return loading;
 }
 
 

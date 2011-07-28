@@ -27,6 +27,11 @@ typedef boost::shared_ptr<Node> NodePtr;
 typedef std::vector<NodePtr> NodeVectorPtr;
 typedef NodeVectorPtr::iterator NodeIt;
 
+// constants
+const string nodeMovie = "movie";	
+const string nodeActor = "actor";
+const string nodeDirector = "director";
+
 
 /**
  * Graph Node.
@@ -66,12 +71,14 @@ class Node {
     bool isActive();
     bool isVisible();
     bool isSelected();
+    bool isLoading();
     void dealloc();
     
     
     // Public Fields
     string nid;
     string label;
+    string type;
     NodePtr parent;
     NodeVectorPtr children;
     Vec2d pos;

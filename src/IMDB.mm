@@ -589,6 +589,8 @@ NSString* STORE = @"IMDG.sqlite";
         MovieDirector *mdirector = [self cachedMovieDirector:mid director:did];
         if (mdirector == NULL) {
             mdirector = (MovieDirector*)[NSEntityDescription insertNewObjectForEntityForName:@"MovieDirector" inManagedObjectContext:managedObjectContext];
+            mdirector.mid = mid;
+            mdirector.did = did;
             mdirector.addition = [ddirector objectForKey:@"addition"];
             mdirector.year = movie.year;
         }
@@ -615,11 +617,11 @@ NSString* STORE = @"IMDG.sqlite";
         MovieActor *mactor = [self cachedMovieActor:mid actor:aid];
         if (mactor == NULL) {
             mactor = (MovieActor*)[NSEntityDescription insertNewObjectForEntityForName:@"MovieActor" inManagedObjectContext:managedObjectContext];
+            mactor.mid = mid;
+            mactor.aid = aid;
             mactor.character = [dactor objectForKey:@"character"];
             mactor.order = [nf numberFromString:[dactor objectForKey:@"order"]];
             mactor.year = movie.year;
-            mactor.mid = mid;
-            mactor.aid = aid;
             FLog("set");
         }
         mactor.actor = actor;
@@ -712,11 +714,11 @@ NSString* STORE = @"IMDG.sqlite";
         MovieActor *mactor = [self cachedMovieActor:mid actor:aid];
         if (mactor == NULL) {
             mactor = (MovieActor*)[NSEntityDescription insertNewObjectForEntityForName:@"MovieActor" inManagedObjectContext:managedObjectContext];
+            mactor.mid = mid;
+            mactor.aid = aid;
             mactor.character = [dmovie objectForKey:@"character"];
             mactor.order = [nf numberFromString:[dmovie objectForKey:@"order"]];
             mactor.year = movie.year;
-            mactor.mid = mid;
-            mactor.aid = aid;
         }
         mactor.movie = movie;
         
@@ -807,6 +809,8 @@ NSString* STORE = @"IMDG.sqlite";
         MovieDirector *mdirector = [self cachedMovieDirector:mid director:did];
         if (mdirector == NULL) {
             mdirector = (MovieDirector*)[NSEntityDescription insertNewObjectForEntityForName:@"MovieDirector" inManagedObjectContext:managedObjectContext];
+            mdirector.mid = mid;
+            mdirector.did = did;
             mdirector.addition = [dmovie objectForKey:@"addition"];
             mdirector.year = movie.year;
         }

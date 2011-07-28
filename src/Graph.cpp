@@ -61,6 +61,7 @@ void Graph::resize(int w, int h, int d) {
  */
 void Graph::update() {
     
+    
     // check
     if (! clear) {
     
@@ -261,7 +262,7 @@ NodePtr Graph::doubleTap(Vec2d tpos, int tid) {
             // tapped
             FLog("tid = %d, node = ",tid);
             (*node)->tapped();
-            
+          
             // return
             return (*node);
                             
@@ -280,6 +281,55 @@ NodePtr Graph::doubleTap(Vec2d tpos, int tid) {
 
 
 /**
+ * Attraction.
+ */
+void Graph::attract() {
+    
+    // nodes
+    for (NodeIt n1 = nodes.begin(); n1 != nodes.end(); ++n1) {
+        
+        // attract others
+        for (NodeIt n2 = nodes.begin(); n2 != nodes.end(); ++n2) {
+            if ((*n1)->isActive() && (*n2)->isActive() && (*n1) != (*n2)) {
+                (*n1)->attract(*n2);
+            }
+        }
+        
+        // children
+        if ((*n1)->isActive()) {
+            
+            // brothers & sisters
+            for (NodeIt c1 = (*n1)->children.begin(); c1 != (*n1)->children.end(); ++c1) {
+                for (NodeIt c2 = (*n1)->children.begin(); c2 != (*n1)->children.end(); ++c2) {
+                    if ((*c1)->isVisible() && (*c2)->isVisible() && (*c1) != (*c2)) {
+                        (*c1)->attract(*c2);
+                    }
+                }
+            }
+            
+        }
+    }
+    
+}
+
+/**
+ * Repulsion.
+ */
+void Graph::repulse() {
+    
+    // edges
+    for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
+        
+        // active
+        if ((*edge)->isActive()) {
+            (*edge)->repulse();
+        }
+    }
+    
+}
+
+
+/**
  * Creates a node.
  */
 NodePtr Graph::createNode(string nid, string type, double x, double y) {
@@ -292,17 +342,17 @@ NodePtr Graph::createNode(string nid, string type, double x, double y) {
     nmap.insert(make_pair(nid, nodes.size()));
     
     // node
-    if (type == "movie") {
+    if (type == nodeMovie) {
         boost::shared_ptr<NodeMovie> node(new NodeMovie(nid,x,y));
         nodes.push_back(node);
         return node;
     }
-    else if (type == "actor") {
+    else if (type == nodeActor) {
         boost::shared_ptr<NodeActor> node(new NodeActor(nid,x,y));
         nodes.push_back(node);
         return node;
     }
-    else if (type == "director") {
+    else if (type == nodeDirector) {
         boost::shared_ptr<NodeDirector> node(new NodeDirector(nid,x,y));
         nodes.push_back(node);
         return node;
@@ -365,54 +415,6 @@ EdgePtr Graph::getEdge(string eid) {
     return EdgePtr();
 }
 
-
-/**
-* Attraction.
-*/
-void Graph::attract() {
-    
-    // nodes
-    for (NodeIt n1 = nodes.begin(); n1 != nodes.end(); ++n1) {
-        
-        // attract others
-        for (NodeIt n2 = nodes.begin(); n2 != nodes.end(); ++n2) {
-            if ((*n1)->isActive() && (*n2)->isActive() && (*n1) != (*n2)) {
-                (*n1)->attract(*n2);
-            }
-        }
-        
-        // children
-        if ((*n1)->isActive()) {
-            
-            // brothers & sisters
-            for (NodeIt c1 = (*n1)->children.begin(); c1 != (*n1)->children.end(); ++c1) {
-                for (NodeIt c2 = (*n1)->children.begin(); c2 != (*n1)->children.end(); ++c2) {
-                    if ((*c1)->isVisible() && (*c2)->isVisible() && (*c1) != (*c2)) {
-                        (*c1)->attract(*c2);
-                    }
-                }
-            }
-            
-        }
-    }
-
-}
-
-/**
- * Repulsion.
- */
-void Graph::repulse() {
-    
-    // edges
-    for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
-        
-        // active
-        if ((*edge)->isActive()) {
-            (*edge)->repulse();
-        }
-    }
-
-}
 
 
 
