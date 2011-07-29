@@ -689,19 +689,23 @@
         NSString *type = [NSString stringWithCString:node->type.c_str() encoding:[NSString defaultCStringEncoding]];
         NSNumber *dbid = [self toDBId:nid];
         
+        
+        // delay
+        float dload = 1.8f;
+        
         // movie
         if ([type isEqualToString:typeMovie]) {
-            [imdb movie:dbid];
+            [imdb performSelector:@selector(movie:) withObject:dbid afterDelay:dload];
         }
         
         // actor
         if ([type isEqualToString:typeActor]) {
-            [imdb actor:dbid];
+            [imdb performSelector:@selector(actor:) withObject:dbid afterDelay:dload];
         }
         
         // director
         if ([type isEqualToString:typeDirector]) {
-            [imdb director:dbid];
+            [imdb performSelector:@selector(director:) withObject:dbid afterDelay:dload];
         }
         
     }
@@ -723,8 +727,8 @@
         // info view controller
         InformationViewController *nfoController = [[InformationViewController alloc] initWithStyle:UITableViewStyleGrouped];
         nfoController.delegate = self;
-        //nfoController.view.frame = CGRectMake(0, 0, 320, 480);
-        //[nfoController.view setAutoresizingMask: (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight) ];
+        nfoController.view.frame = CGRectMake(0, 0, 320, 480);
+        [nfoController.view setAutoresizingMask: (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight) ];
         
         // information
         nfoController.title = [NSString stringWithCString:node->label.c_str() encoding:[NSString defaultCStringEncoding]];
@@ -732,14 +736,30 @@
         NSMutableArray *actors = [[NSMutableArray alloc] init];
         NSMutableArray *directors = [[NSMutableArray alloc] init];
         
+        // parent
+        NSString *pid = [NSString stringWithCString:node->nid.c_str() encoding:[NSString defaultCStringEncoding]];
+        
+        
         // children
         for (NodeIt child = node->children.begin(); child != node->children.end(); ++child) {
             
+            // child id
+            NSString *cid = [NSString stringWithCString:(*child)->nid.c_str() encoding:[NSString defaultCStringEncoding]];
+            
+            // edge
+            NSString *eid = [self makeEdgeId:pid to:cid];
+            NSLog(@"%@",eid);
+            EdgePtr edge = imdgApp->getEdge([eid UTF8String]);
+            
             // properties
+            NSNumber *nid = [self toDBId:[NSString stringWithCString:(*child)->nid.c_str() encoding:[NSString defaultCStringEncoding]]];
             NSString *type = [NSString stringWithCString:(*child)->type.c_str() encoding:[NSString defaultCStringEncoding]];
             NSString *value = [NSString stringWithCString:(*child)->label.c_str() encoding:[NSString defaultCStringEncoding]];
-            NSString *meta = [NSString stringWithCString:(*child)->type.c_str() encoding:[NSString defaultCStringEncoding]];
-            NSNumber *nid = [self toDBId:[NSString stringWithCString:(*child)->nid.c_str() encoding:[NSString defaultCStringEncoding]]];
+            NSString *meta = @"meta";
+            if (edge != NULL) {
+                meta = [NSString stringWithCString:edge->label.c_str() encoding:[NSString defaultCStringEncoding]];
+            }
+            
             
             // information
             Information *nfo = [[Information alloc] initWithValue:value meta:meta type:type nid:nid];
@@ -863,8 +883,9 @@
 - (NSString*)makeEdgeId:(NSString*)pid to:(NSString *)cid {
     
     // theres an edge
-    return [NSString stringWithFormat:@"%@_to_%i",pid,cid];
+    return [NSString stringWithFormat:@"%@_edge_%@",pid,cid];
 }
+
 
 /* 
  * DB ID.
@@ -885,6 +906,7 @@
     NSNumber *dbid = [nf numberFromString:[chunks objectAtIndex:1]];
     return dbid;
 }
+
 
 
 #pragma mark -

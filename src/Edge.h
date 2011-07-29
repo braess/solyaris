@@ -71,7 +71,7 @@ class Edge {
     double damping;
     
     // position
-    Vec2d lpos;
+    Vec2d pos;
     
     // color
     Color cstroke;
@@ -82,6 +82,7 @@ class Edge {
     
     // Font
     Font font;
+    Vec2d loff;
     gl::Texture	textureLabel;
-    float offsetLabel;
+
 };

@@ -126,7 +126,6 @@ void Graph::update() {
 void Graph::draw() {
     
 
-    
     // edges
     for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
         
@@ -144,7 +143,6 @@ void Graph::draw() {
             (*node)->draw();
         }
     }
-
 
 }
 
@@ -164,7 +162,7 @@ void Graph::reset() {
     }
     
     // clear
-    nodes.clear();
+    nodes.clear(); // detail/sp_counted_base_spin.hpp
     edges.clear(); // pointer being freed was not allocated
     
     // reset maps

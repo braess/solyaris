@@ -119,6 +119,7 @@ class Node {
     double mvelocity;
     double speed;
     int nbchildren;
+    int fcount;
     
     
     // Color
@@ -129,8 +130,8 @@ class Node {
     
     // Font
     Font font;
+    Vec2d loff;
     gl::Texture	textureLabel;
-    float offsetLabel;
 
 };
 class NodeMovie: public Node {

@@ -8,6 +8,7 @@
 #include "Node.h"
 #include "cinder/Text.h"
 #include "cinder/Rand.h"
+#include "cinder/CinderMath.h"
 
 
 
@@ -40,6 +41,7 @@ Node::Node(string idn, double x, double y) {
     mvelocity = 10;
     speed = 45;
     nbchildren = 8;
+    fcount = 0;
     
     // position
     pos.set(x,y);
@@ -63,7 +65,7 @@ Node::Node(string idn, double x, double y) {
     
     // color
     cbg = Color(1,1,1);
-    ctxt = Color(0.9,0.9,0.9);
+    ctxt = Color(0.85,0.85,0.85);
     ctxts = Color(1,1,1);
     
     // alpha
@@ -76,7 +78,7 @@ Node::Node(string idn, double x, double y) {
     // font
     font = Font("Helvetica",12);
     textureLabel = gl::Texture(0,0);
-    offsetLabel = 0;
+    loff.set(0,5);
 
 }
 
@@ -133,6 +135,9 @@ NodeDirector::NodeDirector(string idn, double x, double y): Node::Node(idn, x, y
 */
 void Node::update() {
     
+    // count
+    fcount++;
+    
     
     // limit
     velocity.limit(mvelocity);
@@ -159,7 +164,7 @@ void Node::update() {
     if (grow) {
         
         // radius
-        radius += 0.5;
+        radius += 1;
         
         // mass
         mass = calcmass();
@@ -172,7 +177,6 @@ void Node::update() {
         
     }
 
-    
     
 }
 
@@ -190,7 +194,11 @@ void Node::draw() {
     
 
     // glow
-    glColor4f(cbg.r,cbg.g,cbg.b,(selected ? asglow : aglow));
+    float ga = selected ? asglow : aglow;
+    if (loading && ! grow) {
+        ga *= (1.5+sin((fcount*1.5*M_PI)/180)); 
+    }
+    glColor4f(cbg.r,cbg.g,cbg.b,ga);
     gl::drawSolidCircle(pos, radius);
     
     // core
@@ -203,7 +211,7 @@ void Node::draw() {
     
     // label
     selected ? gl::color(ctxts) : gl::color(ctxt);
-	gl::draw( textureLabel, Vec2d(pos.x+offsetLabel,pos.y+radius+5));
+	gl::draw(textureLabel, Vec2d(pos.x+loff.x, pos.y+radius+loff.y));
 
 }
 
@@ -332,11 +340,15 @@ void Node::load() {
     loading = true;
     
     // radius
-    radius = 30;
+    radius = 39;
     core = 18;
     
+    // color
+    ctxt = Color(0.9,0.9,0.9);
+    
     // font
-    font = Font("Helvetica",15);
+    font = Font("Helvetica-Bold",15);
+    loff.y = 6;
     this->renderLabel(label);
 
     
@@ -429,7 +441,7 @@ void Node::tapped() {
             pdist.safeNormalize();
             
             // move
-            this->moveTo(parent->pos+pdist*perimeter*1.2);
+            this->moveTo(parent->pos+pdist*perimeter);
         }
     
     }
@@ -475,7 +487,7 @@ void Node::renderLabel(string lbl) {
 	textureLabel = gl::Texture(rendered);
     
     // offset
-    offsetLabel = - textureLabel.getWidth() / 2.0;
+    loff.x = - textureLabel.getWidth() / 2.0;
 
 }
 

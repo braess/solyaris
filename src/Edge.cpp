@@ -34,21 +34,21 @@ Edge::Edge(NodePtr n1, NodePtr n2) {
     visible = false;
     selected = false;
     
-    // label position
-    lpos.set(0,0);
+    // position
+    pos.set(0,0);
     
     // color
-    cstroke = Color(0.25,0.25,0.25);
-    cstrokea = Color(0.75,0.75,0.75);
+    cstroke = Color(0.3,0.3,0.3);
+    cstrokea = Color(0.6,0.6,0.6);
     cstrokes = Color(0.9,0.9,0.9);
     
-    ctxt = Color(0.9,0.9,0.9);
+    ctxt = Color(0.85,0.85,0.85);
     ctxts = Color(1,1,1);
     
     // font
     font = Font("Helvetica",12);
     textureLabel = gl::Texture(0,0);
-    offsetLabel = 0;
+    loff.set(0,0);
 }
 
 
@@ -67,9 +67,8 @@ void Edge::update() {
         selected = true;
     }
     
-    // label position
-    lpos = node1->pos + ((node2->pos - node1->pos) / 2.0);
-    lpos.x += offsetLabel;
+    // position
+    pos = node1->pos + ((node2->pos - node1->pos) / 2.0);
 }
 
 /**
@@ -90,7 +89,7 @@ void Edge::draw() {
     // label
     if (active || selected) {
         selected ? gl::color(ctxts) : gl::color(ctxt);
-        gl::draw( textureLabel, lpos);
+        gl::draw( textureLabel, pos+loff);
     }
     
 
@@ -190,7 +189,7 @@ void Edge::renderLabel(string lbl) {
 	textureLabel = gl::Texture(rendered);
     
     // offset
-    offsetLabel = - textureLabel.getWidth() / 2.0;
+    loff.x = - textureLabel.getWidth() / 2.0;
     
 }
 
