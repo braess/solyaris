@@ -323,11 +323,11 @@
             node->addChild(child);
             
             // create edge
-            NSString *eid = [self makeEdgeId:nid to:cid];
-            EdgePtr edge = imdgApp->getEdge([eid UTF8String]);
+            EdgePtr edge = imdgApp->getEdge([nid UTF8String], [cid UTF8String]);
             if (edge == NULL) {
+                NSString *eid = [self makeEdgeId:nid to:cid];
                 edge = imdgApp->createEdge([eid UTF8String],node,child);
-                edge->renderLabel([NSLocalizedString(@"Director", @"Director") UTF8String]);
+                edge->renderLabel([mdirector.movie.year UTF8String]);
             }
             if (existing) {
                 edge->show();
@@ -360,9 +360,9 @@
             node->addChild(child);
             
             // create edge
-            NSString *eid = [self makeEdgeId:nid to:cid];
-            EdgePtr edge = imdgApp->getEdge([eid UTF8String]);
+            EdgePtr edge = imdgApp->getEdge([nid UTF8String], [cid UTF8String]);
             if (edge == NULL) {
+                NSString *eid = [self makeEdgeId:nid to:cid];
                 edge = imdgApp->createEdge([eid UTF8String],node,child);
                 edge->renderLabel([mactor.character UTF8String]);
             }
@@ -420,9 +420,9 @@
             node->addChild(child);
             
             // create edge
-            NSString *eid = [self makeEdgeId:nid to:cid];
-            EdgePtr edge = imdgApp->getEdge([eid UTF8String]);
+            EdgePtr edge = imdgApp->getEdge([nid UTF8String], [cid UTF8String]);
             if (edge == NULL) {
+                NSString *eid = [self makeEdgeId:nid to:cid];
                 edge = imdgApp->createEdge([eid UTF8String],node,child);
                 edge->renderLabel([mactor.character UTF8String]);
             }
@@ -480,11 +480,11 @@
             node->addChild(child);
             
             // create edge
-            NSString *eid = [self makeEdgeId:nid to:cid];
-            EdgePtr edge = imdgApp->getEdge([eid UTF8String]);
+            EdgePtr edge = imdgApp->getEdge([nid UTF8String], [cid UTF8String]);
             if (edge == NULL) {
+                NSString *eid = [self makeEdgeId:nid to:cid];
                 edge = imdgApp->createEdge([eid UTF8String],node,child);
-                edge->renderLabel([NSLocalizedString(@"Director", @"Director") UTF8String]);
+                edge->renderLabel([mactor.movie.year UTF8String]);
             }
             if (existing) {
                 edge->show();
@@ -747,9 +747,7 @@
             NSString *cid = [NSString stringWithCString:(*child)->nid.c_str() encoding:[NSString defaultCStringEncoding]];
             
             // edge
-            NSString *eid = [self makeEdgeId:pid to:cid];
-            NSLog(@"%@",eid);
-            EdgePtr edge = imdgApp->getEdge([eid UTF8String]);
+            EdgePtr edge = imdgApp->getEdge([pid UTF8String], [cid UTF8String]);
             
             // properties
             NSNumber *nid = [self toDBId:[NSString stringWithCString:(*child)->nid.c_str() encoding:[NSString defaultCStringEncoding]]];
@@ -757,7 +755,10 @@
             NSString *value = [NSString stringWithCString:(*child)->label.c_str() encoding:[NSString defaultCStringEncoding]];
             NSString *meta = @"meta";
             if (edge != NULL) {
+                
+                // label
                 meta = [NSString stringWithCString:edge->label.c_str() encoding:[NSString defaultCStringEncoding]];
+                
             }
             
             

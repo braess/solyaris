@@ -8,6 +8,7 @@
 #include "Edge.h"
 #include "cinder/gl/gl.h"
 #include "cinder/Text.h"
+#include "cinder/CinderMath.h"
 
 
 #pragma mark -
@@ -47,8 +48,8 @@ Edge::Edge(NodePtr n1, NodePtr n2) {
     
     // font
     font = Font("Helvetica",12);
+    loff.set(0,-12);
     textureLabel = gl::Texture(0,0);
-    loff.set(0,0);
 }
 
 
@@ -88,8 +89,25 @@ void Edge::draw() {
     
     // label
     if (active || selected) {
+        
+        // color
         selected ? gl::color(ctxts) : gl::color(ctxt);
-        gl::draw( textureLabel, pos+loff);
+        
+        // angle 
+        float ar = cinder::math<float>::atan2(node2->pos.x - node1->pos.x, node2->pos.y - node1->pos.y);
+        float ad = cinder::toDegrees(-ar);
+        ad += (ad < 0) ? 90 : 270;
+        
+        // push, translate & rotate
+        gl::pushMatrices();
+        gl::translate(pos);
+        gl::rotate(Vec3f(0, 0,ad));
+        
+        // draw
+        gl::draw( textureLabel, loff);
+        
+        // and pop it goes
+        gl::popMatrices();
     }
     
 
@@ -138,6 +156,11 @@ void Edge::show() {
     if (node1->isActive() && node2->isActive() 
         || node1->isActive() && node2->isLoading()
         || node2->isActive() && node1->isLoading()) {
+        
+        // label
+        font = Font("Helvetica-Bold",12);
+        //loff.y = -15;
+        this->renderLabel(label);
         
         // state
         active = true;

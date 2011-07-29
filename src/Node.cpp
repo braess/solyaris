@@ -11,8 +11,6 @@
 #include "cinder/CinderMath.h"
 
 
-
-
 #pragma mark -
 #pragma mark Object
 
@@ -406,7 +404,7 @@ void Node::hide() {
  * Touched.
  */
 void Node::touched() {
-    FLog();
+    GLog();
     
     // state
     selected = true;
@@ -473,7 +471,6 @@ bool Node::isLoading() {
 void Node::renderLabel(string lbl) {
     GLog();
     
- 
     // field
     label = lbl;
     
@@ -496,7 +493,7 @@ void Node::renderLabel(string lbl) {
  * Calculates the mass.
  */
 float Node::calcmass() {
-    return radius * radius * 0.001f + 0.01f;
+    return radius * radius * 0.0001f + 0.01f;
 }
 
 

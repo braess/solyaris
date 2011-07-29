@@ -50,7 +50,7 @@ class Graph {
     NodePtr createNode(string nid, string type, double x, double y);
     NodePtr getNode(string nid);
     EdgePtr createEdge(string eid, NodePtr n1, NodePtr n2);
-    EdgePtr getEdge(string eid);
+    EdgePtr getEdge(string nid1, string nid2);
     
     
     // private

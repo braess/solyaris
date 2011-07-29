@@ -38,7 +38,7 @@ if(isset($_GET['key']) && isset($_GET['id'])) {
 			 while($row = mysql_fetch_assoc($rows_movies)) {
 				
 				// result
-				if (includeMovie($row['title'])) {
+				if (includeMovie($row['title'],$row['year'])) {
 					
 					// movie
 	             	$movie = array();
@@ -47,7 +47,7 @@ if(isset($_GET['key']) && isset($_GET['id'])) {
 	                $movie['mid'] = $row['movieid'];
 	
 					// title
-					$movie['title'] = $row['title'];
+					$movie['title'] = formatTitle($row['title']);
 					
 					// year
 					$movie['year'] = $row['year'];

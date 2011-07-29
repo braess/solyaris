@@ -24,7 +24,7 @@ if(isset($_GET['key']) && isset($_GET['query'])) {
 		$qt = "";
 		$terms = explode(" ",$param_query);
 		foreach($terms as $t) {
-			$qt .= "+ $t ";
+			$qt .= "+$t ";
 		}
         
         // query
@@ -55,10 +55,10 @@ if(isset($_GET['key']) && isset($_GET['query'])) {
                     while($row = mysql_fetch_assoc($rows)) {
 				
 						// result
-						if (includeMovie($row['title'])) {
+						if (includeMovie($row['title'],$row['year'])) {
 							$result = array();
-	                        $result['id'] = $row['movieid'];
-	                        $result['data'] = $row['title'];
+	                        $result['rid'] = $row['movieid'];
+	                        $result['data'] = formatTitle($row['title']);
 	                        $results[] = $result;
 						}
                     }
@@ -72,7 +72,7 @@ if(isset($_GET['key']) && isset($_GET['query'])) {
 						
 						// result
                         $result = array();
-                        $result['id'] = $row['actorid'];
+                        $result['rid'] = $row['actorid'];
                         $result['data'] = $row['name'];
                         $results[] = $result;
                     }
@@ -86,7 +86,7 @@ if(isset($_GET['key']) && isset($_GET['query'])) {
 						
 						// result
                         $result = array();
-                        $result['id'] = $row['directorid'];
+                        $result['rid'] = $row['directorid'];
                         $result['data'] = $row['name'];
                         $results[] = $result;
                     }

@@ -29,7 +29,7 @@ if(isset($_GET['key']) && isset($_GET['id'])) {
 			$row = mysql_fetch_assoc($rows_movie);
 			
 			// title
-			$movie['title'] = $row['title'];
+			$movie['title'] = formatTitle($row['title']);
 			
 			// year
 			$movie['year'] = $row['year'];

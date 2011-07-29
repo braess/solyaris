@@ -398,13 +398,17 @@ EdgePtr Graph::createEdge(string eid, NodePtr n1, NodePtr n2) {
 /**
  * Gets an edge.
  */
-EdgePtr Graph::getEdge(string eid) {
+EdgePtr Graph::getEdge(string nid1, string nid2) {
     GLog();
     
     // find the key
-    map<string,int>::iterator it = emap.find(eid);
-    if(it != emap.end()) {
-        return EdgePtr(edges.at(it->second));
+    map<string,int>::iterator it1 = emap.find(nid1 + "_edge_" + nid2);
+    if(it1 != emap.end()) {
+        return EdgePtr(edges.at(it1->second));
+    }
+    map<string,int>::iterator it2 = emap.find(nid2 + "_edge_" + nid1);
+    if(it2 != emap.end()) {
+        return EdgePtr(edges.at(it2->second));
     }
     
     // nop
