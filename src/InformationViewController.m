@@ -15,7 +15,6 @@
  */
 @interface InformationViewController (SectionStack)
 - (UIView *)sectionHeader:(NSString*)label;
-- (UIView *)sectionFiller;
 @end
 
 /**
@@ -105,7 +104,6 @@
  * Customize the number of sections in the table view.
  */
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)aTableView {
-	// count it
     return 3;
 }
 
@@ -119,12 +117,15 @@
     switch (section) {
 		case SectionInformationMovies: {
 			return [_movies count];
+            break;
 		}
 		case SectionInformationActors: {
 			return [_actors count];
+            break;
 		}
         case SectionInformationDirectors: {
 			return [_directors count];
+            break;
 		}
     }
     
@@ -136,10 +137,8 @@
  * Customize the section header height.
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (section==0)
-        return _sectionGapHeight;
     if ([self tableView:tableView numberOfRowsInSection:section]==0) {
-        return 0;
+        return 0.0000000000000000000000000001; // null is ignored...
     }
     return _sectionGapHeight;
 }
@@ -148,9 +147,6 @@
  * Customize the section footer height.
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section==[self numberOfSectionsInTableView:tableView]-1) {
-        return _sectionGapHeight;
-    }
     return 0;
 }
 
@@ -161,7 +157,7 @@
     
     // filler
     if ([self tableView:tableView numberOfRowsInSection:section]==0) {
-        return [self sectionFiller];
+        return [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     }
     // header
     else {
@@ -193,13 +189,12 @@
     // and back
     return shView;
 }
-- (UIView *)sectionFiller {
-    static UILabel *emptyLabel = nil;
-    if (!emptyLabel) {
-        emptyLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-        emptyLabel.backgroundColor = [UIColor clearColor];
-    }
-    return emptyLabel;
+
+/*
+ * Customize the footer view.
+ */
+- (UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    return [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
 }
 
 
@@ -228,8 +223,8 @@
             break;
 		}
     }
-    
     return nil;
+    
 }
 
 
@@ -268,9 +263,9 @@
 	cell.textLabel.text = nfo.value;
 	cell.detailTextLabel.text = nfo.meta;
 
-	
 	// return
     return cell;
+    
 }
 
 
@@ -280,7 +275,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	FLog();
 
-	
 }
 
 

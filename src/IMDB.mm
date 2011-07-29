@@ -498,6 +498,8 @@ NSString* STORE = @"IMDG.sqlite";
     // parse json
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
     NSDictionary *djson = [json JSONValue];
+    
+    // result
     NSArray *results = [djson objectForKey:@"result"];
     for (NSDictionary *result in results)	{
         SearchResult *sresult = (SearchResult*)[NSEntityDescription insertNewObjectForEntityForName:@"SearchResult" inManagedObjectContext:managedObjectContext];

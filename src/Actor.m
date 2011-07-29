@@ -2,7 +2,7 @@
 //  Actor.m
 //  IMDG
 //
-//  Created by CNPP on 28.7.2011.
+//  Created by CNPP on 29.7.2011.
 //  Copyright (c) 2011 Beat Raess. All rights reserved.
 //
 
@@ -11,9 +11,9 @@
 
 
 @implementation Actor
-@dynamic loaded;
-@dynamic name;
 @dynamic aid;
+@dynamic name;
+@dynamic loaded;
 @dynamic movies;
 
 - (void)addMoviesObject:(MovieActor *)value {    

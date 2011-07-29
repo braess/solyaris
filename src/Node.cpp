@@ -67,7 +67,7 @@ Node::Node(string idn, double x, double y) {
     ctxts = Color(1,1,1);
     
     // alpha
-    acore = 0.85;
+    acore = 0.6;
     ascore = 1.0;
     aglow = 0.3;
     asglow = 0.45;
@@ -371,7 +371,7 @@ void Node::show(bool animate) {
     if (! visible) {
         
         // radius & position
-        float r = (*parent).radius * 0.5;
+        float r = (*parent).radius * 0.3;
         Vec2d p = Vec2d((*parent).pos.x+Rand::randFloat(-r,r),(*parent).pos.y+Rand::randFloat(-r,r));
         
         // animate

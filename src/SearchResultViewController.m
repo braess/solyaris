@@ -7,6 +7,7 @@
 //
 
 #import "SearchResultViewController.h"
+#import "IMDGConstants.h"
 
 
 /**
@@ -62,7 +63,7 @@
     }
     
     // sort
-	NSSortDescriptor *sorter = [[NSSortDescriptor alloc] initWithKey:@"data" ascending:YES];
+	NSSortDescriptor *sorter = [[NSSortDescriptor alloc] initWithKey:@"data" ascending:TRUE];
 	[_data sortUsingDescriptors:[NSArray arrayWithObject:sorter]];
 	[sorter release];
     
@@ -139,19 +140,25 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     
-    // Identifier
-    static NSString *CellIdentifier = @"CellIdentifier";
+    // identifiers
+    static NSString *CellSearchResultIdentifier = @"CellSearchResult";
+	
+	// create cell
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellSearchResultIdentifier];
+	if (cell == nil) {
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellSearchResultIdentifier] autorelease];
+		cell.accessoryType = UITableViewCellAccessoryNone;
+	}
+	
+	// configure
+	cell.textLabel.font = [UIFont fontWithName:@"Helvetica" size:15.0]; 
+	cell.textLabel.textColor = [UIColor colorWithRed:63.0/255.0 green:63.0/255.0 blue:63.0/255.0 alpha:1.0];
+
     
-    // Cell
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
-        cell.accessoryType = UITableViewCellAccessoryNone;
-    }
-    
-    // Configure 
+    // result 
     SearchResult *sr = [_data objectAtIndex:indexPath.row];
     cell.textLabel.text = sr.data;
+    cell.detailTextLabel.text = @"";
     return cell;
 }
 
