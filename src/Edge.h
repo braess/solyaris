@@ -25,6 +25,7 @@ typedef std::vector<EdgePtr> EdgeVectorPtr;
 typedef EdgeVectorPtr::iterator EdgeIt;
 
 
+
 /**
  * Graph Edge.
  */
@@ -49,11 +50,11 @@ class Edge {
     void renderLabel(string lbl);
     bool isActive();
     bool isVisible();
-    void dealloc();
+    
     
     // Public Fields
-    NodePtr node1;
-    NodePtr node2;
+    NodeWeakPtr wnode1;
+    NodeWeakPtr wnode2;
     string label;
     
     

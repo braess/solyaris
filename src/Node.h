@@ -13,6 +13,7 @@
 #include "cinder/Font.h"
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 
 
 // namespace
@@ -24,8 +25,10 @@ class Node;
 
 // typedef
 typedef boost::shared_ptr<Node> NodePtr;
+typedef boost::weak_ptr<Node> NodeWeakPtr;
 typedef std::vector<NodePtr> NodeVectorPtr;
 typedef NodeVectorPtr::iterator NodeIt;
+
 
 // constants
 const string nodeMovie = "movie";	
@@ -72,14 +75,14 @@ class Node {
     bool isVisible();
     bool isSelected();
     bool isLoading();
-    void dealloc();
     
     
     // Public Fields
     string nid;
     string label;
     string type;
-    NodePtr parent;
+    NodeWeakPtr sref;
+    NodeWeakPtr parent;
     NodeVectorPtr children;
     Vec2d pos;
     Vec2d ppos;

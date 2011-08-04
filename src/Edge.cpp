@@ -27,8 +27,8 @@ Edge::Edge(NodePtr n1, NodePtr n2) {
     damping = 0.9;
     
     // nodes
-    node1 = n1;
-    node2 = n2;
+    wnode1 = NodeWeakPtr(n1);
+    wnode2 = NodeWeakPtr(n2);
     
     // state
     active = false;
@@ -62,14 +62,22 @@ Edge::Edge(NodePtr n1, NodePtr n2) {
  */
 void Edge::update() {
     
-    // selected
-    selected = false;
-    if (node1->isSelected() || node2->isSelected()) {
-        selected = true;
+    
+    // nodes
+    NodePtr node1 = wnode1.lock();
+    NodePtr node2 = wnode2.lock();
+    if (node1 && node2) {
+        
+        // selected
+        selected = false;
+        if (node1->isSelected() || node2->isSelected()) {
+            selected = true;
+        }
+        
+        // position
+        pos = node1->pos + ((node2->pos - node1->pos) / 2.0);
     }
     
-    // position
-    pos = node1->pos + ((node2->pos - node1->pos) / 2.0);
 }
 
 /**
@@ -77,37 +85,43 @@ void Edge::update() {
  */
 void Edge::draw() {
     
-    // unblend
-    gl::enableAlphaBlending(true);
-    
-    // color
-    active ? gl::color(cstrokea) : gl::color(cstroke);
-    if (selected) {gl::color(cstrokes);}
-    
-    // line
-    gl::drawLine(node1->pos, node2->pos);
-    
-    // label
-    if (active || selected) {
+    // nodes
+    NodePtr node1 = wnode1.lock();
+    NodePtr node2 = wnode2.lock();
+    if (node1 && node2) {
+        
+        // unblend
+        gl::enableAlphaBlending(true);
         
         // color
-        selected ? gl::color(ctxts) : gl::color(ctxt);
+        active ? gl::color(cstrokea) : gl::color(cstroke);
+        if (selected) {gl::color(cstrokes);}
         
-        // angle 
-        float ar = cinder::math<float>::atan2(node2->pos.x - node1->pos.x, node2->pos.y - node1->pos.y);
-        float ad = cinder::toDegrees(-ar);
-        ad += (ad < 0) ? 90 : 270;
+        // line
+        gl::drawLine(node1->pos, node2->pos);
         
-        // push, translate & rotate
-        gl::pushMatrices();
-        gl::translate(pos);
-        gl::rotate(Vec3f(0, 0,ad));
-        
-        // draw
-        gl::draw( textureLabel, loff);
-        
-        // and pop it goes
-        gl::popMatrices();
+        // label
+        if (active || selected) {
+            
+            // color
+            selected ? gl::color(ctxts) : gl::color(ctxt);
+            
+            // angle 
+            float ar = cinder::math<float>::atan2(node2->pos.x - node1->pos.x, node2->pos.y - node1->pos.y);
+            float ad = cinder::toDegrees(-ar);
+            ad += (ad < 0) ? 90 : 270;
+            
+            // push, translate & rotate
+            gl::pushMatrices();
+            gl::translate(pos);
+            gl::rotate(Vec3f(0, 0,ad));
+            
+            // draw
+            gl::draw( textureLabel, loff);
+            
+            // and pop it goes
+            gl::popMatrices();
+        }
     }
     
 
@@ -122,25 +136,31 @@ void Edge::draw() {
  */
 void Edge::repulse() {
     
-    // distance vector
-    Vec2d diff = node2->pos - node1->pos;
-    
-    // normalize / length
-    diff.safeNormalize();
-    diff *= length;
-    
-    // target
-    Vec2d target = node1->pos + diff;
-
-    // force
-    Vec2d force = target - node2->pos;
-    force *= 0.5;
-    force *= stiffness;
-    force *= (1 - damping);
-    
-    // update velocity
-    node1->velocity += force*-1;
-    node2->velocity += force;
+    // nodes
+    NodePtr node1 = wnode1.lock();
+    NodePtr node2 = wnode2.lock();
+    if (node1 && node2) {
+        
+        // distance vector
+        Vec2d diff = node2->pos - node1->pos;
+        
+        // normalize / length
+        diff.safeNormalize();
+        diff *= length;
+        
+        // target
+        Vec2d target = node1->pos + diff;
+        
+        // force
+        Vec2d force = target - node2->pos;
+        force *= 0.5;
+        force *= stiffness;
+        force *= (1 - damping);
+        
+        // update velocity
+        node1->velocity += force*-1;
+        node2->velocity += force;
+    }
 
 }
 
@@ -152,22 +172,28 @@ void Edge::repulse() {
 void Edge::show() {
     GLog();
     
-    // check if active
-    if (node1->isActive() && node2->isActive() 
-        || node1->isActive() && node2->isLoading()
-        || node2->isActive() && node1->isLoading()) {
+    // nodes
+    NodePtr node1 = wnode1.lock();
+    NodePtr node2 = wnode2.lock();
+    if (node1 && node2) {
         
-        // label
-        font = Font("Helvetica-Bold",12);
-        //loff.y = -15;
-        this->renderLabel(label);
+        // check if active
+        if (node1->isActive() && node2->isActive() 
+            || node1->isActive() && node2->isLoading()
+            || node2->isActive() && node1->isLoading()) {
+            
+            // label
+            font = Font("Helvetica-Bold",12);
+            //loff.y = -15;
+            this->renderLabel(label);
+            
+            // state
+            active = true;
+        }
         
         // state
-        active = true;
+        visible = true;
     }
-    
-    // state
-    visible = true;
     
 }
 void Edge::hide() {
@@ -185,10 +211,20 @@ bool Edge::isActive() {
     return active;
 }
 bool Edge::isVisible() {
-    return  active
-            || (visible && ( (node1->isVisible() && ! node2->isLoading()) && (node2->isVisible() && ! node1->isLoading())) ) 
-            || ( (node1->isLoading() && node2->isActive()) || (node2->isLoading() && node1->isActive()) ) 
-            || ( (node1->isActive() || node1->isSelected()) & (node2->isActive() || node2->isSelected()));
+    bool v;
+    
+    // nodes
+    NodePtr node1 = wnode1.lock();
+    NodePtr node2 = wnode2.lock();
+    if (node1 && node2) {
+        
+        // visible?
+        v = active
+        || (visible && ( (node1->isVisible() && ! node2->isLoading()) && (node2->isVisible() && ! node1->isLoading())) ) 
+        || ( (node1->isLoading() && node2->isActive()) || (node2->isLoading() && node1->isActive()) ) 
+        || ( (node1->isActive() || node1->isSelected()) & (node2->isActive() || node2->isSelected()));
+    }
+    return v;
 }
 
 
@@ -217,17 +253,3 @@ void Edge::renderLabel(string lbl) {
 }
 
 
-
-#pragma mark -
-#pragma mark Memory management
-
-/*
- * Deallocates used memory.
- */
-void Edge::dealloc() {
-    GLog();
-    
-    // reset
-    node1.reset();
-    node2.reset();
-}

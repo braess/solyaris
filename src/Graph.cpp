@@ -87,9 +87,12 @@ void Graph::update() {
             
             // children
             for (NodeIt child = (*node)->children.begin(); child != (*node)->children.end(); ++child) {
+                
+                // parent
+                NodePtr pp = (*child)->parent.lock();
 
                 // move visible children
-                if (! (*child)->isActive() && (*child)->isVisible() && (*child)->parent == (*node)) {
+                if (! (*child)->isActive() && (*child)->isVisible() && pp == (*node)) {
                     
                     // follow
                     (*child)->translate((*node)->pos - (*node)->ppos);
@@ -151,19 +154,11 @@ void Graph::draw() {
  * Resets the graph.
  */
 void Graph::reset() {
-    
-    
-    // deallocate
-    for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
-        (*edge)->dealloc();
-    }
-    for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
-        (*node)->dealloc();
-    }
+    DLog();
     
     // clear
-    nodes.clear(); // detail/sp_counted_base_spin.hpp
-    edges.clear(); // pointer being freed was not allocated
+    edges.clear(); 
+    nodes.clear(); 
     
     // reset maps
     nmap.clear();
@@ -339,21 +334,25 @@ NodePtr Graph::createNode(string nid, string type, double x, double y) {
     // node
     if (type == nodeMovie) {
         boost::shared_ptr<NodeMovie> node(new NodeMovie(nid,x,y));
+        node->sref = node;
         nodes.push_back(node);
         return node;
     }
     else if (type == nodeActor) {
         boost::shared_ptr<NodeActor> node(new NodeActor(nid,x,y));
+        node->sref = node;
         nodes.push_back(node);
         return node;
     }
     else if (type == nodeDirector) {
         boost::shared_ptr<NodeDirector> node(new NodeDirector(nid,x,y));
+        node->sref = node;
         nodes.push_back(node);
         return node;
     }
     else {
         boost::shared_ptr<Node> node(new Node(nid,x,y));
+        node->sref = node;
         nodes.push_back(node);
         return node;
     }

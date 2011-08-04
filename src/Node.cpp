@@ -26,7 +26,7 @@ Node::Node(string idn, double x, double y) {
     
     // node
     nid = idn;
-    parent = NodePtr();
+    parent = NodeWeakPtr();
     label = "";
     type = "Node";
     
@@ -296,17 +296,18 @@ void Node::grown() {
     for (NodeIt child = children.begin(); child != children.end(); ++child) {
         
         // parent
-        if ((*child)->parent) {
+        if ((*child)->parent.lock()) {
             
             // unhide
             (*child)->show(false);
             
         }
+
         // adopt child
         else {
-            
+
             // adopt child
-            (*child)->parent = NodePtr(this);
+            (*child)->parent = sref;
             
             // show
             if (nb > 0) {
@@ -314,6 +315,7 @@ void Node::grown() {
                 nb--;
             }
         }
+  
         
         
         
@@ -370,20 +372,26 @@ void Node::show(bool animate) {
     // show it
     if (! visible) {
         
-        // radius & position
-        float r = (*parent).radius * 0.3;
-        Vec2d p = Vec2d((*parent).pos.x+Rand::randFloat(-r,r),(*parent).pos.y+Rand::randFloat(-r,r));
+        // parent
+        NodePtr pp = this->parent.lock();
+        if (pp) {
+            
+            // radius & position
+            float r = pp->radius * 0.3;
+            Vec2d p = Vec2d(pp->pos.x+Rand::randFloat(-r,r),pp->pos.y+Rand::randFloat(-r,r));
+            
+            // animate
+            if (animate) {
+                this->pos.set(pp->pos);
+                this->moveTo(p);
+            }
+            // set position
+            else {
+                this->pos.set(p);
+                this->mpos.set(p);
+            }
+        }
         
-        // animate
-        if (animate) {
-            this->pos.set((*parent).pos);
-            this->moveTo(p);
-        }
-        // set position
-        else {
-            this->pos.set(p);
-            this->mpos.set(p);
-        }
     }
     
     // state
@@ -431,15 +439,20 @@ void Node::tapped() {
     // reposition
     if (! active && ! loading) {
         
-        // distance to parent
-        Vec2d pdist =  pos - parent->pos;
-        if (pdist.length() < perimeter) {
+        // parent
+        NodePtr pp = this->parent.lock();
+        if (pp) {
             
-            // unity vector
-            pdist.safeNormalize();
-            
-            // move
-            this->moveTo(parent->pos+pdist*perimeter);
+            // distance to parent
+            Vec2d pdist =  pos - pp->pos;
+            if (pdist.length() < perimeter) {
+                
+                // unity vector
+                pdist.safeNormalize();
+                
+                // move
+                this->moveTo(pp->pos+pdist*perimeter);
+            }
         }
     
     }
@@ -498,21 +511,3 @@ float Node::calcmass() {
 
 
 
-
-#pragma mark -
-#pragma mark Memory management
-
-/*
- * Deallocates used memory.
- */
-void Node::dealloc() {
-    GLog();
-    
-    // reset
-    if (parent != NULL) {
-        parent.reset();
-    }
-    for (NodeIt child = children.begin(); child != children.end(); ++child) {
-        child->reset();
-    }
-}
