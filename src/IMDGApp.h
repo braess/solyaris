@@ -46,7 +46,7 @@ class IMDGApp : public AppNative {
     // Business
     NodePtr createNode(string nid, string type, double x, double y);
     NodePtr getNode(string nid);
-    EdgePtr createEdge(string eid, NodePtr n1, NodePtr n2);
+    EdgePtr createEdge(string eid,string type, NodePtr n1, NodePtr n2);
     EdgePtr getEdge(string nid1, string nid2);
     
     

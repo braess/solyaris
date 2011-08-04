@@ -18,7 +18,6 @@
  * Creates a graph.
  */
 Graph::Graph() {
-    Graph(0,0,0);
 }
 Graph::Graph(int w, int h, int d) {
     
@@ -30,6 +29,12 @@ Graph::Graph(int w, int h, int d) {
     // movement
     friction = 0.75;
     movement.set(0,0);
+    
+    // hitarea
+    harea = 6;
+    
+    // info
+    info = Info(Vec2d(w,h));
 }
 
 
@@ -146,6 +151,11 @@ void Graph::draw() {
             (*node)->draw();
         }
     }
+    
+    // info
+    if (info.isVisible()) {
+        info.draw();
+    }
 
 }
 
@@ -182,7 +192,7 @@ void Graph::touchBegan(Vec2d tpos, int tid) {
         
         // distance
 		float d = (*node)->pos.distance(tpos);
-        if (d < (*node)->core) {
+        if (d < (*node)->core+harea) {
             
             // touched
             GLog("tid = %d, node = ",tid);
@@ -190,6 +200,11 @@ void Graph::touchBegan(Vec2d tpos, int tid) {
             
             // state
             touched[tid]->touched();
+            
+            // set the info
+            this->sinfo();
+            info.position(tpos);
+            
             
             // have a break
             break;
@@ -205,7 +220,13 @@ void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
     // node
     if (touched[tid]) {
         GLog("tid = %d, node = ",tid);
+        
+        // move
         touched[tid]->moveTo(tpos);
+        
+        // position
+        info.position(tpos);
+
     }
     // graph
     else {
@@ -224,6 +245,9 @@ void Graph::touchEnded(Vec2d tpos, int tid){
         // state
         GLog("tid = %d, node = ",tid);
         touched[tid]->untouched();
+        
+        // hide info
+        info.hide();
     }
     // graph
     else {
@@ -249,7 +273,7 @@ NodePtr Graph::doubleTap(Vec2d tpos, int tid) {
     for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
         // distance
         float d = (*node)->pos.distance(tpos);
-        if (d < (*node)->core) {
+        if (d < (*node)->core+harea) {
             
             // tapped
             FLog("tid = %d, node = ",tid);
@@ -379,19 +403,34 @@ NodePtr Graph::getNode(string nid) {
 /**
  * Creates an edge.
  */
-EdgePtr Graph::createEdge(string eid, NodePtr n1, NodePtr n2) {
+EdgePtr Graph::createEdge(string eid, string type, NodePtr n1, NodePtr n2) {
     GLog();
     
     // edge map
     emap.insert(make_pair(eid, edges.size()));
     
     // node
-    boost::shared_ptr<Edge> edge(new Edge(n1,n2));
-    edges.push_back(edge);
-    
-    
-    // return
-    return edge;
+    if (type == edgeMovie) {
+        boost::shared_ptr<Edge> edge(new EdgeMovie(eid,n1,n2));
+        edges.push_back(edge);
+        return edge;
+    }
+    else if (type == edgeActor) {
+        boost::shared_ptr<Edge> edge(new EdgeActor(eid,n1,n2));
+        edges.push_back(edge);
+        return edge;
+    }
+    else if (type == edgeDirector) {
+        boost::shared_ptr<Edge> edge(new EdgeDirector(eid,n1,n2));
+        edges.push_back(edge);
+        return edge;
+    }
+    else {
+        boost::shared_ptr<Edge> edge(new Edge(eid,n1,n2));
+        edges.push_back(edge);
+        return edge;
+    }
+
 }
 
 /**
@@ -414,6 +453,32 @@ EdgePtr Graph::getEdge(string nid1, string nid2) {
     return EdgePtr();
 }
 
+
+/**
+ * Sets the info.
+ */
+void Graph::sinfo() {
+    FLog();
+    
+    // selected edges
+    bool etouch;
+    vector<string> txts = vector<string>();
+    for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
+        
+        // touched
+        if ((*edge)->isTouched()) {
+            etouch = true;
+            txts.push_back((*edge)->info());
+        }
+    }
+    
+    // touched
+    if (etouch) {
+        info.renderText(txts);
+        info.show();
+    }
+    
+}
 
 
 

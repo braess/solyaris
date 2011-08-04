@@ -8,6 +8,7 @@
 #include "cinder/app/TouchEvent.h"
 #include "Node.h"
 #include "Edge.h"
+#include "Info.h"
 #include <vector>
 #include <map>
 
@@ -49,8 +50,9 @@ class Graph {
     void repulse();
     NodePtr createNode(string nid, string type, double x, double y);
     NodePtr getNode(string nid);
-    EdgePtr createEdge(string eid, NodePtr n1, NodePtr n2);
+    EdgePtr createEdge(string eid, string type, NodePtr n1, NodePtr n2);
     EdgePtr getEdge(string nid1, string nid2);
+    void sinfo();
     
     
     // private
@@ -61,6 +63,7 @@ class Graph {
     int height;
     int direction;
     float friction;
+    float harea;
     
     // data
     NodeVectorPtr nodes;
@@ -75,6 +78,9 @@ class Graph {
     
     // touched nodes
     map<int, NodePtr> touched;
+    
+    // info
+    Info info;
     
     
 };

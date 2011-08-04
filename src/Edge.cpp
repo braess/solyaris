@@ -19,9 +19,10 @@
  */
 Edge::Edge() {
 }
-Edge::Edge(NodePtr n1, NodePtr n2) {
+Edge::Edge(string ide, NodePtr n1, NodePtr n2) {
     
     // fields
+    eid = ide;
     length = 400;
     stiffness = 0.6;
     damping = 0.9;
@@ -46,11 +47,52 @@ Edge::Edge(NodePtr n1, NodePtr n2) {
     ctxt = Color(0.85,0.85,0.85);
     ctxts = Color(1,1,1);
     
+    // label
+    label = "";
+    
     // font
     font = Font("Helvetica",12);
     loff.set(0,-12);
     textureLabel = gl::Texture(0,0);
 }
+
+
+/**
+ * Edge movie.
+ */
+EdgeMovie::EdgeMovie(): Edge::Edge()  {    
+}
+EdgeMovie::EdgeMovie(string ide, NodePtr n1, NodePtr n2): Edge::Edge(ide,n1,n2) {
+    
+    // type
+    type = edgeMovie;
+
+}
+
+/**
+ * Edge actor.
+ */
+EdgeActor::EdgeActor(): Edge::Edge()  {    
+}
+EdgeActor::EdgeActor(string ide, NodePtr n1, NodePtr n2): Edge::Edge(ide,n1,n2) {
+    
+    // type
+    type = edgeActor;
+
+}
+
+/**
+ * Edge director.
+ */
+EdgeDirector::EdgeDirector(): Edge::Edge()  {    
+}
+EdgeDirector::EdgeDirector(string ide, NodePtr n1, NodePtr n2): Edge::Edge(ide,n1,n2) {
+    
+    // type
+    type = edgeDirector;
+
+}
+
 
 
 
@@ -226,6 +268,52 @@ bool Edge::isVisible() {
     }
     return v;
 }
+bool Edge::isTouched() {
+    bool touched = false;
+    
+    // nodes
+    NodePtr node1 = wnode1.lock();
+    NodePtr node2 = wnode2.lock();
+    if (node1 && node2) {
+        
+        // selected
+        if (this->isVisible() && (node1->isSelected() || node2->isSelected())) {
+            touched = true;
+        }
+    }
+    return touched;
+}
+
+/**
+ * Info.
+ */
+string Edge::info() {
+    string nfo = "";
+    
+    // nodes
+    NodePtr node1 = wnode1.lock();
+    NodePtr node2 = wnode2.lock();
+    if (node1 && node2) {
+        
+        // type
+        if (this->type == edgeMovie) {
+            nfo = node1->label + " plays " + this->label + " in " + node2->label;
+        }
+        else if (this->type == edgeActor) {
+            nfo = node2->label + " plays " + this->label + " in " + node1->label;
+        }
+        else if (this->type == edgeDirector) {
+            if (node1->type == nodeDirector) {
+                nfo = node1->label + " is the director of " + node2->label;
+            }
+            else {
+                nfo = node2->label + " is the director of " + node1->label;
+            }
+        }
+    }
+    return nfo;
+}
+
 
 
 /**
@@ -233,7 +321,6 @@ bool Edge::isVisible() {
  */
 void Edge::renderLabel(string lbl) {
     GLog();
-    
     
     // field
     label = lbl;

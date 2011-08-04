@@ -25,6 +25,11 @@ typedef std::vector<EdgePtr> EdgeVectorPtr;
 typedef EdgeVectorPtr::iterator EdgeIt;
 
 
+// constants
+const string edgeMovie = "movie";	
+const string edgeActor = "actor";
+const string edgeDirector = "director";
+
 
 /**
  * Graph Edge.
@@ -37,7 +42,7 @@ class Edge {
     
     // Edge
     Edge();
-    Edge(NodePtr n1, NodePtr n2); 
+    Edge(string ide, NodePtr n1, NodePtr n2); 
     
     // Sketch
     void update();
@@ -50,12 +55,16 @@ class Edge {
     void renderLabel(string lbl);
     bool isActive();
     bool isVisible();
+    bool isTouched();
+    string info();
     
     
     // Public Fields
+    string eid;
     NodeWeakPtr wnode1;
     NodeWeakPtr wnode2;
     string label;
+    string type;
     
     
     // private
@@ -86,4 +95,32 @@ class Edge {
     Vec2d loff;
     gl::Texture	textureLabel;
 
+};
+
+class EdgeMovie: public Edge {
+    
+    // public
+    public:
+    
+    // Node
+    EdgeMovie();
+    EdgeMovie(string ide, NodePtr n1, NodePtr n2);
+};
+class EdgeActor: public Edge {
+    
+    // public
+    public:
+    
+    // Node
+    EdgeActor();
+    EdgeActor(string ide, NodePtr n1, NodePtr n2);
+};
+class EdgeDirector: public Edge {
+    
+    // public
+    public:
+    
+    // Node
+    EdgeDirector();
+    EdgeDirector(string ide, NodePtr n1, NodePtr n2);
 };

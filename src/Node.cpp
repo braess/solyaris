@@ -23,7 +23,6 @@ Node::Node() {
 Node::Node(string idn, double x, double y) {
     GLog();
     
-    
     // node
     nid = idn;
     parent = NodeWeakPtr();
@@ -54,8 +53,8 @@ Node::Node(string idn, double x, double y) {
     visible = false;
     
     // radius / mass
-    core = 12;
-    radius = 12;
+    core = 9;
+    radius = 9;
     mass = calcmass();
     
     // velocity
@@ -227,7 +226,7 @@ void Node::attract(NodePtr node) {
 
     // distance
     double d = pos.distance((*node).pos);
-    double p = active ? perimeter : (2*radius);
+    double p = active ? perimeter : radius*1.25;
     if (d > 0 && d < p) {
         
         // force
@@ -340,8 +339,8 @@ void Node::load() {
     loading = true;
     
     // radius
-    radius = 39;
-    core = 18;
+    radius = 30;
+    core = 15;
     
     // color
     ctxt = Color(0.9,0.9,0.9);

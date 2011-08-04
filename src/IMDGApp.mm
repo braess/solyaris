@@ -199,11 +199,11 @@ NodePtr IMDGApp::getNode(string nid) {
 /*
  * Creates an edge.
  */
-EdgePtr IMDGApp::createEdge(string eid, NodePtr n1, NodePtr n2) {
+EdgePtr IMDGApp::createEdge(string eid, string type, NodePtr n1, NodePtr n2) {
     GLog();
     
     // graph
-    return graph.createEdge(eid,n1,n2);
+    return graph.createEdge(eid,type,n1,n2);
 }
 
 /*
