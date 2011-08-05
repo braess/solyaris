@@ -16,6 +16,9 @@
 		1819227413C72CEB00C89C74 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1819227313C72CEB00C89C74 /* CoreData.framework */; };
 		1819227713C72F9700C89C74 /* IMDG.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1819227513C72F9700C89C74 /* IMDG.xcdatamodeld */; };
 		183B97AE13C6EA1700B7563D /* SearchResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183B97AD13C6EA1700B7563D /* SearchResultViewController.m */; };
+		187ABF9C13EC6DEB00090C63 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 187ABF9B13EC6DEB00090C63 /* SearchViewController.m */; };
+		187ABFAC13EC909500090C63 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 187ABFAB13EC909500090C63 /* SettingsViewController.m */; };
+		187ABFAE13EC977900090C63 /* btn_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 187ABFAD13EC977900090C63 /* btn_settings.png */; };
 		18E88A0B13EBFCCA00529B73 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 18E88A0A13EBFCCA00529B73 /* Icon-Small-50.png */; };
 		18E88A0D13EBFF2000529B73 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 18E88A0C13EBFF2000529B73 /* Icon-72.png */; };
 		18E88A2D13EC4E1600529B73 /* texture_content.png in Resources */ = {isa = PBXBuildFile; fileRef = 18E88A2C13EC4E1600529B73 /* texture_content.png */; };
@@ -76,6 +79,11 @@
 		1819227613C72F9700C89C74 /* IMDG.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = IMDG.xcdatamodel; sourceTree = "<group>"; };
 		183B97AC13C6EA1700B7563D /* SearchResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchResultViewController.h; path = src/SearchResultViewController.h; sourceTree = "<group>"; };
 		183B97AD13C6EA1700B7563D /* SearchResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchResultViewController.m; path = src/SearchResultViewController.m; sourceTree = "<group>"; };
+		187ABF9A13EC6DEB00090C63 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchViewController.h; path = src/SearchViewController.h; sourceTree = "<group>"; };
+		187ABF9B13EC6DEB00090C63 /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchViewController.m; path = src/SearchViewController.m; sourceTree = "<group>"; };
+		187ABFAA13EC909400090C63 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsViewController.h; path = src/SettingsViewController.h; sourceTree = "<group>"; };
+		187ABFAB13EC909500090C63 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingsViewController.m; path = src/SettingsViewController.m; sourceTree = "<group>"; };
+		187ABFAD13EC977900090C63 /* btn_settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_settings.png; path = Assets/btn_settings.png; sourceTree = "<group>"; };
 		18E88A0A13EBFCCA00529B73 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
 		18E88A0C13EBFF2000529B73 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
 		18E88A2C13EC4E1600529B73 /* texture_content.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = texture_content.png; path = Assets/texture_content.png; sourceTree = "<group>"; };
@@ -193,10 +201,14 @@
 			children = (
 				1804C6D313AA193F00417D32 /* IMDGViewController.h */,
 				1804C6D413AA193F00417D32 /* IMDGViewController.mm */,
+				187ABF9A13EC6DEB00090C63 /* SearchViewController.h */,
+				187ABF9B13EC6DEB00090C63 /* SearchViewController.m */,
 				183B97AC13C6EA1700B7563D /* SearchResultViewController.h */,
 				183B97AD13C6EA1700B7563D /* SearchResultViewController.m */,
 				180D8FCB13E1F27800364F54 /* InformationViewController.h */,
 				180D8FCC13E1F27800364F54 /* InformationViewController.m */,
+				187ABFAA13EC909400090C63 /* SettingsViewController.h */,
+				187ABFAB13EC909500090C63 /* SettingsViewController.m */,
 			);
 			name = app;
 			sourceTree = "<group>";
@@ -214,6 +226,7 @@
 		1804C6E313AA277B00417D32 /* buttons */ = {
 			isa = PBXGroup;
 			children = (
+				187ABFAD13EC977900090C63 /* btn_settings.png */,
 				18F8192813AA920F00D2F5C3 /* btn_reset.png */,
 				1804C6E413AA279800417D32 /* btn_info.png */,
 			);
@@ -477,6 +490,7 @@
 				18E88A2F13EC507B00529B73 /* texture_header.png in Resources */,
 				18E88A3F13EC5D3D00529B73 /* micon_loaded.png in Resources */,
 				18E88A4013EC5D3D00529B73 /* micon_visible.png in Resources */,
+				187ABFAE13EC977900090C63 /* btn_settings.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -516,6 +530,8 @@
 				18F6B3A613E33DA80079DB2A /* Search.m in Sources */,
 				18F6B3A913E33DA90079DB2A /* SearchResult.m in Sources */,
 				180E501613EB09F6000E0ADB /* Info.cpp in Sources */,
+				187ABF9C13EC6DEB00090C63 /* SearchViewController.m in Sources */,
+				187ABFAC13EC909500090C63 /* SettingsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

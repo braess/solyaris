@@ -49,7 +49,7 @@ enum {
 /*
  * Info Delegate.
  */
-@protocol InformationViewDelegate <NSObject>
+@protocol InformationDelegate <NSObject>
 - (void)informationDismiss;
 - (void)informationSelected:(NSNumber*)nid type:(NSString*)type;
 @end
@@ -61,9 +61,11 @@ enum {
 @interface InformationViewController : UIViewController <UITableViewDataSource, UITableViewDelegate> {
     
     // delegate
-	id<InformationViewDelegate> delegate;
+	id<InformationDelegate> delegate;
     
     // ui
+    UIView *_modalView;
+    UIView *_contentView;
     UILabel *_labelTitle;
     UITableView *_tableView;
     
@@ -75,10 +77,12 @@ enum {
 }
 
 // Properties
-@property (assign) id<InformationViewDelegate> delegate;
-@property (nonatomic, assign) NSMutableArray* movies;
-@property (nonatomic, assign) NSMutableArray* actors;
-@property (nonatomic, assign) NSMutableArray* directors;
+@property (assign) id<InformationDelegate> delegate;
+@property (nonatomic, retain) UIView *modalView;
+@property (nonatomic, retain) UIView *contentView;
+@property (nonatomic, retain) NSMutableArray *movies;
+@property (nonatomic, retain) NSMutableArray *actors;
+@property (nonatomic, retain) NSMutableArray *directors;
 
 // Object Methods
 - (id)initWithFrame:(CGRect)frame;
@@ -91,9 +95,9 @@ enum {
 
 
 /**
- * InformationBackgroundView.
+ * InformationContentView.
  */
-@interface InformationBackgroundView : UIView {
+@interface InformationContentView : UIView {
 }
 @end
 

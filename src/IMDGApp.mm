@@ -25,19 +25,10 @@ void IMDGApp::setup() {
     bg = Color(30.0/255.0, 30.0/255.0, 30.0/255.0);
     
     
-    // components
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-    float wwidth = window.frame.size.width;
-    //float wheight = window.frame.size.height;
-    
     // IMDG
-    CGRect frameIMDG = CGRectMake(0, 0, wwidth, 40);
-    imdgViewController = [[IMDGViewController alloc] initWithFrame:frameIMDG];
+    imdgViewController = [[IMDGViewController alloc] init];
     imdgViewController.imdgApp = this;
-	[window addSubview:imdgViewController.view];
-	[window bringSubviewToFront:imdgViewController.view];
     [imdgViewController loadView];
-	[imdgViewController viewWillAppear:NO];
 
 }
 

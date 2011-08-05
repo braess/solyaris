@@ -30,6 +30,8 @@
 
 // accessors
 @synthesize delegate;
+@synthesize modalView = _modalView;
+@synthesize contentView = _contentView;
 @synthesize movies = _movies;
 @synthesize actors = _actors;
 @synthesize directors = _directors;
@@ -65,7 +67,6 @@ int sectionGapInset = 15;
         
 		// view
 		vframe = frame;
-		
 
 	}
 	return self;
@@ -88,25 +89,28 @@ int sectionGapInset = 15;
     
     // frames
     CGRect wframe = window.frame;
-    CGRect bframe = CGRectMake(wframe.size.width/2.0-vframe.size.width/2.0, wframe.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
-    CGRect hframe = CGRectMake(0, 0, bframe.size.width, headerHeight);
-    CGRect fframe = CGRectMake(0, bframe.size.height-footerHeight, bframe.size.width, footerHeight);
-    CGRect tframe = CGRectMake(0, headerHeight, bframe.size.width, bframe.size.height-headerHeight-footerHeight);
+    CGRect cframe = CGRectMake(wframe.size.width/2.0-vframe.size.width/2.0, wframe.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
+    CGRect hframe = CGRectMake(0, 0, cframe.size.width, headerHeight);
+    CGRect fframe = CGRectMake(0, cframe.size.height-footerHeight, cframe.size.width, footerHeight);
+    CGRect tframe = CGRectMake(0, headerHeight, cframe.size.width, cframe.size.height-headerHeight-footerHeight);
     
     // view
     self.view = [[UIView alloc] initWithFrame:wframe];
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    self.view.hidden = YES;
     
     // modal
-    UIView *modalView = [[UIView alloc] initWithFrame:wframe];
-    modalView.backgroundColor = [UIColor blackColor];
-    modalView.opaque = NO;
-    modalView.alpha = 0.3;
-    [self.view addSubview:modalView];
-    [modalView release];
-    
+    UIView *mView = [[UIView alloc] initWithFrame:wframe];
+    mView.backgroundColor = [UIColor blackColor];
+    mView.opaque = NO;
+    mView.alpha = 0.3;
+    self.modalView = [mView retain];
+    [self.view addSubview:_modalView];
+    [mView release];
+
 	
-	// background
-    InformationBackgroundView *backgroundView = [[InformationBackgroundView alloc] initWithFrame:bframe];
+	// content
+    InformationContentView *ctView = [[InformationContentView alloc] initWithFrame:cframe];
     
     
     // header view
@@ -137,8 +141,8 @@ int sectionGapInset = 15;
 	dropShadow.colors = [NSArray arrayWithObjects:(id)[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1].CGColor,(id)[UIColor colorWithRed:0 green:0 blue:0 alpha:0].CGColor,nil];
 	[headerView.layer insertSublayer:dropShadow atIndex:0];
     
-    // add header view to background
-    [backgroundView addSubview:headerView];
+    // add header view to content
+    [ctView addSubview:headerView];
     [headerView release];
 
     
@@ -153,10 +157,10 @@ int sectionGapInset = 15;
     tableView.sectionHeaderHeight = 0; 
     tableView.sectionFooterHeight = 0;
     
-    // add table view to background
+    // add table view to content
     _tableView = [tableView retain];
-    [backgroundView addSubview:_tableView];
-    [backgroundView sendSubviewToBack:_tableView];
+    [ctView addSubview:_tableView];
+    [ctView sendSubviewToBack:_tableView];
     [tableView release];
     
     
@@ -166,15 +170,17 @@ int sectionGapInset = 15;
 	footerView.backgroundColor = [UIColor clearColor];
 	footerView.opaque = YES;
     
-    // add footer view to background
-    [backgroundView addSubview:footerView];
+    // add footer view to content
+    [ctView addSubview:footerView];
     [footerView release];
     
     
-    // add & release background
-    [self.view addSubview:backgroundView];
-    [self.view bringSubviewToFront:backgroundView];
-    [backgroundView release];
+    // add & release content
+    self.contentView = [ctView retain];
+    [self.view addSubview:_contentView];
+    [self.view bringSubviewToFront:_contentView];
+    [ctView release];
+    
 	    
 }
 
@@ -556,9 +562,9 @@ int sectionGapInset = 15;
 
 
 /**
- * InformationBackgroundView.
+ * InformationContentView.
  */
-@implementation InformationBackgroundView
+@implementation InformationContentView
 
 
 #pragma mark -

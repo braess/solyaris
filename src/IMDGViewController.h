@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "IMDB.h"
+#import "SearchViewController.h"
 #import "SearchResultViewController.h"
 #import "InformationViewController.h"
+#import "SettingsViewController.h"
+#import "cinder/app/CinderViewCocoaTouch.h"
 
 // Declarations
 CPP_CLASS(IMDGApp);
@@ -17,44 +20,35 @@ CPP_CLASS(IMDGApp);
 /**
  * IMDG ViewController.
  */
-@interface IMDGViewController : UIViewController <UISearchBarDelegate, UIPopoverControllerDelegate, APIDelegate, SearchResultDelegate, InformationViewDelegate> {
+@interface IMDGViewController : UIViewController <UIPopoverControllerDelegate, APIDelegate, SearchDelegate, SearchResultDelegate, InformationDelegate, SettingsDelegate> {
     
     // app
     IMDGApp *imdgApp;
     IMDB *imdb;
     
     // controllers
+    SearchViewController *_searchViewController;
     SearchResultViewController *_searchResultViewController;
     InformationViewController *_informationViewController;
+    InformationViewController *_settingsViewController;
     
-    // ui
-    UISearchBar *_searchBar;
-    UIButton *_buttonMovie;
-    UIButton *_buttonActor;
-    UIButton *_buttonDirector;
-    UIButton *_buttonReset;
+    // cinder
+    CinderViewCocoaTouch *_cinderView;
     
     // popover
 	UIPopoverController *_searchResultsPopoverController;
+    
     
 }
 
 // Properties
 @property (assign) IMDGApp *imdgApp;
-@property (nonatomic, retain) UISearchBar *searchBar;
-@property (nonatomic, retain) UIButton *buttonMovie;
-@property (nonatomic, retain) UIButton *buttonActor;
-@property (nonatomic, retain) UIButton *buttonDirector;
-@property (nonatomic, retain) UIButton *buttonReset;
 
-// Action Methods
-- (void)actionMovie:(id)sender;
-- (void)actionActor:(id)sender;
-- (void)actionDirector:(id)sender;
-- (void)actionReset:(id)sender;
+// Action Settings
+- (void)actionSettings:(id)sender;
+
 
 // Business Methods
-- (void)search:(NSString*)q type:(NSString*)t;
 - (void)nodeInformation:(NSString*)nid;
 - (void)nodeLoad:(NSString*)nid;
 

@@ -31,12 +31,18 @@
 - (void)animationInformationShowDone;
 - (void)animationInformationHide;
 - (void)animationInformationHideDone;
+- (void)animationSettingsShow;
+- (void)animationSettingsShowDone;
+- (void)animationSettingsHide;
+- (void)animationSettingsHideDone;
 @end
 
 
 // constants
-#define kAnimateTimeInformationShow	0.45f
-#define kAnimateTimeInformationHide	0.3f
+#define kAnimateTimeInformationShow	0.75f
+#define kAnimateTimeInformationHide	0.45f
+#define kAnimateTimeSettingsShow	0.75f
+#define kAnimateTimeSettingsHide	0.45f
 
 
 
@@ -46,24 +52,13 @@
 @implementation IMDGViewController
 
 
-#pragma mark -
-#pragma mark Constants
-
-// constants
-#define kAlpha 0.9f
-#define kAlphaActive 0.96f
-
 
 #pragma mark -
 #pragma mark Properties
 
 // accessors
 @synthesize imdgApp;
-@synthesize searchBar=_searchBar;
-@synthesize buttonMovie=_buttonMovie;
-@synthesize buttonActor=_buttonActor;
-@synthesize buttonDirector=_buttonDirector;
-@synthesize buttonReset=_buttonReset;
+
 
 
 #pragma mark -
@@ -72,15 +67,11 @@
 /**
  * Init.
  */
-- (id)initWithFrame:(CGRect)frame {
+- (id)init {
 	
 	// init super
 	if ((self = [super init])) {
 		GLog();
-        
-        // view
-        self.view = [[[UIView alloc] initWithFrame:frame] autorelease];
-        self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         
         // api
         imdb = [[IMDB alloc] init];
@@ -106,183 +97,86 @@
 	[super loadView];
 	FLog();
     
-    // size
-	float fwidth = self.view.frame.size.width;
-	float fheight = self.view.frame.size.height;
-    float border = 10;
-    float inset = 5;
-    
-    
-    // title
-    float theight = 15;
-    float twidth = 200;
-    
-    // buttons
-    float bwidth = 60;
-    float bheight = 24;
-    
-    // icons
-    float iwidth = 24;
-    float iheight = 24;
-    
-    // search
-    float swidth = 300;
-    float sheight = 30;
-    
-    
-    // background
-    UIView *background = [[UIView alloc] initWithFrame:CGRectMake(0, 0, fwidth, fheight)];
-    background.backgroundColor = [UIColor colorWithRed:76/255.0 green:86/255.0 blue:100/255.0 alpha:120/255.0];
-    [self.view addSubview:background];
-    
-    
-    // title
-    UILabel *lblTitle = [[UILabel alloc] initWithFrame:CGRectMake(border, inset, twidth, theight)];
-    lblTitle.backgroundColor = [UIColor clearColor];
-    lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
-    lblTitle.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:210/255.0];
-    lblTitle.numberOfLines = 1;
-    lblTitle.text = NSLocalizedString(@"IMDG",@"IMDG");
-    [self.view addSubview:lblTitle];
-    
-    // claim
-    UILabel *lblClaim = [[UILabel alloc] initWithFrame:CGRectMake(border, inset+theight-1, twidth, theight)];
-    lblClaim.backgroundColor = [UIColor clearColor];
-    lblClaim.font = [UIFont fontWithName:@"Helvetica" size:12.0];
-    lblClaim.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:210/255.0];
-    lblClaim.numberOfLines = 1;
-    lblClaim.text = NSLocalizedString(@"The Internet Movie Database Graph",@"The Internet Movie Database Graph");
-    [self.view addSubview:lblClaim];
-    
-
-    
-    // search bar
-    UISearchBar *sBar = [[UISearchBar alloc] initWithFrame:CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0)+1.5, swidth, sheight)];
-    sBar.barStyle = UIBarStyleBlackTranslucent;
-    sBar.alpha = kAlpha;
-    sBar.showsCancelButton = NO;
-    sBar.autocorrectionType = UITextAutocorrectionTypeNo;
-    sBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    sBar.delegate = self;
-    for (UIView *subview in sBar.subviews) {
-        if ([subview isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
-            [subview removeFromSuperview];
-            break;
-        }
-    }
-    sBar.text = @"Kill Bill";
-    self.searchBar = sBar;
-	[self.view addSubview:_searchBar];
-	[sBar release];
-    
-    
-    
-    // button movie (187,176,130)
-	UIButton *btnMovie = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnMovie.frame = CGRectMake(fwidth*0.5+swidth*0.5+inset, (fheight-bheight)/2.0, bwidth, bheight);
-    btnMovie.layer.cornerRadius = 3;
-    btnMovie.layer.masksToBounds = YES;
-    btnMovie.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
-    btnMovie.titleLabel.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:210/255.0];
-    
-    [btnMovie setBackgroundColor:[UIColor colorWithRed:187/255.0 green:176/255.0 blue:130/255.0 alpha:kAlpha]];
-    [btnMovie setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [btnMovie setTitle:NSLocalizedString(@"Movie",@"Movie") forState:UIControlStateNormal];
-	[btnMovie addTarget:self action:@selector(actionMovie:) forControlEvents:UIControlEventTouchUpInside];
-    
-	self.buttonMovie = btnMovie;
-	[self.view addSubview:_buttonMovie];
-	[btnMovie release];
-    
-    
-    // button actor (130,153,147)
-	UIButton *btnActor = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnActor.frame = CGRectMake(fwidth*0.5+swidth*0.5+2*inset+bwidth, (fheight-bheight)/2.0, bwidth, bheight);
-    btnActor.layer.cornerRadius = 3;
-    btnActor.layer.masksToBounds = YES;
-    btnActor.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
-    btnActor.titleLabel.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:210/255.0];
-    
-    [btnActor setBackgroundColor:[UIColor colorWithRed:130/255.0 green:153/255.0 blue:147/255.0 alpha:kAlpha]];
-    [btnActor setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [btnActor setTitle:NSLocalizedString(@"Actor",@"Actor") forState:UIControlStateNormal];
-	[btnActor addTarget:self action:@selector(actionActor:) forControlEvents:UIControlEventTouchUpInside];
-    
-	self.buttonActor= btnActor;
-	[self.view addSubview:_buttonActor];
-	[btnActor release];
-    
-    
-    // button director (94,118,117)
-	UIButton *btnDirector = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnDirector.frame = CGRectMake(fwidth*0.5+swidth*0.5+3*inset+2*bwidth, (fheight-bheight)/2.0, bwidth, bheight);
-    btnDirector.layer.cornerRadius = 3;
-    btnDirector.layer.masksToBounds = YES;
-    btnDirector.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
-    btnDirector.titleLabel.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:210/255.0];
-    
-    [btnDirector setBackgroundColor:[UIColor colorWithRed:94/255.0 green:118/255.0 blue:117/255.0 alpha:kAlpha]];
-    [btnDirector setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [btnDirector setTitle:NSLocalizedString(@"Director",@"Director") forState:UIControlStateNormal];
-	[btnDirector addTarget:self action:@selector(actionDirector:) forControlEvents:UIControlEventTouchUpInside];
-    
-	self.buttonDirector = btnDirector;
-	[self.view addSubview:_buttonDirector];
-	[btnDirector release];
-    
-    
-    // button reset
-	UIButton *btnReset = [UIButton buttonWithType:UIButtonTypeCustom]; 
-	btnReset.frame = CGRectMake(fwidth-inset-iwidth-2, (fheight-iheight)/2.0, iwidth, iheight);
-	[btnReset setImage:[UIImage imageNamed:@"btn_reset.png"] forState:UIControlStateNormal];
-	[btnReset addTarget:self action:@selector(actionReset:) forControlEvents:UIControlEventTouchUpInside];
-	self.buttonReset = btnReset;
-	[self.view addSubview:_buttonReset];
-	[btnReset release];
-    
-    
     // window
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
     
+    // frames
+    CGRect frameSearch = CGRectMake(0, 0, window.frame.size.width, 40);
+    CGRect frameSearchResult = CGRectMake(0, 0, 320, 480);
+    CGRect frameInformation = CGRectMake(0, 0, 650, 650);
+    CGRect frameSettings = CGRectMake(0, 0, 320, 480);
+    CGRect frameSettingsButton = CGRectMake(window.frame.size.width-32, window.frame.size.height-32, 24, 24);
+    
+    // view
+    self.view = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
+    [window addSubview:self.view];
+    
+    
+    
+    // search
+    SearchViewController *searchViewController = [[SearchViewController alloc] initWithFrame:frameSearch];
+    searchViewController.delegate = self;
+    [searchViewController loadView];
+    _searchViewController = [searchViewController retain];
+    [window addSubview:_searchViewController.view];
+    [window bringSubviewToFront:_searchViewController.view];
+    [searchViewController release];
+    
+    
+    
+    // search result
+    SearchResultViewController *searchResultViewController = [[SearchResultViewController alloc] initWithStyle:UITableViewStylePlain];
+    searchResultViewController.delegate = self;
+    searchResultViewController.view.frame = frameSearchResult;
+	[searchResultViewController.view setAutoresizingMask: (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight) ];
+	_searchResultViewController = [searchResultViewController retain];
+    
+    
+	UINavigationController *searchResultNavigationController = [[UINavigationController alloc] initWithRootViewController:searchResultViewController];
+	UIPopoverController *searchResultPopoverController = [[UIPopoverController alloc] initWithContentViewController:searchResultNavigationController];
+	[searchResultPopoverController setPopoverContentSize:CGSizeMake(searchResultViewController.view.frame.size.width, searchResultViewController.view.frame.size.height)];
+    searchResultPopoverController.contentViewController.view.alpha = 0.9f;
+    searchResultPopoverController.delegate = self;
+	_searchResultsPopoverController = [searchResultPopoverController retain];
+	[searchResultPopoverController release];
+
+    
     // information
-    InformationViewController *iViewController = [[InformationViewController alloc] init];
-    iViewController.delegate = self;
-    iViewController.view.hidden = YES;
-    [iViewController.view setAutoresizingMask: (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight) ];
-    [iViewController loadView];
-    _informationViewController = [iViewController retain];
+    InformationViewController *informationViewController = [[InformationViewController alloc] initWithFrame:frameInformation];
+    informationViewController.delegate = self;
+    [informationViewController loadView];
+    _informationViewController = [informationViewController retain];
     [window addSubview:_informationViewController.view];
     [window sendSubviewToBack:_informationViewController.view];
-    [iViewController release];
+    [informationViewController release];
     
     
-    // popover
-    SearchResultViewController *srViewController = [[SearchResultViewController alloc] initWithStyle:UITableViewStylePlain];
-    srViewController.delegate = self;
-    srViewController.view.frame = CGRectMake(0, 0, 320, 480);
-	[srViewController.view setAutoresizingMask: (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight) ];
-	_searchResultViewController = [srViewController retain];
+    // settings
+    SettingsViewController *settingsViewController = [[SettingsViewController alloc] initWithFrame:frameSettings];
+    settingsViewController.delegate = self;
+    [settingsViewController loadView];
+    _settingsViewController = [settingsViewController retain];
+    [window addSubview:_settingsViewController.view];
+    [window sendSubviewToBack:_settingsViewController.view];
+    [settingsViewController release];
     
-    
-	UINavigationController *sNavigationController = [[UINavigationController alloc] initWithRootViewController:srViewController];
-	UIPopoverController *sPopoverController = [[UIPopoverController alloc] initWithContentViewController:sNavigationController];
-	[sPopoverController setPopoverContentSize:CGSizeMake(srViewController.view.frame.size.width, srViewController.view.frame.size.height)];
-    sPopoverController.contentViewController.view.alpha = 0.9f;
-    sPopoverController.delegate = self;
-	_searchResultsPopoverController = [sPopoverController retain];
-	[sPopoverController release];
-    
-  
-}
 
-/*
- * Prepares the view.
- */
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-	FLog();
-
+    // button settings
+	UIButton *btnSettings = [UIButton buttonWithType:UIButtonTypeCustom]; 
+	btnSettings.frame = frameSettingsButton;
+	[btnSettings setImage:[UIImage imageNamed:@"btn_settings.png"] forState:UIControlStateNormal];
+	[btnSettings addTarget:self action:@selector(actionSettings:) forControlEvents:UIControlEventTouchUpInside];
+	[window addSubview:btnSettings];
     
+    
+    // fluff cinder view
+    for (UIView *subview in window.subviews) {
+        if ([subview isKindOfClass:NSClassFromString(@"CinderViewCocoaTouch")]) {
+            _cinderView = [subview retain];
+            break;
+        }
+    }
+
 }
 
 
@@ -296,6 +190,7 @@
     // portrait
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
+
 
 
 #pragma mark -
@@ -551,11 +446,6 @@
 - (void)searchSelected:(SearchResult*)result type:(NSString*)type {
     DLog();
     
-    // hide keyboard
-    [_searchBar resignFirstResponder];
-    
-    // inactive
-    _searchBar.alpha = kAlpha;
     
     // dismiss popover
     [_searchResultsPopoverController dismissPopoverAnimated:YES];
@@ -599,17 +489,6 @@
 
 }
 
-/*
- * Search cancel.
- */
-- (void)searchCancel {
-    FLog();
-    
-    // cancel search
-    
-    // dismiss popover
-    [_searchResultsPopoverController dismissPopoverAnimated:YES];
-}
 
 
 #pragma mark -
@@ -669,52 +548,8 @@
 
 
 
-
 #pragma mark -
-#pragma mark SearchBar Delegate
-
-
-/**
- * Begin editing.
- */
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-    FLog();
-    
-    // active
-    _searchBar.alpha = kAlphaActive;
-}
-
-/**
- * Text changed.
- */
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    GLog();
-}
-
-
-
-/*
- * Search.
- */
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    DLog();
-    
-    // search
-	
-    // hide keyboard
-    [_searchBar resignFirstResponder];
-    
-    // inactive
-    _searchBar.alpha = kAlpha;
-    
-    // search
-    [self search:[_searchBar text] type:typeMovie];
-    
-}
-
-
-#pragma mark -
-#pragma mark SearchBar Delegate
+#pragma mark Popopver Delegate
 
 
 /**
@@ -730,7 +565,7 @@
 
 
 #pragma mark -
-#pragma mark Popover Delegate
+#pragma mark Search Delegate
 
 /**
  * Performs the search.
@@ -745,12 +580,12 @@
     [imdb search:s type:t];
     
     // framed
-    CGRect srframe = _buttonMovie.frame;
+    CGRect srframe = _searchViewController.buttonMovie.frame;
     if (t == typeActor) {
-        srframe = _buttonActor.frame;
+        srframe = _searchViewController.buttonActor.frame;
     }
     else if (t == typeDirector) {
-        srframe = _buttonDirector.frame;
+        srframe = _searchViewController.buttonDirector.frame;
     }
     
     // pop it
@@ -759,6 +594,61 @@
 
     
 }
+
+/*
+ * Resets the graph.
+ */
+- (void)reset {
+    DLog();
+    
+    // app reset
+    imdgApp->reset();
+}
+
+
+
+#pragma mark -
+#pragma mark Settings Delegate
+
+/* 
+ * Dismiss settings.
+ */
+- (void)settingsDismiss {
+    FLog();
+    
+    // hide
+    [self animationSettingsHide];
+}
+
+
+#pragma mark -
+#pragma mark Actions
+
+
+/*
+ * Settings.
+ */
+bool settings = NO;
+- (void)actionSettings:(id)sender {
+	DLog();
+	
+	// animate
+    if (! settings) {
+        [self animationSettingsShow];
+    }
+    else {
+        [self animationSettingsHide];
+    }
+    
+    // state
+    settings = ! settings;
+}
+
+
+
+#pragma mark -
+#pragma mark Business
+
 
 /**
  * Loads a node.
@@ -878,61 +768,6 @@
     
 }
 
-#pragma mark -
-#pragma mark Actions
-
-
-/*
- * Action Movie.
- */
-- (void)actionMovie:(id)sender {
-	DLog();
-    
-    // search
-    [self search:[_searchBar text] type:typeMovie];
-}
-
-/*
- * Action Actor.
- */
-- (void)actionActor:(id)sender {
-	DLog();
-    
-    // search
-    [self search:[_searchBar text] type:typeActor];
-}
-
-/*
- * Action Director.
- */
-- (void)actionDirector:(id)sender {
-	DLog();
-    
-    // search
-    [self search:[_searchBar text] type:typeDirector];
-}
-
-
-/*
- * Action Reset.
- */
-- (void)actionReset:(id)sender {
-	DLog();
-    
-    // search
-	
-    // hide keyboard
-    [_searchBar resignFirstResponder];
-    
-    // inactive
-    _searchBar.alpha = kAlpha;
-    
-    // results
-    [_searchResultsPopoverController dismissPopoverAnimated:YES];
-    
-    // test
-    imdgApp->reset();
-}
 
 
 #pragma mark -
@@ -950,27 +785,36 @@
 	
 	
 	// prepare controllers
+    [_informationViewController.view setHidden:NO];
 	[_informationViewController viewWillAppear:YES];
 
     
-	// prepare view
-	_informationViewController.view.alpha = 0.0f;
-	_informationViewController.view.hidden = NO;
+	// prepare views
+    _informationViewController.view.hidden = NO;
+	_informationViewController.modalView.alpha = 0.0f;
+    CGPoint offcenter = _informationViewController.contentView.center;
+    offcenter.y += window.frame.size.height;
+    _informationViewController.contentView.center = offcenter;
     
 	// animate
 	[UIView beginAnimations:@"information_show" context:nil];
 	[UIView setAnimationDuration:kAnimateTimeInformationShow];
-    //[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
     
-    // animate sketch
-    _informationViewController.view.alpha = 1.0f;
-
+    // modal 
+    _informationViewController.modalView.alpha = 0.3f;
+    
+    // content
+    CGPoint center = _informationViewController.contentView.center;
+    center.y -= window.frame.size.height;
+    _informationViewController.contentView.center = center;
+    
+    // make it so
 	[UIView commitAnimations];
     
 	// clean it up
-	[self performSelector:@selector(animationInformationDone) withObject:nil afterDelay:kAnimateTimeInformationShow];
+	[self performSelector:@selector(animationInformationShowDone) withObject:nil afterDelay:kAnimateTimeInformationShow];
 }
-- (void)animationInformationDone {
+- (void)animationInformationShowDone {
 	GLog();
     
     // here you are
@@ -984,23 +828,29 @@
  */
 - (void)animationInformationHide {
 	FLog();
-	
+    
+    // window
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
 	
 	// prepare controllers
 	[_informationViewController viewWillDisappear:YES];
     
     
-	// prepare view
-	_informationViewController.view.alpha = 1.0f;
+	// prepare views
 	_informationViewController.view.hidden = NO;
+
     
 	// animate
-	[UIView beginAnimations:@"information_show" context:nil];
+	[UIView beginAnimations:@"information_hide" context:nil];
 	[UIView setAnimationDuration:kAnimateTimeInformationHide];
-    //[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
     
-    // animate sketch
-    _informationViewController.view.alpha = 0.0f;
+    // modal 
+     _informationViewController.modalView.alpha = 0.0f;
+    
+    // content
+    CGPoint offcenter = _informationViewController.contentView.center;
+    offcenter.y += window.frame.size.height;
+    _informationViewController.contentView.center = offcenter;
     
 	[UIView commitAnimations];
     
@@ -1012,11 +862,88 @@
     
     // hide
     [_informationViewController viewDidDisappear:YES];
-	_informationViewController.view.hidden = YES;
+	[_informationViewController.view setHidden:YES];
     
     // window
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
     [window sendSubviewToBack:_informationViewController.view];
+    
+    // center
+    CGPoint center = _informationViewController.contentView.center;
+    center.y -= window.frame.size.height;
+    _informationViewController.contentView.center = center;
+}
+
+
+/**
+ * Shows the settings.
+ */
+- (void)animationSettingsShow {
+	FLog();
+    
+	
+	// prepare controllers
+    [_settingsViewController.view setHidden:NO];
+	[_settingsViewController viewWillAppear:YES];
+    
+
+	// animate
+    CATransition *animation = [CATransition animation];
+    [animation setDelegate:self];
+    [animation setDuration:kAnimateTimeSettingsShow];
+    [animation setType:@"pageCurl"];
+    [animation setRemovedOnCompletion:NO];
+    animation.startProgress = 0;
+    animation.endProgress = kAnimateTimeSettingsShow-0.001; 
+    [animation setFillMode: @"extended"];
+    [[_cinderView layer] addAnimation:animation forKey:@"settings_show"];
+    
+    // hide
+    _cinderView.hidden = YES;
+
+    
+	// clean it up
+	[self performSelector:@selector(animationSettingsShowDone) withObject:nil afterDelay:kAnimateTimeSettingsShow];
+}
+- (void)animationSettingsShowDone {
+	GLog();
+    
+    
+    // appeared
+    [_settingsViewController viewDidAppear:YES];
+}
+
+
+/**
+ * Hides the information.
+ */
+- (void)animationSettingsHide {
+	FLog();
+	
+	// prepare controllers
+	[_settingsViewController viewWillDisappear:YES];
+    
+
+	// animate
+    CATransition *animation = [CATransition animation];
+    [animation setDelegate:self];
+    [animation setDuration:kAnimateTimeSettingsHide];
+    [animation setType:@"pageUnCurl"];
+    [[_cinderView layer] addAnimation:animation forKey:@"settings_hide"];
+    
+    // unhide
+    _cinderView.hidden = NO;
+    
+	// clean it up
+	[self performSelector:@selector(animationSettingsHideDone) withObject:nil afterDelay:kAnimateTimeSettingsHide];
+}
+- (void)animationSettingsHideDone {
+	GLog();
+    
+    // hide
+    [_settingsViewController viewDidDisappear:YES];
+	[_settingsViewController.view setHidden:YES];
+    
 }
 
 
@@ -1072,14 +999,11 @@
  */
 - (void)dealloc {
 	GLog();
-    
-    // ui
-    [_searchBar release];
-    [_buttonMovie release];
-    [_buttonActor release];
-    [_buttonDirector release];
-    [_buttonReset release];
 	
+    // controllers
+    [_searchViewController release];
+    [_searchResultViewController release];
+    [_informationViewController release];
 	
 	// release global
     [super dealloc];
