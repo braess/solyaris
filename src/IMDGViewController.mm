@@ -23,6 +23,22 @@
 - (NSNumber*)toDBId:(NSString*)nid;
 @end
 
+/**
+ * Animation Stack.
+ */
+@interface IMDGViewController (AnimationHelpers)
+- (void)animationInformationShow;
+- (void)animationInformationShowDone;
+- (void)animationInformationHide;
+- (void)animationInformationHideDone;
+@end
+
+
+// constants
+#define kAnimateTimeInformationShow	0.45f
+#define kAnimateTimeInformationHide	0.3f
+
+
 
 /**
  * IMDG ViewController.
@@ -225,6 +241,21 @@
 	[btnReset release];
     
     
+    // window
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    
+    // information
+    InformationViewController *iViewController = [[InformationViewController alloc] init];
+    iViewController.delegate = self;
+    iViewController.view.hidden = YES;
+    [iViewController.view setAutoresizingMask: (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight) ];
+    [iViewController loadView];
+    _informationViewController = [iViewController retain];
+    [window addSubview:_informationViewController.view];
+    [window sendSubviewToBack:_informationViewController.view];
+    [iViewController release];
+    
+    
     // popover
     SearchResultViewController *srViewController = [[SearchResultViewController alloc] initWithStyle:UITableViewStylePlain];
     srViewController.delegate = self;
@@ -237,6 +268,7 @@
 	UIPopoverController *sPopoverController = [[UIPopoverController alloc] initWithContentViewController:sNavigationController];
 	[sPopoverController setPopoverContentSize:CGSizeMake(srViewController.view.frame.size.width, srViewController.view.frame.size.height)];
     sPopoverController.contentViewController.view.alpha = 0.9f;
+    sPopoverController.delegate = self;
 	_searchResultsPopoverController = [sPopoverController retain];
 	[sPopoverController release];
     
@@ -274,7 +306,6 @@
  */
 - (void)loadedSearch:(Search*)result {
     DLog();
-    
     
     // results
     [_searchResultViewController searchResultShow:result];
@@ -586,13 +617,53 @@
 
 
 /* 
+ * Information selected.
+ */
+- (void)informationSelected:(NSNumber *)nid type:(NSString *)type {
+    DLog();
+    
+    
+    // node
+    NSString *iid = [self makeNodeId:nid type:type];
+    NodePtr node = imdgApp->getNode([iid UTF8String]);
+    if (node == NULL) {
+        node = imdgApp->createNode([iid UTF8String],[type UTF8String], 0, 0);
+    }
+    
+    // active
+    if (! (node->isActive() || node->isLoading())) {
+        
+        // tap & load
+        node->tapped();
+        node->load();
+        
+        // movie
+        if ([type isEqualToString:typeMovie]) {
+            [imdb movie:nid];
+        }
+        
+        // actor
+        if ([type isEqualToString:typeActor]) {
+            [imdb actor:nid];
+        }
+        
+        // director
+        if ([type isEqualToString:typeDirector]) {
+            [imdb director:nid];
+        }
+    }
+    
+}
+
+
+/* 
  * Dismiss information.
  */
 - (void)informationDismiss {
     FLog();
     
-    // dismiss modal
-	[self dismissModalViewControllerAnimated:YES];
+    // hide
+    [self animationInformationHide];
 }
 
 
@@ -643,7 +714,23 @@
 
 
 #pragma mark -
-#pragma mark Business
+#pragma mark SearchBar Delegate
+
+
+/**
+ * Popover dismissed.
+ */
+-(void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    FLog();
+    
+    // cancel
+    [imdb cancel];
+}
+
+
+
+#pragma mark -
+#pragma mark Popover Delegate
 
 /**
  * Performs the search.
@@ -667,6 +754,7 @@
     }
     
     // pop it
+    [_searchResultsPopoverController setPopoverContentSize:CGSizeMake(_searchResultViewController.view.frame.size.width, 125) animated:NO];
 	[_searchResultsPopoverController presentPopoverFromRect:srframe inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 
     
@@ -724,14 +812,9 @@
     // info
     if (node->isActive()) {
         
-        // info view controller
-        InformationViewController *nfoController = [[InformationViewController alloc] initWithStyle:UITableViewStyleGrouped];
-        nfoController.delegate = self;
-        nfoController.view.frame = CGRectMake(0, 0, 320, 480);
-        [nfoController.view setAutoresizingMask: (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight) ];
         
         // information
-        nfoController.title = [NSString stringWithCString:node->label.c_str() encoding:[NSString defaultCStringEncoding]];
+        [_informationViewController informationTitle:[NSString stringWithCString:node->label.c_str() encoding:[NSString defaultCStringEncoding]]];
         NSMutableArray *movies = [[NSMutableArray alloc] init];
         NSMutableArray *actors = [[NSMutableArray alloc] init];
         NSMutableArray *directors = [[NSMutableArray alloc] init];
@@ -754,6 +837,8 @@
             NSString *type = [NSString stringWithCString:(*child)->type.c_str() encoding:[NSString defaultCStringEncoding]];
             NSString *value = [NSString stringWithCString:(*child)->label.c_str() encoding:[NSString defaultCStringEncoding]];
             NSString *meta = @"meta";
+            bool visible = (*child)->isVisible();
+            bool loaded = ( (*child)->isActive() || (*child)->isLoading() );
             if (edge != NULL) {
                 
                 // label
@@ -763,7 +848,7 @@
             
             
             // information
-            Information *nfo = [[Information alloc] initWithValue:value meta:meta type:type nid:nid];
+            Information *nfo = [[Information alloc] initWithValue:value meta:meta type:type nid:nid visible:visible loaded:loaded];
             
             // movie
             if ([type isEqualToString:typeMovie]) {
@@ -782,29 +867,13 @@
             
         }
         
-        // set & release
-        nfoController.movies = movies;
-        nfoController.actors = actors;
-        nfoController.directors = directors;
+        // set 
+        _informationViewController.movies = movies;
+        _informationViewController.actors = actors;
+        _informationViewController.directors = directors;
 
-        
-        
-        // navigation controller
-        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:nfoController];
-        navController.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture.png"]];
-        navController.navigationBar.barStyle = UIBarStyleBlack;
-        navController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-        navController.modalPresentationStyle = UIModalPresentationFormSheet;
-        
-        
-        // show the navigation controller modally
-        [navController setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
-        [self presentModalViewController:navController animated:YES];
-        
-        // Clean up resources
-        [navController release];
-        [nfoController release];
-        
+        // animate
+        [self animationInformationShow];        
     }
     
 }
@@ -863,6 +932,91 @@
     
     // test
     imdgApp->reset();
+}
+
+
+#pragma mark -
+#pragma mark Animation
+
+/**
+ * Shows the information.
+ */
+- (void)animationInformationShow {
+	FLog();
+    
+    // window
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    [window bringSubviewToFront:_informationViewController.view];
+	
+	
+	// prepare controllers
+	[_informationViewController viewWillAppear:YES];
+
+    
+	// prepare view
+	_informationViewController.view.alpha = 0.0f;
+	_informationViewController.view.hidden = NO;
+    
+	// animate
+	[UIView beginAnimations:@"information_show" context:nil];
+	[UIView setAnimationDuration:kAnimateTimeInformationShow];
+    //[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
+    
+    // animate sketch
+    _informationViewController.view.alpha = 1.0f;
+
+	[UIView commitAnimations];
+    
+	// clean it up
+	[self performSelector:@selector(animationInformationDone) withObject:nil afterDelay:kAnimateTimeInformationShow];
+}
+- (void)animationInformationDone {
+	GLog();
+    
+    // here you are
+    [self.view bringSubviewToFront:_informationViewController.view];
+    [_informationViewController viewDidAppear:YES];
+}
+
+
+/**
+ * Hides the information.
+ */
+- (void)animationInformationHide {
+	FLog();
+	
+	
+	// prepare controllers
+	[_informationViewController viewWillDisappear:YES];
+    
+    
+	// prepare view
+	_informationViewController.view.alpha = 1.0f;
+	_informationViewController.view.hidden = NO;
+    
+	// animate
+	[UIView beginAnimations:@"information_show" context:nil];
+	[UIView setAnimationDuration:kAnimateTimeInformationHide];
+    //[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
+    
+    // animate sketch
+    _informationViewController.view.alpha = 0.0f;
+    
+	[UIView commitAnimations];
+    
+	// clean it up
+	[self performSelector:@selector(animationInformationHideDone) withObject:nil afterDelay:kAnimateTimeInformationHide];
+}
+- (void)animationInformationHideDone {
+	GLog();
+    
+    // hide
+    [_informationViewController viewDidDisappear:YES];
+	_informationViewController.view.hidden = YES;
+    
+    // window
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    [window sendSubviewToBack:_informationViewController.view];
 }
 
 

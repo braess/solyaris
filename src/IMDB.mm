@@ -104,6 +104,18 @@ NSString* STORE = @"IMDG.sqlite";
 #pragma mark -
 #pragma mark Business
 
+
+/**
+ * Cancel.
+ */
+- (void)cancel {
+    DLog();
+    
+    // queue
+    [queue cancelAllOperations];
+    
+}
+
 /**
  * Search.
  */
@@ -111,7 +123,7 @@ NSString* STORE = @"IMDG.sqlite";
     DLog();
     
     // queue
-    //[queue cancelAllOperations];
+    [queue cancelAllOperations];
     [queue addOperationWithBlock:^{
         
         
@@ -125,15 +137,15 @@ NSString* STORE = @"IMDG.sqlite";
         
         // delegate
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            
+                
             // delegate
             if (delegate != nil && [delegate respondsToSelector:@selector(loadedSearch:)]) {
                 [delegate loadedSearch:search];
             }
-
+                
         }];
+
     }];
-    
     
 }
 

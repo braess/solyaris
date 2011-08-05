@@ -32,13 +32,7 @@
 - (void)loadView {
     [super loadView];
     FLog();
-    
-    // button close
-	self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                                          target:self 
-                                                                                          action:@selector(actionCancel:)];
-
-    
+   
     // data
     _type = [[NSMutableString alloc] init];
     _data = [[NSMutableArray alloc] init];
@@ -68,10 +62,21 @@
 	[sorter release];
     
     // title
-    self.navigationItem.title = [NSString stringWithFormat:@"%i %@", [_data count], _type];
+    NSString *sType = NSLocalizedString(@"Movies", @"Movies");
+    if ([_type isEqualToString:typeActor]) {
+        sType = NSLocalizedString(@"Actors", @"Actors");
+    }
+    else if ([_type isEqualToString:typeDirector]) {
+        sType = NSLocalizedString(@"Directors", @"Directors");
+    }
+    self.navigationItem.title = [NSString stringWithFormat:@"%i %@", [_data count], sType];
     
     // reload
     [self.tableView reloadData];
+    
+    // size
+    float height = MAX(self.tableView.rowHeight,self.tableView.rowHeight * [self.tableView numberOfRowsInSection:0]);
+    self.contentSizeForViewInPopover = CGSizeMake(self.view.frame.size.width,MIN(height, 480));
     
 }
 
@@ -87,28 +92,12 @@
     // title
     self.navigationItem.title = NSLocalizedString(@"Searching...", @"Searching...");
     
-    
     // reload
     [self.tableView reloadData];
-
-}
-
-
-
-#pragma mark -
-#pragma mark Actions
-
-/*
- * Action cancel.
- */
-- (void)actionCancel:(id)sender {
-    FLog();
     
-    // cancel
-	if (delegate != nil && [delegate respondsToSelector:@selector(searchCancel)]) {
-		[delegate searchCancel];
-	}
-    
+    // size
+    self.contentSizeForViewInPopover = CGSizeMake(self.view.frame.size.width,self.tableView.rowHeight);
+
 }
 
 
@@ -152,7 +141,7 @@
 	
 	// configure
 	cell.textLabel.font = [UIFont fontWithName:@"Helvetica" size:15.0]; 
-	cell.textLabel.textColor = [UIColor colorWithRed:63.0/255.0 green:63.0/255.0 blue:63.0/255.0 alpha:1.0];
+	cell.textLabel.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
 
     
     // result 

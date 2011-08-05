@@ -54,6 +54,7 @@ enum {
 @property (assign) id<APIDelegate> delegate;
 
 // Business
+- (void)cancel;
 - (void)search:(NSString*)q type:(NSString*)t;
 - (void)movie:(NSNumber*)mid;
 - (void)actor:(NSNumber*)aid;

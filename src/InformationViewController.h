@@ -17,6 +17,13 @@ enum {
 	SectionInformationMovies
 };
 
+//  Tags
+enum {
+    TagInformationHeader,
+	TagInformationContent,
+	TagInformationFooter
+};
+
 
 /**
  * Information.
@@ -30,9 +37,11 @@ enum {
 @property (nonatomic, retain) NSString *meta;
 @property (nonatomic, retain) NSString *type;
 @property (nonatomic, retain) NSNumber *nid;
+@property bool visible;
+@property bool loaded;
 
 // Initializer
-- (id)initWithValue:(NSString*)v meta:(NSString*)m type:(NSString*)t nid:(NSNumber*)n;
+- (id)initWithValue:(NSString*)v meta:(NSString*)m type:(NSString*)t nid:(NSNumber*)n visible:(bool)iv loaded:(bool)il;
 
 @end
 
@@ -42,27 +51,26 @@ enum {
  */
 @protocol InformationViewDelegate <NSObject>
 - (void)informationDismiss;
+- (void)informationSelected:(NSNumber*)nid type:(NSString*)type;
 @end
 
 
 /**
  * InformationViewController.
  */
-@interface InformationViewController : UITableViewController {
+@interface InformationViewController : UIViewController <UITableViewDataSource, UITableViewDelegate> {
     
     // delegate
 	id<InformationViewDelegate> delegate;
+    
+    // ui
+    UILabel *_labelTitle;
+    UITableView *_tableView;
     
     // data
 	NSMutableArray *_movies;
 	NSMutableArray *_actors;
 	NSMutableArray *_directors;
-    
-    // private
-    @private
-    int _sectionGapHeight;
-    int _sectionGapInset;
-    int _sectionGapOffset;
     
 }
 
@@ -72,7 +80,44 @@ enum {
 @property (nonatomic, assign) NSMutableArray* actors;
 @property (nonatomic, assign) NSMutableArray* directors;
 
-// Action Methods
-- (void)actionDone:(id)sender;
+// Object Methods
+- (id)initWithFrame:(CGRect)frame;
+
+// Business Methods
+- (void)informationTitle:(NSString*)title;
+
+@end
+
+
+
+/**
+ * InformationBackgroundView.
+ */
+@interface InformationBackgroundView : UIView {
+}
+@end
+
+
+/**
+ * InformationCell.
+ */
+@interface InformationCell : UITableViewCell {
+    
+    // ui
+    UILabel *labelInfo;
+    UILabel *labelMeta;
+    UIImageView *_iconLoaded;
+    UIImageView *_iconVisible;
+    
+    // state
+    bool loaded;
+
+}
+
+// Properties
+@property (nonatomic,retain) UILabel *labelInfo;
+@property (nonatomic,retain) UILabel *labelMeta;
+@property bool loaded;
+@property bool visible;
 
 @end

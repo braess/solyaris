@@ -17,7 +17,7 @@ CPP_CLASS(IMDGApp);
 /**
  * IMDG ViewController.
  */
-@interface IMDGViewController : UIViewController <UISearchBarDelegate, APIDelegate, SearchResultDelegate, InformationViewDelegate> {
+@interface IMDGViewController : UIViewController <UISearchBarDelegate, UIPopoverControllerDelegate, APIDelegate, SearchResultDelegate, InformationViewDelegate> {
     
     // app
     IMDGApp *imdgApp;
@@ -25,6 +25,7 @@ CPP_CLASS(IMDGApp);
     
     // controllers
     SearchResultViewController *_searchResultViewController;
+    InformationViewController *_informationViewController;
     
     // ui
     UISearchBar *_searchBar;

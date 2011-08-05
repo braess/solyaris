@@ -16,7 +16,6 @@
  */
 @protocol SearchResultDelegate <NSObject>
 - (void)searchSelected:(SearchResult*)result type:(NSString*)type;
-- (void)searchCancel;
 @end
 
 
@@ -40,7 +39,5 @@
 - (void)searchResultShow:(Search*)search;
 - (void)searchResultReset;
 
-// Actions
-- (void)actionCancel:(id)sender;
 
 @end
