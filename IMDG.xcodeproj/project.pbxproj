@@ -59,10 +59,12 @@
 		18FE6EC913ED3A3700C379BC /* PreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6EC813ED3A3700C379BC /* PreferencesViewController.m */; };
 		18FE6ED113ED3B9100C379BC /* CellButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6ECC13ED3B9100C379BC /* CellButton.m */; };
 		18FE6ED213ED3B9100C379BC /* CellSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6ECE13ED3B9100C379BC /* CellSwitch.m */; };
-		18FE6ED313ED3B9100C379BC /* CellText.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6ED013ED3B9100C379BC /* CellText.m */; };
 		18FE6ED613ED3BFB00C379BC /* CellInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6ED513ED3BFB00C379BC /* CellInput.m */; };
 		18FE6ED913ED3C2B00C379BC /* CellSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6ED813ED3C2B00C379BC /* CellSlider.m */; };
-		18FE6EDC13ED3C8500C379BC /* CellTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6EDB13ED3C8500C379BC /* CellTextViewController.m */; };
+		18FE6EE013ED6B3800C379BC /* btn_appstore.png in Resources */ = {isa = PBXBuildFile; fileRef = 18FE6EDD13ED6B3800C379BC /* btn_appstore.png */; };
+		18FE6EE113ED6B3800C379BC /* btn_email.png in Resources */ = {isa = PBXBuildFile; fileRef = 18FE6EDE13ED6B3800C379BC /* btn_email.png */; };
+		18FE6EE213ED6B3800C379BC /* btn_twitter.png in Resources */ = {isa = PBXBuildFile; fileRef = 18FE6EDF13ED6B3800C379BC /* btn_twitter.png */; };
+		18FE6EE413ED745C00C379BC /* btn_feedback.png in Resources */ = {isa = PBXBuildFile; fileRef = 18FE6EE313ED745C00C379BC /* btn_feedback.png */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
@@ -165,14 +167,14 @@
 		18FE6ECC13ED3B9100C379BC /* CellButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellButton.m; path = src/CellButton.m; sourceTree = "<group>"; };
 		18FE6ECD13ED3B9100C379BC /* CellSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CellSwitch.h; path = src/CellSwitch.h; sourceTree = "<group>"; };
 		18FE6ECE13ED3B9100C379BC /* CellSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellSwitch.m; path = src/CellSwitch.m; sourceTree = "<group>"; };
-		18FE6ECF13ED3B9100C379BC /* CellText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CellText.h; path = src/CellText.h; sourceTree = "<group>"; };
-		18FE6ED013ED3B9100C379BC /* CellText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellText.m; path = src/CellText.m; sourceTree = "<group>"; };
 		18FE6ED413ED3BFB00C379BC /* CellInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CellInput.h; path = src/CellInput.h; sourceTree = "<group>"; };
 		18FE6ED513ED3BFB00C379BC /* CellInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellInput.m; path = src/CellInput.m; sourceTree = "<group>"; };
 		18FE6ED713ED3C2B00C379BC /* CellSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CellSlider.h; path = src/CellSlider.h; sourceTree = "<group>"; };
 		18FE6ED813ED3C2B00C379BC /* CellSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellSlider.m; path = src/CellSlider.m; sourceTree = "<group>"; };
-		18FE6EDA13ED3C8500C379BC /* CellTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CellTextViewController.h; path = src/CellTextViewController.h; sourceTree = "<group>"; };
-		18FE6EDB13ED3C8500C379BC /* CellTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellTextViewController.m; path = src/CellTextViewController.m; sourceTree = "<group>"; };
+		18FE6EDD13ED6B3800C379BC /* btn_appstore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_appstore.png; path = Assets/btn_appstore.png; sourceTree = "<group>"; };
+		18FE6EDE13ED6B3800C379BC /* btn_email.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_email.png; path = Assets/btn_email.png; sourceTree = "<group>"; };
+		18FE6EDF13ED6B3800C379BC /* btn_twitter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_twitter.png; path = Assets/btn_twitter.png; sourceTree = "<group>"; };
+		18FE6EE313ED745C00C379BC /* btn_feedback.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_feedback.png; path = Assets/btn_feedback.png; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* imdg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = imdg.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -260,6 +262,10 @@
 		1804C6E313AA277B00417D32 /* buttons */ = {
 			isa = PBXGroup;
 			children = (
+				18FE6EE313ED745C00C379BC /* btn_feedback.png */,
+				18FE6EDD13ED6B3800C379BC /* btn_appstore.png */,
+				18FE6EDE13ED6B3800C379BC /* btn_email.png */,
+				18FE6EDF13ED6B3800C379BC /* btn_twitter.png */,
 				187ABFAD13EC977900090C63 /* btn_settings.png */,
 				18F8192813AA920F00D2F5C3 /* btn_reset.png */,
 				1804C6E413AA279800417D32 /* btn_info.png */,
@@ -416,10 +422,6 @@
 				18FE6ECC13ED3B9100C379BC /* CellButton.m */,
 				18FE6ECD13ED3B9100C379BC /* CellSwitch.h */,
 				18FE6ECE13ED3B9100C379BC /* CellSwitch.m */,
-				18FE6ECF13ED3B9100C379BC /* CellText.h */,
-				18FE6ED013ED3B9100C379BC /* CellText.m */,
-				18FE6EDA13ED3C8500C379BC /* CellTextViewController.h */,
-				18FE6EDB13ED3C8500C379BC /* CellTextViewController.m */,
 				18FE6ED713ED3C2B00C379BC /* CellSlider.h */,
 				18FE6ED813ED3C2B00C379BC /* CellSlider.m */,
 			);
@@ -547,6 +549,10 @@
 				18E88A4013EC5D3D00529B73 /* micon_visible.png in Resources */,
 				187ABFAE13EC977900090C63 /* btn_settings.png in Resources */,
 				18FE6EB913ED28E100C379BC /* texture_settings.png in Resources */,
+				18FE6EE013ED6B3800C379BC /* btn_appstore.png in Resources */,
+				18FE6EE113ED6B3800C379BC /* btn_email.png in Resources */,
+				18FE6EE213ED6B3800C379BC /* btn_twitter.png in Resources */,
+				18FE6EE413ED745C00C379BC /* btn_feedback.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -592,10 +598,8 @@
 				18FE6EC913ED3A3700C379BC /* PreferencesViewController.m in Sources */,
 				18FE6ED113ED3B9100C379BC /* CellButton.m in Sources */,
 				18FE6ED213ED3B9100C379BC /* CellSwitch.m in Sources */,
-				18FE6ED313ED3B9100C379BC /* CellText.m in Sources */,
 				18FE6ED613ED3BFB00C379BC /* CellInput.m in Sources */,
 				18FE6ED913ED3C2B00C379BC /* CellSlider.m in Sources */,
-				18FE6EDC13ED3C8500C379BC /* CellTextViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

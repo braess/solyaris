@@ -39,12 +39,10 @@
 - (void)loadView {
 	[super loadView];
 	DLog();
-	
-    // title
-	self.navigationItem.title = [NSString stringWithFormat:@"%@", NSLocalizedString(@"Preferences",@"Preferences")];
     
 	
 	// remove background for iPhone
+    self.tableView.scrollEnabled = NO;
 	self.tableView.backgroundColor = [UIColor clearColor];
 	self.tableView.opaque = YES;
 	self.tableView.backgroundView = nil;
@@ -58,7 +56,10 @@
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	DLog();
-	
+    
+    // reload
+    [self.tableView reloadData];
+    
 }
 
 
@@ -83,7 +84,7 @@
         
 		// show
 		[resetAction setTag:ActionPreferenceResetDefaults];
-		[resetAction showInView:self.navigationController.view];
+		[resetAction showInView:self.view];
 		[resetAction release];
 	}
     
@@ -99,7 +100,7 @@
         
 		// show
 		[resetAction setTag:ActionPreferenceClearCache];
-		[resetAction showInView:self.navigationController.view];
+		[resetAction showInView:self.view];
 		[resetAction release];
 	}
     
@@ -114,16 +115,6 @@
     
 }
 
-/*
- * CellText.
- */
-- (void)cellTextChanged:(CellText *)c {
-	GLog();
-	
-	// update
-	[self updatePreference:c.key value:c.text];
-    
-}
 
 /*
  * CellSlider.
@@ -233,7 +224,7 @@
     // section
     switch (section) {
 		case SectionPreferencesGeneral: {
-			return 2;
+			return 1;
 		}
         case SectionPreferencesGraph: {
 			return 1;
@@ -268,9 +259,6 @@
         case SectionPreferencesGraph: {
 			return NSLocalizedString(@"Graph",@"Graph");
 		}
-		case SectionPreferencesReset: {
-			return NSLocalizedString(@"Reset",@"Reset");
-		}
     }
     
     return nil;
@@ -286,7 +274,6 @@
     static NSString *CellPreferencesIdentifier = @"CellPreferences";
 	static NSString *CellPreferencesButtonIdentifier = @"CellPreferencesButton";
 	static NSString *CellPreferencesSwitchIdentifier = @"CellPreferencesSwitch";
-	static NSString *CellPreferencesTextIdentifier = @"CellPreferencesText";
     static NSString *CellPreferencesSliderIndentifier = @"CellPreferencesSlider";
 	
 	
@@ -306,27 +293,6 @@
 		case SectionPreferencesGeneral: {
             FLog("SectionPreferencesGeneral");
             
-			// email
-            if ([indexPath row] == PreferenceGeneralEmail) {
-				
-				// create cell
-				CellText *ctext = (CellText*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesTextIdentifier];
-				if (ctext == nil) {
-					ctext = [[[CellText alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellPreferencesTextIdentifier] autorelease];
-				}	
-				
-				// prepare cell
-				ctext.delegate = self;
-				ctext.key = udPreferenceGeneralEmail;
-				//ctext.text = (NSString*) [(P5PAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefault:udPreferenceEmail];
-				ctext.placeholder = NSLocalizedString(@"Default Email Address",@"Default Email Address");
-				ctext.textLabel.text = NSLocalizedString(@"Email",@"Email");
-				[ctext update:YES];
-				
-				// set cell
-				cell = ctext;
-                
-			}
             
             // sound
             if ([indexPath row] == PreferenceGeneralSound) {
@@ -375,6 +341,7 @@
 				// prepare cell
                 cslider.delegate = self;
                 cslider.key = udPreferenceGraphPerimeter;
+                cslider.textLabel.text = NSLocalizedString(@"Perimeter",@"Perimeter");
                 cslider.sliderAccessory.minimumValue = 100;
                 cslider.sliderAccessory.maximumValue = 600;
                 cslider.sliderAccessory.value = 390;
@@ -400,10 +367,10 @@
             if ([indexPath row] == PreferenceResetDefaults) {
 				
 				// create cell
-				CellButton *cbutton = (CellButton*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesButtonIdentifier];
+                CellButton *cbutton = (CellButton*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesButtonIdentifier];
 				if (cbutton == nil) {
 					cbutton = [[[CellButton alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellPreferencesButtonIdentifier] autorelease];
-				}				
+				}		
 				
 				// prepare cell
 				cbutton.delegate = self;
@@ -415,6 +382,9 @@
 				cell = cbutton;
                 
 			}
+            
+            // no break till brooklin
+			break; 
         }
             
         // cache
@@ -425,10 +395,10 @@
             if ([indexPath row] == PreferenceCacheClear) {
 				
 				// create cell
-				CellButton *cbutton = (CellButton*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesButtonIdentifier];
+                CellButton *cbutton = (CellButton*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesButtonIdentifier];
 				if (cbutton == nil) {
 					cbutton = [[[CellButton alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellPreferencesButtonIdentifier] autorelease];
-				}				
+				}
 				
 				// prepare cell
 				cbutton.delegate = self;
@@ -455,44 +425,6 @@
 }
 
 
-
-
-#pragma mark -
-#pragma mark UITableViewDelegate Protocol
-
-/*
- * Called when a table cell is selected.
- */
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	FLog();
-	
-	// section
-    NSUInteger section = [indexPath section];
-    switch (section) {
-            
-            // general
-		case SectionPreferencesGeneral: {
-            
-			// email
-            if ([indexPath row] == PreferenceGeneralEmail) {
-                
-				// cell
-				CellText *ctext = (CellText*) [tableView cellForRowAtIndexPath:indexPath];
-                
-				// push controller
-				CellTextViewController *tvController = [ctext textViewController:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-				tvController.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-				tvController.textField.keyboardType = UIKeyboardTypeEmailAddress;
-				[self.navigationController pushViewController:tvController animated:YES];
-				[tvController release];
-			}
-			break;
-		}
-            
-
-	}
-	
-}
 
 
 

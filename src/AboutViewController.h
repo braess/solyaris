@@ -9,48 +9,28 @@
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMailComposeViewController.h>
-#import "CellButton.h"
 
-//  Sections
+
+
+// Alerts
 enum {
-    SectionAboutApp,
-    SectionAboutRecommend,
-	SectionAboutFeedback
+    AlertAboutAppStore
 };
-
-
-//  Preferences
-enum {
-	AboutPreferences
-};
-
-//  Recommend Fields
-enum {
-	AboutRecommend
-};
-
-//  Feedback Fields
-enum {
-	AboutFeedback
-};
-
-// actions
-enum {
-    ActionAboutRecommend,
-	ActionAboutFeedback
-};
-
-// alerts
-enum {
-    AlertAboutRecommendAppStore
-};
-
 
 /**
- * Info Controller.
+ * AboutViewController.
  */
-@interface AboutViewController : UITableViewController <UIActionSheetDelegate, UIAlertViewDelegate, MFMailComposeViewControllerDelegate, CellButtonDelegate> {
+@interface AboutViewController : UITableViewController <UIAlertViewDelegate, MFMailComposeViewControllerDelegate> {
     
 }
+
+// Object Methods
+- (id)initWithFrame:(CGRect)frame;
+
+// Action Methods
+- (void)actionEmail:(id)sender;
+- (void)actionTwitter:(id)sender;
+- (void)actionAppStore:(id)sender;
+- (void)actionFeedback:(id)sender;
 
 @end

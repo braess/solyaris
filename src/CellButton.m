@@ -53,9 +53,6 @@
 	
 	// button
 	int strangeoffset = -19;
-	if ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
-		strangeoffset = 160;
-	}
 	UIButton *buttonObj = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 	buttonObj.frame = CGRectMake(0, 0, self.frame.size.width+strangeoffset, 45); 
 	buttonObj.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;

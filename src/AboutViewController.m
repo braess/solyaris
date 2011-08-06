@@ -10,21 +10,40 @@
 #import "IMDGConstants.h"
 
 
-/*
- * Helper Stack.
- */
-@interface AboutViewController (Helpers)
-- (void)recommendEmail;
-- (void)recommendTwitter;
-- (void)recommendAppStore;
-- (void)feedbackEmail;
-@end
-
 
 /**
- * Info Controller.
+ * AboutViewController.
  */
 @implementation AboutViewController
+
+
+#pragma mark -
+#pragma mark Properties
+
+// local vars
+CGRect vframe;
+
+
+#pragma mark -
+#pragma mark Object Methods
+
+/*
+ * Init.
+ */
+-(id)init {
+	return [self initWithFrame:CGRectMake(0, 0, 320, 480)];
+}
+-(id)initWithFrame:(CGRect)frame {
+	GLog();
+	// self
+	if ((self = [super init])) {
+        
+		// view
+		vframe = frame;
+        
+	}
+	return self;
+}
 
 
 #pragma mark -
@@ -39,41 +58,110 @@
 	DLog();
 	
 	
-	// prepare table view
-	self.tableView.scrollEnabled = NO;
-	
-	// remove background 
-	self.tableView.backgroundColor = [UIColor clearColor];
-	self.tableView.opaque = YES;
-	self.tableView.backgroundView = nil;
-	
-	// about 
-	float height = 110;
-    float width = 540;
-	float inset = 40;
-    float margin = 15;
-	UIView *aboutView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
+	// view
+    self.view = [[UIView alloc] initWithFrame:vframe];
+    self.view.opaque = YES;
+    
+    // frames
+    CGRect tframe = CGRectMake(0, 0, vframe.size.width, 18);
+    CGRect cframe = CGRectMake(0, 18, vframe.size.width, 18);
+    CGRect a1frame = CGRectMake(0, 39, vframe.size.width, 60);
+    CGRect a2frame = CGRectMake(0, 90, vframe.size.width, 120);
+    CGRect bframe = CGRectMake(0, 210, vframe.size.width, 40);
+    CGRect btnframe = CGRectMake(0, 0, 32, 32);
+    float spacer = 15;
+    
+    // title
+	UILabel *lblTitle = [[UILabel alloc] initWithFrame:tframe];
+	lblTitle.backgroundColor = [UIColor clearColor];
+	lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:18.0];
+	lblTitle.textColor = [UIColor colorWithRed:81.0/255.0 green:81.0/255.0 blue:81.0/255.0 alpha:1.0];
+	lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
+	lblTitle.shadowOffset = CGSizeMake(1,1);
+	lblTitle.opaque = YES;
+	lblTitle.numberOfLines = 1;
+	[lblTitle setText:NSLocalizedString(@"IMDG",@"IMDG")];
+	[self.view addSubview:lblTitle];
+	[lblTitle release];
+    
+    // claim
+	UILabel *lblClaim = [[UILabel alloc] initWithFrame:cframe];
+	lblClaim.backgroundColor = [UIColor clearColor];
+	lblClaim.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
+	lblClaim.textColor = [UIColor colorWithRed:81.0/255.0 green:81.0/255.0 blue:81.0/255.0 alpha:1.0];
+	lblClaim.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
+	lblClaim.shadowOffset = CGSizeMake(1,1);
+	lblClaim.opaque = YES;
+	lblClaim.numberOfLines = 1;
+	[lblClaim setText:NSLocalizedString(@"The Internet Movie Database Graph.",@"The Internet Movie Database Graph.")];
+	[self.view addSubview:lblClaim];
+	[lblClaim release];
     
 	
 	// description
-	UILabel *lblAbout = [[UILabel alloc] initWithFrame:CGRectMake(inset, margin, width-2*inset, height-margin)];
-	lblAbout.backgroundColor = [UIColor clearColor];
-	lblAbout.font = [UIFont fontWithName:@"Helvetica" size:15.0];
-	lblAbout.textColor = [UIColor colorWithRed:63.0/255.0 green:63.0/255.0 blue:63.0/255.0 alpha:1.0];
-	lblAbout.shadowColor = [UIColor whiteColor];
-	lblAbout.shadowOffset = CGSizeMake(1,1);
-	lblAbout.opaque = YES;
-	lblAbout.numberOfLines = 4;
-    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-		lblAbout.numberOfLines = 7;
-	}
-	[lblAbout setText:NSLocalizedString(@"An exploration into Organic Information Design to visualise movies, actors, directors and their relationships.\nSearch the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their relationship. Learn about the cast and filmography.",@"An exploration into Organic Information Design to visualise movies, actors, directors and their relationships.\nSearch the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their relationship. Learn about the cast and filmography.")];
-	[aboutView addSubview:lblAbout];
-	[lblAbout release];
+	UILabel *lblAbout1 = [[UILabel alloc] initWithFrame:a1frame];
+	lblAbout1.backgroundColor = [UIColor clearColor];
+	lblAbout1.font = [UIFont fontWithName:@"Helvetica" size:15.0];
+	lblAbout1.textColor = [UIColor colorWithRed:63.0/255.0 green:63.0/255.0 blue:63.0/255.0 alpha:1.0];
+	lblAbout1.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
+	lblAbout1.shadowOffset = CGSizeMake(1,1);
+	lblAbout1.opaque = YES;
+	lblAbout1.numberOfLines = 3;
+	[lblAbout1 setText:NSLocalizedString(@"An exploration into Organic Information Design to visualise movies, actors, directors and their relationships.",@"An exploration into Organic Information Design to visualise movies, actors, directors and their relationships.")];
+	[self.view addSubview:lblAbout1];
+	[lblAbout1 release];
     
-	// table header
-	self.tableView.tableHeaderView = aboutView;
-	
+    UILabel *lblAbout2 = [[UILabel alloc] initWithFrame:a2frame];
+	lblAbout2.backgroundColor = [UIColor clearColor];
+	lblAbout2.font = [UIFont fontWithName:@"Helvetica" size:15.0];
+	lblAbout2.textColor = [UIColor colorWithRed:63.0/255.0 green:63.0/255.0 blue:63.0/255.0 alpha:1.0];
+	lblAbout2.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
+	lblAbout2.shadowOffset = CGSizeMake(1,1);
+	lblAbout2.opaque = YES;
+	lblAbout2.numberOfLines = 5;
+	[lblAbout2 setText:NSLocalizedString(@"Search the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their relationship. Learn about the cast and filmography.",@"Search the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their relationship. Learn about the cast and filmography.")];
+	[self.view addSubview:lblAbout2];
+	[lblAbout2 release];
+    
+    // buttons
+    UIView *buttonView = [[UIView alloc] initWithFrame:bframe];
+    buttonView.backgroundColor = [UIColor clearColor];
+	buttonView.opaque = YES;
+    
+    // button feedback
+    /*
+	UIButton *btnFeedback = [UIButton buttonWithType:UIButtonTypeCustom]; 
+	btnFeedback.frame = btnframe;
+	[btnFeedback setImage:[UIImage imageNamed:@"btn_feedback.png"] forState:UIControlStateNormal];
+	[btnFeedback addTarget:self action:@selector(actionFeedback:) forControlEvents:UIControlEventTouchUpInside];
+	[buttonView addSubview:btnFeedback];
+     */
+    
+    // button app store
+	UIButton *btnAppStore = [UIButton buttonWithType:UIButtonTypeCustom]; 
+	btnAppStore.frame = CGRectMake(bframe.origin.x+bframe.size.width-btnframe.size.width-5, 0, btnframe.size.width, btnframe.size.height);
+	[btnAppStore setImage:[UIImage imageNamed:@"btn_appstore.png"] forState:UIControlStateNormal];
+	[btnAppStore addTarget:self action:@selector(actionAppStore:) forControlEvents:UIControlEventTouchUpInside];
+	[buttonView addSubview:btnAppStore];
+    
+    // button twitter
+	UIButton *btnTwitter = [UIButton buttonWithType:UIButtonTypeCustom]; 
+	btnTwitter.frame = CGRectMake(btnAppStore.frame.origin.x-btnframe.size.width-spacer, 0, btnframe.size.width, btnframe.size.height);
+	[btnTwitter setImage:[UIImage imageNamed:@"btn_twitter.png"] forState:UIControlStateNormal];
+	[btnTwitter addTarget:self action:@selector(actionTwitter:) forControlEvents:UIControlEventTouchUpInside];
+	[buttonView addSubview:btnTwitter];
+    
+    
+    // button email
+	UIButton *btnEmail = [UIButton buttonWithType:UIButtonTypeCustom]; 
+	btnEmail.frame = CGRectMake(btnTwitter.frame.origin.x-btnframe.size.width-spacer, 0, btnframe.size.width, btnframe.size.height);
+	[btnEmail setImage:[UIImage imageNamed:@"btn_email.png"] forState:UIControlStateNormal];
+	[btnEmail addTarget:self action:@selector(actionEmail:) forControlEvents:UIControlEventTouchUpInside];
+	[buttonView addSubview:btnEmail];
+    
+    
+    // add buttons
+    [self.view addSubview:buttonView];
     
 }
 
@@ -84,110 +172,21 @@
 	[super viewWillAppear:animated];
 	DLog();
 
+
 }
 
 
 
 
-#pragma mark -
-#pragma mark Cell Delegates
-
-/*
- * CellButton.
- */
-- (void)cellButtonTouched:(CellButton *)c {
-	GLog();
-	
-	// reset
-	switch ([c tag]) {
-            
-        // recommend
-		case ActionAboutRecommend:{
-            
-			// action sheet
-			UIActionSheet *recommendAction = [[UIActionSheet alloc]
-                                              initWithTitle:NSLocalizedString(@"Recommend IMDG",@"Recommend IMDG")
-                                              delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"Cancel",@"Cancel")
-                                              destructiveButtonTitle:nil
-                                              otherButtonTitles:NSLocalizedString(@"Email",@"Email"),NSLocalizedString(@"Twitter",@"Twitter"),NSLocalizedString(@"App Store",@"App Store"),nil];
-            
-			// show
-			[recommendAction setTag:ActionAboutRecommend];
-			[recommendAction showInView:self.navigationController.view];
-			[recommendAction release];
-            
-            // & break
-			break;
-		}
-            
-        // feedback
-		case ActionAboutFeedback:{
-
-			// feedback
-            [self feedbackEmail];
-            
-            // & break
-			break;
-		}
-            
-		default:
-			break;
-	}
-    
-    
-}
-
-
 
 #pragma mark -
-#pragma mark UIActionSheet Delegate
-
-/*
- * Action selected.
- */
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-	DLog();
-	
-	// tag
-	switch ([actionSheet tag]) {
-            
-        // recommend
-		case ActionAboutRecommend: {
-			// email
-			if (buttonIndex == 0) {
-				[self recommendEmail];
-			} 
-			// email
-			if (buttonIndex == 1) {
-				[self recommendTwitter];
-			} 
-			// app store
-			if (buttonIndex == 2) {
-				[self recommendAppStore];
-			} 
-			break;
-		}
-            
-            
-            // default
-		default: {
-			break;
-		}
-	}
-	
-	
-}
-
-
-#pragma mark -
-#pragma mark Helpers
+#pragma mark Actions
 
 
 /*
- * Recommend Email.
+ * Action Email.
  */
-- (void)recommendEmail {
+- (void)actionEmail:(id)sender {
 	DLog();
 
 	
@@ -225,18 +224,18 @@
 }
 
 /*
- * Recommend Twitter.
+ * Action Twitter.
  */
-- (void)recommendTwitter {
+- (void)actionTwitter:(id)sender {
 	DLog();
 
 	// ios5 twitter stuff
 }
 
 /*
- * Recommend App Store.
+ * Action AppStore.
  */
-- (void)recommendAppStore {
+- (void)actionAppStore:(id)sender {
 	DLog();
 	
 	// show info
@@ -246,7 +245,7 @@
 						  delegate:self 
 						  cancelButtonTitle:NSLocalizedString(@"Maybe later",@"Maybe later")
 						  otherButtonTitles:NSLocalizedString(@"Visit",@"Visit"),nil];
-	[alert setTag:AlertAboutRecommendAppStore];
+	[alert setTag:AlertAboutAppStore];
 	[alert show];    
 	[alert release];
     
@@ -254,9 +253,9 @@
 
 
 /*
- * Feedback Email.
+ * Action Feedback.
  */
-- (void)feedbackEmail {
+- (void)actionFeedback:(id)sender {
 	DLog();
 	
 	// check mail support
@@ -299,8 +298,8 @@
 	// tag
 	switch ([actionSheet tag]) {
             
-        // recommend App Store
-		case AlertAboutRecommendAppStore: {
+        // App Store
+		case AlertAboutAppStore: {
 			// cancel
 			if (buttonIndex == 0) {
 			}
@@ -312,7 +311,7 @@
 		}
             
             
-            // default
+        // default
 		default: {
 			break;
 		}
@@ -358,180 +357,6 @@
     
 }
 
-
-#pragma mark -
-#pragma mark Table view data source
-
-/*
- * Customize the number of sections in the table view.
- */
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)aTableView {
-	// count it
-    return 3;
-}
-
-
-/*
- * Customize the number of rows in the table view.
- */
-- (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section {
-    
-    // section
-    switch (section) {
-		case SectionAboutRecommend: {
-			return 1;
-		}
-		case SectionAboutApp: {
-			return 2;
-		}
-		case SectionAboutFeedback: {
-			return 1;
-		}
-    }
-    
-    return 0;
-}
-
-
-
-#pragma mark -
-#pragma mark UITableViewDelegate Protocol
-
-
-/*
- * Customize the appearance of table view cells.
- */
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-	// identifiers
-    static NSString *CellAboutIdentifier = @"CellAbout";
-    static NSString *CellAboutButtonIdentifier = @"CellAboutButton";
-	
-	// create cell
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellAboutIdentifier];
-	if (cell == nil) {
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellAboutIdentifier] autorelease];
-		cell.accessoryType = UITableViewCellAccessoryNone;
-	}
-	
-	// configure
-	cell.textLabel.font = [UIFont fontWithName:@"Helvetica" size:15.0]; 
-	cell.textLabel.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
-	
-	
-	// section
-    NSUInteger section = [indexPath section];
-    switch (section) {
-			
-        // info
-        case SectionAboutApp: {
-			
-			// preferences
-            if ([indexPath row] == AboutPreferences) {
-				
-				// cell
-				cell.textLabel.text = NSLocalizedString(@"Preferences",@"Preferences");
-				
-				// accessory
-				cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-			}
-			
-			// have a break
-			break; 
-		}
-            
-        // recommend
-		case SectionAboutRecommend: {
-			
-			// recommend
-            if ([indexPath row] == AboutRecommend) {
-				
-				// create cell
-				CellButton *cbutton = (CellButton*) [tableView dequeueReusableCellWithIdentifier:CellAboutButtonIdentifier];
-				if (cbutton == nil) {
-					cbutton = [[[CellButton alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellAboutButtonIdentifier] autorelease];
-				}				
-				
-				// prepare cell
-				cbutton.delegate = self;
-				cbutton.tag = ActionAboutRecommend;
-				[cbutton.buttonAccessory setTitle:NSLocalizedString(@"Recommend",@"Recommend") forState:UIControlStateNormal];
-				[cbutton update:YES];
-				
-				// set cell
-				cell = cbutton;
-                
-			}
-			
-			// break it
-			break; 
-		}
-            
-        // feedback
-		case SectionAboutFeedback: {
-			
-			// feedback
-            if ([indexPath row] == AboutFeedback) {
-				
-				// create cell
-				CellButton *cbutton = (CellButton*) [tableView dequeueReusableCellWithIdentifier:CellAboutButtonIdentifier];
-				if (cbutton == nil) {
-					cbutton = [[[CellButton alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellAboutButtonIdentifier] autorelease];
-				}				
-				
-				// prepare cell
-				cbutton.delegate = self;
-				cbutton.tag = ActionAboutFeedback;
-				[cbutton.buttonAccessory setTitle:NSLocalizedString(@"Feedback",@"Feedback") forState:UIControlStateNormal];
-				[cbutton update:YES];
-				
-				// set cell
-				cell = cbutton;
-                
-			}
-			
-			// break it
-			break; 
-		}
-	}
-	
-	
-	// return
-    return cell;
-}
-
-
-/*
- * Called when a table cell is selected.
- */
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	FLog();
-	
-	// section
-    NSUInteger section = [indexPath section];
-    switch (section) {	
-			
-        // app
-        case SectionAboutApp: {
-			
-			// preferences
-            if ([indexPath row] == AboutPreferences) {
-				
-                /*
-				// controller
-			    PreferencesViewController *preferencesViewController = [[PreferencesViewController alloc] initWithStyle:UITableViewStyleGrouped];
-				
-				// navigate 
-				[self.navigationController pushViewController:preferencesViewController animated:YES];
-				[preferencesViewController release];
-                 */
-			}
-			break;
-			
-		}
-	}
-	
-}
 
 
 #pragma mark -

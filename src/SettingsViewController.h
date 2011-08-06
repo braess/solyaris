@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AboutViewController.h"
+#import "PreferencesViewController.h"
 
 
 /*
@@ -24,6 +26,10 @@
     
     // delegate
 	id<SettingsDelegate> delegate;
+    
+    // controllers
+    AboutViewController *_aboutViewController;
+    PreferencesViewController *_preferencesViewController;
     
 }
 

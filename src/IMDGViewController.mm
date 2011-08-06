@@ -59,6 +59,8 @@
 // accessors
 @synthesize imdgApp;
 
+// local vars
+bool settings = NO;
 
 
 #pragma mark -
@@ -104,8 +106,8 @@
     CGRect frameSearch = CGRectMake(0, 0, window.frame.size.width, 40);
     CGRect frameSearchResult = CGRectMake(0, 0, 320, 480);
     CGRect frameInformation = CGRectMake(0, 0, 650, 650);
-    CGRect frameSettings = CGRectMake(0, 0, 320, 480);
-    CGRect frameSettingsButton = CGRectMake(window.frame.size.width-24, window.frame.size.height-24, 24, 24);
+    CGRect frameSettings = CGRectMake(0, 0, 708, 480);
+    CGRect frameSettingsButton = CGRectMake(window.frame.size.width-32, window.frame.size.height-32, 32, 32);
     
     // view
     self.view = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
@@ -627,7 +629,6 @@
 /*
  * Settings.
  */
-bool settings = NO;
 - (void)actionSettings:(id)sender {
 	DLog();
 	
@@ -638,9 +639,6 @@ bool settings = NO;
     else {
         [self animationSettingsHide];
     }
-    
-    // state
-    settings = ! settings;
 }
 
 
@@ -880,6 +878,9 @@ bool settings = NO;
 - (void)animationSettingsShow {
 	FLog();
     
+    // state
+    settings = YES;
+    
 	
 	// prepare controllers
     [_settingsViewController.view setHidden:NO];
@@ -910,7 +911,6 @@ bool settings = NO;
     _searchResultViewController.view.hidden = YES;
     _searchResultViewController.view.hidden = YES;
 
-    
 	// clean it up
 	[self performSelector:@selector(animationSettingsShowDone) withObject:nil afterDelay:kAnimateTimeSettingsShow];
 }
@@ -919,6 +919,7 @@ bool settings = NO;
     
     // appeared
     [_settingsViewController viewDidAppear:YES];
+    
 }
 
 
@@ -927,6 +928,9 @@ bool settings = NO;
  */
 - (void)animationSettingsHide {
 	FLog();
+    
+    // state
+    settings = NO;
 	
 	// prepare controllers
 	[_settingsViewController viewWillDisappear:YES];

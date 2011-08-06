@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "CellButton.h"
 #import "CellSwitch.h"
-#import "CellText.h"
 #import "CellSlider.h"
 
 
@@ -23,7 +22,6 @@ enum {
 
 //  General Fields
 enum {
-	PreferenceGeneralEmail,
 	PreferenceGeneralSound
 };
 
@@ -53,7 +51,7 @@ enum {
 /**
  * Preferences Controller.
  */
-@interface PreferencesViewController : UITableViewController <UIActionSheetDelegate, CellButtonDelegate, CellSwitchDelegate, CellTextDelegate, CellSliderDelegate> {
+@interface PreferencesViewController : UITableViewController <UIActionSheetDelegate, CellButtonDelegate, CellSwitchDelegate, CellSliderDelegate> {
     
 }
 
