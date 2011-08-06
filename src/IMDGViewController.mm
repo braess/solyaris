@@ -105,12 +105,11 @@
     CGRect frameSearchResult = CGRectMake(0, 0, 320, 480);
     CGRect frameInformation = CGRectMake(0, 0, 650, 650);
     CGRect frameSettings = CGRectMake(0, 0, 320, 480);
-    CGRect frameSettingsButton = CGRectMake(window.frame.size.width-32, window.frame.size.height-32, 24, 24);
+    CGRect frameSettingsButton = CGRectMake(window.frame.size.width-24, window.frame.size.height-24, 24, 24);
     
     // view
     self.view = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     [window addSubview:self.view];
-    
     
     
     // search
@@ -886,20 +885,30 @@ bool settings = NO;
     [_settingsViewController.view setHidden:NO];
 	[_settingsViewController viewWillAppear:YES];
     
+    
+    // animate search
+	[UIView beginAnimations:@"settings_show" context:nil];
+	[UIView setAnimationDuration:kAnimateTimeSettingsShow];
+    _searchViewController.view.alpha = 0.0f;
+	[UIView commitAnimations];
+    
 
-	// animate
-    CATransition *animation = [CATransition animation];
-    [animation setDelegate:self];
-    [animation setDuration:kAnimateTimeSettingsShow];
-    [animation setType:@"pageCurl"];
-    [animation setRemovedOnCompletion:NO];
-    animation.startProgress = 0;
-    animation.endProgress = kAnimateTimeSettingsShow-0.001; 
-    [animation setFillMode: @"extended"];
-    [[_cinderView layer] addAnimation:animation forKey:@"settings_show"];
+	// animate cinder
+    CATransition *acinder = [CATransition animation];
+    [acinder setDelegate:self];
+    [acinder setDuration:kAnimateTimeSettingsShow];
+    [acinder setType:@"pageCurl"];
+    [acinder setRemovedOnCompletion:NO];
+    acinder.startProgress = 0;
+    acinder.endProgress = kAnimateTimeSettingsShow-0.001; 
+    [acinder setFillMode: @"extended"];
+    [[_cinderView layer] addAnimation:acinder forKey:@"settings_show"];
+
     
     // hide
     _cinderView.hidden = YES;
+    _searchResultViewController.view.hidden = YES;
+    _searchResultViewController.view.hidden = YES;
 
     
 	// clean it up
@@ -907,7 +916,6 @@ bool settings = NO;
 }
 - (void)animationSettingsShowDone {
 	GLog();
-    
     
     // appeared
     [_settingsViewController viewDidAppear:YES];
@@ -924,15 +932,23 @@ bool settings = NO;
 	[_settingsViewController viewWillDisappear:YES];
     
 
-	// animate
-    CATransition *animation = [CATransition animation];
-    [animation setDelegate:self];
-    [animation setDuration:kAnimateTimeSettingsHide];
-    [animation setType:@"pageUnCurl"];
-    [[_cinderView layer] addAnimation:animation forKey:@"settings_hide"];
+	// animate cinder
+    CATransition *acinder = [CATransition animation];
+    [acinder setDelegate:self];
+    [acinder setDuration:kAnimateTimeSettingsHide];
+    [acinder setType:@"pageUnCurl"];
+    [[_cinderView layer] addAnimation:acinder forKey:@"settings_hide"];
+    
+    // animate search
+	[UIView beginAnimations:@"settings_hide" context:nil];
+	[UIView setAnimationDuration:kAnimateTimeSettingsHide];
+    _searchViewController.view.alpha = 1.0f;
+	[UIView commitAnimations];
     
     // unhide
     _cinderView.hidden = NO;
+    _searchResultViewController.view.hidden = NO;
+    _searchResultViewController.view.hidden = NO;
     
 	// clean it up
 	[self performSelector:@selector(animationSettingsHideDone) withObject:nil afterDelay:kAnimateTimeSettingsHide];

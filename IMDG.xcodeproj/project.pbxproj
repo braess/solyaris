@@ -53,6 +53,16 @@
 		18F6B3A613E33DA80079DB2A /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F6B3A513E33DA80079DB2A /* Search.m */; };
 		18F6B3A913E33DA90079DB2A /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F6B3A813E33DA90079DB2A /* SearchResult.m */; };
 		18F8192913AA920F00D2F5C3 /* btn_reset.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F8192813AA920F00D2F5C3 /* btn_reset.png */; };
+		18FE6EB913ED28E100C379BC /* texture_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 18FE6EB813ED28E100C379BC /* texture_settings.png */; };
+		18FE6EC313ED332000C379BC /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6EC213ED332000C379BC /* AboutViewController.m */; };
+		18FE6EC613ED39B900C379BC /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18FE6EC513ED39B900C379BC /* MessageUI.framework */; };
+		18FE6EC913ED3A3700C379BC /* PreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6EC813ED3A3700C379BC /* PreferencesViewController.m */; };
+		18FE6ED113ED3B9100C379BC /* CellButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6ECC13ED3B9100C379BC /* CellButton.m */; };
+		18FE6ED213ED3B9100C379BC /* CellSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6ECE13ED3B9100C379BC /* CellSwitch.m */; };
+		18FE6ED313ED3B9100C379BC /* CellText.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6ED013ED3B9100C379BC /* CellText.m */; };
+		18FE6ED613ED3BFB00C379BC /* CellInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6ED513ED3BFB00C379BC /* CellInput.m */; };
+		18FE6ED913ED3C2B00C379BC /* CellSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6ED813ED3C2B00C379BC /* CellSlider.m */; };
+		18FE6EDC13ED3C8500C379BC /* CellTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6EDB13ED3C8500C379BC /* CellTextViewController.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
@@ -145,6 +155,24 @@
 		18F6B3A713E33DA90079DB2A /* SearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchResult.h; path = src/SearchResult.h; sourceTree = "<group>"; };
 		18F6B3A813E33DA90079DB2A /* SearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchResult.m; path = src/SearchResult.m; sourceTree = "<group>"; };
 		18F8192813AA920F00D2F5C3 /* btn_reset.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_reset.png; path = Assets/btn_reset.png; sourceTree = "<group>"; };
+		18FE6EB813ED28E100C379BC /* texture_settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = texture_settings.png; path = Assets/texture_settings.png; sourceTree = "<group>"; };
+		18FE6EC113ED332000C379BC /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AboutViewController.h; path = src/AboutViewController.h; sourceTree = "<group>"; };
+		18FE6EC213ED332000C379BC /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AboutViewController.m; path = src/AboutViewController.m; sourceTree = "<group>"; };
+		18FE6EC513ED39B900C379BC /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		18FE6EC713ED3A3700C379BC /* PreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreferencesViewController.h; path = src/PreferencesViewController.h; sourceTree = "<group>"; };
+		18FE6EC813ED3A3700C379BC /* PreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PreferencesViewController.m; path = src/PreferencesViewController.m; sourceTree = "<group>"; };
+		18FE6ECB13ED3B9100C379BC /* CellButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CellButton.h; path = src/CellButton.h; sourceTree = "<group>"; };
+		18FE6ECC13ED3B9100C379BC /* CellButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellButton.m; path = src/CellButton.m; sourceTree = "<group>"; };
+		18FE6ECD13ED3B9100C379BC /* CellSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CellSwitch.h; path = src/CellSwitch.h; sourceTree = "<group>"; };
+		18FE6ECE13ED3B9100C379BC /* CellSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellSwitch.m; path = src/CellSwitch.m; sourceTree = "<group>"; };
+		18FE6ECF13ED3B9100C379BC /* CellText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CellText.h; path = src/CellText.h; sourceTree = "<group>"; };
+		18FE6ED013ED3B9100C379BC /* CellText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellText.m; path = src/CellText.m; sourceTree = "<group>"; };
+		18FE6ED413ED3BFB00C379BC /* CellInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CellInput.h; path = src/CellInput.h; sourceTree = "<group>"; };
+		18FE6ED513ED3BFB00C379BC /* CellInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellInput.m; path = src/CellInput.m; sourceTree = "<group>"; };
+		18FE6ED713ED3C2B00C379BC /* CellSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CellSlider.h; path = src/CellSlider.h; sourceTree = "<group>"; };
+		18FE6ED813ED3C2B00C379BC /* CellSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellSlider.m; path = src/CellSlider.m; sourceTree = "<group>"; };
+		18FE6EDA13ED3C8500C379BC /* CellTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CellTextViewController.h; path = src/CellTextViewController.h; sourceTree = "<group>"; };
+		18FE6EDB13ED3C8500C379BC /* CellTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellTextViewController.m; path = src/CellTextViewController.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* imdg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = imdg.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -164,6 +192,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18FE6EC613ED39B900C379BC /* MessageUI.framework in Frameworks */,
 				1819227413C72CEB00C89C74 /* CoreData.framework in Frameworks */,
 				C725E001121DAC8F00FA186B /* AVFoundation.framework in Frameworks */,
 				C725DFFE121DAC7F00FA186B /* CoreMedia.framework in Frameworks */,
@@ -185,6 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				18EE9ED513C7476400BA13CF /* 3rdparty */,
+				18FE6ECA13ED3B2300C379BC /* components */,
 				18EE9ECC13C73DC800BA13CF /* constants */,
 				1819227813C731F200C89C74 /* model */,
 				1819226813C72B2C00C89C74 /* api */,
@@ -209,6 +239,10 @@
 				180D8FCC13E1F27800364F54 /* InformationViewController.m */,
 				187ABFAA13EC909400090C63 /* SettingsViewController.h */,
 				187ABFAB13EC909500090C63 /* SettingsViewController.m */,
+				18FE6EC113ED332000C379BC /* AboutViewController.h */,
+				18FE6EC213ED332000C379BC /* AboutViewController.m */,
+				18FE6EC713ED3A3700C379BC /* PreferencesViewController.h */,
+				18FE6EC813ED3A3700C379BC /* PreferencesViewController.m */,
 			);
 			name = app;
 			sourceTree = "<group>";
@@ -236,6 +270,7 @@
 		180D8FCF13E1F4C800364F54 /* textures */ = {
 			isa = PBXGroup;
 			children = (
+				18FE6EB813ED28E100C379BC /* texture_settings.png */,
 				18E88A2E13EC507B00529B73 /* texture_header.png */,
 				18E88A2C13EC4E1600529B73 /* texture_content.png */,
 			);
@@ -372,6 +407,25 @@
 			name = graph;
 			sourceTree = "<group>";
 		};
+		18FE6ECA13ED3B2300C379BC /* components */ = {
+			isa = PBXGroup;
+			children = (
+				18FE6ED413ED3BFB00C379BC /* CellInput.h */,
+				18FE6ED513ED3BFB00C379BC /* CellInput.m */,
+				18FE6ECB13ED3B9100C379BC /* CellButton.h */,
+				18FE6ECC13ED3B9100C379BC /* CellButton.m */,
+				18FE6ECD13ED3B9100C379BC /* CellSwitch.h */,
+				18FE6ECE13ED3B9100C379BC /* CellSwitch.m */,
+				18FE6ECF13ED3B9100C379BC /* CellText.h */,
+				18FE6ED013ED3B9100C379BC /* CellText.m */,
+				18FE6EDA13ED3C8500C379BC /* CellTextViewController.h */,
+				18FE6EDB13ED3C8500C379BC /* CellTextViewController.m */,
+				18FE6ED713ED3C2B00C379BC /* CellSlider.h */,
+				18FE6ED813ED3C2B00C379BC /* CellSlider.m */,
+			);
+			name = components;
+			sourceTree = "<group>";
+		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -383,6 +437,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				18FE6EC513ED39B900C379BC /* MessageUI.framework */,
 				1804C6E213AA277200417D32 /* Assets */,
 				00CFDFA7113848F40091E310 /* Source */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -491,6 +546,7 @@
 				18E88A3F13EC5D3D00529B73 /* micon_loaded.png in Resources */,
 				18E88A4013EC5D3D00529B73 /* micon_visible.png in Resources */,
 				187ABFAE13EC977900090C63 /* btn_settings.png in Resources */,
+				18FE6EB913ED28E100C379BC /* texture_settings.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -532,6 +588,14 @@
 				180E501613EB09F6000E0ADB /* Info.cpp in Sources */,
 				187ABF9C13EC6DEB00090C63 /* SearchViewController.m in Sources */,
 				187ABFAC13EC909500090C63 /* SettingsViewController.m in Sources */,
+				18FE6EC313ED332000C379BC /* AboutViewController.m in Sources */,
+				18FE6EC913ED3A3700C379BC /* PreferencesViewController.m in Sources */,
+				18FE6ED113ED3B9100C379BC /* CellButton.m in Sources */,
+				18FE6ED213ED3B9100C379BC /* CellSwitch.m in Sources */,
+				18FE6ED313ED3B9100C379BC /* CellText.m in Sources */,
+				18FE6ED613ED3BFB00C379BC /* CellInput.m in Sources */,
+				18FE6ED913ED3C2B00C379BC /* CellSlider.m in Sources */,
+				18FE6EDC13ED3C8500C379BC /* CellTextViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

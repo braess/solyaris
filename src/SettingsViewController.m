@@ -72,7 +72,7 @@ CGRect vframe;
     
     // background
     UIView *bgView = [[UIView alloc] initWithFrame:wframe];
-    bgView.backgroundColor = [UIColor blackColor];
+    bgView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"texture_settings.png"]];
     bgView.opaque = NO;
     [self.view addSubview:bgView];
     [bgView release];
