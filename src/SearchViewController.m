@@ -20,8 +20,12 @@
 #pragma mark Constants
 
 // constants
-#define kAlpha 0.9f
-#define kAlphaActive 0.96f
+#define kAlphaSearch 0.8f
+#define kAlphaSearchActive 0.96f
+#define kAlphaBtn 0.6f
+#define kAlphaBtnActive 0.96f
+#define kAlphaTxt 0.6f
+#define kAlphaTxtActive 0.6f
 
 
 #pragma mark -
@@ -100,7 +104,7 @@ CGRect vframe;
     
     // background
     UIView *background = [[UIView alloc] initWithFrame:CGRectMake(0, 0, fwidth, fheight)];
-    background.backgroundColor = [UIColor colorWithRed:76/255.0 green:86/255.0 blue:100/255.0 alpha:120/255.0];
+    background.backgroundColor = [UIColor colorWithRed:76/255.0 green:86/255.0 blue:100/255.0 alpha:0.5];
     [self.view addSubview:background];
     
    
@@ -109,7 +113,7 @@ CGRect vframe;
     UILabel *lblTitle = [[UILabel alloc] initWithFrame:CGRectMake(border, inset, twidth, theight)];
     lblTitle.backgroundColor = [UIColor clearColor];
     lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
-    lblTitle.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:210/255.0];
+    lblTitle.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt];
     lblTitle.numberOfLines = 1;
     lblTitle.text = NSLocalizedString(@"IMDG",@"IMDG");
     [self.view addSubview:lblTitle];
@@ -118,7 +122,7 @@ CGRect vframe;
     UILabel *lblClaim = [[UILabel alloc] initWithFrame:CGRectMake(border, inset+theight-1, twidth, theight)];
     lblClaim.backgroundColor = [UIColor clearColor];
     lblClaim.font = [UIFont fontWithName:@"Helvetica" size:12.0];
-    lblClaim.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:210/255.0];
+    lblClaim.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt];
     lblClaim.numberOfLines = 1;
     lblClaim.text = NSLocalizedString(@"The Internet Movie Database Graph",@"The Internet Movie Database Graph");
     [self.view addSubview:lblClaim];
@@ -128,7 +132,7 @@ CGRect vframe;
     // search bar
     UISearchBar *sBar = [[UISearchBar alloc] initWithFrame:CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0)+1.5, swidth, sheight)];
     sBar.barStyle = UIBarStyleBlackTranslucent;
-    sBar.alpha = kAlpha;
+    sBar.alpha = kAlphaSearch;
     sBar.showsCancelButton = NO;
     sBar.autocorrectionType = UITextAutocorrectionTypeNo;
     sBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -145,16 +149,19 @@ CGRect vframe;
 	[sBar release];
     
     
-    // button movie (187,176,130)
+    // button movie 
 	UIButton *btnMovie = [UIButton buttonWithType:UIButtonTypeCustom];
     btnMovie.frame = CGRectMake(fwidth*0.5+swidth*0.5+inset, (fheight-bheight)/2.0, bwidth, bheight);
     btnMovie.layer.cornerRadius = 3;
     btnMovie.layer.masksToBounds = YES;
     btnMovie.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
-    btnMovie.titleLabel.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:210/255.0];
     
-    [btnMovie setBackgroundColor:[UIColor colorWithRed:187/255.0 green:176/255.0 blue:130/255.0 alpha:kAlpha]];
-    [btnMovie setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [btnMovie setBackgroundColor:[UIColor colorWithRed:187/255.0 green:176/255.0 blue:130/255.0 alpha:kAlphaBtn]];
+    //[btnMovie setBackgroundColor:[UIColor colorWithRed:92/255.0 green:99/255.0 blue:42/255.0 alpha:kAlphaBtn]];
+    //[btnMovie setBackgroundColor:[UIColor colorWithRed:100/255.0 green:102/255.0 blue:52/255.0 alpha:kAlphaBtn]];
+    //[btnMovie setBackgroundColor:[UIColor colorWithRed:127/255.0 green:13/255.0 blue:128/255.0 alpha:kAlphaBtn]];
+    [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
+    [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnMovie setTitle:NSLocalizedString(@"Movie",@"Movie") forState:UIControlStateNormal];
 	[btnMovie addTarget:self action:@selector(actionMovie:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -163,16 +170,19 @@ CGRect vframe;
 	[btnMovie release];
     
     
-    // button actor (130,153,147)
+    // button actor
 	UIButton *btnActor = [UIButton buttonWithType:UIButtonTypeCustom];
     btnActor.frame = CGRectMake(fwidth*0.5+swidth*0.5+2*inset+bwidth, (fheight-bheight)/2.0, bwidth, bheight);
     btnActor.layer.cornerRadius = 3;
     btnActor.layer.masksToBounds = YES;
     btnActor.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
-    btnActor.titleLabel.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:210/255.0];
     
-    [btnActor setBackgroundColor:[UIColor colorWithRed:130/255.0 green:153/255.0 blue:147/255.0 alpha:kAlpha]];
-    [btnActor setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [btnActor setBackgroundColor:[UIColor colorWithRed:130/255.0 green:153/255.0 blue:147/255.0 alpha:kAlphaBtn]];
+    //[btnActor setBackgroundColor:[UIColor colorWithRed:75/255.0 green:99/255.0 blue:42/255.0 alpha:kAlphaBtn]];
+    //[btnActor setBackgroundColor:[UIColor colorWithRed:51/255.0 green:76/255.0 blue:102/255.0 alpha:kAlphaBtn]];
+    //[btnActor setBackgroundColor:[UIColor colorWithRed:13/255.0 green:84/255.0 blue:128/255.0 alpha:kAlphaBtn]];
+    [btnActor setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
+    [btnActor setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnActor setTitle:NSLocalizedString(@"Actor",@"Actor") forState:UIControlStateNormal];
 	[btnActor addTarget:self action:@selector(actionActor:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -181,16 +191,19 @@ CGRect vframe;
 	[btnActor release];
     
   
-    // button director (94,118,117)
+    // button director 
 	UIButton *btnDirector = [UIButton buttonWithType:UIButtonTypeCustom];
     btnDirector.frame = CGRectMake(fwidth*0.5+swidth*0.5+3*inset+2*bwidth, (fheight-bheight)/2.0, bwidth, bheight);
     btnDirector.layer.cornerRadius = 3;
     btnDirector.layer.masksToBounds = YES;
     btnDirector.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
-    btnDirector.titleLabel.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:210/255.0];
     
-    [btnDirector setBackgroundColor:[UIColor colorWithRed:94/255.0 green:118/255.0 blue:117/255.0 alpha:kAlpha]];
-    [btnDirector setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [btnDirector setBackgroundColor:[UIColor colorWithRed:94/255.0 green:118/255.0 blue:117/255.0 alpha:kAlphaBtn]];
+    //[btnDirector setBackgroundColor:[UIColor colorWithRed:99/255.0 green:90/255.0 blue:42/255.0 alpha:kAlphaBtn]];
+    //[btnDirector setBackgroundColor:[UIColor colorWithRed:85/255.0 green:102/255.0 blue:51/255.0 alpha:kAlphaBtn]];
+    //[btnDirector setBackgroundColor:[UIColor colorWithRed:126/255.0 green:128/255.0 blue:13/255.0 alpha:kAlphaBtn]];
+    [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
+    [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnDirector setTitle:NSLocalizedString(@"Director",@"Director") forState:UIControlStateNormal];
 	[btnDirector addTarget:self action:@selector(actionDirector:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -223,7 +236,7 @@ CGRect vframe;
     FLog();
     
     // active
-    _searchBar.alpha = kAlphaActive;
+    _searchBar.alpha = kAlphaSearchActive;
 }
 
 
@@ -233,7 +246,7 @@ CGRect vframe;
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
     
     // inactive
-    _searchBar.alpha = kAlpha;
+    _searchBar.alpha = kAlphaSearch;
 }
 
 
@@ -248,7 +261,7 @@ CGRect vframe;
     [_searchBar resignFirstResponder];
     
     // inactive
-    _searchBar.alpha = kAlpha;
+    _searchBar.alpha = kAlphaSearch;
     
     // search
     if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
@@ -272,7 +285,7 @@ CGRect vframe;
     [_searchBar resignFirstResponder];
     
     // inactive
-    _searchBar.alpha = kAlpha;
+    _searchBar.alpha = kAlphaSearch;
     
     // search
     if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
@@ -290,7 +303,7 @@ CGRect vframe;
     [_searchBar resignFirstResponder];
     
     // inactive
-    _searchBar.alpha = kAlpha;
+    _searchBar.alpha = kAlphaSearch;
     
     // search
     if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
@@ -308,7 +321,7 @@ CGRect vframe;
     [_searchBar resignFirstResponder];
     
     // inactive
-    _searchBar.alpha = kAlpha;
+    _searchBar.alpha = kAlphaSearch;
     
     // search
     if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
