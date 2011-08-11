@@ -745,7 +745,7 @@ int sectionGapInset = 15;
         CGRect iframe = CGRectMake(0, 0, 16, 16);
         
 		_iconMovie = [[UIImageView alloc] initWithFrame:iframe];
-		_iconMovie.image = [UIImage imageNamed:@"icon_movie.png"];
+		_iconMovie.image = [UIImage imageNamed:@"icon_mini_movie.png"];
 		_iconMovie.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
 		_iconMovie.backgroundColor = [UIColor clearColor];
 		_iconMovie.contentMode = UIViewContentModeCenter;
@@ -753,7 +753,7 @@ int sectionGapInset = 15;
         [self.contentView addSubview: _iconMovie];
         
         _iconActor = [[UIImageView alloc] initWithFrame:iframe];
-		_iconActor.image = [UIImage imageNamed:@"icon_actor.png"];
+		_iconActor.image = [UIImage imageNamed:@"icon_mini_actor.png"];
 		_iconActor.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
 		_iconActor.backgroundColor = [UIColor clearColor];
 		_iconActor.contentMode = UIViewContentModeCenter;
@@ -761,7 +761,7 @@ int sectionGapInset = 15;
         [self.contentView addSubview: _iconActor];
         
         _iconDirector = [[UIImageView alloc] initWithFrame:iframe];
-		_iconDirector.image = [UIImage imageNamed:@"icon_director.png"];
+		_iconDirector.image = [UIImage imageNamed:@"icon_mini_director.png"];
 		_iconDirector.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
 		_iconDirector.backgroundColor = [UIColor clearColor];
 		_iconDirector.contentMode = UIViewContentModeCenter;

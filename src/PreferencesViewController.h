@@ -12,32 +12,11 @@
 #import "CellSlider.h"
 
 
-//  Sections
+//  Fields
 enum {
-    SectionPreferencesGeneral,
-    SectionPreferencesGraph,
-	SectionPreferencesReset,
-    SectionPreferencesCache
-};
-
-//  General Fields
-enum {
-	PreferenceGeneralSound
-};
-
-//  Graph Fields
-enum {
-    PreferenceGraphPerimeter
-};
-
-
-//  Reset Fields
-enum {
-	PreferenceResetDefaults
-};
-
-//  Cache Fields
-enum {
+    PreferenceGeneralSound,
+    PreferenceGraphPerimeter,
+	PreferenceDefaultsReset,
     PreferenceCacheClear
 };
 
@@ -55,4 +34,12 @@ enum {
     
 }
 
+@end
+
+
+/**
+ * PreferencesBackgroundView.
+ */
+@interface PreferencesBackgroundView : UIView {
+}
 @end

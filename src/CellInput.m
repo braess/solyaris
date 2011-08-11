@@ -33,6 +33,34 @@
 }
 
 
+
+#pragma mark -
+#pragma mark TableCell Methods
+
+/*
+ * Draws the cell.
+ */
+- (void)drawRect:(CGRect)rect {
+    //[super drawRect:rect];
+	
+    // get the graphics context and clear it
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextClearRect(ctx, rect);
+    //CGContextSetShouldAntialias(ctx, NO);
+    
+    // background
+    CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0 alpha:0.03].CGColor);
+	CGContextFillRect(ctx, rect);
+    
+    // lines
+    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
+	CGContextMoveToPoint(ctx, rect.origin.x, 0);
+	CGContextAddLineToPoint(ctx, rect.origin.x+rect.size.width, 0);
+	CGContextStrokePath(ctx);
+    
+}
+
+
 #pragma mark -
 #pragma mark Memory management
 

@@ -39,7 +39,7 @@
 
 
 // constants
-#define kAnimateTimeInformationShow	0.75f
+#define kAnimateTimeInformationShow	0.6f
 #define kAnimateTimeInformationHide	0.45f
 #define kAnimateTimeSettingsShow	0.75f
 #define kAnimateTimeSettingsHide	0.45f

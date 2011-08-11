@@ -44,6 +44,10 @@
     if (self == nil) { 
         return nil;
     }
+    
+    // background
+    self.backgroundColor = [UIColor clearColor];
+    self.opaque = YES;
 	
 	// switch
 	UISwitch *switchObj = [[UISwitch alloc] initWithFrame:CGRectMake(1.0, 1.0, 20.0, 20.0)];

@@ -7,6 +7,8 @@
 //
 
 #import "CellButton.h"
+#import <QuartzCore/QuartzCore.h>
+
 
 /*
 * Helper Stack.
@@ -52,10 +54,15 @@
 	
 	
 	// button
-	int strangeoffset = -19;
-	UIButton *buttonObj = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-	buttonObj.frame = CGRectMake(0, 0, self.frame.size.width+strangeoffset, 45); 
+	UIButton *buttonObj = [UIButton buttonWithType:UIButtonTypeCustom];
+	buttonObj.frame = CGRectMake(0, 10, 100, 30); 
 	buttonObj.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    buttonObj.layer.cornerRadius = 3;
+    buttonObj.layer.masksToBounds = YES;
+    buttonObj.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+    
+    [buttonObj setBackgroundColor:[UIColor colorWithRed:121/255.0 green:125/255.0 blue:128/255.0 alpha:0.8]];
+    [buttonObj setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:0.75] forState:UIControlStateNormal];
 	[buttonObj setTitle:@"Button" forState:UIControlStateNormal];
 				
 	// targets and actions

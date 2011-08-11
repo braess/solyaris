@@ -93,7 +93,7 @@ CGRect vframe;
     [aboutViewController release];
     
     // Preferences
-    PreferencesViewController *preferencesViewController = [[PreferencesViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    PreferencesViewController *preferencesViewController = [[PreferencesViewController alloc] initWithStyle:UITableViewStylePlain];
     [preferencesViewController.view setFrame:pframe];
     _preferencesViewController = [preferencesViewController retain];
     [ctView addSubview:_preferencesViewController.view];

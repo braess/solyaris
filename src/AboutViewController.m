@@ -108,9 +108,10 @@ int aboutFooterHeight = 45;
 	txtAbout.font = [UIFont fontWithName:@"Helvetica" size:15.0];
 	txtAbout.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
 	txtAbout.opaque = YES;
-    txtAbout.userInteractionEnabled = NO;
+    txtAbout.userInteractionEnabled = YES;
     txtAbout.editable = NO;
-	[txtAbout setText:NSLocalizedString(@"An exploration into Organic Information Design to visualise movies, actors, directors and their relationships. \n\nSearch the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their relationship. Learn about the cast and filmography. \n\nInformation courtesy of The Internet Movie Database. Used with permission.",@"An exploration into Organic Information Design to visualise movies, actors, directors and their relationships. \n\nSearch the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their relationship. Learn about the cast and filmography. \n\nInformation courtesy of The Internet Movie Database. Used with permission.")];
+    //txtAbout.dataDetectorTypes = UIDataDetectorTypeLink;
+	[txtAbout setText:NSLocalizedString(@"An exploration into organic information design to visualise movies, actors, directors and their relationships. \n\nSearch the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their relationship. Learn about the cast and filmography. \n\nInformation courtesy of The Internet Movie Database (http://www.imdb.com). Used with permission.",@"An exploration into organic information design to visualise movies, actors, directors and their relationships. \n\nSearch the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their relationship. Learn about the cast and filmography. \n\nInformation courtesy of The Internet Movie Database (http://www.imdb.com). Used with permission.")];
     [self.view addSubview:txtAbout];
 	[txtAbout release];
     

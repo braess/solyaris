@@ -22,7 +22,7 @@
 // constants
 #define kAlphaSearch 0.8f
 #define kAlphaSearchActive 0.96f
-#define kAlphaBtn 0.6f
+#define kAlphaBtn 0.8f
 #define kAlphaBtnActive 0.96f
 #define kAlphaTxt 0.6f
 #define kAlphaTxtActive 0.6f
@@ -104,7 +104,7 @@ CGRect vframe;
     
     // background
     UIView *background = [[UIView alloc] initWithFrame:CGRectMake(0, 0, fwidth, fheight)];
-    background.backgroundColor = [UIColor colorWithRed:76/255.0 green:86/255.0 blue:100/255.0 alpha:0.5];
+    background.backgroundColor = [UIColor colorWithWhite:1 alpha:0.06];
     [self.view addSubview:background];
     
    
