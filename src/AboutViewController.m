@@ -22,6 +22,8 @@
 
 // local vars
 CGRect vframe;
+int aboutHeaderHeight = 45;
+int aboutFooterHeight = 45;
 
 
 #pragma mark -
@@ -59,15 +61,15 @@ CGRect vframe;
 	
 	
 	// view
-    self.view = [[UIView alloc] initWithFrame:vframe];
+    self.view = [[AboutBackgroundView alloc] initWithFrame:vframe];
     self.view.opaque = YES;
+    self.view.backgroundColor = [UIColor clearColor];
     
     // frames
     CGRect tframe = CGRectMake(0, 0, vframe.size.width, 18);
     CGRect cframe = CGRectMake(0, 18, vframe.size.width, 18);
-    CGRect a1frame = CGRectMake(0, 39, vframe.size.width, 60);
-    CGRect a2frame = CGRectMake(0, 90, vframe.size.width, 120);
-    CGRect bframe = CGRectMake(0, 210, vframe.size.width, 40);
+    CGRect aframe = CGRectMake(0, aboutHeaderHeight+5, vframe.size.width+20, vframe.size.height-aboutFooterHeight-aboutHeaderHeight);
+    CGRect bframe = CGRectMake(0, vframe.size.height-aboutFooterHeight+5, vframe.size.width, 40);
     CGRect btnframe = CGRectMake(0, 0, 32, 32);
     float spacer = 15;
     
@@ -75,7 +77,7 @@ CGRect vframe;
 	UILabel *lblTitle = [[UILabel alloc] initWithFrame:tframe];
 	lblTitle.backgroundColor = [UIColor clearColor];
 	lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:18.0];
-	lblTitle.textColor = [UIColor colorWithRed:81.0/255.0 green:81.0/255.0 blue:81.0/255.0 alpha:1.0];
+	lblTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
 	lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
 	lblTitle.shadowOffset = CGSizeMake(1,1);
 	lblTitle.opaque = YES;
@@ -88,7 +90,7 @@ CGRect vframe;
 	UILabel *lblClaim = [[UILabel alloc] initWithFrame:cframe];
 	lblClaim.backgroundColor = [UIColor clearColor];
 	lblClaim.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
-	lblClaim.textColor = [UIColor colorWithRed:81.0/255.0 green:81.0/255.0 blue:81.0/255.0 alpha:1.0];
+	lblClaim.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
 	lblClaim.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
 	lblClaim.shadowOffset = CGSizeMake(1,1);
 	lblClaim.opaque = YES;
@@ -99,29 +101,19 @@ CGRect vframe;
     
 	
 	// description
-	UILabel *lblAbout1 = [[UILabel alloc] initWithFrame:a1frame];
-	lblAbout1.backgroundColor = [UIColor clearColor];
-	lblAbout1.font = [UIFont fontWithName:@"Helvetica" size:15.0];
-	lblAbout1.textColor = [UIColor colorWithRed:63.0/255.0 green:63.0/255.0 blue:63.0/255.0 alpha:1.0];
-	lblAbout1.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-	lblAbout1.shadowOffset = CGSizeMake(1,1);
-	lblAbout1.opaque = YES;
-	lblAbout1.numberOfLines = 3;
-	[lblAbout1 setText:NSLocalizedString(@"An exploration into Organic Information Design to visualise movies, actors, directors and their relationships.",@"An exploration into Organic Information Design to visualise movies, actors, directors and their relationships.")];
-	[self.view addSubview:lblAbout1];
-	[lblAbout1 release];
+	UITextView *txtAbout = [[UITextView alloc] initWithFrame:aframe];
+    txtAbout.contentInset = UIEdgeInsetsMake(0,-7,-20,-20);
+    txtAbout.textAlignment = UITextAlignmentLeft;
+	txtAbout.backgroundColor = [UIColor clearColor];
+	txtAbout.font = [UIFont fontWithName:@"Helvetica" size:15.0];
+	txtAbout.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
+	txtAbout.opaque = YES;
+    txtAbout.userInteractionEnabled = NO;
+    txtAbout.editable = NO;
+	[txtAbout setText:NSLocalizedString(@"An exploration into Organic Information Design to visualise movies, actors, directors and their relationships. \n\nSearch the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their relationship. Learn about the cast and filmography. \n\nInformation courtesy of The Internet Movie Database. Used with permission.",@"An exploration into Organic Information Design to visualise movies, actors, directors and their relationships. \n\nSearch the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their relationship. Learn about the cast and filmography. \n\nInformation courtesy of The Internet Movie Database. Used with permission.")];
+    [self.view addSubview:txtAbout];
+	[txtAbout release];
     
-    UILabel *lblAbout2 = [[UILabel alloc] initWithFrame:a2frame];
-	lblAbout2.backgroundColor = [UIColor clearColor];
-	lblAbout2.font = [UIFont fontWithName:@"Helvetica" size:15.0];
-	lblAbout2.textColor = [UIColor colorWithRed:63.0/255.0 green:63.0/255.0 blue:63.0/255.0 alpha:1.0];
-	lblAbout2.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-	lblAbout2.shadowOffset = CGSizeMake(1,1);
-	lblAbout2.opaque = YES;
-	lblAbout2.numberOfLines = 5;
-	[lblAbout2 setText:NSLocalizedString(@"Search the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their relationship. Learn about the cast and filmography.",@"Search the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their relationship. Learn about the cast and filmography.")];
-	[self.view addSubview:lblAbout2];
-	[lblAbout2 release];
     
     // buttons
     UIView *buttonView = [[UIView alloc] initWithFrame:bframe];
@@ -129,13 +121,12 @@ CGRect vframe;
 	buttonView.opaque = YES;
     
     // button feedback
-    /*
 	UIButton *btnFeedback = [UIButton buttonWithType:UIButtonTypeCustom]; 
 	btnFeedback.frame = btnframe;
 	[btnFeedback setImage:[UIImage imageNamed:@"btn_feedback.png"] forState:UIControlStateNormal];
 	[btnFeedback addTarget:self action:@selector(actionFeedback:) forControlEvents:UIControlEventTouchUpInside];
 	[buttonView addSubview:btnFeedback];
-     */
+
     
     // button app store
 	UIButton *btnAppStore = [UIButton buttonWithType:UIButtonTypeCustom]; 
@@ -371,6 +362,113 @@ CGRect vframe;
 	// duper
     [super dealloc];
 }
+
+
+@end
+
+
+
+/**
+ * AboutBackgroundView.
+ */
+@implementation AboutBackgroundView
+
+
+#pragma mark -
+#pragma mark Object Methods
+
+/*
+ * Initialize.
+ */
+- (id)initWithFrame:(CGRect)frame {
+	GLog();
+    
+	// init UIView
+    self = [super initWithFrame:frame];
+	
+	// init self
+    if (self != nil) {
+		
+		// add
+		self.opaque = YES;
+		self.backgroundColor = [UIColor clearColor];
+        
+		// return
+		return self;
+	}
+	
+	// nop
+	return nil;
+}
+
+
+/*
+ * Draw that thing.
+ */
+- (void)drawRect:(CGRect)rect {
+    
+	// vars
+	float w = self.frame.size.width;
+	float h = self.frame.size.height;
+    
+    // rects
+    CGRect mrect = CGRectMake(0, 0, w, h);
+    
+    
+	// context
+	CGContextRef context = UIGraphicsGetCurrentContext();
+	CGContextClearRect(context, rect);
+    CGContextSetShouldAntialias(context, NO);
+	
+	// background
+    CGContextSetFillColorWithColor(context, [UIColor clearColor].CGColor);
+	CGContextFillRect(context, mrect);
+	
+	// header lines
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.42 alpha:1].CGColor);
+	CGContextMoveToPoint(context, 0, aboutHeaderHeight-1);
+	CGContextAddLineToPoint(context, w, aboutHeaderHeight-1);
+	CGContextStrokePath(context);
+    
+    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.5].CGColor);
+	CGContextMoveToPoint(context, 0, aboutHeaderHeight);
+	CGContextAddLineToPoint(context, w, aboutHeaderHeight);
+	CGContextStrokePath(context);
+    
+    // footer lines
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.42 alpha:1].CGColor);
+	CGContextMoveToPoint(context, 0, h-aboutFooterHeight);
+	CGContextAddLineToPoint(context, w, h-aboutFooterHeight);
+	CGContextStrokePath(context);
+    
+    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.5].CGColor);
+	CGContextMoveToPoint(context, 0, h-aboutFooterHeight+1);
+	CGContextAddLineToPoint(context, w, h-aboutFooterHeight+1);
+	CGContextStrokePath(context);
+    
+    
+}
+
+
+#pragma mark -
+#pragma mark Touch
+
+/*
+ * Touches.
+ */
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    GLog();
+    // ignore
+}
+
+/*
+ * Touches.
+ */
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    GLog();
+    // ignore
+}
+
 
 
 @end

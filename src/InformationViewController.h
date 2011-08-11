@@ -95,9 +95,9 @@ enum {
 
 
 /**
- * InformationContentView.
+ * InformationBackgroundView.
  */
-@interface InformationContentView : UIView {
+@interface InformationBackgroundView : UIView {
 }
 @end
 
@@ -110,8 +110,10 @@ enum {
     // ui
     UILabel *labelInfo;
     UILabel *labelMeta;
-    UIImageView *_iconLoaded;
-    UIImageView *_iconVisible;
+    NSString *type;
+    UIImageView *_iconMovie;
+    UIImageView *_iconActor;
+    UIImageView *_iconDirector;
     
     // state
     bool loaded;
@@ -121,6 +123,7 @@ enum {
 // Properties
 @property (nonatomic,retain) UILabel *labelInfo;
 @property (nonatomic,retain) UILabel *labelMeta;
+@property (nonatomic,retain) NSString *type;
 @property bool loaded;
 @property bool visible;
 

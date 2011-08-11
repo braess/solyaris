@@ -8,7 +8,7 @@
 
 #import "InformationViewController.h"
 #import <QuartzCore/QuartzCore.h>
-
+#import "IMDGConstants.h"
 
 
 /**
@@ -39,8 +39,8 @@
 
 // local vars
 CGRect vframe;
-float headerHeight = 60;
-float footerHeight = 50;
+float informationHeaderHeight = 60;
+float informationFooterHeight = 50;
 
 
 // sections
@@ -58,7 +58,7 @@ int sectionGapInset = 15;
  * Init.
  */
 -(id)init {
-	return [self initWithFrame:CGRectMake(0, 0, 650, 650)];
+	return [self initWithFrame:CGRectMake(0, 0, 600, 600)];
 }
 -(id)initWithFrame:(CGRect)frame {
 	GLog();
@@ -90,9 +90,9 @@ int sectionGapInset = 15;
     // frames
     CGRect wframe = window.frame;
     CGRect cframe = CGRectMake(wframe.size.width/2.0-vframe.size.width/2.0, wframe.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
-    CGRect hframe = CGRectMake(0, 0, cframe.size.width, headerHeight);
-    CGRect fframe = CGRectMake(0, cframe.size.height-footerHeight, cframe.size.width, footerHeight);
-    CGRect tframe = CGRectMake(0, headerHeight, cframe.size.width, cframe.size.height-headerHeight-footerHeight);
+    CGRect hframe = CGRectMake(0, 0, cframe.size.width, informationHeaderHeight);
+    CGRect fframe = CGRectMake(0, cframe.size.height-informationFooterHeight, cframe.size.width, informationFooterHeight);
+    CGRect tframe = CGRectMake(0, informationHeaderHeight, cframe.size.width, cframe.size.height-informationHeaderHeight-informationFooterHeight);
     
     // view
     self.view = [[UIView alloc] initWithFrame:wframe];
@@ -110,7 +110,7 @@ int sectionGapInset = 15;
 
 	
 	// content
-    InformationContentView *ctView = [[InformationContentView alloc] initWithFrame:cframe];
+    InformationBackgroundView *ctView = [[InformationBackgroundView alloc] initWithFrame:cframe];
     
     
     // header view
@@ -123,9 +123,9 @@ int sectionGapInset = 15;
     // title
     UILabel *lblTitle = [[UILabel alloc] initWithFrame:CGRectMake(sectionGapInset, sectionGapOffset, hframe.size.width-2*sectionGapInset, hframe.size.height-2*sectionGapOffset)];
 	lblTitle.backgroundColor = [UIColor clearColor];
-	lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:18.0];
-	lblTitle.textColor = [UIColor colorWithRed:81.0/255.0 green:81.0/255.0 blue:81.0/255.0 alpha:1.0];
-	lblTitle.shadowColor = [UIColor whiteColor];
+	lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:24.0];
+	lblTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
+	lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
 	lblTitle.shadowOffset = CGSizeMake(1,1);
 	lblTitle.opaque = YES;
 	lblTitle.numberOfLines = 1;
@@ -138,7 +138,7 @@ int sectionGapInset = 15;
     // drop that shadow
 	CAGradientLayer *dropShadow = [[[CAGradientLayer alloc] init] autorelease];
 	dropShadow.frame = CGRectMake(0, hframe.size.height, hframe.size.width, 15);
-	dropShadow.colors = [NSArray arrayWithObjects:(id)[UIColor colorWithRed:0 green:0 blue:0 alpha:0.1].CGColor,(id)[UIColor colorWithRed:0 green:0 blue:0 alpha:0].CGColor,nil];
+	dropShadow.colors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:0 alpha:0.02].CGColor,(id)[UIColor colorWithWhite:0 alpha:0].CGColor,nil];
 	[headerView.layer insertSublayer:dropShadow atIndex:0];
     
     // add header view to content
@@ -321,9 +321,9 @@ int sectionGapInset = 15;
     // label
     UILabel *lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(sectionGapInset, sectionGapOffset, shView.frame.size.width-2*sectionGapInset, sectionGapHeight-sectionGapOffset)];
 	lblHeader.backgroundColor = [UIColor clearColor];
-	lblHeader.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
-	lblHeader.textColor = [UIColor colorWithRed:81.0/255.0 green:81.0/255.0 blue:81.0/255.0 alpha:1.0];
-	lblHeader.shadowColor = [UIColor whiteColor];
+	lblHeader.font = [UIFont fontWithName:@"Helvetica-Bold" size:18.0];
+	lblHeader.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
+	lblHeader.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
 	lblHeader.shadowOffset = CGSizeMake(1,1);
 	lblHeader.opaque = YES;
 	lblHeader.numberOfLines = 1;
@@ -355,11 +355,11 @@ int sectionGapInset = 15;
 - (UIView *)sectionFooter{
     
     // view
-    UIView *sfView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 1)];
+    UIView *sfView = [[UIView alloc] initWithFrame:vframe];
     
     // view
-    UIView *sfLine = [[UIView alloc] initWithFrame:CGRectMake(sectionGapInset, -1, vframe.size.width-2*sectionGapInset, 1)];
-    sfLine.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
+    UIView *sfLine = [[UIView alloc] initWithFrame:CGRectMake(sectionGapInset, -1, 570, 1)];
+    sfLine.backgroundColor = [UIColor colorWithWhite:0.82 alpha:1];
     
     // add & release
     [sfView addSubview:sfLine];
@@ -428,6 +428,7 @@ int sectionGapInset = 15;
     // label
 	cell.labelInfo.text = nfo.value;
 	cell.labelMeta.text = nfo.meta;
+    cell.type = nfo.type;
     cell.loaded = NO;
     cell.visible = NO;
     if (nfo.loaded) {
@@ -436,6 +437,7 @@ int sectionGapInset = 15;
     if (nfo.visible) {
         cell.visible = YES;
     }
+    [cell setNeedsDisplay];
 
 	// return
     return cell;
@@ -562,9 +564,9 @@ int sectionGapInset = 15;
 
 
 /**
- * InformationContentView.
+ * InformationBackgroundView.
  */
-@implementation InformationContentView
+@implementation InformationBackgroundView
 
 
 #pragma mark -
@@ -605,62 +607,50 @@ int sectionGapInset = 15;
 	float h = self.frame.size.height;
     
     // rects
-    CGRect hrect = CGRectMake(0, 0, w, headerHeight);
-    CGRect crect = CGRectMake(0, headerHeight, w, h-headerHeight-footerHeight);
-    CGRect frect = CGRectMake(0, h-footerHeight, w, footerHeight);
+    CGRect mrect = CGRectMake(0, 0, w, h);
     
     
 	// context
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	CGContextClearRect(context, rect);
+    CGContextSetShouldAntialias(context, NO);
     
 	
-	// header
-    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:226.0/255.0 green:228.0/255.0 blue:231.0/255.0 alpha:1.0].CGColor);
-	CGContextFillRect(context, hrect);
-	
-	// content
-	CGContextSetFillColorWithColor(context, [UIColor colorWithRed:211.0/255.0 green:215.0/255.0 blue:218.0/255.0 alpha:1.0].CGColor);
-	CGContextFillRect(context, crect);
+	// background
+    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:238.0/255.0 green:238.0/255.0 blue:239.0/255.0 alpha:1.0].CGColor);
+	CGContextFillRect(context, mrect);
     
-    // footer
-	CGContextSetFillColorWithColor(context, [UIColor colorWithRed:226.0/255.0 green:228.0/255.0 blue:231.0/255.0 alpha:1.0].CGColor);
-	CGContextFillRect(context, frect);
+    // textures
+    UIImage *texture = [UIImage imageNamed:@"texture_information.png"];
+    CGRect tcRect;
+    tcRect.size = texture.size; 
+    
+    // main
+    CGContextClipToRect(context, mrect);
+    CGContextDrawTiledImage(context,tcRect,texture.CGImage);
 	
-	// header line
-	CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:150.0/255.0 green:150.0/255.0 blue:150.0/255.0 alpha:1.0].CGColor);
-	CGContextMoveToPoint(context, 0, headerHeight);
-	CGContextAddLineToPoint(context, w, headerHeight);
+	// header lines
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
+	CGContextMoveToPoint(context, 0, informationHeaderHeight-1);
+	CGContextAddLineToPoint(context, w, informationHeaderHeight-1);
+	CGContextStrokePath(context);
+    
+    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:1].CGColor);
+	CGContextMoveToPoint(context, 0, informationHeaderHeight);
+	CGContextAddLineToPoint(context, w, informationHeaderHeight);
 	CGContextStrokePath(context);
     
     // footer lines
-	CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:150.0/255.0 green:150.0/255.0 blue:150.0/255.0 alpha:1.0].CGColor);
-	CGContextMoveToPoint(context, 0, h-footerHeight+1);
-	CGContextAddLineToPoint(context, w, h-footerHeight+1);
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
+	CGContextMoveToPoint(context, 0, h-informationFooterHeight);
+	CGContextAddLineToPoint(context, w, h-informationFooterHeight);
 	CGContextStrokePath(context);
     
-    CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:250.0/255.0 green:250.0/255.0 blue:250.0/255.0 alpha:1.0].CGColor);
-	CGContextMoveToPoint(context, 0, h-footerHeight+2);
-	CGContextAddLineToPoint(context, w, h-footerHeight+2);
+    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:1].CGColor);
+	CGContextMoveToPoint(context, 0, h-informationFooterHeight+1);
+	CGContextAddLineToPoint(context, w, h-informationFooterHeight+1);
 	CGContextStrokePath(context);
     
-    
-    // textures
-    UIImage *textureContent = [UIImage imageNamed:@"texture_content.png"];
-    CGRect tcRect;
-    tcRect.size = textureContent.size; 
-    
-    UIImage *textureHeader = [UIImage imageNamed:@"texture_header.png"];
-    CGRect thRect;
-    thRect.size = textureHeader.size; 
-    
-    // content
-    CGContextClipToRect(context, crect);
-    CGContextDrawTiledImage(context,tcRect,textureContent.CGImage);
-    
-    // header
-    CGContextClipToRect(context, hrect);
-    CGContextDrawTiledImage(context,thRect,textureHeader.CGImage);
     
 }
 
@@ -675,9 +665,8 @@ int sectionGapInset = 15;
     GLog();
     
     // scroll to top
-    NSIndexPath *topIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     UITableView *tv = (UITableView*) [self viewWithTag:TagInformationContent];
-    [tv selectRowAtIndexPath:topIndexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+    [tv setContentOffset:CGPointMake(0, 0) animated:YES];
 }
 
 /*
@@ -705,7 +694,7 @@ int sectionGapInset = 15;
 #pragma mark Properties
 
 // accessors
-@synthesize labelInfo, labelMeta;
+@synthesize labelInfo, labelMeta, type;
 @synthesize loaded, visible;
 
 
@@ -727,6 +716,7 @@ int sectionGapInset = 15;
         // intendation
         self.indentationWidth = sectionGapInset;
         self.indentationLevel = 0;
+        
         
         // back
         UIView *backView = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
@@ -753,21 +743,32 @@ int sectionGapInset = 15;
         
         // icons
         CGRect iframe = CGRectMake(0, 0, 16, 16);
-		_iconLoaded = [[UIImageView alloc] initWithFrame:iframe];
-		_iconLoaded.image = [UIImage imageNamed:@"micon_loaded.png"];
-		_iconLoaded.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-		_iconLoaded.backgroundColor = [UIColor clearColor];
-		_iconLoaded.contentMode = UIViewContentModeCenter;
-        _iconLoaded.hidden = YES;
-        [self.contentView addSubview: _iconLoaded];
         
-		_iconVisible = [[UIImageView alloc] initWithFrame:iframe];
-		_iconVisible.image = [UIImage imageNamed:@"micon_visible.png"];
-		_iconVisible.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-		_iconVisible.backgroundColor = [UIColor clearColor];
-		_iconVisible.contentMode = UIViewContentModeCenter;
-        _iconVisible.hidden = YES;
-        [self.contentView addSubview: _iconVisible];
+		_iconMovie = [[UIImageView alloc] initWithFrame:iframe];
+		_iconMovie.image = [UIImage imageNamed:@"icon_movie.png"];
+		_iconMovie.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+		_iconMovie.backgroundColor = [UIColor clearColor];
+		_iconMovie.contentMode = UIViewContentModeCenter;
+        _iconMovie.hidden = YES;
+        [self.contentView addSubview: _iconMovie];
+        
+        _iconActor = [[UIImageView alloc] initWithFrame:iframe];
+		_iconActor.image = [UIImage imageNamed:@"icon_actor.png"];
+		_iconActor.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+		_iconActor.backgroundColor = [UIColor clearColor];
+		_iconActor.contentMode = UIViewContentModeCenter;
+        _iconActor.hidden = YES;
+        [self.contentView addSubview: _iconActor];
+        
+        _iconDirector = [[UIImageView alloc] initWithFrame:iframe];
+		_iconDirector.image = [UIImage imageNamed:@"icon_director.png"];
+		_iconDirector.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+		_iconDirector.backgroundColor = [UIColor clearColor];
+		_iconDirector.contentMode = UIViewContentModeCenter;
+        _iconDirector.hidden = YES;
+        [self.contentView addSubview: _iconDirector];
+        
+
         
 
     }
@@ -786,14 +787,16 @@ int sectionGapInset = 15;
     // get the graphics context and clear it
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     CGContextClearRect(ctx, rect);
+    //CGContextSetShouldAntialias(ctx, NO);
     
     // background
-    CGRect bg = CGRectMake(cellInset, 0, self.frame.size.width-2*cellInset, cellHeight);
-    CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:0 green:0 blue:0 alpha:0.03].CGColor);
+    CGRect bg = CGRectMake(cellInset, 0, self.frame.size.width-2*cellInset, cellHeight+1);
+    UIColor *bgc = self.highlighted ? [UIColor colorWithWhite:0 alpha:0.06] : [UIColor colorWithWhite:0 alpha:0.03];
+    CGContextSetFillColorWithColor(ctx, bgc.CGColor);
 	CGContextFillRect(ctx, bg);
     
     // lines
-    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3].CGColor);
+    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
 	CGContextMoveToPoint(ctx, bg.origin.x, 0);
 	CGContextAddLineToPoint(ctx, bg.origin.x+bg.size.width, 0);
 	CGContextStrokePath(ctx);
@@ -823,28 +826,49 @@ int sectionGapInset = 15;
     [labelMeta setFrame: fmeta];
     
     // disclosure
-    CGRect fdisc = CGRectMake(self.frame.size.width-45, 8, 16, 16);
-    _iconVisible.hidden = YES;
-    _iconLoaded.hidden = YES;
+    CGRect fdisc = CGRectMake(self.frame.size.width-50, 6, 16, 16);
+    _iconMovie.hidden = YES;
+    _iconActor.hidden = YES;
+    _iconDirector.hidden = YES;
     if (loaded) {
-        [_iconLoaded setFrame:fdisc];
-        _iconLoaded.hidden = NO;
+        
+        // movie
+        if ([type isEqualToString:typeMovie]) {
+            _iconMovie.frame = fdisc;
+            _iconMovie.hidden = NO;
+        }
+        // actor
+        else if ([type isEqualToString:typeActor]) {
+            _iconActor.frame = fdisc;
+            _iconActor.hidden = NO;
+        }
+        // director
+        else if ([type isEqualToString:typeDirector]) {
+            _iconDirector.frame = fdisc;
+            _iconDirector.hidden = NO;
+        }
     }
-    else if (visible) {
-        [_iconVisible setFrame:fdisc];
-        _iconVisible.hidden = NO;
-    }
+
 }
 
 
 /*
  * Disable highlighting of currently selected cell.
- */
+*/
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:NO];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
 }
 
+/*
+ * Highlight.
+ */
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+    [super setHighlighted:highlighted animated:NO];
+    [self setNeedsDisplay];
+}
+
+ 
 
 
 

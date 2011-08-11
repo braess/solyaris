@@ -94,8 +94,8 @@ CGRect vframe;
     float bheight = 24;
     
     // icons
-    float iwidth = 24;
-    float iheight = 24;
+    float iwidth = 32;
+    float iheight = 32;
     
     // search
     float swidth = 300;
@@ -126,7 +126,6 @@ CGRect vframe;
     lblClaim.numberOfLines = 1;
     lblClaim.text = NSLocalizedString(@"The Internet Movie Database Graph",@"The Internet Movie Database Graph");
     [self.view addSubview:lblClaim];
-    
      
     
     // search bar
@@ -156,10 +155,7 @@ CGRect vframe;
     btnMovie.layer.masksToBounds = YES;
     btnMovie.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnMovie setBackgroundColor:[UIColor colorWithRed:187/255.0 green:176/255.0 blue:130/255.0 alpha:kAlphaBtn]];
-    //[btnMovie setBackgroundColor:[UIColor colorWithRed:92/255.0 green:99/255.0 blue:42/255.0 alpha:kAlphaBtn]];
-    //[btnMovie setBackgroundColor:[UIColor colorWithRed:100/255.0 green:102/255.0 blue:52/255.0 alpha:kAlphaBtn]];
-    //[btnMovie setBackgroundColor:[UIColor colorWithRed:127/255.0 green:13/255.0 blue:128/255.0 alpha:kAlphaBtn]];
+    [btnMovie setBackgroundColor:[UIColor colorWithRed:126/255.0 green:128/255.0 blue:102/255.0 alpha:kAlphaBtn]];
     [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnMovie setTitle:NSLocalizedString(@"Movie",@"Movie") forState:UIControlStateNormal];
@@ -177,10 +173,7 @@ CGRect vframe;
     btnActor.layer.masksToBounds = YES;
     btnActor.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnActor setBackgroundColor:[UIColor colorWithRed:130/255.0 green:153/255.0 blue:147/255.0 alpha:kAlphaBtn]];
-    //[btnActor setBackgroundColor:[UIColor colorWithRed:75/255.0 green:99/255.0 blue:42/255.0 alpha:kAlphaBtn]];
-    //[btnActor setBackgroundColor:[UIColor colorWithRed:51/255.0 green:76/255.0 blue:102/255.0 alpha:kAlphaBtn]];
-    //[btnActor setBackgroundColor:[UIColor colorWithRed:13/255.0 green:84/255.0 blue:128/255.0 alpha:kAlphaBtn]];
+    [btnActor setBackgroundColor:[UIColor colorWithRed:82/255.0 green:108/255.0 blue:128/255.0 alpha:kAlphaBtn]];
     [btnActor setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnActor setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnActor setTitle:NSLocalizedString(@"Actor",@"Actor") forState:UIControlStateNormal];
@@ -198,10 +191,7 @@ CGRect vframe;
     btnDirector.layer.masksToBounds = YES;
     btnDirector.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnDirector setBackgroundColor:[UIColor colorWithRed:94/255.0 green:118/255.0 blue:117/255.0 alpha:kAlphaBtn]];
-    //[btnDirector setBackgroundColor:[UIColor colorWithRed:99/255.0 green:90/255.0 blue:42/255.0 alpha:kAlphaBtn]];
-    //[btnDirector setBackgroundColor:[UIColor colorWithRed:85/255.0 green:102/255.0 blue:51/255.0 alpha:kAlphaBtn]];
-    //[btnDirector setBackgroundColor:[UIColor colorWithRed:126/255.0 green:128/255.0 blue:13/255.0 alpha:kAlphaBtn]];
+    [btnDirector setBackgroundColor:[UIColor colorWithRed:121/255.0 green:125/255.0 blue:128/255.0 alpha:kAlphaBtn]];
     [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnDirector setTitle:NSLocalizedString(@"Director",@"Director") forState:UIControlStateNormal];
@@ -214,7 +204,7 @@ CGRect vframe;
     
     // button reset
 	UIButton *btnReset = [UIButton buttonWithType:UIButtonTypeCustom]; 
-	btnReset.frame = CGRectMake(fwidth-inset-iwidth-2, (fheight-iheight)/2.0, iwidth, iheight);
+	btnReset.frame = CGRectMake(fwidth-inset-iwidth, (fheight-iheight)/2.0, iwidth, iheight);
 	[btnReset setImage:[UIImage imageNamed:@"btn_reset.png"] forState:UIControlStateNormal];
 	[btnReset addTarget:self action:@selector(actionReset:) forControlEvents:UIControlEventTouchUpInside];
 	_buttonReset = [btnReset retain];

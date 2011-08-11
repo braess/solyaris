@@ -105,7 +105,7 @@ bool settings = NO;
     // frames
     CGRect frameSearch = CGRectMake(0, 0, window.frame.size.width, 40);
     CGRect frameSearchResult = CGRectMake(0, 0, 320, 480);
-    CGRect frameInformation = CGRectMake(0, 0, 650, 650);
+    CGRect frameInformation = CGRectMake(0, 0, 600, 600);
     CGRect frameSettings = CGRectMake(0, 0, 708, 480);
     CGRect frameSettingsButton = CGRectMake(window.frame.size.width-32, window.frame.size.height-32, 32, 32);
     

@@ -17,6 +17,7 @@ enum {
     AlertAboutAppStore
 };
 
+
 /**
  * AboutViewController.
  */
@@ -33,4 +34,11 @@ enum {
 - (void)actionAppStore:(id)sender;
 - (void)actionFeedback:(id)sender;
 
+@end
+
+/**
+ * AboutBackgroundView.
+ */
+@interface AboutBackgroundView : UIView {
+}
 @end

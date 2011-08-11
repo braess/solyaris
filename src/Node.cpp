@@ -90,10 +90,8 @@ NodeMovie::NodeMovie(string idn, double x, double y): Node::Node(idn, x, y) {
     type = nodeMovie;
     
     // color 
-    cbg = Color(187.0/255.0,176.0/255.0,130.0/255.0);
-    //cbg = Color(92/255.0, 99/255.0, 42/255.0);
-    //cbg = Color(100/255.0, 102/255.0, 52/255.0);
-    //cbg = Color(127/255.0, 13/255.0, 128/255.0);
+    cbg = Color(126/255.0, 128/255.0, 102/255.0);
+
 }
 
 /**
@@ -107,10 +105,8 @@ NodeActor::NodeActor(string idn, double x, double y): Node::Node(idn, x, y) {
     type = nodeActor;
     
     // color 
-    cbg = Color(130.0/255.0,153.0/255.0,147.0/255.0);
-    //cbg = Color(75/255.0, 99/255.0, 42/255.0);
-    //cbg = Color(51/255.0, 76/255.0, 102/255.0);
-    //cbg = Color(13/255.0, 84/255.0, 128/255.0);
+    cbg = Color(82/255.0, 108/255.0, 128/255.0);
+
 }
 
 /**
@@ -123,11 +119,9 @@ NodeDirector::NodeDirector(string idn, double x, double y): Node::Node(idn, x, y
     // type
     type = nodeDirector;
     
-    // color 
-    cbg = Color(94.0/255.0,118.0/255.0,117.0/255.0);
-    //cbg = Color(99/255.0, 90/255.0, 42/255.0);
-    //cbg = Color(85/255.0, 102/255.0, 51/255.0);
-    //cbg = Color(126/255.0, 128/255.0, 13/255.0);
+    // color
+    cbg = Color(121/255.0, 125/255.0, 128/255.0);
+
 }
 
 
