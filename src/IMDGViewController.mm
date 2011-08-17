@@ -35,6 +35,8 @@
 - (void)animationSettingsShowDone;
 - (void)animationSettingsHide;
 - (void)animationSettingsHideDone;
+- (void)animationPostRotation;
+- (void)animationPostRotationDone;
 @end
 
 
@@ -43,6 +45,8 @@
 #define kAnimateTimeInformationHide	0.45f
 #define kAnimateTimeSettingsShow	0.75f
 #define kAnimateTimeSettingsHide	0.45f
+#define kAnimateTimePostRotation    0.75f
+
 
 
 
@@ -110,7 +114,9 @@ bool settings = NO;
     CGRect frameSettingsButton = CGRectMake(window.frame.size.width-32, window.frame.size.height-32, 32, 32);
     
     // view
-    self.view = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
+    self.view = [[[UIView alloc] initWithFrame:window.frame] autorelease];
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    self.view.opaque = NO;
     [window addSubview:self.view];
     
     
@@ -119,8 +125,8 @@ bool settings = NO;
     searchViewController.delegate = self;
     [searchViewController loadView];
     _searchViewController = [searchViewController retain];
-    [window addSubview:_searchViewController.view];
-    [window bringSubviewToFront:_searchViewController.view];
+    [self.view addSubview:_searchViewController.view];
+    [self.view bringSubviewToFront:_searchViewController.view];
     [searchViewController release];
     
     
@@ -129,7 +135,7 @@ bool settings = NO;
     SearchResultViewController *searchResultViewController = [[SearchResultViewController alloc] initWithStyle:UITableViewStylePlain];
     searchResultViewController.delegate = self;
     searchResultViewController.view.frame = frameSearchResult;
-	[searchResultViewController.view setAutoresizingMask: (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight) ];
+	[searchResultViewController.view setAutoresizingMask: UIViewAutoresizingNone];
 	_searchResultViewController = [searchResultViewController retain];
     
     
@@ -147,8 +153,8 @@ bool settings = NO;
     informationViewController.delegate = self;
     [informationViewController loadView];
     _informationViewController = [informationViewController retain];
-    [window addSubview:_informationViewController.view];
-    [window sendSubviewToBack:_informationViewController.view];
+    [self.view  addSubview:_informationViewController.view];
+    [self.view  sendSubviewToBack:_informationViewController.view];
     [informationViewController release];
     
     
@@ -157,8 +163,8 @@ bool settings = NO;
     settingsViewController.delegate = self;
     [settingsViewController loadView];
     _settingsViewController = [settingsViewController retain];
-    [window addSubview:_settingsViewController.view];
-    [window sendSubviewToBack:_settingsViewController.view];
+    [self.view  addSubview:_settingsViewController.view];
+    [self.view  sendSubviewToBack:_settingsViewController.view];
     [settingsViewController release];
     
 
@@ -167,7 +173,7 @@ bool settings = NO;
 	btnSettings.frame = frameSettingsButton;
 	[btnSettings setImage:[UIImage imageNamed:@"btn_settings.png"] forState:UIControlStateNormal];
 	[btnSettings addTarget:self action:@selector(actionSettings:) forControlEvents:UIControlEventTouchUpInside];
-	[window addSubview:btnSettings];
+	[self.view  addSubview:btnSettings];
     
     
     // fluff cinder view
@@ -177,6 +183,7 @@ bool settings = NO;
             break;
         }
     }
+
 
 }
 
@@ -188,8 +195,71 @@ bool settings = NO;
  * Rotate is the new black.
  */
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // portrait
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    // yes, sir!
+    return YES;
+}
+
+/*
+ * Prepare rotation.
+ */
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    FLog();
+    
+    // close popups
+    [_searchResultsPopoverController dismissPopoverAnimated:NO];
+    
+    // hide views
+    self.view.hidden = YES;
+    
+    // app
+    imdgApp->setDeviceOrientation(toInterfaceOrientation);
+
+}
+
+/*
+ * Cleanup rotation.
+ */
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    
+    // layout
+    [_searchViewController layout];
+    
+    // animate
+    [self animationPostRotation];
+    
+}
+
+
+
+#pragma mark -
+#pragma mark Touch
+
+/*
+ * Touches.
+ */
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    GLog();
+    
+    // forward to cinder
+    [_cinderView touchesBegan:touches withEvent:event]; 
+}
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    GLog();
+    
+    // forward to cinder
+    [_cinderView touchesMoved:touches withEvent:event]; 
+}
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+    GLog();
+    
+    // forward to cinder
+    [_cinderView touchesEnded:touches withEvent:event]; 
+}
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    GLog();
+    
+    // forward to cinder
+    [_cinderView touchesCancelled:touches withEvent:event]; 
 }
 
 
@@ -775,22 +845,19 @@ bool settings = NO;
  */
 - (void)animationInformationShow {
 	FLog();
-    
-    // window
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-    [window bringSubviewToFront:_informationViewController.view];
 	
 	
 	// prepare controllers
-    [_informationViewController.view setHidden:NO];
 	[_informationViewController viewWillAppear:YES];
 
     
 	// prepare views
     _informationViewController.view.hidden = NO;
 	_informationViewController.modalView.alpha = 0.0f;
+    [self.view bringSubviewToFront:_informationViewController.view];
+    
     CGPoint offcenter = _informationViewController.contentView.center;
-    offcenter.y += window.frame.size.height;
+    offcenter.y += self.view.frame.size.height;
     _informationViewController.contentView.center = offcenter;
     
 	// animate
@@ -802,7 +869,7 @@ bool settings = NO;
     
     // content
     CGPoint center = _informationViewController.contentView.center;
-    center.y -= window.frame.size.height;
+    center.y -= self.view.frame.size.height;
     _informationViewController.contentView.center = center;
     
     // make it so
@@ -815,7 +882,6 @@ bool settings = NO;
 	GLog();
     
     // here you are
-    [self.view bringSubviewToFront:_informationViewController.view];
     [_informationViewController viewDidAppear:YES];
 }
 
@@ -825,16 +891,9 @@ bool settings = NO;
  */
 - (void)animationInformationHide {
 	FLog();
-    
-    // window
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
 	
 	// prepare controllers
 	[_informationViewController viewWillDisappear:YES];
-    
-    
-	// prepare views
-	_informationViewController.view.hidden = NO;
 
     
 	// animate
@@ -846,7 +905,7 @@ bool settings = NO;
     
     // content
     CGPoint offcenter = _informationViewController.contentView.center;
-    offcenter.y += window.frame.size.height;
+    offcenter.y += self.view.frame.size.height;
     _informationViewController.contentView.center = offcenter;
     
 	[UIView commitAnimations];
@@ -857,17 +916,16 @@ bool settings = NO;
 - (void)animationInformationHideDone {
 	GLog();
     
-    // hide
-    [_informationViewController viewDidDisappear:YES];
+    // view
 	[_informationViewController.view setHidden:YES];
+    [self.view sendSubviewToBack:_informationViewController.view];
     
-    // window
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-    [window sendSubviewToBack:_informationViewController.view];
+    // controller
+    [_informationViewController viewDidDisappear:YES];
     
     // center
     CGPoint center = _informationViewController.contentView.center;
-    center.y -= window.frame.size.height;
+    center.y -= self.view.frame.size.height;
     _informationViewController.contentView.center = center;
 }
 
@@ -883,9 +941,10 @@ bool settings = NO;
     
 	
 	// prepare controllers
-    [_settingsViewController.view setHidden:NO];
 	[_settingsViewController viewWillAppear:YES];
     
+    // prepare view
+    [_settingsViewController.view setHidden:NO];
     
     // animate search
 	[UIView beginAnimations:@"settings_show" context:nil];
@@ -908,7 +967,6 @@ bool settings = NO;
     
     // hide
     _cinderView.hidden = YES;
-    _searchResultViewController.view.hidden = YES;
     _searchResultViewController.view.hidden = YES;
 
 	// clean it up
@@ -952,7 +1010,6 @@ bool settings = NO;
     // unhide
     _cinderView.hidden = NO;
     _searchResultViewController.view.hidden = NO;
-    _searchResultViewController.view.hidden = NO;
     
 	// clean it up
 	[self performSelector:@selector(animationSettingsHideDone) withObject:nil afterDelay:kAnimateTimeSettingsHide];
@@ -960,9 +1017,36 @@ bool settings = NO;
 - (void)animationSettingsHideDone {
 	GLog();
     
-    // hide
-    [_settingsViewController viewDidDisappear:YES];
+    // view
 	[_settingsViewController.view setHidden:YES];
+    
+    // controller
+    [_settingsViewController viewDidDisappear:YES];
+    
+}
+
+
+/**
+ * Rotation animation.
+ */
+- (void)animationPostRotation {
+	FLog();
+    
+    // prepare animation
+    self.view.alpha = 0;
+    self.view.hidden = NO;
+    
+    // animate search
+	[UIView beginAnimations:@"rotation" context:nil];
+	[UIView setAnimationDuration:kAnimateTimePostRotation];
+    self.view.alpha = 1.0;
+	[UIView commitAnimations];
+    
+	// clean it up
+	[self performSelector:@selector(animationPostRotationDone) withObject:nil afterDelay:kAnimateTimePostRotation];
+}
+- (void)animationPostRotationDone {
+	GLog();
     
 }
 

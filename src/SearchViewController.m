@@ -76,7 +76,128 @@ CGRect vframe;
     
     // view
     self.view = [[[UIView alloc] initWithFrame:vframe] autorelease];
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    
+    // background
+    UIView *background = [[UIView alloc] initWithFrame:CGRectZero];
+    background.backgroundColor = [UIColor colorWithWhite:1 alpha:0.06];
+    _background = [background retain];
+    [self.view addSubview:_background];
+    [background release];
+   
+    
+    // title
+    UILabel *lblTitle = [[UILabel alloc] initWithFrame:CGRectZero];
+    lblTitle.backgroundColor = [UIColor clearColor];
+    lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
+    lblTitle.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt];
+    lblTitle.numberOfLines = 1;
+    lblTitle.text = NSLocalizedString(@"IMDG",@"IMDG");
+    _labelTitle = [lblTitle retain];
+    [self.view addSubview:_labelTitle];
+    [lblTitle release];
+    
+    // claim
+    UILabel *lblClaim = [[UILabel alloc] initWithFrame:CGRectZero];
+    lblClaim.backgroundColor = [UIColor clearColor];
+    lblClaim.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+    lblClaim.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt];
+    lblClaim.numberOfLines = 1;
+    lblClaim.text = NSLocalizedString(@"The Internet Movie Database Graph",@"The Internet Movie Database Graph");
+    _labelClaim = [lblClaim retain];
+    [self.view addSubview:_labelClaim];
+    [lblClaim release];
+     
+    
+    // search bar
+    UISearchBar *sBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
+    sBar.barStyle = UIBarStyleBlackTranslucent;
+    sBar.alpha = kAlphaSearch;
+    sBar.showsCancelButton = NO;
+    sBar.autocorrectionType = UITextAutocorrectionTypeNo;
+    sBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    sBar.delegate = self;
+    for (UIView *subview in sBar.subviews) {
+        if ([subview isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
+            [subview removeFromSuperview];
+            break;
+        }
+    }
+    sBar.text = @"Kill Bill";
+    _searchBar = [sBar retain];
+	[self.view addSubview:_searchBar];
+	[sBar release];
+    
+    
+    // button movie 
+	UIButton *btnMovie = [UIButton buttonWithType:UIButtonTypeCustom];
+    btnMovie.layer.cornerRadius = 3;
+    btnMovie.layer.masksToBounds = YES;
+    btnMovie.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+    
+    [btnMovie setBackgroundColor:[UIColor colorWithRed:126/255.0 green:128/255.0 blue:102/255.0 alpha:kAlphaBtn]];
+    [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
+    [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
+    [btnMovie setTitle:NSLocalizedString(@"Movie",@"Movie") forState:UIControlStateNormal];
+	[btnMovie addTarget:self action:@selector(actionMovie:) forControlEvents:UIControlEventTouchUpInside];
+    
+	self.buttonMovie = [btnMovie retain];
+	[self.view addSubview:_buttonMovie];
+	[btnMovie release];
+    
+    
+    // button actor
+	UIButton *btnActor = [UIButton buttonWithType:UIButtonTypeCustom];
+    btnActor.layer.cornerRadius = 3;
+    btnActor.layer.masksToBounds = YES;
+    btnActor.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+    
+    [btnActor setBackgroundColor:[UIColor colorWithRed:82/255.0 green:108/255.0 blue:128/255.0 alpha:kAlphaBtn]];
+    [btnActor setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
+    [btnActor setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
+    [btnActor setTitle:NSLocalizedString(@"Actor",@"Actor") forState:UIControlStateNormal];
+	[btnActor addTarget:self action:@selector(actionActor:) forControlEvents:UIControlEventTouchUpInside];
+    
+	self.buttonActor = [btnActor retain];
+	[self.view addSubview:_buttonActor];
+	[btnActor release];
+    
+  
+    // button director 
+	UIButton *btnDirector = [UIButton buttonWithType:UIButtonTypeCustom];
+    btnDirector.layer.cornerRadius = 3;
+    btnDirector.layer.masksToBounds = YES;
+    btnDirector.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+    
+    [btnDirector setBackgroundColor:[UIColor colorWithRed:121/255.0 green:125/255.0 blue:128/255.0 alpha:kAlphaBtn]];
+    [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
+    [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
+    [btnDirector setTitle:NSLocalizedString(@"Director",@"Director") forState:UIControlStateNormal];
+	[btnDirector addTarget:self action:@selector(actionDirector:) forControlEvents:UIControlEventTouchUpInside];
+    
+	self.buttonDirector = [btnDirector retain];
+	[self.view addSubview:_buttonDirector];
+	[btnDirector release];
+    
+    
+    // button reset
+	UIButton *btnReset = [UIButton buttonWithType:UIButtonTypeCustom]; 
+	[btnReset setImage:[UIImage imageNamed:@"btn_reset.png"] forState:UIControlStateNormal];
+	[btnReset addTarget:self action:@selector(actionReset:) forControlEvents:UIControlEventTouchUpInside];
+	_buttonReset = [btnReset retain];
+	[self.view addSubview:_buttonReset];
+	[btnReset release];
+
+    // layout
+    [self layout];
+    
+}
+
+/*
+ * Layout subviews.
+ */
+- (void)layout {
+    GLog();
     
     // size
 	float fwidth = self.view.frame.size.width;
@@ -101,118 +222,28 @@ CGRect vframe;
     float swidth = 300;
     float sheight = 30;
     
-    
     // background
-    UIView *background = [[UIView alloc] initWithFrame:CGRectMake(0, 0, fwidth, fheight)];
-    background.backgroundColor = [UIColor colorWithWhite:1 alpha:0.06];
-    [self.view addSubview:background];
-    
-   
-    
-    // title
-    UILabel *lblTitle = [[UILabel alloc] initWithFrame:CGRectMake(border, inset, twidth, theight)];
-    lblTitle.backgroundColor = [UIColor clearColor];
-    lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
-    lblTitle.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt];
-    lblTitle.numberOfLines = 1;
-    lblTitle.text = NSLocalizedString(@"IMDG",@"IMDG");
-    [self.view addSubview:lblTitle];
-    
-    // claim
-    UILabel *lblClaim = [[UILabel alloc] initWithFrame:CGRectMake(border, inset+theight-1, twidth, theight)];
-    lblClaim.backgroundColor = [UIColor clearColor];
-    lblClaim.font = [UIFont fontWithName:@"Helvetica" size:12.0];
-    lblClaim.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt];
-    lblClaim.numberOfLines = 1;
-    lblClaim.text = NSLocalizedString(@"The Internet Movie Database Graph",@"The Internet Movie Database Graph");
-    [self.view addSubview:lblClaim];
-     
+    _background.frame = CGRectMake(0, 0, fwidth, fheight);
     
     // search bar
-    UISearchBar *sBar = [[UISearchBar alloc] initWithFrame:CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0)+1.5, swidth, sheight)];
-    sBar.barStyle = UIBarStyleBlackTranslucent;
-    sBar.alpha = kAlphaSearch;
-    sBar.showsCancelButton = NO;
-    sBar.autocorrectionType = UITextAutocorrectionTypeNo;
-    sBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    sBar.delegate = self;
-    for (UIView *subview in sBar.subviews) {
-        if ([subview isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
-            [subview removeFromSuperview];
-            break;
-        }
-    }
-    sBar.text = @"Kill Bill";
-    _searchBar = [sBar retain];
-	[self.view addSubview:_searchBar];
-	[sBar release];
+    _searchBar.frame = CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0)+1.5, swidth, sheight);
     
     
-    // button movie 
-	UIButton *btnMovie = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnMovie.frame = CGRectMake(fwidth*0.5+swidth*0.5+inset, (fheight-bheight)/2.0, bwidth, bheight);
-    btnMovie.layer.cornerRadius = 3;
-    btnMovie.layer.masksToBounds = YES;
-    btnMovie.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+    // title
+    _labelTitle.frame = CGRectMake(border, inset, twidth, theight);
+    _labelClaim.frame = CGRectMake(border, inset+theight-1, twidth, theight);
     
-    [btnMovie setBackgroundColor:[UIColor colorWithRed:126/255.0 green:128/255.0 blue:102/255.0 alpha:kAlphaBtn]];
-    [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
-    [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
-    [btnMovie setTitle:NSLocalizedString(@"Movie",@"Movie") forState:UIControlStateNormal];
-	[btnMovie addTarget:self action:@selector(actionMovie:) forControlEvents:UIControlEventTouchUpInside];
+    // buttons
+    _buttonMovie.frame = CGRectMake(fwidth*0.5+swidth*0.5+inset, (fheight-bheight)/2.0, bwidth, bheight);
+    _buttonActor.frame = CGRectMake(fwidth*0.5+swidth*0.5+2*inset+bwidth, (fheight-bheight)/2.0, bwidth, bheight);
+    _buttonDirector.frame = CGRectMake(fwidth*0.5+swidth*0.5+3*inset+2*bwidth, (fheight-bheight)/2.0, bwidth, bheight);
+    _buttonReset.frame = CGRectMake(fwidth-inset-iwidth, (fheight-iheight)/2.0, iwidth, iheight);
     
-	self.buttonMovie = [btnMovie retain];
-	[self.view addSubview:_buttonMovie];
-	[btnMovie release];
-    
-    
-    // button actor
-	UIButton *btnActor = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnActor.frame = CGRectMake(fwidth*0.5+swidth*0.5+2*inset+bwidth, (fheight-bheight)/2.0, bwidth, bheight);
-    btnActor.layer.cornerRadius = 3;
-    btnActor.layer.masksToBounds = YES;
-    btnActor.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
-    
-    [btnActor setBackgroundColor:[UIColor colorWithRed:82/255.0 green:108/255.0 blue:128/255.0 alpha:kAlphaBtn]];
-    [btnActor setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
-    [btnActor setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
-    [btnActor setTitle:NSLocalizedString(@"Actor",@"Actor") forState:UIControlStateNormal];
-	[btnActor addTarget:self action:@selector(actionActor:) forControlEvents:UIControlEventTouchUpInside];
-    
-	self.buttonActor = [btnActor retain];
-	[self.view addSubview:_buttonActor];
-	[btnActor release];
-    
-  
-    // button director 
-	UIButton *btnDirector = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnDirector.frame = CGRectMake(fwidth*0.5+swidth*0.5+3*inset+2*bwidth, (fheight-bheight)/2.0, bwidth, bheight);
-    btnDirector.layer.cornerRadius = 3;
-    btnDirector.layer.masksToBounds = YES;
-    btnDirector.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
-    
-    [btnDirector setBackgroundColor:[UIColor colorWithRed:121/255.0 green:125/255.0 blue:128/255.0 alpha:kAlphaBtn]];
-    [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
-    [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
-    [btnDirector setTitle:NSLocalizedString(@"Director",@"Director") forState:UIControlStateNormal];
-	[btnDirector addTarget:self action:@selector(actionDirector:) forControlEvents:UIControlEventTouchUpInside];
-    
-	self.buttonDirector = [btnDirector retain];
-	[self.view addSubview:_buttonDirector];
-	[btnDirector release];
-    
-    
-    // button reset
-	UIButton *btnReset = [UIButton buttonWithType:UIButtonTypeCustom]; 
-	btnReset.frame = CGRectMake(fwidth-inset-iwidth, (fheight-iheight)/2.0, iwidth, iheight);
-	[btnReset setImage:[UIImage imageNamed:@"btn_reset.png"] forState:UIControlStateNormal];
-	[btnReset addTarget:self action:@selector(actionReset:) forControlEvents:UIControlEventTouchUpInside];
-	_buttonReset = [btnReset retain];
-	[self.view addSubview:_buttonReset];
-	[btnReset release];
-
+    // redraw
+    [self.view setNeedsLayout];
     
 }
+
 
 
 #pragma mark -

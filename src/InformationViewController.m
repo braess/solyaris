@@ -94,6 +94,7 @@ int sectionGapInset = 15;
     CGRect fframe = CGRectMake(0, cframe.size.height-informationFooterHeight, cframe.size.width, informationFooterHeight);
     CGRect tframe = CGRectMake(0, informationHeaderHeight, cframe.size.width, cframe.size.height-informationHeaderHeight-informationFooterHeight);
     
+    
     // view
     self.view = [[UIView alloc] initWithFrame:wframe];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
@@ -101,6 +102,7 @@ int sectionGapInset = 15;
     
     // modal
     UIView *mView = [[UIView alloc] initWithFrame:wframe];
+    mView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     mView.backgroundColor = [UIColor blackColor];
     mView.opaque = NO;
     mView.alpha = 0.3;
@@ -114,7 +116,7 @@ int sectionGapInset = 15;
     
     
     // header view
-    UITableView *headerView = [[UIView alloc] initWithFrame:hframe];
+    UIView *headerView = [[UIView alloc] initWithFrame:hframe];
     headerView.tag = TagInformationHeader;
 	headerView.backgroundColor = [UIColor clearColor];
 	headerView.opaque = YES;
@@ -166,6 +168,7 @@ int sectionGapInset = 15;
     
     // footer view
     UITableView *footerView = [[UIView alloc] initWithFrame:fframe];
+    footerView.autoresizingMask = UIViewAutoresizingNone;
     footerView.tag = TagInformationFooter;
 	footerView.backgroundColor = [UIColor clearColor];
 	footerView.opaque = YES;
@@ -183,6 +186,7 @@ int sectionGapInset = 15;
     
 	    
 }
+
 
 /*
  * Prepares the view.
@@ -207,6 +211,12 @@ int sectionGapInset = 15;
 /*
  * Touches.
  */
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    // ignore
+}
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    // ignore
+}
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
     FLog();
     
@@ -214,6 +224,9 @@ int sectionGapInset = 15;
 	if (delegate != nil && [delegate respondsToSelector:@selector(informationDismiss)]) {
 		[delegate informationDismiss];
 	}
+}
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    // ignore
 }
 
 
@@ -587,6 +600,9 @@ int sectionGapInset = 15;
 		// add
 		self.opaque = YES;
 		self.backgroundColor = [UIColor whiteColor];
+        self.autoresizesSubviews = NO;
+        self.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+        self.contentMode = UIViewContentModeRedraw; // Thats the one
         
 		// return
 		return self;
@@ -605,6 +621,7 @@ int sectionGapInset = 15;
 	// vars
 	float w = self.frame.size.width;
 	float h = self.frame.size.height;
+    NSLog(@"%f %f",w,h);
     
     // rects
     CGRect mrect = CGRectMake(0, 0, w, h);

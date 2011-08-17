@@ -33,6 +33,12 @@
     UIButton *_buttonDirector;
     UIButton *_buttonReset;
     
+    // private
+    @private
+    UIView *_background;
+    UILabel *_labelTitle;
+    UILabel *_labelClaim;
+    
 }
 
 // Properties
@@ -46,5 +52,8 @@
 - (void)actionActor:(id)sender;
 - (void)actionDirector:(id)sender;
 - (void)actionReset:(id)sender;
+
+// Business
+- (void)layout;
 
 @end

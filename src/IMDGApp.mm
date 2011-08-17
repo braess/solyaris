@@ -17,9 +17,11 @@
 void IMDGApp::setup() {
     DLog();
     
-    // graph
-    graph = Graph(768,1024,0);
+    // app
+    this->setDeviceOrientation(UIDeviceOrientationPortrait);
     
+    // graph
+    graph = Graph(768,1024);
     
     // sketch
     bg = Color(30.0/255.0, 30.0/255.0, 30.0/255.0);
@@ -29,6 +31,7 @@ void IMDGApp::setup() {
     imdgViewController = [[IMDGViewController alloc] init];
     imdgViewController.imdgApp = this;
     [imdgViewController loadView];
+    
 
 }
 
@@ -41,12 +44,87 @@ void IMDGApp::prepareSettings(Settings *settings) {
     
     // stage
     settings->setWindowSize(768, 1024);
-    //settings->setFrameRate( 24.0f );
-    
     
     // device
     settings->enableMultiTouch();
 }
+
+
+/*
+ * Sets the orientation.
+ */
+void IMDGApp::setDeviceOrientation(int dorientation) {
+    
+    // orientation
+    orientation = dorientation;
+    
+    // angle
+    float a = 0;
+    switch (orientation) {
+        case UIDeviceOrientationPortrait:
+            FLog("UIDeviceOrientationPortrait");
+            a = 0;
+            break;
+            
+        case UIDeviceOrientationPortraitUpsideDown:
+            FLog("UIDeviceOrientationPortraitUpsideDown");
+            a = M_PI;
+            break;
+            
+        case UIDeviceOrientationLandscapeLeft:
+            FLog("UIDeviceOrientationLandscapeLeft");
+            a = M_PI/2.0f;
+            break;
+            
+        case UIDeviceOrientationLandscapeRight:
+            FLog("UIDeviceOrientationLandscapeRight");
+            a = -M_PI/2.0f;
+            break;
+            
+        default:
+            FLog("default");
+            a = 0;
+            break;
+    }
+    
+    // app
+    orientationMatrix.setToIdentity();
+    orientationMatrix.translate( Vec3f( getWindowSize() / 2.0f, 0 ) );
+    orientationMatrix.rotate( Vec3f( 0, 0, a) );
+    orientationMatrix.translate( Vec3f( -getWindowSize() / 2.0f, 0 ) );
+    
+}
+
+/*
+ * Position depending on orientation.
+ */
+Vec2f IMDGApp::opos(Vec2f p) {
+    GLog();
+    
+    // position
+    Vec2f op = p;
+    op -= (getWindowSize()/2.0);
+    switch (orientation) {
+        case UIDeviceOrientationPortrait:
+            break;
+        case UIDeviceOrientationPortraitUpsideDown:
+            op.rotate(-M_PI);
+            break;
+        case UIDeviceOrientationLandscapeLeft:
+            op.rotate(-M_PI/2.0f);
+            break;
+        case UIDeviceOrientationLandscapeRight:
+            op.rotate(M_PI/2.0f);
+            break;
+        default:
+            op = p;
+            break;
+    }
+    op += (getWindowSize()/2.0);
+    return op;
+}
+
+
 
 
 
@@ -76,8 +154,13 @@ void IMDGApp::draw() {
     // clear
 	gl::clear(bg);    
     
+    
     // graph
+    glPushMatrix();
+    //gl::translate( getWindowSize()/2.0f );
+    glMultMatrixf(orientationMatrix);
     graph.draw();
+    glPopMatrix();
 
 }
 
@@ -101,7 +184,7 @@ void IMDGApp::reset() {
  * Cinder touch events.
 */
 void IMDGApp::touchesBegan( TouchEvent event ) {
-    GLog();
+    FLog();
     
     // touch
     for( vector<TouchEvent::Touch>::const_iterator touch = event.getTouches().begin(); touch != event.getTouches().end(); ++touch ) {
@@ -113,14 +196,16 @@ void IMDGApp::touchesBegan( TouchEvent event ) {
         if (taps == 1) {
             
             // touch graph
-            graph.touchBegan(touch->getPos(),touch->getId());
+            Vec2f tp = opos(touch->getPos());
+            graph.touchBegan(tp,touch->getId());
         }
         
         // double tap
         if (taps == 2) {
           
             // tap graph
-            NodePtr node = graph.doubleTap(touch->getPos(),touch->getId());
+            Vec2f tp = opos(touch->getPos());
+            NodePtr node = graph.doubleTap(tp,touch->getId());
             if (node != NULL) {
                 
                 // tap controller
@@ -146,7 +231,9 @@ void IMDGApp::touchesMoved( TouchEvent event ){
     for( vector<TouchEvent::Touch>::const_iterator touch = event.getTouches().begin(); touch != event.getTouches().end(); ++touch ) {
         
         // graph
-        graph.touchMoved(touch->getPos(),touch->getPrevPos(),touch->getId());
+        Vec2f tp = opos(touch->getPos());
+        Vec2f tpp = opos(touch->getPrevPos());
+        graph.touchMoved(tp,tpp,touch->getId());
         
     }
 }
@@ -157,7 +244,8 @@ void IMDGApp::touchesEnded( TouchEvent event ){
     for( vector<TouchEvent::Touch>::const_iterator touch = event.getTouches().begin(); touch != event.getTouches().end(); ++touch ) {
         
         // graph
-        graph.touchEnded(touch->getPos(),touch->getId());
+        Vec2f tp = opos(touch->getPos());
+        graph.touchEnded(tp,touch->getId());
     }
 }
 

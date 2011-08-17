@@ -19,12 +19,11 @@
  */
 Graph::Graph() {
 }
-Graph::Graph(int w, int h, int d) {
+Graph::Graph(int w, int h) {
     
     // fields
     width = w;
     height = h;
-    direction = d;
     
     // movement
     friction = 0.75;
@@ -38,20 +37,6 @@ Graph::Graph(int w, int h, int d) {
 }
 
 
-/**
- * Resize.
- */
-void Graph::resize(int w, int h, int d) {
-    FLog();
-    
-    // size
-    width = w;
-    height = h;
-    
-    // direction
-    direction = d;
-    
-}
 
 
 

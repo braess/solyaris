@@ -19,7 +19,6 @@ using namespace ci;
 using namespace ci::app;
 
 
-
 /**
  * IMDG App.
  */
@@ -31,6 +30,7 @@ class IMDGApp : public AppNative {
     // Cinder
     void prepareSettings(Settings *settings);
 	void setup();
+    void setDeviceOrientation(int dorientation);
     
     // Sketch
 	void update();
@@ -53,13 +53,19 @@ class IMDGApp : public AppNative {
     // Fields
     private:
     
-    // View controllers
+    // app
+    int orientation;
+    Matrix44f orientationMatrix;  
+    Vec2f opos(Vec2f p);
+    
+    // view controllers
 	IMDGViewController *imdgViewController;
     
-    // Graph
+    // graph
     Graph graph;
     
     // color
     Color bg;
+    
     
 };

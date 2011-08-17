@@ -29,8 +29,8 @@ class Graph {
     
     // Graph
     Graph();
-    Graph(int w, int h, int d);
-    void resize(int w, int h, int d);
+    Graph(int w, int h);
+
     
     // Sketch
     void reset();
@@ -61,7 +61,6 @@ class Graph {
     // size
     int width;
     int height;
-    int direction;
     float friction;
     float harea;
     
