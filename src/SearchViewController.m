@@ -39,6 +39,9 @@
 
 // local vars
 CGRect vframe;
+float inset = 5;
+float swidth = 300;
+float sheight = 30;
 
 
 #pragma mark -
@@ -78,8 +81,32 @@ CGRect vframe;
     self.view = [[[UIView alloc] initWithFrame:vframe] autorelease];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     
+    
+    // size
+	float fwidth = self.view.frame.size.width;
+	float fheight = self.view.frame.size.height;
+    float border = 10;
+    
+    
+    // title
+    float theight = 15;
+    float twidth = 200;
+    
+    // icons
+    float iwidth = 32;
+    float iheight = 32;
+    
+    // frames
+    CGRect bgframe = CGRectMake(0, 0, fwidth, fheight);
+    CGRect sbframe = CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0)+1.5, swidth, sheight);
+    CGRect ltframe = CGRectMake(border, inset, twidth, theight);
+    CGRect lcframe = CGRectMake(border, inset+theight-1, twidth, theight);
+    CGRect brframe = CGRectMake(fwidth-inset-iwidth, (fheight-iheight)/2.0, iwidth, iheight);
+    
+    
     // background
-    UIView *background = [[UIView alloc] initWithFrame:CGRectZero];
+    UIView *background = [[UIView alloc] initWithFrame:bgframe];
+    background.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     background.backgroundColor = [UIColor colorWithWhite:1 alpha:0.06];
     _background = [background retain];
     [self.view addSubview:_background];
@@ -87,7 +114,7 @@ CGRect vframe;
    
     
     // title
-    UILabel *lblTitle = [[UILabel alloc] initWithFrame:CGRectZero];
+    UILabel *lblTitle = [[UILabel alloc] initWithFrame:ltframe];
     lblTitle.backgroundColor = [UIColor clearColor];
     lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
     lblTitle.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt];
@@ -98,7 +125,7 @@ CGRect vframe;
     [lblTitle release];
     
     // claim
-    UILabel *lblClaim = [[UILabel alloc] initWithFrame:CGRectZero];
+    UILabel *lblClaim = [[UILabel alloc] initWithFrame:lcframe];
     lblClaim.backgroundColor = [UIColor clearColor];
     lblClaim.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     lblClaim.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt];
@@ -110,7 +137,8 @@ CGRect vframe;
      
     
     // search bar
-    UISearchBar *sBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
+    UISearchBar *sBar = [[UISearchBar alloc] initWithFrame:sbframe];
+    sBar.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     sBar.barStyle = UIBarStyleBlackTranslucent;
     sBar.alpha = kAlphaSearch;
     sBar.showsCancelButton = NO;
@@ -127,6 +155,8 @@ CGRect vframe;
     _searchBar = [sBar retain];
 	[self.view addSubview:_searchBar];
 	[sBar release];
+    
+    
     
     
     // button movie 
@@ -182,65 +212,43 @@ CGRect vframe;
     
     // button reset
 	UIButton *btnReset = [UIButton buttonWithType:UIButtonTypeCustom]; 
+    btnReset.frame = brframe;
+    btnReset.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
 	[btnReset setImage:[UIImage imageNamed:@"btn_reset.png"] forState:UIControlStateNormal];
 	[btnReset addTarget:self action:@selector(actionReset:) forControlEvents:UIControlEventTouchUpInside];
 	_buttonReset = [btnReset retain];
 	[self.view addSubview:_buttonReset];
 	[btnReset release];
 
-    // layout
-    [self layout];
+    // resize
+    [self resize];
     
 }
 
 /*
- * Layout subviews.
+ * Resize.
  */
-- (void)layout {
+- (void)resize {
     GLog();
     
     // size
-	float fwidth = self.view.frame.size.width;
+    float fwidth = self.view.frame.size.width;
 	float fheight = self.view.frame.size.height;
-    float border = 10;
-    float inset = 5;
-    
-    
-    // title
-    float theight = 15;
-    float twidth = 200;
     
     // buttons
     float bwidth = 60;
     float bheight = 24;
     
-    // icons
-    float iwidth = 32;
-    float iheight = 32;
-    
-    // search
-    float swidth = 300;
-    float sheight = 30;
-    
-    // background
-    _background.frame = CGRectMake(0, 0, fwidth, fheight);
-    
-    // search bar
-    _searchBar.frame = CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0)+1.5, swidth, sheight);
-    
-    
-    // title
-    _labelTitle.frame = CGRectMake(border, inset, twidth, theight);
-    _labelClaim.frame = CGRectMake(border, inset+theight-1, twidth, theight);
+    // frames
+    CGRect bframe =  CGRectMake(fwidth*0.5+swidth*0.5+inset, (fheight-bheight)/2.0, 3*(bwidth+inset), bheight);
+    CGRect bmframe = CGRectMake(bframe.origin.x, bframe.origin.y, bwidth, bheight);
+    CGRect baframe = CGRectMake(bframe.origin.x+inset+bwidth, bframe.origin.y, bwidth, bheight);
+    CGRect bdframe = CGRectMake(bframe.origin.x+2*inset+2*bwidth, bframe.origin.y, bwidth, bheight);
     
     // buttons
-    _buttonMovie.frame = CGRectMake(fwidth*0.5+swidth*0.5+inset, (fheight-bheight)/2.0, bwidth, bheight);
-    _buttonActor.frame = CGRectMake(fwidth*0.5+swidth*0.5+2*inset+bwidth, (fheight-bheight)/2.0, bwidth, bheight);
-    _buttonDirector.frame = CGRectMake(fwidth*0.5+swidth*0.5+3*inset+2*bwidth, (fheight-bheight)/2.0, bwidth, bheight);
-    _buttonReset.frame = CGRectMake(fwidth-inset-iwidth, (fheight-iheight)/2.0, iwidth, iheight);
-    
-    // redraw
-    [self.view setNeedsLayout];
+    _buttonMovie.frame = bmframe;
+    _buttonActor.frame = baframe;
+    _buttonDirector.frame = bdframe;
     
 }
 

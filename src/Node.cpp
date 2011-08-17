@@ -380,7 +380,7 @@ void Node::show(bool animate) {
         if (pp) {
             
             // radius & position
-            float r = pp->radius * 0.3;
+            float r = pp->radius * 0.5;
             Vec2d p = Vec2d(pp->pos.x+Rand::randFloat(-r,r),pp->pos.y+Rand::randFloat(-r,r));
             
             // animate

@@ -187,6 +187,13 @@ int sectionGapInset = 15;
 	    
 }
 
+/*
+ * Resize.
+ */
+- (void)resize {
+    // handled by default ui resize
+}
+
 
 /*
  * Prepares the view.

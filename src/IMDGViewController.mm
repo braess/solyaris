@@ -170,6 +170,7 @@ bool settings = NO;
 
     // button settings
 	UIButton *btnSettings = [UIButton buttonWithType:UIButtonTypeCustom]; 
+    btnSettings.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
 	btnSettings.frame = frameSettingsButton;
 	[btnSettings setImage:[UIImage imageNamed:@"btn_settings.png"] forState:UIControlStateNormal];
 	[btnSettings addTarget:self action:@selector(actionSettings:) forControlEvents:UIControlEventTouchUpInside];
@@ -221,8 +222,9 @@ bool settings = NO;
  */
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     
-    // layout
-    [_searchViewController layout];
+    // resize
+    [_searchViewController resize];
+    [_informationViewController resize];
     
     // animate
     [self animationPostRotation];

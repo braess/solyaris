@@ -54,6 +54,6 @@
 - (void)actionReset:(id)sender;
 
 // Business
-- (void)layout;
+- (void)resize;
 
 @end

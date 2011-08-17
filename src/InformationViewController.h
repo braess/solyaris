@@ -88,6 +88,7 @@ enum {
 - (id)initWithFrame:(CGRect)frame;
 
 // Business Methods
+- (void)resize;
 - (void)informationTitle:(NSString*)title;
 
 @end
