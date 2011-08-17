@@ -124,6 +124,11 @@ void Graph::update() {
             (*edge)->update();
         }
     }
+    
+    // info
+    if (info.isVisible()) {
+        info.update();
+    }
 
 
 }
@@ -190,25 +195,29 @@ void Graph::touchBegan(Vec2d tpos, int tid) {
     // nodes
     for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
         
-        // distance
-		float d = (*node)->pos.distance(tpos);
-        if (d < (*node)->core+harea) {
+        // visible
+        if ((*node)->isVisible()) {
             
-            // touched
-            GLog("tid = %d, node = ",tid);
-            touched[tid] = NodePtr(*node); 
-            
-            // state
-            touched[tid]->touched();
-            
-            // set the info
-            this->sinfo();
-            info.position(tpos);
-            
-            
-            // have a break
-            break;
-            
+            // distance
+            float d = (*node)->pos.distance(tpos);
+            if (d < (*node)->core+harea) {
+                
+                // touched
+                GLog("tid = %d, node = ",tid);
+                touched[tid] = NodePtr(*node); 
+                
+                // state
+                touched[tid]->touched();
+                
+                // set the info
+                this->sinfo();
+                info.position(tpos);
+                
+                
+                // have a break
+                break;
+                
+            }
         }
     }
 

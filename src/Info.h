@@ -49,6 +49,8 @@ class Info {
     
     // States
     bool visible;
+    float alpha;
+    int timeout;
 
     
     // position

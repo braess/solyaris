@@ -116,6 +116,7 @@ class Node {
     
     // Parameters
     double perimeter;
+    double dist;
     double damping;
     double strength;
     double ramp;

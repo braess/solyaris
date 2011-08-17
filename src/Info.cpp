@@ -53,7 +53,14 @@ Info::Info(Vec2d b) {
  * Updates the info.
  */
 void Info::update() {
+   
+    // timeout (avoids flickering)
+    timeout--;
     
+    // alpha
+    if (timeout < 0) {
+        alpha = min(cbg.a,alpha+0.3f);
+    }
     
 }
 
@@ -73,7 +80,7 @@ void Info::draw() {
     
     // background
     Rectf rect = Rectf(px,py,px+size.x,py+size.y);
-    glColor4f(cbg.r,cbg.g,cbg.b,cbg.a);
+    glColor4f(cbg.r,cbg.g,cbg.b,alpha);
     gl::drawSolidRect(rect, false);
         
     // unblend
@@ -135,9 +142,12 @@ void Info::renderText(vector<string> txts) {
  */
 void Info::show() {
     visible = true;
+    alpha = 0;
+    timeout = 6;
 }
 void Info::hide() {
     visible = false;
+    alpha = 0;
 }
 
 

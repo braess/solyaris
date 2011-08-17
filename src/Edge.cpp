@@ -185,7 +185,7 @@ void Edge::repulse() {
         
         // distance vector
         Vec2d diff = node2->pos - node1->pos;
-        
+      
         // normalize / length
         diff.safeNormalize();
         diff *= length;
@@ -200,7 +200,7 @@ void Edge::repulse() {
         force *= (1 - damping);
         
         // update velocity
-        node1->velocity += force*-1;
+        node1->velocity -= force;
         node2->velocity += force;
     }
 

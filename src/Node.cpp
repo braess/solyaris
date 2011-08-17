@@ -31,7 +31,8 @@ Node::Node(string idn, double x, double y) {
     
     
     // fields
-    perimeter = 420;
+    perimeter = 390;
+    dist = 420;
     damping = 0.5;
     strength = -1;
     ramp = 1.0;
@@ -144,7 +145,7 @@ void Node::update() {
     
     // threshold
     float thresh = 0.1;
-    if (velocity.x < thresh && velocity.y < thresh) {
+    if (abs(velocity.x) < thresh && abs(velocity.y) < thresh) {
         velocity.x = 0;
         velocity.y = 0;
     }
@@ -447,13 +448,13 @@ void Node::tapped() {
             
             // distance to parent
             Vec2d pdist =  pos - pp->pos;
-            if (pdist.length() < perimeter) {
+            if (pdist.length() < dist) {
                 
                 // unity vector
                 pdist.safeNormalize();
                 
                 // move
-                this->moveTo(pp->pos+pdist*perimeter);
+                this->moveTo(pp->pos+pdist*dist);
             }
         }
     
