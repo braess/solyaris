@@ -45,7 +45,7 @@
 #define kAnimateTimeInformationHide	0.45f
 #define kAnimateTimeSettingsShow	0.75f
 #define kAnimateTimeSettingsHide	0.45f
-#define kAnimateTimePostRotation    0.75f
+#define kAnimateTimePostRotation    0.3f
 
 
 

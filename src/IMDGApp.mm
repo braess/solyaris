@@ -63,26 +63,31 @@ void IMDGApp::setDeviceOrientation(int dorientation) {
     switch (orientation) {
         case UIDeviceOrientationPortrait:
             FLog("UIDeviceOrientationPortrait");
+            this->setWindowSize(768, 1024);
             a = 0;
             break;
             
         case UIDeviceOrientationPortraitUpsideDown:
             FLog("UIDeviceOrientationPortraitUpsideDown");
+            this->setWindowSize(768, 1024);
             a = M_PI;
             break;
             
         case UIDeviceOrientationLandscapeLeft:
             FLog("UIDeviceOrientationLandscapeLeft");
+            this->setWindowSize(1024, 768);
             a = M_PI/2.0f;
             break;
             
         case UIDeviceOrientationLandscapeRight:
             FLog("UIDeviceOrientationLandscapeRight");
+            this->setWindowSize(1024, 768);
             a = -M_PI/2.0f;
             break;
             
         default:
             FLog("default");
+            this->setWindowSize(768, 1024);
             a = 0;
             break;
     }

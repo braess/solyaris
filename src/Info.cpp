@@ -143,7 +143,7 @@ void Info::renderText(vector<string> txts) {
 void Info::show() {
     visible = true;
     alpha = 0;
-    timeout = 6;
+    timeout = 12;
 }
 void Info::hide() {
     visible = false;
