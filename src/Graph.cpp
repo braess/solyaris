@@ -42,12 +42,17 @@ Graph::Graph(int w, int h, int o) {
 #pragma mark Cinder
 
 /*
- * Sets the orientation.
+ * Resize.
  */
-void Graph::setDeviceOrientation(int dorientation) {
+void Graph::resize(int w, int h, int o) {
     
-    // orientation
-    orientation = dorientation;
+    // fields
+    width = w;
+    height = h;
+    orientation = o;
+    
+    // info
+    info.resize(w,h);
 }
 
 
@@ -481,7 +486,7 @@ void Graph::sinfo() {
     // touched
     if (etouch) {
         info.renderText(txts);
-        info.show(orientation);
+        info.show();
     }
     
 }

@@ -32,7 +32,7 @@ class Graph {
     Graph(int w, int h, int o);
 
     // Cinder
-    void setDeviceOrientation(int dorientation);
+    void resize(int w, int h, int o);
     
     // Sketch
     void reset();

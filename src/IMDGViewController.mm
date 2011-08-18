@@ -35,17 +35,14 @@
 - (void)animationSettingsShowDone;
 - (void)animationSettingsHide;
 - (void)animationSettingsHideDone;
-- (void)animationPostRotation;
-- (void)animationPostRotationDone;
 @end
 
 
 // constants
 #define kAnimateTimeInformationShow	0.6f
 #define kAnimateTimeInformationHide	0.45f
-#define kAnimateTimeSettingsShow	0.75f
-#define kAnimateTimeSettingsHide	0.45f
-#define kAnimateTimePostRotation    0.3f
+#define kAnimateTimeSettingsShow	0.6f
+#define kAnimateTimeSettingsHide	0.3f
 #define kOffsetSettings 480
 
 
@@ -63,8 +60,6 @@
 // accessors
 @synthesize imdgApp;
 
-// local vars
-bool settings = NO;
 
 
 #pragma mark -
@@ -82,6 +77,9 @@ bool settings = NO;
         // api
         imdb = [[IMDB alloc] init];
         imdb.delegate = self;
+        
+        // mode
+        mode_settings = NO;
         
 		// return
 		return self;
@@ -208,8 +206,8 @@ bool settings = NO;
  * Rotate is the new black.
  */
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // yes, sir!
-    return YES;
+    // maybe baby
+    return ! mode_settings;
 }
 
 /*
@@ -741,7 +739,7 @@ bool settings = NO;
 	DLog();
 	
 	// animate
-    if (! settings) {
+    if (! mode_settings) {
         [self animationSettingsShow];
     }
     else {
@@ -965,7 +963,7 @@ bool settings = NO;
 	FLog();
     
     // state
-    settings = YES;
+    mode_settings = YES;
     
 	
 	// prepare controllers
@@ -981,14 +979,26 @@ bool settings = NO;
     _settingsViewController.contentView.center = settingsCenter;
     settingsCenter.y -= kOffsetSettings;
     
-    CGPoint cinderCenter = _cinderView.center;
-    cinderCenter.y -= kOffsetSettings;
-    
     CGPoint searchCenter = _searchViewController.view.center;
     searchCenter.y -= kOffsetSettings;
     
     CGPoint buttonCenter = _buttonSettings.center;
     buttonCenter.y -= kOffsetSettings;
+    
+    // cinder
+    CGPoint cinderCenter = _cinderView.center;
+    if (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
+        cinderCenter.x -= kOffsetSettings;
+    }
+    else if (self.interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
+        cinderCenter.x += kOffsetSettings;
+    }
+    else if (self.interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {
+        cinderCenter.y += kOffsetSettings;
+    }
+    else {
+        cinderCenter.y -= kOffsetSettings;
+    }
 
     
     // animate 
@@ -1019,7 +1029,7 @@ bool settings = NO;
 	FLog();
     
     // state
-    settings = NO;
+    mode_settings = NO;
 	
 	// prepare controllers
 	[_settingsViewController viewWillDisappear:YES];
@@ -1028,14 +1038,26 @@ bool settings = NO;
     CGPoint settingsCenter = _settingsViewController.contentView.center;
     settingsCenter.y += kOffsetSettings;
     
-    CGPoint cinderCenter = _cinderView.center;
-    cinderCenter.y += kOffsetSettings;
-    
     CGPoint searchCenter = _searchViewController.view.center;
     searchCenter.y += kOffsetSettings;
     
     CGPoint buttonCenter = _buttonSettings.center;
     buttonCenter.y += kOffsetSettings;
+    
+    // cinder
+    CGPoint cinderCenter = _cinderView.center;
+    if (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
+        cinderCenter.x += kOffsetSettings;
+    }
+    else if (self.interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
+        cinderCenter.x -= kOffsetSettings;
+    }
+    else if (self.interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {
+        cinderCenter.y -= kOffsetSettings;
+    }
+    else {
+        cinderCenter.y += kOffsetSettings;
+    }
     
     // animate 
 	[UIView beginAnimations:@"settings_hide" context:nil];
@@ -1067,29 +1089,6 @@ bool settings = NO;
 }
 
 
-/**
- * Rotation animation.
- */
-- (void)animationPostRotation {
-	FLog();
-    
-    // prepare animation
-    self.view.alpha = 0;
-    self.view.hidden = NO;
-    
-    // animate search
-	[UIView beginAnimations:@"rotation" context:nil];
-	[UIView setAnimationDuration:kAnimateTimePostRotation];
-    self.view.alpha = 1.0;
-	[UIView commitAnimations];
-    
-	// clean it up
-	[self performSelector:@selector(animationPostRotationDone) withObject:nil afterDelay:kAnimateTimePostRotation];
-}
-- (void)animationPostRotationDone {
-	GLog();
-    
-}
 
 
 #pragma mark -

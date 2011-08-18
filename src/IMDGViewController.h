@@ -39,6 +39,12 @@ CPP_CLASS(IMDGApp);
     // popover
 	UIPopoverController *_searchResultsPopoverController;
     
+    // private
+    @private
+    
+    // modes
+    bool mode_settings;
+    
     
 }
 

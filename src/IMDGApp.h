@@ -55,8 +55,7 @@ class IMDGApp : public AppNative {
     
     // app
     int orientation;
-    Matrix44f orientationMatrix;  
-    Vec2f opos(Vec2f p);
+
     
     // view controllers
 	IMDGViewController *imdgViewController;

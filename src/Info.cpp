@@ -45,6 +45,18 @@ Info::Info(Vec2d b) {
 }
 
 
+#pragma mark -
+#pragma mark Cinder
+
+/*
+ * Resize.
+ */
+void Info::resize(int w, int h) {
+    
+    // fields
+    bounds = Vec2d(w,h);
+}
+
 
 #pragma mark -
 #pragma mark Sketch
@@ -70,10 +82,10 @@ void Info::update() {
 void Info::draw() {
     
     // position
-    float px = max(border.x-dx,(pos.x-size.x/2.0+offset.x));
-    float py = max(border.y-dy,(pos.y-size.y+offset.y));
-    px += min(0.0,bounds.x+dx-(px+size.x+border.x));
-    py += min(0.0,bounds.y+dx-(py+size.y+border.y));
+    float px = max(border.x,(pos.x-size.x/2.0+offset.x));
+    float py = max(border.y,(pos.y-size.y+offset.y));
+    px += min(0.0,bounds.x-(px+size.x+border.x));
+    py += min(0.0,bounds.y-(py+size.y+border.y));
     
     // blend
     gl::enableAlphaBlending();
@@ -87,7 +99,7 @@ void Info::draw() {
     gl::enableAlphaBlending(true);
         
     // draw
-    gl::draw( textureText, Vec2d(px,py)+inset);
+    gl::draw(textureText, Vec2d(px,py)+inset);
     
     
 }
@@ -140,21 +152,12 @@ void Info::renderText(vector<string> txts) {
 /**
  * Show / Hide.
  */
-void Info::show(int o) {
-    std::cout << o << std::endl;
+void Info::show() {
     
     // props
     visible = true;
     alpha = 0;
     timeout = 12;
-    
-    // orientation
-    dx = 0;
-    dy = 0;
-    if (o == 3 || o == 4) {
-        dx = abs(768-1024)/2.0;
-        dy = - abs(1024-768)/2.0;
-    }
     
 }
 void Info::hide() {

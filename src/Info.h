@@ -30,13 +30,16 @@ class Info {
     Info();
     Info(Vec2d b);
     
+    // Cinder
+    void resize(int w, int h);
+    
     // Sketch
     void update();
     void draw();
     
     // Business
     void hide();
-    void show(int o);
+    void show();
     bool isVisible();
     void position(Vec2d p);
     void renderText(vector<string> txts);
@@ -57,7 +60,6 @@ class Info {
     Vec2d pos;
     Vec2d border;
     Vec2d bounds;
-    double dx,dy;
     
     // color
     ColorA cbg;
