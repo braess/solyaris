@@ -19,11 +19,12 @@
  */
 Graph::Graph() {
 }
-Graph::Graph(int w, int h) {
+Graph::Graph(int w, int h, int o) {
     
     // fields
     width = w;
     height = h;
+    orientation = o;
     
     // movement
     friction = 0.75;
@@ -37,6 +38,17 @@ Graph::Graph(int w, int h) {
 }
 
 
+#pragma mark -
+#pragma mark Cinder
+
+/*
+ * Sets the orientation.
+ */
+void Graph::setDeviceOrientation(int dorientation) {
+    
+    // orientation
+    orientation = dorientation;
+}
 
 
 
@@ -469,7 +481,7 @@ void Graph::sinfo() {
     // touched
     if (etouch) {
         info.renderText(txts);
-        info.show();
+        info.show(orientation);
     }
     
 }

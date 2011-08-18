@@ -7,6 +7,8 @@
 //
 
 #import "SettingsViewController.h"
+#import <QuartzCore/QuartzCore.h>
+
 
 /**
  * SettingsViewController.
@@ -19,6 +21,7 @@
 
 // accessors
 @synthesize delegate;
+@synthesize contentView = _contentView;
 
 // local vars
 CGRect vframe;
@@ -63,9 +66,9 @@ CGRect vframe;
     float border = (wframe.size.width-vframe.size.width)/2.0;
     
     // frames
-    CGRect cframe = CGRectMake(border, wframe.size.height-vframe.size.height-border, vframe.size.width, vframe.size.height);
-    CGRect aframe = CGRectMake(0, 0, 320, 480);
-    CGRect pframe = CGRectMake(cframe.size.width-320, 0, 320, 480);
+    CGRect cframe = CGRectMake(border, wframe.size.height-vframe.size.height, vframe.size.width, vframe.size.height);
+    CGRect aframe = CGRectMake(0, border, 320, vframe.size.height-border);
+    CGRect pframe = CGRectMake(cframe.size.width-320, border, 320, vframe.size.height-border);
 
     
     // view
@@ -73,17 +76,22 @@ CGRect vframe;
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.view.hidden = YES;
     
-    // background
-    UIView *bgView = [[UIView alloc] initWithFrame:wframe];
-    bgView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"texture_settings.png"]];
-    bgView.opaque = NO;
-    [self.view addSubview:bgView];
-    [bgView release];
     
 	// content
     UIView *ctView = [[UIView alloc] initWithFrame:cframe];
+    ctView.autoresizesSubviews = NO;
+    ctView.contentMode = UIViewContentModeRedraw; // Thats the one
+    ctView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
     ctView.backgroundColor = [UIColor clearColor];
 	ctView.opaque = YES;
+    
+    // drop that shadow
+    float dx = 1024-768;
+	CAGradientLayer *dropShadow = [[[CAGradientLayer alloc] init] autorelease];
+	dropShadow.frame = CGRectMake(-border-dx, 0, cframe.size.width+2*border+2*dx, 12);
+	dropShadow.colors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:0 alpha:1.0].CGColor,(id)[UIColor colorWithWhite:0 alpha:0.3].CGColor,(id)[UIColor colorWithWhite:0 alpha:0].CGColor,nil];
+	[ctView.layer insertSublayer:dropShadow atIndex:0];
+    
     
     // about
     AboutViewController *aboutViewController = [[AboutViewController alloc] initWithFrame:aframe];
@@ -101,8 +109,9 @@ CGRect vframe;
     
     
     // add & release content
-    [self.view addSubview:ctView];
-    [self.view bringSubviewToFront:ctView];
+    self.contentView = [ctView retain];
+    [self.view addSubview:_contentView];
+    [self.view bringSubviewToFront:_contentView];
     [ctView release];
     
     

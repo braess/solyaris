@@ -29,8 +29,10 @@ class Graph {
     
     // Graph
     Graph();
-    Graph(int w, int h);
+    Graph(int w, int h, int o);
 
+    // Cinder
+    void setDeviceOrientation(int dorientation);
     
     // Sketch
     void reset();
@@ -61,6 +63,7 @@ class Graph {
     // size
     int width;
     int height;
+    int orientation;
     float friction;
     float harea;
     

@@ -46,7 +46,7 @@
 #define kAnimateTimeSettingsShow	0.75f
 #define kAnimateTimeSettingsHide	0.45f
 #define kAnimateTimePostRotation    0.3f
-
+#define kOffsetSettings 480
 
 
 
@@ -110,7 +110,7 @@ bool settings = NO;
     CGRect frameSearch = CGRectMake(0, 0, window.frame.size.width, 40);
     CGRect frameSearchResult = CGRectMake(0, 0, 320, 480);
     CGRect frameInformation = CGRectMake(0, 0, 600, 600);
-    CGRect frameSettings = CGRectMake(0, 0, 708, 480);
+    CGRect frameSettings = CGRectMake(0, 0, 708, kOffsetSettings);
     CGRect frameSettingsButton = CGRectMake(window.frame.size.width-32, window.frame.size.height-32, 32, 32);
     
     // view
@@ -118,6 +118,16 @@ bool settings = NO;
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.view.opaque = NO;
     [window addSubview:self.view];
+    
+    
+    // background
+    UIView *bgView = [[UIView alloc] initWithFrame:window.frame];
+    bgView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    bgView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"texture_background.png"]];
+    bgView.opaque = NO;
+    [window addSubview:bgView];
+    [window sendSubviewToBack:bgView];
+    [bgView release];
     
     
     // search
@@ -170,11 +180,13 @@ bool settings = NO;
 
     // button settings
 	UIButton *btnSettings = [UIButton buttonWithType:UIButtonTypeCustom]; 
-    btnSettings.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    btnSettings.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
 	btnSettings.frame = frameSettingsButton;
 	[btnSettings setImage:[UIImage imageNamed:@"btn_settings.png"] forState:UIControlStateNormal];
 	[btnSettings addTarget:self action:@selector(actionSettings:) forControlEvents:UIControlEventTouchUpInside];
-	[self.view  addSubview:btnSettings];
+    _buttonSettings = [btnSettings retain];
+	[self.view  addSubview:_buttonSettings];
+    [btnSettings release];
     
     
     // fluff cinder view
@@ -209,11 +221,37 @@ bool settings = NO;
     // close popups
     [_searchResultsPopoverController dismissPopoverAnimated:NO];
     
-    // hide views
-    self.view.hidden = YES;
     
     // app
     imdgApp->setDeviceOrientation(toInterfaceOrientation);
+    
+    // animate cinder
+    [UIView beginAnimations:@"flip" context:nil];
+    [UIView setAnimationDuration:0];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    
+    // flip 
+    if (toInterfaceOrientation == UIInterfaceOrientationPortrait) {      
+        _cinderView.transform = CGAffineTransformIdentity;
+        _cinderView.transform = CGAffineTransformMakeRotation(0);
+        _cinderView.bounds = CGRectMake(0.0, 0.0, 768, 1024);
+    }
+    else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {      
+        _cinderView.transform = CGAffineTransformIdentity;
+        _cinderView.transform = CGAffineTransformMakeRotation(M_PI * 0.5);
+        _cinderView.bounds = CGRectMake(0.0, 0.0, 1024, 768);
+    }
+    else if (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {      
+        _cinderView.transform = CGAffineTransformIdentity;
+        _cinderView.transform = CGAffineTransformMakeRotation(M_PI);
+        _cinderView.bounds = CGRectMake(0.0, 0.0, 768, 1024);
+    }
+    else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft) {      
+        _cinderView.transform = CGAffineTransformIdentity;
+        _cinderView.transform = CGAffineTransformMakeRotation(- M_PI * 0.5);
+        _cinderView.bounds = CGRectMake(0.0, 0.0, 1024, 768);
+    }
+    [UIView commitAnimations];
 
 }
 
@@ -226,8 +264,6 @@ bool settings = NO;
     [_searchViewController resize];
     [_informationViewController resize];
     
-    // animate
-    [self animationPostRotation];
     
 }
 
@@ -858,23 +894,17 @@ bool settings = NO;
 	_informationViewController.modalView.alpha = 0.0f;
     [self.view bringSubviewToFront:_informationViewController.view];
     
-    CGPoint offcenter = _informationViewController.contentView.center;
-    offcenter.y += self.view.frame.size.height;
-    _informationViewController.contentView.center = offcenter;
+    CGPoint informationCenter = _informationViewController.contentView.center;
+    informationCenter.y += self.view.frame.size.height;
+    _informationViewController.contentView.center = informationCenter;
+
+    informationCenter.y -= self.view.frame.size.height;
     
 	// animate
 	[UIView beginAnimations:@"information_show" context:nil];
 	[UIView setAnimationDuration:kAnimateTimeInformationShow];
-    
-    // modal 
     _informationViewController.modalView.alpha = 0.3f;
-    
-    // content
-    CGPoint center = _informationViewController.contentView.center;
-    center.y -= self.view.frame.size.height;
-    _informationViewController.contentView.center = center;
-    
-    // make it so
+    _informationViewController.contentView.center = informationCenter;
 	[UIView commitAnimations];
     
 	// clean it up
@@ -896,20 +926,16 @@ bool settings = NO;
 	
 	// prepare controllers
 	[_informationViewController viewWillDisappear:YES];
-
+    
+    // calculate centers
+    CGPoint informationCenter = _informationViewController.contentView.center;
+    informationCenter.y += self.view.frame.size.height;
     
 	// animate
 	[UIView beginAnimations:@"information_hide" context:nil];
 	[UIView setAnimationDuration:kAnimateTimeInformationHide];
-    
-    // modal 
      _informationViewController.modalView.alpha = 0.0f;
-    
-    // content
-    CGPoint offcenter = _informationViewController.contentView.center;
-    offcenter.y += self.view.frame.size.height;
-    _informationViewController.contentView.center = offcenter;
-    
+    _informationViewController.contentView.center = informationCenter;
 	[UIView commitAnimations];
     
 	// clean it up
@@ -926,9 +952,9 @@ bool settings = NO;
     [_informationViewController viewDidDisappear:YES];
     
     // center
-    CGPoint center = _informationViewController.contentView.center;
-    center.y -= self.view.frame.size.height;
-    _informationViewController.contentView.center = center;
+    CGPoint informationCenter = _informationViewController.contentView.center;
+    informationCenter.y -= self.view.frame.size.height;
+    _informationViewController.contentView.center = informationCenter;
 }
 
 
@@ -945,31 +971,34 @@ bool settings = NO;
 	// prepare controllers
 	[_settingsViewController viewWillAppear:YES];
     
-    // prepare view
+    // prepare views
+    [_searchResultViewController.view setHidden:NO];
     [_settingsViewController.view setHidden:NO];
     
-    // animate search
+    // calculate centers
+    CGPoint settingsCenter = _settingsViewController.contentView.center;
+    settingsCenter.y += kOffsetSettings;
+    _settingsViewController.contentView.center = settingsCenter;
+    settingsCenter.y -= kOffsetSettings;
+    
+    CGPoint cinderCenter = _cinderView.center;
+    cinderCenter.y -= kOffsetSettings;
+    
+    CGPoint searchCenter = _searchViewController.view.center;
+    searchCenter.y -= kOffsetSettings;
+    
+    CGPoint buttonCenter = _buttonSettings.center;
+    buttonCenter.y -= kOffsetSettings;
+
+    
+    // animate 
 	[UIView beginAnimations:@"settings_show" context:nil];
 	[UIView setAnimationDuration:kAnimateTimeSettingsShow];
-    _searchViewController.view.alpha = 0.0f;
+    _settingsViewController.contentView.center = settingsCenter;
+    _searchViewController.view.center = searchCenter;
+    _buttonSettings.center = buttonCenter;
+    _cinderView.center = cinderCenter;
 	[UIView commitAnimations];
-    
-
-	// animate cinder
-    CATransition *acinder = [CATransition animation];
-    [acinder setDelegate:self];
-    [acinder setDuration:kAnimateTimeSettingsShow];
-    [acinder setType:@"pageCurl"];
-    [acinder setRemovedOnCompletion:NO];
-    acinder.startProgress = 0;
-    acinder.endProgress = kAnimateTimeSettingsShow-0.001; 
-    [acinder setFillMode: @"extended"];
-    [[_cinderView layer] addAnimation:acinder forKey:@"settings_show"];
-
-    
-    // hide
-    _cinderView.hidden = YES;
-    _searchResultViewController.view.hidden = YES;
 
 	// clean it up
 	[self performSelector:@selector(animationSettingsShowDone) withObject:nil afterDelay:kAnimateTimeSettingsShow];
@@ -995,23 +1024,28 @@ bool settings = NO;
 	// prepare controllers
 	[_settingsViewController viewWillDisappear:YES];
     
-
-	// animate cinder
-    CATransition *acinder = [CATransition animation];
-    [acinder setDelegate:self];
-    [acinder setDuration:kAnimateTimeSettingsHide];
-    [acinder setType:@"pageUnCurl"];
-    [[_cinderView layer] addAnimation:acinder forKey:@"settings_hide"];
+    // calculate centers
+    CGPoint settingsCenter = _settingsViewController.contentView.center;
+    settingsCenter.y += kOffsetSettings;
     
-    // animate search
+    CGPoint cinderCenter = _cinderView.center;
+    cinderCenter.y += kOffsetSettings;
+    
+    CGPoint searchCenter = _searchViewController.view.center;
+    searchCenter.y += kOffsetSettings;
+    
+    CGPoint buttonCenter = _buttonSettings.center;
+    buttonCenter.y += kOffsetSettings;
+    
+    // animate 
 	[UIView beginAnimations:@"settings_hide" context:nil];
 	[UIView setAnimationDuration:kAnimateTimeSettingsHide];
-    _searchViewController.view.alpha = 1.0f;
+    _settingsViewController.contentView.center = settingsCenter;
+    _searchViewController.view.center = searchCenter;
+    _buttonSettings.center = buttonCenter;
+    _cinderView.center = cinderCenter;
 	[UIView commitAnimations];
     
-    // unhide
-    _cinderView.hidden = NO;
-    _searchResultViewController.view.hidden = NO;
     
 	// clean it up
 	[self performSelector:@selector(animationSettingsHideDone) withObject:nil afterDelay:kAnimateTimeSettingsHide];
@@ -1020,7 +1054,12 @@ bool settings = NO;
 	GLog();
     
     // view
-	[_settingsViewController.view setHidden:YES];
+    [_searchResultViewController.view setHidden:NO];
+    [_settingsViewController.view setHidden:YES];
+    
+    CGPoint settingsCenter = _settingsViewController.contentView.center;
+    settingsCenter.y -= kOffsetSettings;
+    _settingsViewController.contentView.center = settingsCenter;
     
     // controller
     [_settingsViewController viewDidDisappear:YES];

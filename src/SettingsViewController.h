@@ -28,6 +28,7 @@
 	id<SettingsDelegate> delegate;
     
     // controllers
+    UIView *_contentView;
     AboutViewController *_aboutViewController;
     PreferencesViewController *_preferencesViewController;
     
@@ -35,6 +36,7 @@
 
 // Properties
 @property (assign) id<SettingsDelegate> delegate;
+@property (nonatomic, retain) UIView *contentView;
 
 // Object Methods
 - (id)initWithFrame:(CGRect)frame;

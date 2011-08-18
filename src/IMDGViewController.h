@@ -31,6 +31,7 @@ CPP_CLASS(IMDGApp);
     SearchResultViewController *_searchResultViewController;
     InformationViewController *_informationViewController;
     InformationViewController *_settingsViewController;
+    UIButton *_buttonSettings;
     
     // cinder
     CinderViewCocoaTouch *_cinderView;

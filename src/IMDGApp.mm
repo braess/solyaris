@@ -21,7 +21,7 @@ void IMDGApp::setup() {
     this->setDeviceOrientation(UIDeviceOrientationPortrait);
     
     // graph
-    graph = Graph(768,1024);
+    graph = Graph(768,1024,UIDeviceOrientationPortrait);
     
     // sketch
     bg = Color(30.0/255.0, 30.0/255.0, 30.0/255.0);
@@ -57,6 +57,7 @@ void IMDGApp::setDeviceOrientation(int dorientation) {
     
     // orientation
     orientation = dorientation;
+    graph.setDeviceOrientation(orientation);
     
     // angle
     float a = 0;
@@ -93,10 +94,10 @@ void IMDGApp::setDeviceOrientation(int dorientation) {
     }
     
     // app
-    orientationMatrix.setToIdentity();
-    orientationMatrix.translate( Vec3f( getWindowSize() / 2.0f, 0 ) );
-    orientationMatrix.rotate( Vec3f( 0, 0, a) );
-    orientationMatrix.translate( Vec3f( -getWindowSize() / 2.0f, 0 ) );
+    //orientationMatrix.setToIdentity();
+    //orientationMatrix.translate( Vec3f( getWindowSize() / 2.0f, 0 ) );
+    //orientationMatrix.rotate( Vec3f( 0, 0, a) );
+    //orientationMatrix.translate( Vec3f( -getWindowSize() / 2.0f, 0 ) );
     
 }
 
@@ -105,6 +106,9 @@ void IMDGApp::setDeviceOrientation(int dorientation) {
  */
 Vec2f IMDGApp::opos(Vec2f p) {
     GLog();
+    
+    // not required
+    return p;
     
     // position
     Vec2f op = p;
@@ -161,11 +165,10 @@ void IMDGApp::draw() {
     
     
     // graph
-    glPushMatrix();
-    //gl::translate( getWindowSize()/2.0f );
-    glMultMatrixf(orientationMatrix);
+    //glPushMatrix();
+    //glMultMatrixf(orientationMatrix);
     graph.draw();
-    glPopMatrix();
+    //glPopMatrix();
 
 }
 

@@ -10,6 +10,7 @@
 		00CFDF6B1138442D0091E310 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CFDF6A1138442D0091E310 /* CoreGraphics.framework */; };
 		1804C6D513AA193F00417D32 /* IMDGViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1804C6D413AA193F00417D32 /* IMDGViewController.mm */; };
 		1804C6E613AA279800417D32 /* btn_info.png in Resources */ = {isa = PBXBuildFile; fileRef = 1804C6E413AA279800417D32 /* btn_info.png */; };
+		1804E60213FCECE800B38FEF /* texture_background.png in Resources */ = {isa = PBXBuildFile; fileRef = 1804E60113FCECE800B38FEF /* texture_background.png */; };
 		180D8FCD13E1F27800364F54 /* InformationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 180D8FCC13E1F27800364F54 /* InformationViewController.m */; };
 		180E501613EB09F6000E0ADB /* Info.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 180E501413EB09F6000E0ADB /* Info.cpp */; };
 		1819227213C72C2100C89C74 /* IMDB.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1819227113C72C2100C89C74 /* IMDB.mm */; };
@@ -55,7 +56,6 @@
 		18F6B3A613E33DA80079DB2A /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F6B3A513E33DA80079DB2A /* Search.m */; };
 		18F6B3A913E33DA90079DB2A /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F6B3A813E33DA90079DB2A /* SearchResult.m */; };
 		18F8192913AA920F00D2F5C3 /* btn_reset.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F8192813AA920F00D2F5C3 /* btn_reset.png */; };
-		18FE6EB913ED28E100C379BC /* texture_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 18FE6EB813ED28E100C379BC /* texture_settings.png */; };
 		18FE6EC313ED332000C379BC /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6EC213ED332000C379BC /* AboutViewController.m */; };
 		18FE6EC613ED39B900C379BC /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18FE6EC513ED39B900C379BC /* MessageUI.framework */; };
 		18FE6EC913ED3A3700C379BC /* PreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6EC813ED3A3700C379BC /* PreferencesViewController.m */; };
@@ -83,6 +83,7 @@
 		1804C6D313AA193F00417D32 /* IMDGViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMDGViewController.h; path = src/IMDGViewController.h; sourceTree = "<group>"; };
 		1804C6D413AA193F00417D32 /* IMDGViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = IMDGViewController.mm; path = src/IMDGViewController.mm; sourceTree = "<group>"; };
 		1804C6E413AA279800417D32 /* btn_info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_info.png; path = Assets/btn_info.png; sourceTree = "<group>"; };
+		1804E60113FCECE800B38FEF /* texture_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = texture_background.png; path = Assets/texture_background.png; sourceTree = "<group>"; };
 		180D8FCB13E1F27800364F54 /* InformationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InformationViewController.h; path = src/InformationViewController.h; sourceTree = "<group>"; };
 		180D8FCC13E1F27800364F54 /* InformationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InformationViewController.m; path = src/InformationViewController.m; sourceTree = "<group>"; };
 		180E501413EB09F6000E0ADB /* Info.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Info.cpp; path = src/Info.cpp; sourceTree = "<group>"; };
@@ -161,7 +162,6 @@
 		18F6B3A713E33DA90079DB2A /* SearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchResult.h; path = src/SearchResult.h; sourceTree = "<group>"; };
 		18F6B3A813E33DA90079DB2A /* SearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchResult.m; path = src/SearchResult.m; sourceTree = "<group>"; };
 		18F8192813AA920F00D2F5C3 /* btn_reset.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_reset.png; path = Assets/btn_reset.png; sourceTree = "<group>"; };
-		18FE6EB813ED28E100C379BC /* texture_settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = texture_settings.png; path = Assets/texture_settings.png; sourceTree = "<group>"; };
 		18FE6EC113ED332000C379BC /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AboutViewController.h; path = src/AboutViewController.h; sourceTree = "<group>"; };
 		18FE6EC213ED332000C379BC /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AboutViewController.m; path = src/AboutViewController.m; sourceTree = "<group>"; };
 		18FE6EC513ED39B900C379BC /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -280,8 +280,8 @@
 		180D8FCF13E1F4C800364F54 /* textures */ = {
 			isa = PBXGroup;
 			children = (
+				1804E60113FCECE800B38FEF /* texture_background.png */,
 				1866139113F3FF9A006DDFFB /* texture_information.png */,
-				18FE6EB813ED28E100C379BC /* texture_settings.png */,
 			);
 			name = textures;
 			sourceTree = "<group>";
@@ -548,7 +548,6 @@
 				18F8192913AA920F00D2F5C3 /* btn_reset.png in Resources */,
 				18EE9EFE13C7487B00BA13CF /* README in Resources */,
 				187ABFAE13EC977900090C63 /* btn_settings.png in Resources */,
-				18FE6EB913ED28E100C379BC /* texture_settings.png in Resources */,
 				18FE6EE013ED6B3800C379BC /* btn_appstore.png in Resources */,
 				18FE6EE113ED6B3800C379BC /* btn_email.png in Resources */,
 				18FE6EE213ED6B3800C379BC /* btn_twitter.png in Resources */,
@@ -561,6 +560,7 @@
 				186613A813F44EC6006DDFFB /* icon-72.png in Resources */,
 				186613A913F44EC6006DDFFB /* icon-small-50.png in Resources */,
 				186613AA13F44EC6006DDFFB /* icon.png in Resources */,
+				1804E60213FCECE800B38FEF /* texture_background.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

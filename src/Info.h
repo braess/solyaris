@@ -36,7 +36,7 @@ class Info {
     
     // Business
     void hide();
-    void show();
+    void show(int o);
     bool isVisible();
     void position(Vec2d p);
     void renderText(vector<string> txts);
@@ -57,6 +57,7 @@ class Info {
     Vec2d pos;
     Vec2d border;
     Vec2d bounds;
+    double dx,dy;
     
     // color
     ColorA cbg;
