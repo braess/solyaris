@@ -378,8 +378,8 @@ int sectionGapInset = 15;
     UIView *sfView = [[UIView alloc] initWithFrame:vframe];
     
     // view
-    UIView *sfLine = [[UIView alloc] initWithFrame:CGRectMake(sectionGapInset, -1, 570, 1)];
-    sfLine.backgroundColor = [UIColor colorWithWhite:0.82 alpha:1];
+    UIView *sfLine = [[UIView alloc] initWithFrame:CGRectMake(sectionGapInset, -1, 550, 1)];
+    sfLine.backgroundColor = [UIColor colorWithWhite:0.82 alpha:0.6];
     
     // add & release
     [sfView addSubview:sfLine];
@@ -628,7 +628,6 @@ int sectionGapInset = 15;
 	// vars
 	float w = self.frame.size.width;
 	float h = self.frame.size.height;
-    NSLog(@"%f %f",w,h);
     
     // rects
     CGRect mrect = CGRectMake(0, 0, w, h);

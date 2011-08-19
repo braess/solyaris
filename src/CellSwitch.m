@@ -28,6 +28,7 @@
 // accessors
 @synthesize delegate;
 @synthesize switchAccessory;
+@synthesize disabler;
 
 
 #pragma mark -
@@ -104,6 +105,9 @@
 	if (delegate != nil && [delegate respondsToSelector:@selector(cellSwitchChanged:)]) {
 		[delegate cellSwitchChanged:self];
 	}
+    
+    // update
+    [self update:NO];
 }
 
 

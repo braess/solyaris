@@ -1,5 +1,5 @@
 //
-//  Info.h
+//  Hint.h
 //  IMDG
 //
 //  Created by CNPP on 4.8.2011.
@@ -18,17 +18,17 @@ using namespace ci;
 
 
 /**
- * Graph Info.
+ * Graph Hint.
  */
-class Info {
+class Hint {
     
     
     // public
     public:
     
-    // Info
-    Info();
-    Info(Vec2d b);
+    // Hint
+    Hint();
+    Hint(Vec2d b);
     
     // Cinder
     void resize(int w, int h);

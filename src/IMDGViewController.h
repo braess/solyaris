@@ -59,4 +59,5 @@ CPP_CLASS(IMDGApp);
 - (void)nodeInformation:(NSString*)nid;
 - (void)nodeLoad:(NSString*)nid;
 
+
 @end

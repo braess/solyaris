@@ -7,6 +7,7 @@
 //
 #pragma once
 #include "Node.h"
+#include "GraphSettings.h"
 #include "cinder/Color.h"
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/shared_ptr.hpp>
@@ -43,6 +44,9 @@ class Edge {
     // Edge
     Edge();
     Edge(string ide, NodePtr n1, NodePtr n2); 
+    
+    // Cinder
+    void setting(GraphSettings s);
     
     // Sketch
     void update();

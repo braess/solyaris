@@ -10,6 +10,8 @@
 #import "IMDGConstants.h"
 
 
+
+
 /**
  * SearchResultViewController.
  */
@@ -36,6 +38,10 @@
     // data
     _type = [[NSMutableString alloc] init];
     _data = [[NSMutableArray alloc] init];
+    
+    // resize
+    self.view.autoresizingMask = UIViewAutoresizingNone;
+    self.tableView.autoresizingMask = UIViewAutoresizingNone;
 }
 
 

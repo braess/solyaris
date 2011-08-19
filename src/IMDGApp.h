@@ -30,7 +30,8 @@ class IMDGApp : public AppNative {
     // Cinder
     void prepareSettings(Settings *settings);
 	void setup();
-    void setDeviceOrientation(int dorientation);
+    void applyDeviceOrientation(int dorientation);
+    void applySettings();
     
     // Sketch
 	void update();

@@ -26,7 +26,7 @@ Node::Node(string idn, double x, double y) {
     // node
     nid = idn;
     parent = NodeWeakPtr();
-    label = "";
+    label = " ";
     type = "Node";
     
     
@@ -38,7 +38,7 @@ Node::Node(string idn, double x, double y) {
     ramp = 1.0;
     mvelocity = 10;
     speed = 45;
-    nbchildren = 8;
+    nbchildren = 12;
     fcount = 0;
     
     // position
@@ -56,6 +56,7 @@ Node::Node(string idn, double x, double y) {
     // radius / mass
     core = 9;
     radius = 9;
+    mradius = 90;
     mass = calcmass();
     
     // velocity
@@ -75,7 +76,7 @@ Node::Node(string idn, double x, double y) {
     
     // font
     font = Font("Helvetica",12);
-    textureLabel = gl::Texture(0,0);
+    textureLabel = gl::Texture(1,1);
     loff.set(0,5);
 
 }
@@ -91,7 +92,7 @@ NodeMovie::NodeMovie(string idn, double x, double y): Node::Node(idn, x, y) {
     type = nodeMovie;
     
     // color 
-    cbg = Color(126/255.0, 128/255.0, 102/255.0);
+    cbg = Color(138/255.0, 134/255.0, 96/255.0);
 
 }
 
@@ -106,7 +107,7 @@ NodeActor::NodeActor(string idn, double x, double y): Node::Node(idn, x, y) {
     type = nodeActor;
     
     // color 
-    cbg = Color(82/255.0, 108/255.0, 128/255.0);
+    cbg = Color(88/255.0, 124/255.0, 138/255.0);
 
 }
 
@@ -121,11 +122,47 @@ NodeDirector::NodeDirector(string idn, double x, double y): Node::Node(idn, x, y
     type = nodeDirector;
     
     // color
-    cbg = Color(121/255.0, 125/255.0, 128/255.0);
+    cbg = Color(131/255.0, 136/255.0, 138/255.0);
 
 }
 
 
+#pragma mark -
+#pragma mark Cinder
+
+/**
+ * Applies the settings.
+ */
+void Node::setting(GraphSettings s) {
+    
+    
+    // children
+    nbchildren = 12;
+    Default graphNodeChildren = s.getDefault("graph_node_children");
+    if (graphNodeChildren.isSet()) {
+        nbchildren = (int) graphNodeChildren.doubleVal();
+    }
+    
+    
+    // distance
+    dist = 420;
+    double length = 400;
+    Default graphEdgeLength = s.getDefault("graph_edge_length");
+    if (graphEdgeLength.isSet()) {
+        length = graphEdgeLength.doubleVal();
+        dist = length * 1.05;
+    }
+    
+    
+    
+    // perimeter
+    perimeter = 390;
+    Default graphNodePerimeter = s.getDefault("graph_node_perimeter");
+    if (graphNodePerimeter.isSet()) {
+        perimeter = graphNodePerimeter.doubleVal();
+    }
+    perimeter = min(perimeter,length);
+}
 
 
 #pragma mark -
@@ -293,6 +330,7 @@ void Node::grown() {
     loading = false;
     grow = false;
     
+    
     // children
     int nb = nbchildren;
     Rand::randomize();
@@ -360,7 +398,7 @@ void Node::loaded() {
     FLog();
 
     // field
-    growradius = min((int)children.size()*3,90);
+    growradius = min((int)children.size()*3,mradius);
     grow = true;
   
 }
@@ -488,16 +526,16 @@ void Node::renderLabel(string lbl) {
     GLog();
     
     // field
-    label = lbl;
+    label = (lbl == "") ? " " : lbl;
     
     // text
     TextLayout tlLabel;
-	tlLabel.clear(ColorA(0, 0, 0, 0));
-	tlLabel.setFont(font);
-	tlLabel.setColor(ctxt);
-	tlLabel.addCenteredLine(label);
-	Surface8u rendered = tlLabel.render(true, true);
-	textureLabel = gl::Texture(rendered);
+    tlLabel.clear(ColorA(0, 0, 0, 0));
+    tlLabel.setFont(font);
+    tlLabel.setColor(ctxt);
+    tlLabel.addCenteredLine(label);
+    Surface8u rendered = tlLabel.render(true, true);
+    textureLabel = gl::Texture(rendered);
     
     // offset
     loff.x = - textureLabel.getWidth() / 2.0;

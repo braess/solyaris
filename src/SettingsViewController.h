@@ -16,13 +16,14 @@
  */
 @protocol SettingsDelegate <NSObject>
 - (void)settingsDismiss;
+- (void)settingsApply;
 @end
 
 
 /**
  * SettingsViewController.
  */
-@interface SettingsViewController : UIViewController {
+@interface SettingsViewController : UIViewController <PreferencesDelegate> {
     
     // delegate
 	id<SettingsDelegate> delegate;

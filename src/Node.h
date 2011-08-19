@@ -14,6 +14,7 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
+#include "GraphSettings.h"
 
 
 // namespace
@@ -48,6 +49,9 @@ class Node {
     // Node
     Node();
     Node(string idn, double x, double y); 
+    
+    // Cinder
+    void setting(GraphSettings s);
     
     // Sketch
     void update();
@@ -124,6 +128,7 @@ class Node {
     double speed;
     int nbchildren;
     int fcount;
+    int mradius;
     
     
     // Color

@@ -11,8 +11,9 @@
 		1804C6D513AA193F00417D32 /* IMDGViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1804C6D413AA193F00417D32 /* IMDGViewController.mm */; };
 		1804C6E613AA279800417D32 /* btn_info.png in Resources */ = {isa = PBXBuildFile; fileRef = 1804C6E413AA279800417D32 /* btn_info.png */; };
 		1804E60213FCECE800B38FEF /* texture_background.png in Resources */ = {isa = PBXBuildFile; fileRef = 1804E60113FCECE800B38FEF /* texture_background.png */; };
+		18069B2F13FE521F0068F4AD /* GraphSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18069B2D13FE521F0068F4AD /* GraphSettings.cpp */; };
 		180D8FCD13E1F27800364F54 /* InformationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 180D8FCC13E1F27800364F54 /* InformationViewController.m */; };
-		180E501613EB09F6000E0ADB /* Info.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 180E501413EB09F6000E0ADB /* Info.cpp */; };
+		180E501613EB09F6000E0ADB /* Hint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 180E501413EB09F6000E0ADB /* Hint.cpp */; };
 		1819227213C72C2100C89C74 /* IMDB.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1819227113C72C2100C89C74 /* IMDB.mm */; };
 		1819227413C72CEB00C89C74 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1819227313C72CEB00C89C74 /* CoreData.framework */; };
 		1819227713C72F9700C89C74 /* IMDG.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1819227513C72F9700C89C74 /* IMDG.xcdatamodeld */; };
@@ -84,10 +85,12 @@
 		1804C6D413AA193F00417D32 /* IMDGViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = IMDGViewController.mm; path = src/IMDGViewController.mm; sourceTree = "<group>"; };
 		1804C6E413AA279800417D32 /* btn_info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_info.png; path = Assets/btn_info.png; sourceTree = "<group>"; };
 		1804E60113FCECE800B38FEF /* texture_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = texture_background.png; path = Assets/texture_background.png; sourceTree = "<group>"; };
+		18069B2D13FE521F0068F4AD /* GraphSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GraphSettings.cpp; path = src/GraphSettings.cpp; sourceTree = "<group>"; };
+		18069B2E13FE521F0068F4AD /* GraphSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GraphSettings.h; path = src/GraphSettings.h; sourceTree = "<group>"; };
 		180D8FCB13E1F27800364F54 /* InformationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InformationViewController.h; path = src/InformationViewController.h; sourceTree = "<group>"; };
 		180D8FCC13E1F27800364F54 /* InformationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InformationViewController.m; path = src/InformationViewController.m; sourceTree = "<group>"; };
-		180E501413EB09F6000E0ADB /* Info.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Info.cpp; path = src/Info.cpp; sourceTree = "<group>"; };
-		180E501513EB09F6000E0ADB /* Info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Info.h; path = src/Info.h; sourceTree = "<group>"; };
+		180E501413EB09F6000E0ADB /* Hint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Hint.cpp; path = src/Hint.cpp; sourceTree = "<group>"; };
+		180E501513EB09F6000E0ADB /* Hint.h */ = {isa = PBXFileReference; fileEncoding = 4; name = Hint.h; path = src/Hint.h; sourceTree = "<group>"; };
 		1819227013C72C2100C89C74 /* IMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IMDB.h; path = src/IMDB.h; sourceTree = "<group>"; };
 		1819227113C72C2100C89C74 /* IMDB.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = IMDB.mm; path = src/IMDB.mm; sourceTree = "<group>"; };
 		1819227313C72CEB00C89C74 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -413,8 +416,10 @@
 				18EFCAF7139AB745002081B7 /* Node.cpp */,
 				18EFCAF4139AB745002081B7 /* Edge.h */,
 				18EFCAF3139AB745002081B7 /* Edge.cpp */,
-				180E501513EB09F6000E0ADB /* Info.h */,
-				180E501413EB09F6000E0ADB /* Info.cpp */,
+				180E501513EB09F6000E0ADB /* Hint.h */,
+				180E501413EB09F6000E0ADB /* Hint.cpp */,
+				18069B2E13FE521F0068F4AD /* GraphSettings.h */,
+				18069B2D13FE521F0068F4AD /* GraphSettings.cpp */,
 			);
 			name = graph;
 			sourceTree = "<group>";
@@ -599,7 +604,7 @@
 				18F6B3A313E33DA80079DB2A /* Actor.m in Sources */,
 				18F6B3A613E33DA80079DB2A /* Search.m in Sources */,
 				18F6B3A913E33DA90079DB2A /* SearchResult.m in Sources */,
-				180E501613EB09F6000E0ADB /* Info.cpp in Sources */,
+				180E501613EB09F6000E0ADB /* Hint.cpp in Sources */,
 				187ABF9C13EC6DEB00090C63 /* SearchViewController.m in Sources */,
 				187ABFAC13EC909500090C63 /* SettingsViewController.m in Sources */,
 				18FE6EC313ED332000C379BC /* AboutViewController.m in Sources */,
@@ -608,6 +613,7 @@
 				18FE6ED213ED3B9100C379BC /* CellSwitch.m in Sources */,
 				18FE6ED613ED3BFB00C379BC /* CellInput.m in Sources */,
 				18FE6ED913ED3C2B00C379BC /* CellSlider.m in Sources */,
+				18069B2F13FE521F0068F4AD /* GraphSettings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

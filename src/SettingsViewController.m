@@ -102,6 +102,7 @@ CGRect vframe;
     
     // Preferences
     PreferencesViewController *preferencesViewController = [[PreferencesViewController alloc] initWithStyle:UITableViewStylePlain];
+    preferencesViewController.delegate = self;
     [preferencesViewController.view setFrame:pframe];
     _preferencesViewController = [preferencesViewController retain];
     [ctView addSubview:_preferencesViewController.view];
@@ -146,6 +147,67 @@ CGRect vframe;
         [delegate settingsDismiss];
     }
 }
+
+
+
+#pragma mark -
+#pragma mark Preferences Delegate
+
+/*
+ * Get/Set/Reset preference.
+ */
+- (void)setPreference:(NSString*)key value:(NSObject*)value {
+    GLog();
+    
+    // user defaults
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+	
+	// set
+    if (value != NULL) {
+        [userDefaults setObject:value forKey:key];
+    }
+    else {
+        [userDefaults removeObjectForKey:key];
+    }
+    
+    // sync
+	[userDefaults synchronize];
+    
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(settingsApply)]) {
+        [delegate settingsApply];
+    }
+    
+}
+- (NSObject*)getPreference:(NSString*)key {
+    GLog();
+    
+    // user defaults
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+	
+	// return
+	NSObject *v = [userDefaults objectForKey:key];
+	return v;
+                
+}
+- (void)resetPreferences {
+    GLog();
+    
+	// user defaults
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    
+	// clear defaults
+	[userDefaults setPersistentDomain:[NSDictionary dictionary] forName:[[NSBundle mainBundle] bundleIdentifier]];
+	[userDefaults synchronize];
+    
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(settingsApply)]) {
+        [delegate settingsApply];
+    }
+}
+
+
+
 
 
 @end

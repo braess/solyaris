@@ -107,7 +107,7 @@
     // frames
     CGRect frameSearch = CGRectMake(0, 0, window.frame.size.width, 40);
     CGRect frameSearchResult = CGRectMake(0, 0, 320, 480);
-    CGRect frameInformation = CGRectMake(0, 0, 600, 600);
+    CGRect frameInformation = CGRectMake(0, 0, 580, 620);
     CGRect frameSettings = CGRectMake(0, 0, 708, kOffsetSettings);
     CGRect frameSettingsButton = CGRectMake(window.frame.size.width-32, window.frame.size.height-32, 32, 32);
     
@@ -221,7 +221,7 @@
     
     
     // app
-    imdgApp->setDeviceOrientation(toInterfaceOrientation);
+    imdgApp->applyDeviceOrientation(toInterfaceOrientation);
     
     // animate cinder
     [UIView beginAnimations:@"flip" context:nil];
@@ -727,6 +727,18 @@
     [self animationSettingsHide];
 }
 
+/*
+ * Applies the settings.
+ */
+- (void)settingsApply {
+    GLog();
+    
+    // app
+    imdgApp->applySettings();
+}
+
+
+
 
 #pragma mark -
 #pragma mark Actions
@@ -870,6 +882,9 @@
     }
     
 }
+
+
+
 
 
 

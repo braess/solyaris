@@ -48,12 +48,12 @@ Edge::Edge(string ide, NodePtr n1, NodePtr n2) {
     ctxts = Color(1,1,1);
     
     // label
-    label = "";
+    label = " ";
     
     // font
     font = Font("Helvetica",12);
     loff.set(0,-12);
-    textureLabel = gl::Texture(0,0);
+    textureLabel = gl::Texture(1,1);
 }
 
 
@@ -93,6 +93,23 @@ EdgeDirector::EdgeDirector(string ide, NodePtr n1, NodePtr n2): Edge::Edge(ide,n
 
 }
 
+
+#pragma mark -
+#pragma mark Cinder
+
+/**
+ * Applies the settings.
+ */
+void Edge::setting(GraphSettings s) {
+    
+    
+    // length
+    length = 400;
+    Default graphEdgeLength = s.getDefault("graph_edge_length");
+    if (graphEdgeLength.isSet()) {
+        length = graphEdgeLength.doubleVal();
+    }
+}
 
 
 
@@ -323,7 +340,7 @@ void Edge::renderLabel(string lbl) {
     GLog();
     
     // field
-    label = lbl;
+    label = (lbl == "") ? " " : lbl;
     
     // text
     TextLayout tlLabel;
@@ -333,6 +350,7 @@ void Edge::renderLabel(string lbl) {
 	tlLabel.addCenteredLine(label);
 	Surface8u rendered = tlLabel.render(true, true);
 	textureLabel = gl::Texture(rendered);
+
     
     // offset
     loff.x = - textureLabel.getWidth() / 2.0;

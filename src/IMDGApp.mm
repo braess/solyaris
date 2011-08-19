@@ -17,21 +17,21 @@
 void IMDGApp::setup() {
     DLog();
     
-    // app
-    this->setDeviceOrientation(UIDeviceOrientationPortrait);
+    // sketch
+    bg = Color(30.0/255.0, 30.0/255.0, 30.0/255.0);
     
     // graph
     graph = Graph(768,1024,UIDeviceOrientationPortrait);
     
-    // sketch
-    bg = Color(30.0/255.0, 30.0/255.0, 30.0/255.0);
+    // app
+    this->applyDeviceOrientation(UIDeviceOrientationPortrait);
+    this->applySettings();
     
     
     // IMDG
     imdgViewController = [[IMDGViewController alloc] init];
     imdgViewController.imdgApp = this;
     [imdgViewController loadView];
-    
 
 }
 
@@ -40,7 +40,7 @@ void IMDGApp::setup() {
  * Cinder settings.
  */
 void IMDGApp::prepareSettings(Settings *settings) {
-    DLog();
+    FLog();
     
     // stage
     settings->setWindowSize(768, 1024);
@@ -50,10 +50,10 @@ void IMDGApp::prepareSettings(Settings *settings) {
 }
 
 
-/*
- * Sets the orientation.
+/**
+ * Applies the orientation.
  */
-void IMDGApp::setDeviceOrientation(int dorientation) {
+void IMDGApp::applyDeviceOrientation(int dorientation) {
     
     // orientation
     orientation = dorientation;
@@ -68,6 +68,37 @@ void IMDGApp::setDeviceOrientation(int dorientation) {
         graph.resize(1024,768,UIDeviceOrientationPortrait);
     }
     
+}
+
+
+/**
+ * Applies the user defaults.
+ */
+void IMDGApp::applySettings() {
+    GLog();
+    
+    // user defaults
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+	
+	// graph settings
+    GraphSettings gsettings = GraphSettings();
+	NSArray *keys = [[userDefaults dictionaryRepresentation] allKeys];
+    for (NSString *key in keys) {
+        NSObject *def = [userDefaults objectForKey:key];
+        
+        // string
+        if ([def isKindOfClass:[NSString class]]) {
+            
+            // match
+            NSRange range = [key rangeOfString : @"graph_"];
+            if (range.location != NSNotFound) {
+                gsettings.setDefault([key UTF8String], [(NSString*)def UTF8String]);
+            }
+        }
+    }
+    
+    // apply
+    graph.setting(gsettings);
 }
 
 
@@ -127,7 +158,7 @@ void IMDGApp::reset() {
  * Cinder touch events.
 */
 void IMDGApp::touchesBegan( TouchEvent event ) {
-    FLog();
+    GLog();
     
     // touch
     for( vector<TouchEvent::Touch>::const_iterator touch = event.getTouches().begin(); touch != event.getTouches().end(); ++touch ) {

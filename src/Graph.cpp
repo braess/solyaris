@@ -33,15 +33,17 @@ Graph::Graph(int w, int h, int o) {
     // hitarea
     harea = 6;
     
-    // info
-    info = Info(Vec2d(w,h));
+    // hint
+    hint = Hint(Vec2d(w,h));
+    hint_disabled = false;
+
 }
 
 
 #pragma mark -
 #pragma mark Cinder
 
-/*
+/**
  * Resize.
  */
 void Graph::resize(int w, int h, int o) {
@@ -51,10 +53,38 @@ void Graph::resize(int w, int h, int o) {
     height = h;
     orientation = o;
     
-    // info
-    info.resize(w,h);
+    // hint
+    hint.resize(w,h);
 }
 
+
+/**
+ * Applies the settings.
+ */
+void Graph::setting(GraphSettings s) {
+    
+    // reference
+    gsettings = s;
+    
+    
+    // hint 
+    hint_disabled = false;
+    Default graphHintDisabled = s.getDefault("graph_hint_disabled");
+    if (graphHintDisabled.isSet()) {
+        hint_disabled = graphHintDisabled.boolVal();
+    }
+    
+    // apply to nodes
+    for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
+        (*node)->setting(gsettings);
+    }
+    
+    // apply to edges
+    for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
+        (*edge)->setting(gsettings);
+    }
+    
+}
 
 
 #pragma mark -
@@ -127,9 +157,9 @@ void Graph::update() {
         }
     }
     
-    // info
-    if (info.isVisible()) {
-        info.update();
+    // hint
+    if (hint.isVisible()) {
+        hint.update();
     }
 
 
@@ -159,9 +189,9 @@ void Graph::draw() {
         }
     }
     
-    // info
-    if (info.isVisible()) {
-        info.draw();
+    // hint
+    if (hint.isVisible()) {
+        hint.draw();
     }
 
 }
@@ -212,8 +242,8 @@ void Graph::touchBegan(Vec2d tpos, int tid) {
                 touched[tid]->touched();
                 
                 // set the info
-                this->sinfo();
-                info.position(tpos);
+                this->shint();
+                hint.position(tpos);
                 
                 
                 // have a break
@@ -236,7 +266,7 @@ void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
         touched[tid]->moveTo(tpos);
         
         // position
-        info.position(tpos);
+        hint.position(tpos);
 
     }
     // graph
@@ -258,7 +288,7 @@ void Graph::touchEnded(Vec2d tpos, int tid){
         touched[tid]->untouched();
         
         // hide info
-        info.hide();
+        hint.hide();
     }
     // graph
     else {
@@ -370,24 +400,28 @@ NodePtr Graph::createNode(string nid, string type, double x, double y) {
     if (type == nodeMovie) {
         boost::shared_ptr<NodeMovie> node(new NodeMovie(nid,x,y));
         node->sref = node;
+        node->setting(gsettings);
         nodes.push_back(node);
         return node;
     }
     else if (type == nodeActor) {
         boost::shared_ptr<NodeActor> node(new NodeActor(nid,x,y));
         node->sref = node;
+        node->setting(gsettings);
         nodes.push_back(node);
         return node;
     }
     else if (type == nodeDirector) {
         boost::shared_ptr<NodeDirector> node(new NodeDirector(nid,x,y));
         node->sref = node;
+        node->setting(gsettings);
         nodes.push_back(node);
         return node;
     }
     else {
         boost::shared_ptr<Node> node(new Node(nid,x,y));
         node->sref = node;
+        node->setting(gsettings);
         nodes.push_back(node);
         return node;
     }
@@ -423,21 +457,25 @@ EdgePtr Graph::createEdge(string eid, string type, NodePtr n1, NodePtr n2) {
     // node
     if (type == edgeMovie) {
         boost::shared_ptr<Edge> edge(new EdgeMovie(eid,n1,n2));
+        edge->setting(gsettings);
         edges.push_back(edge);
         return edge;
     }
     else if (type == edgeActor) {
         boost::shared_ptr<Edge> edge(new EdgeActor(eid,n1,n2));
+        edge->setting(gsettings);
         edges.push_back(edge);
         return edge;
     }
     else if (type == edgeDirector) {
         boost::shared_ptr<Edge> edge(new EdgeDirector(eid,n1,n2));
+        edge->setting(gsettings);
         edges.push_back(edge);
         return edge;
     }
     else {
         boost::shared_ptr<Edge> edge(new Edge(eid,n1,n2));
+        edge->setting(gsettings);
         edges.push_back(edge);
         return edge;
     }
@@ -468,25 +506,30 @@ EdgePtr Graph::getEdge(string nid1, string nid2) {
 /**
  * Sets the info.
  */
-void Graph::sinfo() {
+void Graph::shint() {
     FLog();
     
-    // selected edges
-    bool etouch;
-    vector<string> txts = vector<string>();
-    for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
+    // enabled
+    if (! hint_disabled) {
+        
+        // selected edges
+        bool etouch;
+        vector<string> txts = vector<string>();
+        for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
+            
+            // touched
+            if ((*edge)->isTouched()) {
+                etouch = true;
+                txts.push_back((*edge)->info());
+            }
+        }
         
         // touched
-        if ((*edge)->isTouched()) {
-            etouch = true;
-            txts.push_back((*edge)->info());
+        if (etouch) {
+            hint.renderText(txts);
+            hint.show();
         }
-    }
-    
-    // touched
-    if (etouch) {
-        info.renderText(txts);
-        info.show();
+        
     }
     
 }

@@ -111,7 +111,7 @@ int aboutFooterHeight = 45;
     txtAbout.userInteractionEnabled = YES;
     txtAbout.editable = NO;
     //txtAbout.dataDetectorTypes = UIDataDetectorTypeLink;
-	[txtAbout setText:NSLocalizedString(@"An exploration into organic information design to visualise movies, actors, directors and their relationships. \n\nSearch the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their relationship. Learn about the cast and filmography. \n\nInformation courtesy of The Internet Movie Database (http://www.imdb.com). Used with permission.",@"An exploration into organic information design to visualise movies, actors, directors and their relationships. \n\nSearch the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their relationship. Learn about the cast and filmography. \n\nInformation courtesy of The Internet Movie Database (http://www.imdb.com). Used with permission.")];
+	[txtAbout setText:NSLocalizedString(@"An exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nInformation courtesy of The Internet Movie Database (http://www.imdb.com). Used with permission.",@"An exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nInformation courtesy of The Internet Movie Database (http://www.imdb.com). Used with permission.")];
     [self.view addSubview:txtAbout];
 	[txtAbout release];
     
@@ -192,6 +192,7 @@ int aboutFooterHeight = 45;
 		MFMailComposeViewController *composer = [[MFMailComposeViewController alloc] init];
 		composer.mailComposeDelegate = self;
         composer.navigationBar.barStyle = UIBarStyleBlack;
+        composer.modalPresentationStyle = UIModalPresentationFormSheet;
 		
 		// subject
 		[composer setSubject:[NSString stringWithFormat:@"IMDG"]];
@@ -260,6 +261,7 @@ int aboutFooterHeight = 45;
 		MFMailComposeViewController *composer = [[MFMailComposeViewController alloc] init];
 		composer.mailComposeDelegate = self;
         composer.navigationBar.barStyle = UIBarStyleBlack;
+        composer.modalPresentationStyle = UIModalPresentationFormSheet;
 		
 		// subject
 		[composer setToRecipients:[[[NSArray alloc] initWithObjects:vAppEmail,nil] autorelease]];

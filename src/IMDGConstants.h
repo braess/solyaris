@@ -8,15 +8,18 @@
 
 
 // Types
-#define typeMovie       @"movie"	
-#define typeActor       @"actor"	
-#define typeDirector    @"director"	
+#define typeMovie                       @"movie"	
+#define typeActor                       @"actor"	
+#define typeDirector                    @"director"	
 
 
 // User Default Keys
-#define udPreferenceGeneralSound		@"preference_general_sound_disabled"		
-#define udPreferenceGraphPerimeter      @"preference_graph_perimeter"	
+#define udInformationAppVersion			@"information_app_version"		
+#define udGraphHintDisabled             @"graph_hint_disabled"	
+#define udGraphNodeChildren             @"graph_node_children"	
+#define udGraphNodePerimeter            @"graph_node_perimeter"	
+#define udGraphEdgeLength               @"graph_edge_length"	
 
 
 // Values
-#define vAppEmail       @"imdg@cecinestpasparis.net"	
+#define vAppEmail                       @"imdg@cecinestpasparis.net"	

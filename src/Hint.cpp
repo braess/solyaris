@@ -1,12 +1,12 @@
 //
-//  Info.cpp
+//  Hint.cpp
 //  IMDG
 //
 //  Created by CNPP on 4.8.2011.
 //  Copyright 2011 Beat Raess. All rights reserved.
 //
 
-#include "Info.h"
+#include "Hint.h"
 #include "cinder/gl/gl.h"
 #include "cinder/Text.h"
 #include "cinder/CinderMath.h"
@@ -16,11 +16,11 @@
 #pragma mark Object
 
 /**
- * Creates an Info object.
+ * Creates an Hint object.
  */
-Info::Info() {
+Hint::Hint() {
 }
-Info::Info(Vec2d b) {
+Hint::Hint(Vec2d b) {
     
     // state
     visible = false;
@@ -51,7 +51,7 @@ Info::Info(Vec2d b) {
 /*
  * Resize.
  */
-void Info::resize(int w, int h) {
+void Hint::resize(int w, int h) {
     
     // fields
     bounds = Vec2d(w,h);
@@ -62,9 +62,9 @@ void Info::resize(int w, int h) {
 #pragma mark Sketch
 
 /**
- * Updates the info.
+ * Updates the Hint.
  */
-void Info::update() {
+void Hint::update() {
    
     // timeout (avoids flickering)
     timeout--;
@@ -77,9 +77,9 @@ void Info::update() {
 }
 
 /**
- * Draws the info.
+ * Draws the Hint.
  */
-void Info::draw() {
+void Hint::draw() {
     
     // position
     float px = max(border.x,(pos.x-size.x/2.0+offset.x));
@@ -113,7 +113,7 @@ void Info::draw() {
 /**
  * States.
  */
-bool Info::isVisible() {
+bool Hint::isVisible() {
     return visible;
 }
 
@@ -122,7 +122,7 @@ bool Info::isVisible() {
 /**
  * Renders the text.
  */
-void Info::renderText(vector<string> txts) {
+void Hint::renderText(vector<string> txts) {
     GLog();
     
     // text
@@ -152,7 +152,7 @@ void Info::renderText(vector<string> txts) {
 /**
  * Show / Hide.
  */
-void Info::show() {
+void Hint::show() {
     
     // props
     visible = true;
@@ -160,7 +160,7 @@ void Info::show() {
     timeout = 12;
     
 }
-void Info::hide() {
+void Hint::hide() {
     visible = false;
     alpha = 0;
 }
@@ -169,7 +169,7 @@ void Info::hide() {
 /**
  * Position.
  */
-void Info::position(Vec2d p) {
+void Hint::position(Vec2d p) {
     pos = p;
 }
 

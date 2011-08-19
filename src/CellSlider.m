@@ -79,7 +79,7 @@
 	GLog();
 	
 	// detail label
-	self.detailTextLabel.text = [NSString stringWithFormat:@"%.2f",sliderAccessory.value];
+	self.detailTextLabel.text = [NSString stringWithFormat:@"%.0f",sliderAccessory.value];
 	
 	
 }
@@ -97,6 +97,9 @@
 	if (delegate != nil && [delegate respondsToSelector:@selector(cellSliderChanged:)]) {
 		[delegate cellSliderChanged:self];
 	}
+    
+    // update
+    [self update:NO];
 }
 
 

@@ -12,6 +12,15 @@
 
 
 /**
+ * Helper Stack.
+ */
+@interface SearchViewController (HelperStack)
+- (void)buttonDown:(id)sender;
+- (void)buttonUp:(id)sender;
+@end
+
+
+/**
  * SearchViewController.
  */
 @implementation SearchViewController
@@ -23,7 +32,7 @@
 #define kAlphaSearch 0.8f
 #define kAlphaSearchActive 0.96f
 #define kAlphaBtn 0.8f
-#define kAlphaBtnActive 0.96f
+#define kAlphaBtnActive 0.6f
 #define kAlphaTxt 0.6f
 #define kAlphaTxtActive 0.6f
 
@@ -163,13 +172,17 @@ float sheight = 30;
 	UIButton *btnMovie = [UIButton buttonWithType:UIButtonTypeCustom];
     btnMovie.layer.cornerRadius = 3;
     btnMovie.layer.masksToBounds = YES;
+    btnMovie.alpha = kAlphaBtn;
     btnMovie.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnMovie setBackgroundColor:[UIColor colorWithRed:126/255.0 green:128/255.0 blue:102/255.0 alpha:kAlphaBtn]];
+    [btnMovie setBackgroundColor:[UIColor colorWithRed:138/255.0 green:134/255.0 blue:96/255.0 alpha:1]];
     [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnMovie setTitle:NSLocalizedString(@"Movie",@"Movie") forState:UIControlStateNormal];
 	[btnMovie addTarget:self action:@selector(actionMovie:) forControlEvents:UIControlEventTouchUpInside];
+    [btnMovie addTarget:self action:@selector(buttonDown:) forControlEvents:UIControlEventTouchDown];
+    [btnMovie addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpInside];
+    [btnMovie addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpOutside];
     
 	self.buttonMovie = [btnMovie retain];
 	[self.view addSubview:_buttonMovie];
@@ -180,13 +193,18 @@ float sheight = 30;
 	UIButton *btnActor = [UIButton buttonWithType:UIButtonTypeCustom];
     btnActor.layer.cornerRadius = 3;
     btnActor.layer.masksToBounds = YES;
+    btnActor.alpha = kAlphaBtn;
     btnActor.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnActor setBackgroundColor:[UIColor colorWithRed:82/255.0 green:108/255.0 blue:128/255.0 alpha:kAlphaBtn]];
+    [btnActor setBackgroundColor:[UIColor colorWithRed:88/255.0 green:124/255.0 blue:138/255.0 alpha:1]];
     [btnActor setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnActor setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnActor setTitle:NSLocalizedString(@"Actor",@"Actor") forState:UIControlStateNormal];
 	[btnActor addTarget:self action:@selector(actionActor:) forControlEvents:UIControlEventTouchUpInside];
+    [btnActor addTarget:self action:@selector(buttonDown:) forControlEvents:UIControlEventTouchDown];
+    [btnActor addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpInside];
+    [btnActor addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpOutside];
+    
     
 	self.buttonActor = [btnActor retain];
 	[self.view addSubview:_buttonActor];
@@ -197,13 +215,17 @@ float sheight = 30;
 	UIButton *btnDirector = [UIButton buttonWithType:UIButtonTypeCustom];
     btnDirector.layer.cornerRadius = 3;
     btnDirector.layer.masksToBounds = YES;
+    btnDirector.alpha = kAlphaBtn;
     btnDirector.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnDirector setBackgroundColor:[UIColor colorWithRed:121/255.0 green:125/255.0 blue:128/255.0 alpha:kAlphaBtn]];
+    [btnDirector setBackgroundColor:[UIColor colorWithRed:131/255.0 green:136/255.0 blue:138/255.0 alpha:1]];
     [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnDirector setTitle:NSLocalizedString(@"Director",@"Director") forState:UIControlStateNormal];
 	[btnDirector addTarget:self action:@selector(actionDirector:) forControlEvents:UIControlEventTouchUpInside];
+    [btnDirector addTarget:self action:@selector(buttonDown:) forControlEvents:UIControlEventTouchDown];
+    [btnDirector addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpInside];
+    [btnDirector addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpOutside];
     
 	self.buttonDirector = [btnDirector retain];
 	[self.view addSubview:_buttonDirector];
@@ -370,6 +392,23 @@ float sheight = 30;
         [delegate reset];
     }
 }
+
+
+#pragma mark -
+#pragma mark Helper
+
+/*
+ * Button down/up.
+ */
+- (void)buttonDown:(id)sender {
+    UIButton *b = (UIButton*)sender;
+    b.alpha = kAlphaBtnActive;
+}
+- (void)buttonUp:(id)sender {
+    UIButton *b = (UIButton*)sender;
+    b.alpha = kAlphaBtn;
+}
+
 
 
 #pragma mark -

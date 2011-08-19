@@ -12,10 +12,22 @@
 #import "CellSlider.h"
 
 
+/*
+ * PreferencesDelegate.
+ */
+@protocol PreferencesDelegate <NSObject>
+- (void)setPreference:(NSString*)key value:(NSObject*)value;
+- (NSObject*)getPreference:(NSString*)key;
+- (void)resetPreferences;
+@end
+
+
 //  Fields
 enum {
-    PreferenceGeneralSound,
-    PreferenceGraphPerimeter,
+    PreferenceGraphHintDisabled,
+    PreferenceGraphNodeChildren,
+    PreferenceGraphNodePerimeter,
+    PreferenceGraphEdgeLength,
 	PreferenceDefaultsReset,
     PreferenceCacheClear
 };
@@ -32,7 +44,13 @@ enum {
  */
 @interface PreferencesViewController : UITableViewController <UIActionSheetDelegate, CellButtonDelegate, CellSwitchDelegate, CellSliderDelegate> {
     
+    // delegate
+	id<PreferencesDelegate> delegate;
+    
 }
+
+// Properties
+@property (assign) id<PreferencesDelegate> delegate;
 
 @end
 

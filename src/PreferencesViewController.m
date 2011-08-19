@@ -15,7 +15,7 @@
 @interface PreferencesViewController (Helpers)
 - (void)resetPreferences;
 - (void)updatePreference:(NSString*)key value:(NSObject*)value;
-- (void)updatePreferenceBool:(NSString*)key value:(BOOL)b;
+- (NSString*)retrievePreference:(NSString*)key;
 @end
 
 
@@ -24,6 +24,14 @@
  */
 @implementation PreferencesViewController
 
+
+#pragma mark -
+#pragma mark Properties
+
+// accessors
+@synthesize delegate;
+
+
 // constants
 #define kKeyResetDefaults	@"key_reset_defaults"
 #define kKeyClearCache      @"key_clear_cache"
@@ -31,6 +39,7 @@
 // local vars
 int preferencesHeaderHeight = 45;
 int preferencesHeaderGap = 10;
+
 
 
 #pragma mark -
@@ -137,12 +146,20 @@ int preferencesHeaderGap = 10;
     
 }
 
+
+
 /*
  * CellSwitch.
  */
 - (void)cellSwitchChanged:(CellSwitch *)c {
 	GLog();
 	
+    // update
+    bool v = c.switchAccessory.on;
+    if (c.disabler) {
+        v = ! v;
+    }
+    [self updatePreference:c.key value:(v ? @"1" : @"0")];
     
 }
 
@@ -152,7 +169,9 @@ int preferencesHeaderGap = 10;
  */
 - (void)cellSliderChanged:(CellSlider *)c {
 	GLog();
-
+    
+    // update
+    [self updatePreference:c.key value:[NSString stringWithFormat:@"%f", [c.sliderAccessory value]]];
 }
 
 
@@ -163,7 +182,6 @@ int preferencesHeaderGap = 10;
  * Action selected.
  */
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-	DLog();
 	
 	// tag
 	switch ([actionSheet tag]) {
@@ -211,6 +229,10 @@ int preferencesHeaderGap = 10;
 - (void)resetPreferences {
 	FLog();
 	
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(resetPreferences)]) {
+        [delegate resetPreferences];
+    }
     
 	// update
 	[self.tableView reloadData];
@@ -220,18 +242,30 @@ int preferencesHeaderGap = 10;
  * Updates a preference.
  */
 - (void)updatePreference:(NSString*)key value:(NSObject*)value {
-	FLog();
+	GLog();
     
-	// update
-	[self.tableView reloadData];
-}
-- (void)updatePreferenceBool:(NSString*)key value:(BOOL)b {
-	FLog();
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(setPreference:value:)]) {
+        [delegate setPreference:key value:value];
+    }
     
-	// update
-	[self.tableView reloadData];
+
+
 }
 
+/*
+ * Retrieves a preference.
+ */
+- (NSString*)retrievePreference:(NSString *)key {
+    GLog();
+    
+    // preference
+    NSString *pref = NULL;
+    if (delegate && [delegate respondsToSelector:@selector(getPreference:)]) {
+        pref = (NSString*) [delegate getPreference:key];
+    }
+    return pref;
+}
 
 
 
@@ -251,7 +285,7 @@ int preferencesHeaderGap = 10;
  * Customize the number of rows in the table view.
  */
 - (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section {
-    return 4;
+    return 6;
 }
 
 
@@ -261,6 +295,7 @@ int preferencesHeaderGap = 10;
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return 30;
 }
+
 
 
 #pragma mark -
@@ -285,10 +320,10 @@ int preferencesHeaderGap = 10;
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellPreferencesIdentifier] autorelease];
 		cell.accessoryType = UITableViewCellAccessoryNone;
 	}
-
-        
-    // sound
-    if ([indexPath row] == PreferenceGeneralSound) {
+    
+    
+    // hint
+    if ([indexPath row] == PreferenceGraphHintDisabled) {
         
         // create cell
         CellSwitch *cswitch = (CellSwitch*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesSwitchIdentifier];
@@ -296,15 +331,18 @@ int preferencesHeaderGap = 10;
             cswitch = [[[CellSwitch alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellPreferencesSwitchIdentifier] autorelease];
         }	
         
-        // enabled
-        //BOOL disabled = [(P5PAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefaultBool:udPreferenceSoundDisabled];
-        BOOL disabled = NO;
-        
         // prepare cell
         cswitch.delegate = self;
-        cswitch.key = udPreferenceGeneralSound;
-        cswitch.textLabel.text = NSLocalizedString(@"Sound",@"Sound");
-        cswitch.switchAccessory.on = !(disabled);
+        cswitch.key = udGraphHintDisabled;
+        cswitch.textLabel.text = NSLocalizedString(@"Hints",@"Hints");
+        cswitch.switchAccessory.on = YES;
+        cswitch.disabler = YES;
+        
+        // enabled
+        NSString *graphHintDisabled = [self retrievePreference:udGraphHintDisabled];
+        if (graphHintDisabled && [graphHintDisabled isEqualToString:@"1"]) {
+            cswitch.switchAccessory.on = NO;
+        }
         [cswitch update:YES];
         
         // set cell
@@ -312,9 +350,8 @@ int preferencesHeaderGap = 10;
         
     }
     
-    
-    // perimeter
-    if ([indexPath row] == PreferenceGraphPerimeter) {
+    // graph
+    if ([indexPath row] == PreferenceGraphNodeChildren) {
         
         // create cell
         CellSlider *cslider = (CellSlider*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesSliderIndentifier];
@@ -324,11 +361,77 @@ int preferencesHeaderGap = 10;
         
         // prepare cell
         cslider.delegate = self;
-        cslider.key = udPreferenceGraphPerimeter;
-        cslider.textLabel.text = NSLocalizedString(@"Perimeter",@"Perimeter");
+        cslider.key = udGraphNodeChildren;
+        cslider.textLabel.text = NSLocalizedString(@"Visible Children",@"Visible Children");
+        cslider.sliderAccessory.minimumValue = 0;
+        cslider.sliderAccessory.maximumValue = 30;
+        cslider.sliderAccessory.value = 12;
+        
+        // preference
+        NSString *graphNodeChildren = [self retrievePreference:udGraphNodeChildren];
+        if (graphNodeChildren) {
+            cslider.sliderAccessory.value = [graphNodeChildren floatValue];
+        }
+        [cslider update:YES];
+        
+        // set
+        cell = cslider;
+        
+    }
+    
+    
+    // node perimeter
+    if ([indexPath row] == PreferenceGraphNodePerimeter) {
+        
+        // create cell
+        CellSlider *cslider = (CellSlider*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesSliderIndentifier];
+        if (cslider == nil) {
+            cslider = [[[CellSlider alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellPreferencesSliderIndentifier] autorelease];
+        }	
+        
+        // prepare cell
+        cslider.delegate = self;
+        cslider.key = udGraphNodePerimeter;
+        cslider.textLabel.text = NSLocalizedString(@"Node Perimeter",@"Node Perimeter");
         cslider.sliderAccessory.minimumValue = 100;
         cslider.sliderAccessory.maximumValue = 600;
         cslider.sliderAccessory.value = 390;
+        
+        // preference
+        NSString *graphNodePerimeter = [self retrievePreference:udGraphNodePerimeter];
+        if (graphNodePerimeter) {
+            cslider.sliderAccessory.value = [graphNodePerimeter floatValue];
+        }
+        [cslider update:YES];
+        
+        // set
+        cell = cslider;
+        
+    }
+    
+    // edge length
+    if ([indexPath row] == PreferenceGraphEdgeLength) {
+        
+        // create cell
+        CellSlider *cslider = (CellSlider*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesSliderIndentifier];
+        if (cslider == nil) {
+            cslider = [[[CellSlider alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellPreferencesSliderIndentifier] autorelease];
+        }	
+        
+        // prepare cell
+        cslider.delegate = self;
+        cslider.key = udGraphEdgeLength;
+        cslider.textLabel.text = NSLocalizedString(@"Edge Length",@"Edge Length");
+        cslider.sliderAccessory.minimumValue = 200;
+        cslider.sliderAccessory.maximumValue = 600;
+        cslider.sliderAccessory.value = 400;
+        
+        
+        // preference
+        NSString *graphEdgeLength = [self retrievePreference:udGraphEdgeLength];
+        if (graphEdgeLength) {
+            cslider.sliderAccessory.value = [graphEdgeLength floatValue];
+        }
         [cslider update:YES];
         
         // set
@@ -406,7 +509,6 @@ int preferencesHeaderGap = 10;
  */
 - (void)dealloc {
 	GLog();
-    
 	
 	// duper
     [super dealloc];

@@ -29,13 +29,14 @@
 	
 	// ui
 	UISwitch *switchAccessory;
+    bool disabler;
 
 }
 
 // Properties
 @property (assign) id<CellSwitchDelegate> delegate;
 @property (nonatomic, retain) UISwitch *switchAccessory;
-
+@property bool disabler;
 
 
 @end

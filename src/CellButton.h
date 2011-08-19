@@ -16,6 +16,9 @@
 @class CellButton;
 @protocol CellButtonDelegate <NSObject>
 	- (void)cellButtonTouched:(CellButton*)c;
+    @optional
+    - (void)cellButtonDown:(CellButton*)c;
+    - (void)cellButtonUp:(CellButton*)c;
 @end
 
 
