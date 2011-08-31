@@ -8,9 +8,21 @@
 
 
 // Types
-#define typeMovie                       @"movie"	
-#define typeActor                       @"actor"	
-#define typeDirector                    @"director"	
+#define typeMovie                 @"movie"
+#define typePerson                @"person"	
+#define typePersonActor           @"person_actor"	
+#define typePersonDirector        @"person_director"	
+#define typePersonCrew            @"person_crew"	
+#define typeAll                   @"all"
+
+
+// Assets
+#define assetProfile          @"profile"
+#define assetPoster           @"poster"
+#define assetSizeOriginal     @"original"
+#define assetSizeMid          @"mid"
+#define assetSizeThumb        @"thumb"
+
 
 
 // User Default Keys

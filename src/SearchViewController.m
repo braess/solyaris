@@ -42,9 +42,11 @@
 
 // accessors
 @synthesize delegate;
+@synthesize searchBar=_searchBar;
 @synthesize buttonMovie=_buttonMovie;
 @synthesize buttonActor=_buttonActor;
-@synthesize buttonDirector=_buttonDirector;
+@synthesize buttonCrew=_buttonCrew;
+
 
 // local vars
 CGRect vframe;
@@ -165,9 +167,6 @@ float sheight = 30;
 	[self.view addSubview:_searchBar];
 	[sBar release];
     
-    
-    
-    
     // button movie 
 	UIButton *btnMovie = [UIButton buttonWithType:UIButtonTypeCustom];
     btnMovie.layer.cornerRadius = 3;
@@ -210,26 +209,26 @@ float sheight = 30;
 	[self.view addSubview:_buttonActor];
 	[btnActor release];
     
-  
-    // button director 
-	UIButton *btnDirector = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnDirector.layer.cornerRadius = 3;
-    btnDirector.layer.masksToBounds = YES;
-    btnDirector.alpha = kAlphaBtn;
-    btnDirector.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnDirector setBackgroundColor:[UIColor colorWithRed:131/255.0 green:136/255.0 blue:138/255.0 alpha:1]];
-    [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
-    [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
-    [btnDirector setTitle:NSLocalizedString(@"Director",@"Director") forState:UIControlStateNormal];
-	[btnDirector addTarget:self action:@selector(actionDirector:) forControlEvents:UIControlEventTouchUpInside];
-    [btnDirector addTarget:self action:@selector(buttonDown:) forControlEvents:UIControlEventTouchDown];
-    [btnDirector addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpInside];
-    [btnDirector addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpOutside];
+    // button crew 
+	UIButton *btnCrew = [UIButton buttonWithType:UIButtonTypeCustom];
+    btnCrew.layer.cornerRadius = 3;
+    btnCrew.layer.masksToBounds = YES;
+    btnCrew.alpha = kAlphaBtn;
+    btnCrew.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-	self.buttonDirector = [btnDirector retain];
-	[self.view addSubview:_buttonDirector];
-	[btnDirector release];
+    [btnCrew setBackgroundColor:[UIColor colorWithRed:131/255.0 green:136/255.0 blue:138/255.0 alpha:1]];
+    [btnCrew setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
+    [btnCrew setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
+    [btnCrew setTitle:NSLocalizedString(@"Crew",@"Crew") forState:UIControlStateNormal];
+	[btnCrew addTarget:self action:@selector(actionCrew:) forControlEvents:UIControlEventTouchUpInside];
+    [btnCrew addTarget:self action:@selector(buttonDown:) forControlEvents:UIControlEventTouchDown];
+    [btnCrew addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpInside];
+    [btnCrew addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpOutside];
+    
+	self.buttonCrew = [btnCrew retain];
+	[self.view addSubview:_buttonCrew];
+	[btnCrew release];
     
     
     // button reset
@@ -244,8 +243,8 @@ float sheight = 30;
 
     // resize
     [self resize];
-    
 }
+
 
 /*
  * Resize.
@@ -270,7 +269,7 @@ float sheight = 30;
     // buttons
     _buttonMovie.frame = bmframe;
     _buttonActor.frame = baframe;
-    _buttonDirector.frame = bdframe;
+    _buttonCrew.frame = bdframe;
     
 }
 
@@ -316,7 +315,7 @@ float sheight = 30;
     
     // search
     if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
-        [delegate search:[_searchBar text] type:typeMovie];
+        [delegate search:[_searchBar text] type:typeAll];
     }
     
 }
@@ -324,7 +323,6 @@ float sheight = 30;
 
 #pragma mark -
 #pragma mark Actions
-
 
 /*
  * Action Movie.
@@ -358,14 +356,14 @@ float sheight = 30;
     
     // search
     if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
-        [delegate search:[_searchBar text] type:typeActor];
+        [delegate search:[_searchBar text] type:typePersonActor];
     }
 }
 
 /*
- * Action Director.
+ * Action Crew.
  */
-- (void)actionDirector:(id)sender {
+- (void)actionCrew:(id)sender {
 	DLog();
     
     // hide keyboard
@@ -376,10 +374,9 @@ float sheight = 30;
     
     // search
     if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
-        [delegate search:[_searchBar text] type:typeDirector];
+        [delegate search:[_searchBar text] type:typePersonCrew];
     }
 }
-
 
 /*
  * Action Reset.
@@ -424,9 +421,8 @@ float sheight = 30;
     [_searchBar release];
     [_buttonMovie release];
     [_buttonActor release];
-    [_buttonDirector release];
+    [_buttonCrew release];
     [_buttonReset release];
-	
 	
 	// release global
     [super dealloc];

@@ -20,6 +20,10 @@
 @end
 
 
+#pragma mark -
+#pragma mark InformationViewController
+#pragma mark -
+
 /**
  * InformationViewController.
  */
@@ -35,18 +39,19 @@
 @synthesize movies = _movies;
 @synthesize actors = _actors;
 @synthesize directors = _directors;
+@synthesize crew = _crew;
 
 
 // local vars
 CGRect vframe;
-float informationHeaderHeight = 60;
-float informationFooterHeight = 50;
+float informationHeaderHeight = 110;
+float informationFooterHeight = 60;
 
 
 // sections
-int cellHeight = 30;
+int cellHeight = 36;
 int cellInset = 15;
-int sectionGapHeight = 50;
+int sectionGapHeight = 39;
 int sectionGapOffset = 10;
 int sectionGapInset = 15;
 
@@ -116,54 +121,47 @@ int sectionGapInset = 15;
     
     
     // header view
-    UIView *headerView = [[UIView alloc] initWithFrame:hframe];
-    headerView.tag = TagInformationHeader;
-	headerView.backgroundColor = [UIColor clearColor];
-	headerView.opaque = YES;
+    InformationMovieView *nfoMovieView = [[InformationMovieView alloc] initWithFrame:hframe];
+    nfoMovieView.tag = TagInformationMovie;
+    nfoMovieView.hidden = YES;
     
-    
-    // title
-    UILabel *lblTitle = [[UILabel alloc] initWithFrame:CGRectMake(sectionGapInset, sectionGapOffset, hframe.size.width-2*sectionGapInset, hframe.size.height-2*sectionGapOffset)];
-	lblTitle.backgroundColor = [UIColor clearColor];
-	lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:24.0];
-	lblTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
-	lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-	lblTitle.shadowOffset = CGSizeMake(1,1);
-	lblTitle.opaque = YES;
-	lblTitle.numberOfLines = 1;
-    
-    _labelTitle = [lblTitle retain];
-    [headerView addSubview:_labelTitle];
-    [lblTitle release];
-    
+    InformationPersonView *nfoPersonView = [[InformationPersonView alloc] initWithFrame:hframe];
+    nfoPersonView.tag = TagInformationMovie;
+    nfoPersonView.hidden = YES;
     
     // drop that shadow
 	CAGradientLayer *dropShadow = [[[CAGradientLayer alloc] init] autorelease];
 	dropShadow.frame = CGRectMake(0, hframe.size.height, hframe.size.width, 15);
 	dropShadow.colors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:0 alpha:0.02].CGColor,(id)[UIColor colorWithWhite:0 alpha:0].CGColor,nil];
-	[headerView.layer insertSublayer:dropShadow atIndex:0];
+	[nfoMovieView.layer insertSublayer:dropShadow atIndex:0];
+    [nfoPersonView.layer insertSublayer:dropShadow atIndex:0];
     
     // add header view to content
-    [ctView addSubview:headerView];
-    [headerView release];
+    _informationMovieView = [nfoMovieView retain];
+    [ctView addSubview:_informationMovieView];
+    [nfoMovieView release];
+    
+    _informationPersonView = [nfoPersonView retain];
+    [ctView addSubview:_informationPersonView];
+    [nfoPersonView release];
 
     
     // table view
-    UITableView *tableView = [[UITableView alloc] initWithFrame:tframe style:UITableViewStyleGrouped];
-    tableView.tag = TagInformationContent;
-    tableView.delegate = self;
-    tableView.dataSource = self;
-	tableView.backgroundColor = [UIColor clearColor];
-	tableView.opaque = YES;
-	tableView.backgroundView = nil;
-    tableView.sectionHeaderHeight = 0; 
-    tableView.sectionFooterHeight = 0;
+    UITableView *castTableView = [[UITableView alloc] initWithFrame:tframe style:UITableViewStyleGrouped];
+    castTableView.tag = TagInformationContent;
+    castTableView.delegate = self;
+    castTableView.dataSource = self;
+	castTableView.backgroundColor = [UIColor clearColor];
+	castTableView.opaque = YES;
+	castTableView.backgroundView = nil;
+    castTableView.sectionHeaderHeight = 0; 
+    castTableView.sectionFooterHeight = 0;
     
     // add table view to content
-    _tableView = [tableView retain];
-    [ctView addSubview:_tableView];
-    [ctView sendSubviewToBack:_tableView];
-    [tableView release];
+    _castTableView = [castTableView retain];
+    [ctView addSubview:_castTableView];
+    [ctView sendSubviewToBack:_castTableView];
+    [castTableView release];
     
     
     // footer view
@@ -187,6 +185,7 @@ int sectionGapInset = 15;
 	    
 }
 
+
 /*
  * Resize.
  */
@@ -203,10 +202,10 @@ int sectionGapInset = 15;
 	DLog();
     
     // reload
-    [_tableView reloadData];
+    [_castTableView reloadData];
     
     // scroll to top
-    [_tableView setContentOffset:CGPointMake(0, 0) animated:NO];
+    [_castTableView setContentOffset:CGPointMake(0, 0) animated:NO];
 
 }
 
@@ -225,7 +224,6 @@ int sectionGapInset = 15;
     // ignore
 }
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
-    FLog();
     
     // dismiss
 	if (delegate != nil && [delegate respondsToSelector:@selector(informationDismiss)]) {
@@ -241,13 +239,63 @@ int sectionGapInset = 15;
 #pragma mark Business
 
 /*
- * Information title.
+ * Information movie.
  */
-- (void)informationTitle:(NSString *)title {
-    DLog();
+- (void)informationMovie:(NSString *)name poster:(NSString*)poster tagline:(NSString *)tagline overview:(NSString *)overview released:(NSDate *)released runtime:(NSNumber *)runtime trailer:(NSString *)trailer homepage:(NSString *)homepage imdb_id:(NSString *)imdb_id {
+    FLog();
     
-    // label
-    [_labelTitle setText:title];
+    // formatter
+    static NSDateFormatter *dateFormatter;
+    if (dateFormatter == nil) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy"];
+    }
+    
+    // show
+    _informationPersonView.hidden = YES;
+    
+    // poster
+    [_informationMovieView.imagePoster loadImageFromURL:poster];
+    
+    // data
+    [_informationMovieView.labelName setText:name];
+    [_informationMovieView.labelTagline setText:tagline];
+    [_informationMovieView.labelReleased setText:[NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:released]]];
+    [_informationMovieView.labelRuntime setText:[NSString stringWithFormat:@"%im",[runtime intValue]]];
+    
+    // show
+    _informationMovieView.hidden = NO;
+    
+}
+
+/**
+ * Information person.
+ */
+- (void)informationPerson:(NSString *)name profile:(NSString *)profile biography:(NSString *)biography birthday:(NSDate *)birthday birthplace:(NSString *)birthplace known_movies:(NSNumber *)known_movies {
+    FLog();
+    
+    // formatter
+    static NSDateFormatter *dateFormatter;
+    if (dateFormatter == nil) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"dd.MM.yyyy"];
+    }
+    
+    // show
+    _informationMovieView.hidden = YES;
+    
+    // profile
+    [_informationPersonView.imageProfile loadImageFromURL:profile];
+    
+    // data
+    [_informationPersonView.labelName setText:name];
+    [_informationPersonView.labelBirthday setText:[NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:birthday]]];
+    [_informationPersonView.labelBirthplace setText:birthplace];
+    [_informationPersonView.labelKnownMovies setText:[NSString stringWithFormat:@"%i",[known_movies intValue]]];
+    
+    // show
+    _informationPersonView.hidden = NO;
+    
 }
 
 
@@ -260,7 +308,7 @@ int sectionGapInset = 15;
  * Customize the number of sections in the table view.
  */
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)aTableView {
-    return 3;
+    return 4;
 }
 
 
@@ -275,7 +323,7 @@ int sectionGapInset = 15;
 			return [_movies count];
             break;
 		}
-		case SectionInformationActors: {
+        case SectionInformationActors: {
 			return [_actors count];
             break;
 		}
@@ -283,6 +331,11 @@ int sectionGapInset = 15;
 			return [_directors count];
             break;
 		}
+		case SectionInformationCrew: {
+			return [_crew count];
+            break;
+		}
+        
     }
     
     return 0;
@@ -303,7 +356,7 @@ int sectionGapInset = 15;
  * Customize the section footer height.
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == 2) {
+    if (section == SectionInformationCrew) {
         return sectionGapInset;
     }
     else if ([self tableView:tableView numberOfRowsInSection:section]==0) {
@@ -341,7 +394,7 @@ int sectionGapInset = 15;
     // label
     UILabel *lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(sectionGapInset, sectionGapOffset, shView.frame.size.width-2*sectionGapInset, sectionGapHeight-sectionGapOffset)];
 	lblHeader.backgroundColor = [UIColor clearColor];
-	lblHeader.font = [UIFont fontWithName:@"Helvetica-Bold" size:18.0];
+	lblHeader.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
 	lblHeader.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
 	lblHeader.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
 	lblHeader.shadowOffset = CGSizeMake(1,1);
@@ -405,12 +458,16 @@ int sectionGapInset = 15;
 			if ([_movies count] > 0)  return NSLocalizedString(@"Movies",@"Movies");
             break;
 		}
-		case SectionInformationActors: {
+        case SectionInformationActors: {
 			if ([_actors count] > 0)  return NSLocalizedString(@"Actors",@"Actors");
             break;
 		}
         case SectionInformationDirectors: {
 			if ([_directors count] > 0)  return NSLocalizedString(@"Directors",@"Directors");
+            break;
+		}
+		case SectionInformationCrew: {
+			if ([_crew count] > 0)  return NSLocalizedString(@"Crew",@"Crew");
             break;
 		}
     }
@@ -438,12 +495,16 @@ int sectionGapInset = 15;
 	if ([indexPath section] == SectionInformationMovies) {
 		nfo = [_movies objectAtIndex:[indexPath row]];
 	}
-	else if ([indexPath section] == SectionInformationActors) {
+    else if ([indexPath section] == SectionInformationActors) {
 		nfo = [_actors objectAtIndex:[indexPath row]];
 	}
-	else if ([indexPath section] == SectionInformationDirectors) {
+    else if ([indexPath section] == SectionInformationDirectors) {
 		nfo = [_directors objectAtIndex:[indexPath row]];
 	}
+	else if ([indexPath section] == SectionInformationCrew) {
+		nfo = [_crew objectAtIndex:[indexPath row]];
+	}
+
     
     // label
 	cell.labelInfo.text = nfo.value;
@@ -476,11 +537,14 @@ int sectionGapInset = 15;
 	if ([indexPath section] == SectionInformationMovies) {
 		nfo = [_movies objectAtIndex:[indexPath row]];
 	}
-	else if ([indexPath section] == SectionInformationActors) {
+    else if ([indexPath section] == SectionInformationActors) {
 		nfo = [_actors objectAtIndex:[indexPath row]];
 	}
-	else if ([indexPath section] == SectionInformationDirectors) {
+    else if ([indexPath section] == SectionInformationDirectors) {
 		nfo = [_directors objectAtIndex:[indexPath row]];
+	}
+	else if ([indexPath section] == SectionInformationCrew) {
+		nfo = [_crew objectAtIndex:[indexPath row]];
 	}
     
     // check
@@ -488,11 +552,12 @@ int sectionGapInset = 15;
         
         // state
         nfo.loaded = YES;
-        [_tableView reloadData];
+        [_castTableView reloadData];
         
         // load
         if (delegate && [delegate respondsToSelector:@selector(informationSelected:type:)]) {
-            [delegate informationSelected:nfo.nid type:nfo.type];
+            NSString *type = [nfo.type isEqualToString:typeMovie] ? typeMovie : typePerson;
+            [delegate informationSelected:nfo.nid type:type];
         }
     }
 }
@@ -509,8 +574,9 @@ int sectionGapInset = 15;
     
     // data
 	[_movies release];
-	[_actors release];
-	[_directors release];
+    [_actors release];
+    [_directors release];
+	[_crew release];
 	
 	// duper
     [super dealloc];
@@ -519,6 +585,11 @@ int sectionGapInset = 15;
 
 @end
 
+
+
+#pragma mark -
+#pragma mark Information
+#pragma mark -
 
 
 /**
@@ -582,6 +653,11 @@ int sectionGapInset = 15;
 @end
 
 
+
+
+#pragma mark -
+#pragma mark InformationBackgroundView
+#pragma mark -
 
 /**
  * InformationBackgroundView.
@@ -707,6 +783,288 @@ int sectionGapInset = 15;
 
 
 
+#pragma mark -
+#pragma mark InformationMovieView
+#pragma mark -
+
+/**
+ * InformationMovieView.
+ */
+@implementation InformationMovieView
+
+
+#pragma mark -
+#pragma mark Properties
+
+// accessors
+@synthesize labelName = _labelName;
+@synthesize labelTagline = _labelTagline;
+@synthesize labelReleased = _labelReleased;
+@synthesize labelRuntime = _labelRuntime;
+@synthesize imagePoster = _imagePoster;
+
+
+#pragma mark -
+#pragma mark Object Methods
+
+/*
+ * Init.
+ */
+- (id)initWithFrame:(CGRect)frame {
+    
+    // self
+    if ((self = [super initWithFrame:frame])) {
+        
+        // view
+        self.frame = frame;
+        self.backgroundColor = [UIColor clearColor];
+        self.opaque = YES;
+        
+        // frames
+        CGRect iframe = CGRectMake(sectionGapInset, sectionGapOffset, 60, 90);
+        CGRect mframe = CGRectMake(2*sectionGapInset+60, sectionGapOffset, frame.size.width-(2*sectionGapInset+90), frame.size.height-2*sectionGapOffset);
+        
+        // poster
+        CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:iframe];
+        ciView.contentMode = UIViewContentModeScaleAspectFill;
+        ciView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
+        [ciView placeholderImage:[UIImage imageNamed:@"placeholder_info_movie.png"]];
+        
+        _imagePoster = [ciView retain];
+        [self addSubview:_imagePoster];
+        [ciView release];
+        
+        // name
+        UILabel *lblName = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y, mframe.size.width, 36)];
+        lblName.backgroundColor = [UIColor clearColor];
+        lblName.font = [UIFont fontWithName:@"Helvetica-Bold" size:21.0];
+        lblName.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
+        lblName.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
+        lblName.shadowOffset = CGSizeMake(1,1);
+        lblName.opaque = YES;
+        lblName.numberOfLines = 1;
+        
+        _labelName = [lblName retain];
+        [self addSubview:_labelName];
+        [lblName release];
+        
+        // tagline
+        UILabel *lblTagline = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+30, mframe.size.width, 18)];
+        lblTagline.backgroundColor = [UIColor clearColor];
+        lblTagline.font = [UIFont fontWithName:@"Helvetica" size:15.0];
+        lblTagline.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
+        lblTagline.opaque = YES;
+        lblTagline.numberOfLines = 1;
+        
+        _labelTagline = [lblTagline retain];
+        [self addSubview:_labelTagline];
+        [lblTagline release];
+        
+        // property
+        float pwidth = 75;
+        
+        
+        // released
+        UILabel *lblPropReleased = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+54, pwidth, 15)];
+        lblPropReleased.backgroundColor = [UIColor clearColor];
+        lblPropReleased.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+        lblPropReleased.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
+        lblPropReleased.opaque = YES;
+        lblPropReleased.numberOfLines = 1;
+        [lblPropReleased setText:NSLocalizedString(@"Year:", @"Year:")];
+        [self addSubview:lblPropReleased];
+        
+        UILabel *lblReleased = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+54, mframe.size.width-pwidth, 15)];
+        lblReleased.backgroundColor = [UIColor clearColor];
+        lblReleased.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+        lblReleased.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
+        lblReleased.opaque = YES;
+        lblReleased.numberOfLines = 1;
+        
+        _labelReleased = [lblReleased retain];
+        [self addSubview:_labelReleased];
+        [lblReleased release];
+        
+        
+        // runtime
+        UILabel *lblPropRuntime = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+69, pwidth, 15)];
+        lblPropRuntime.backgroundColor = [UIColor clearColor];
+        lblPropRuntime.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+        lblPropRuntime.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
+        lblPropRuntime.opaque = YES;
+        lblPropRuntime.numberOfLines = 1;
+        [lblPropRuntime setText:NSLocalizedString(@"Runtime:", @"Runtime:")];
+        [self addSubview:lblPropRuntime];
+        
+        UILabel *lblRuntime = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+69, mframe.size.width-pwidth, 15)];
+        lblRuntime.backgroundColor = [UIColor clearColor];
+        lblRuntime.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+        lblRuntime.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
+        lblRuntime.opaque = YES;
+        lblRuntime.numberOfLines = 1;
+        
+        _labelRuntime = [lblRuntime retain];
+        [self addSubview:_labelRuntime];
+        [lblRuntime release];
+        
+        
+    }
+    return self;
+}
+
+
+@end
+
+
+
+
+#pragma mark -
+#pragma mark InformationPersonView
+#pragma mark -
+
+/**
+ * InformationPersonView.
+ */
+@implementation InformationPersonView
+
+
+#pragma mark -
+#pragma mark Properties
+
+// accessors
+@synthesize labelName = _labelName;
+@synthesize labelBirthday = _labelBirthday;
+@synthesize labelBirthplace = _labelBirthplace;
+@synthesize labelKnownMovies = _labelKnownMovies;
+@synthesize imageProfile = _imageProfile;
+
+
+#pragma mark -
+#pragma mark Object Methods
+
+/*
+ * Init.
+ */
+- (id)initWithFrame:(CGRect)frame {
+    
+    // self
+    if ((self = [super initWithFrame:frame])) {
+        
+        // view
+        self.frame = frame;
+        self.backgroundColor = [UIColor clearColor];
+        self.opaque = YES;
+        
+        // frames
+        CGRect iframe = CGRectMake(sectionGapInset, sectionGapOffset, 60, 90);
+        CGRect mframe = CGRectMake(2*sectionGapInset+60, sectionGapOffset, frame.size.width-(2*sectionGapInset+90), frame.size.height-2*sectionGapOffset);
+        
+        // poster
+        CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:iframe];
+        ciView.contentMode = UIViewContentModeScaleAspectFill;
+        ciView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
+        [ciView placeholderImage:[UIImage imageNamed:@"placeholder_info_person.png"]];
+        
+        _imageProfile = [ciView retain];
+        [self addSubview:_imageProfile];
+        [ciView release];
+        
+        // name
+        UILabel *lblName = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y, mframe.size.width, 36)];
+        lblName.backgroundColor = [UIColor clearColor];
+        lblName.font = [UIFont fontWithName:@"Helvetica-Bold" size:21.0];
+        lblName.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
+        lblName.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
+        lblName.shadowOffset = CGSizeMake(1,1);
+        lblName.opaque = YES;
+        lblName.numberOfLines = 1;
+        
+        _labelName = [lblName retain];
+        [self addSubview:_labelName];
+        [lblName release];
+        
+        // property
+        float pwidth = 75;
+        
+        
+        // known movies
+        UILabel *lblPropKnownMovies = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+39, pwidth, 15)];
+        lblPropKnownMovies.backgroundColor = [UIColor clearColor];
+        lblPropKnownMovies.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+        lblPropKnownMovies.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
+        lblPropKnownMovies.opaque = YES;
+        lblPropKnownMovies.numberOfLines = 1;
+        [lblPropKnownMovies setText:NSLocalizedString(@"Movies:", @"Movies:")];
+        [self addSubview:lblPropKnownMovies];
+        
+        UILabel *lblKnownMovies = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+39, mframe.size.width-pwidth, 15)];
+        lblKnownMovies.backgroundColor = [UIColor clearColor];
+        lblKnownMovies.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+        lblKnownMovies.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
+        lblKnownMovies.opaque = YES;
+        lblKnownMovies.numberOfLines = 1;
+        
+        _labelKnownMovies = [lblKnownMovies retain];
+        [self addSubview:_labelKnownMovies];
+        [lblKnownMovies release];
+        
+        
+        // birthplace
+        UILabel *lblPropBirthday = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+54, pwidth, 15)];
+        lblPropBirthday.backgroundColor = [UIColor clearColor];
+        lblPropBirthday.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+        lblPropBirthday.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
+        lblPropBirthday.opaque = YES;
+        lblPropBirthday.numberOfLines = 1;
+        [lblPropBirthday setText:NSLocalizedString(@"Birthday:", @"Birthday:")];
+        [self addSubview:lblPropBirthday];
+        
+        UILabel *lblBirthday = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+54, mframe.size.width-pwidth, 15)];
+        lblBirthday.backgroundColor = [UIColor clearColor];
+        lblBirthday.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+        lblBirthday.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
+        lblBirthday.opaque = YES;
+        lblBirthday.numberOfLines = 1;
+        
+        _labelBirthday = [lblBirthday retain];
+        [self addSubview:_labelBirthday];
+        [lblBirthday release];
+        
+        // birthplace
+        UILabel *lblPropBirthplace = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+69, pwidth, 15)];
+        lblPropBirthplace.backgroundColor = [UIColor clearColor];
+        lblPropBirthplace.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+        lblPropBirthplace.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
+        lblPropBirthplace.opaque = YES;
+        lblPropBirthplace.numberOfLines = 1;
+        [lblPropBirthplace setText:NSLocalizedString(@"Birthplace:", @"Birthplace:")];
+        [self addSubview:lblPropBirthplace];
+        
+        UILabel *lblBirthplace = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+69, mframe.size.width-pwidth, 15)];
+        lblBirthplace.backgroundColor = [UIColor clearColor];
+        lblBirthplace.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+        lblBirthplace.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
+        lblBirthplace.opaque = YES;
+        lblBirthplace.numberOfLines = 1;
+        
+        _labelBirthplace = [lblBirthplace retain];
+        [self addSubview:_labelBirthplace];
+        [lblBirthplace release];
+        
+        
+    }
+    return self;
+}
+
+
+@end
+
+
+
+#pragma mark -
+#pragma mark InformationCell
+#pragma mark -
+
 /**
  * InformationCell.
  */
@@ -717,7 +1075,9 @@ int sectionGapInset = 15;
 #pragma mark Properties
 
 // accessors
-@synthesize labelInfo, labelMeta, type;
+@synthesize labelInfo=_labelInfo;
+@synthesize labelMeta=_labelMeta;
+@synthesize type=_type;
 @synthesize loaded, visible;
 
 
@@ -748,21 +1108,27 @@ int sectionGapInset = 15;
         
         
         // labels
-        labelInfo = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
-        labelInfo.backgroundColor = [UIColor clearColor];
-        labelInfo.font = [UIFont fontWithName:@"Helvetica" size:15.0];
-        labelInfo.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
-        labelInfo.opaque = YES;
-        labelInfo.numberOfLines = 1;
-        [self.contentView addSubview: labelInfo];
+        UILabel *lblInfo = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
+        lblInfo.backgroundColor = [UIColor clearColor];
+        lblInfo.font = [UIFont fontWithName:@"Helvetica" size:15.0];
+        lblInfo.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
+        lblInfo.opaque = YES;
+        lblInfo.numberOfLines = 1;
         
-        labelMeta = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
-        labelMeta.backgroundColor = [UIColor clearColor];
-        labelMeta.font = [UIFont fontWithName:@"Helvetica" size:15.0];
-        labelMeta.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
-        labelMeta.opaque = YES;
-        labelMeta.numberOfLines = 1;
-        [self.contentView addSubview: labelMeta];
+        _labelInfo = [lblInfo retain];
+        [self.contentView addSubview: _labelInfo];
+        [lblInfo release];
+        
+        UILabel *lblMeta = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
+        lblMeta.backgroundColor = [UIColor clearColor];
+        lblMeta.font = [UIFont fontWithName:@"Helvetica" size:15.0];
+        lblMeta.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
+        lblMeta.opaque = YES;
+        lblMeta.numberOfLines = 1;
+        
+        _labelMeta = [lblMeta retain];
+        [self.contentView addSubview: lblMeta];
+        [lblMeta release];
         
         // icons
         CGRect iframe = CGRectMake(0, 0, 16, 16);
@@ -791,9 +1157,14 @@ int sectionGapInset = 15;
         _iconDirector.hidden = YES;
         [self.contentView addSubview: _iconDirector];
         
-
+        _iconCrew = [[UIImageView alloc] initWithFrame:iframe];
+		_iconCrew.image = [UIImage imageNamed:@"icon_mini_crew.png"];
+		_iconCrew.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+		_iconCrew.backgroundColor = [UIColor clearColor];
+		_iconCrew.contentMode = UIViewContentModeCenter;
+        _iconCrew.hidden = YES;
+        [self.contentView addSubview: _iconCrew];
         
-
     }
     return self;
 }
@@ -833,50 +1204,58 @@ int sectionGapInset = 15;
 - (void) layoutSubviews {
 
     // size
-    [labelInfo sizeToFit];
-    [labelMeta sizeToFit];
+    [_labelInfo sizeToFit];
+    [_labelMeta sizeToFit];
     
     // position
-    CGRect finfo = labelInfo.frame;
+    CGRect finfo = _labelInfo.frame;
     finfo.origin.x = CGRectGetMinX (self.contentView.bounds) + 12;
-    finfo.origin.y = CGRectGetMinY (self.contentView.bounds) + 6;
-    [labelInfo setFrame: finfo];
+    finfo.origin.y = CGRectGetMinY (self.contentView.bounds) + 9;
+    [_labelInfo setFrame: finfo];
     
     // meta
-    CGRect fmeta = labelMeta.frame;
-    fmeta.origin.x = CGRectGetMaxX (labelInfo.frame) + 10;
-    fmeta.origin.y = CGRectGetMinY (self.contentView.bounds) + 6;
-    [labelMeta setFrame: fmeta];
+    CGRect fmeta = _labelMeta.frame;
+    fmeta.origin.x = CGRectGetMaxX (_labelInfo.frame) + 10;
+    fmeta.origin.y = CGRectGetMinY (self.contentView.bounds) + 9;
+    [_labelMeta setFrame: fmeta];
     
     // disclosure
-    CGRect fdisc = CGRectMake(self.frame.size.width-50, 6, 16, 16);
+    CGRect fdisc = CGRectMake(self.frame.size.width-50, 9, 16, 16);
     _iconMovie.hidden = YES;
     _iconActor.hidden = YES;
     _iconDirector.hidden = YES;
+    _iconCrew.hidden = YES;
     if (loaded) {
         
         // movie
-        if ([type isEqualToString:typeMovie]) {
+        if ([_type isEqualToString:typeMovie]) {
             _iconMovie.frame = fdisc;
             _iconMovie.hidden = NO;
         }
         // actor
-        else if ([type isEqualToString:typeActor]) {
+        else if ([_type isEqualToString:typePersonActor]) {
             _iconActor.frame = fdisc;
             _iconActor.hidden = NO;
         }
-        // director
-        else if ([type isEqualToString:typeDirector]) {
+        // crew
+        else if ([_type isEqualToString:typePersonDirector]) {
             _iconDirector.frame = fdisc;
             _iconDirector.hidden = NO;
         }
+        // crew
+        else if ([_type isEqualToString:typePersonCrew]) {
+            _iconCrew.frame = fdisc;
+            _iconCrew.hidden = NO;
+        }
+        
+
     }
 
 }
 
 
 /*
- * Disable highlighting of currently selected cell.
+* Disable highlighting of currently selected cell.
 */
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:NO];

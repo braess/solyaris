@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CacheImageView.h"
 
 
 
@@ -14,12 +15,14 @@
 enum {
     SectionInformationDirectors,
 	SectionInformationActors,
-	SectionInformationMovies
+	SectionInformationMovies,
+    SectionInformationCrew
 };
 
 //  Tags
 enum {
-    TagInformationHeader,
+    TagInformationMovie,
+    TagInformationPerson,
 	TagInformationContent,
 	TagInformationFooter
 };
@@ -46,6 +49,61 @@ enum {
 @end
 
 
+/**
+ * InformationBackgroundView.
+ */
+@interface InformationBackgroundView : UIView {
+}
+@end
+
+
+/**
+ * InformationMovieView.
+ */
+@interface InformationMovieView : UIView {
+    
+    // labels
+    UILabel *_labelName;
+    UILabel *_labelTagline;
+    UILabel *_labelRuntime;
+    UILabel *_labelReleased;
+    CacheImageView *_imagePoster;
+}
+
+// Properteis
+@property (nonatomic,retain) UILabel *labelName;
+@property (nonatomic,retain) UILabel *labelTagline;
+@property (nonatomic,retain) UILabel *labelRuntime;
+@property (nonatomic,retain) UILabel *labelReleased;
+@property (nonatomic,retain) CacheImageView *imagePoster;
+
+@end
+
+
+/**
+ * InformationPersonView.
+ */
+@interface InformationPersonView : UIView {
+    
+    // labels
+    UILabel *_labelName;
+    UILabel *_labelBirthday;
+    UILabel *_labelBirthplace;
+    UILabel *_labelKnownMovies;
+    CacheImageView *_imageProfile;
+}
+
+// Properteis
+@property (nonatomic,retain) UILabel *labelName;
+@property (nonatomic,retain) UILabel *labelBirthday;
+@property (nonatomic,retain) UILabel *labelBirthplace;
+@property (nonatomic,retain) UILabel *labelKnownMovies;
+@property (nonatomic,retain) CacheImageView *imageProfile;
+
+@end
+
+
+
 /*
  * Info Delegate.
  */
@@ -66,13 +124,15 @@ enum {
     // ui
     UIView *_modalView;
     UIView *_contentView;
-    UILabel *_labelTitle;
-    UITableView *_tableView;
+    InformationMovieView *_informationMovieView;
+    InformationPersonView *_informationPersonView;
+    UITableView *_castTableView;
     
     // data
 	NSMutableArray *_movies;
 	NSMutableArray *_actors;
-	NSMutableArray *_directors;
+    NSMutableArray *_directors;
+    NSMutableArray *_crew;
     
 }
 
@@ -83,24 +143,20 @@ enum {
 @property (nonatomic, retain) NSMutableArray *movies;
 @property (nonatomic, retain) NSMutableArray *actors;
 @property (nonatomic, retain) NSMutableArray *directors;
+@property (nonatomic, retain) NSMutableArray *crew;
+
 
 // Object Methods
 - (id)initWithFrame:(CGRect)frame;
 
 // Business Methods
 - (void)resize;
-- (void)informationTitle:(NSString*)title;
+- (void)informationMovie:(NSString*)name poster:(NSString*)poster tagline:(NSString*)tagline overview:(NSString*)overview released:(NSDate*)released runtime:(NSNumber*)runtime trailer:(NSString*)trailer homepage:(NSString*)homepage imdb_id:(NSString*)imdb_id;
+- (void)informationPerson:(NSString*)name profile:(NSString*)profile biography:(NSString*)biography birthday:(NSDate*)birthday birthplace:(NSString*)birthplace known_movies:(NSNumber*)known_movies;
+
 
 @end
 
-
-
-/**
- * InformationBackgroundView.
- */
-@interface InformationBackgroundView : UIView {
-}
-@end
 
 
 /**
@@ -109,12 +165,13 @@ enum {
 @interface InformationCell : UITableViewCell {
     
     // ui
-    UILabel *labelInfo;
-    UILabel *labelMeta;
-    NSString *type;
+    UILabel *_labelInfo;
+    UILabel *_labelMeta;
+    NSString *_type;
     UIImageView *_iconMovie;
     UIImageView *_iconActor;
     UIImageView *_iconDirector;
+    UIImageView *_iconCrew;
     
     // state
     bool loaded;

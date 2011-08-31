@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "IMDB.h"
+#import "TMDb.h"
 #import "SearchViewController.h"
 #import "SearchResultViewController.h"
 #import "InformationViewController.h"
@@ -24,7 +24,7 @@ CPP_CLASS(IMDGApp);
     
     // app
     IMDGApp *imdgApp;
-    IMDB *imdb;
+    TMDb *tmdb;
     
     // controllers
     SearchViewController *_searchViewController;

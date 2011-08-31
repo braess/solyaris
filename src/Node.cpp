@@ -89,42 +89,21 @@ NodeMovie::NodeMovie(): Node::Node()  {
 NodeMovie::NodeMovie(string idn, double x, double y): Node::Node(idn, x, y) {
     
     // type
-    type = nodeMovie;
-    
-    // color 
-    cbg = Color(138/255.0, 134/255.0, 96/255.0);
+    this->updateType(nodeMovie);
 
 }
 
 /**
- * Node actor.
+ * Node person.
  */
-NodeActor::NodeActor(): Node::Node()  {    
+NodePerson::NodePerson(): Node::Node()  {    
 }
-NodeActor::NodeActor(string idn, double x, double y): Node::Node(idn, x, y) {
+NodePerson::NodePerson(string idn, double x, double y): Node::Node(idn, x, y) {
     
     // type
-    type = nodeActor;
-    
-    // color 
-    cbg = Color(88/255.0, 124/255.0, 138/255.0);
-
+    this->updateType(nodePerson);
 }
 
-/**
- * Node director.
- */
-NodeDirector::NodeDirector(): Node::Node()  {    
-}
-NodeDirector::NodeDirector(string idn, double x, double y): Node::Node(idn, x, y) {
-    
-    // type
-    type = nodeDirector;
-    
-    // color
-    cbg = Color(131/255.0, 136/255.0, 138/255.0);
-
-}
 
 
 #pragma mark -
@@ -330,6 +309,22 @@ void Node::grown() {
     loading = false;
     grow = false;
     
+
+    // mass
+    mass = calcmass();
+    
+    // state
+    active = true;
+    
+    // unfold
+    this->unfold();
+      
+}
+
+/**
+ * Unfold.
+ */
+void Node::unfold() {
     
     // children
     int nb = nbchildren;
@@ -343,31 +338,35 @@ void Node::grown() {
             (*child)->show(false);
             
         }
-
+        
         // adopt child
         else {
-
+            
             // adopt child
             (*child)->parent = sref;
             
-            // show
-            if (nb > 0) {
+            // director
+            if ((*child)->type == nodePersonDirector) {
                 (*child)->show(true);
-                nb--;
             }
+            
+            // actor / movie
+            if (((*child)->type == nodePersonActor || (*child)->type == nodeMovie)) {
+                
+                // show
+                if (nb > 0) {
+                    (*child)->show(true);
+                    nb--;
+                }
+                else if (! (*child)->isActive()) {
+                   (*child)->hide(); 
+                }
+            }
+
+            
         }
-  
-        
-        
         
     }
-
-    // mass
-    mass = calcmass();
-    
-    // state
-    active = true;
-      
 }
 
 /**
@@ -540,6 +539,40 @@ void Node::renderLabel(string lbl) {
     // offset
     loff.x = - textureLabel.getWidth() / 2.0;
 
+}
+
+/**
+ * Updates the type.
+ */
+void Node::updateType(string t) {
+    
+    // movie
+    if (t == nodeMovie) {
+        
+        // type
+        type = t;
+        
+        // color 
+        cbg = Color(138/255.0, 134/255.0, 96/255.0);
+    }
+    // person actor
+    else if (t == nodePersonActor) {
+        
+        // type
+        type = t;
+        
+        // color 
+        cbg = Color(88/255.0, 124/255.0, 138/255.0);
+    }
+    // person director/crew
+    else if (t == nodePersonCrew || t == nodePersonDirector || t == nodePerson) {
+        
+        // type
+        type = t;
+        
+        // color 
+        cbg = Color(131/255.0, 136/255.0, 138/255.0);
+    }
 }
 
 

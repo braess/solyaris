@@ -2,7 +2,7 @@
 //  SearchResult.m
 //  IMDG
 //
-//  Created by CNPP on 29.7.2011.
+//  Created by CNPP on 31.8.2011.
 //  Copyright (c) 2011 Beat Raess. All rights reserved.
 //
 
@@ -11,8 +11,10 @@
 
 
 @implementation SearchResult
-@dynamic rid;
 @dynamic data;
+@dynamic type;
+@dynamic ref;
+@dynamic thumb;
 @dynamic search;
 
 

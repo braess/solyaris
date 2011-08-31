@@ -9,13 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "Search.h"
 #import "SearchResult.h"
+#import "CacheImageView.h"
 
 
 /*
  * Delegate.
  */
 @protocol SearchResultDelegate <NSObject>
-- (void)searchSelected:(SearchResult*)result type:(NSString*)type;
+- (void)searchSelected:(SearchResult*)result;
 @end
 
 
@@ -38,6 +39,28 @@
 // Business
 - (void)searchResultShow:(Search*)search;
 - (void)searchResultReset;
+
+
+@end
+
+
+/**
+ * SearchResultCell.
+ */
+@interface SearchResultCell : UITableViewCell {
+    
+    // ui
+    UILabel *_labelData;
+    CacheImageView *_thumbImageView;
+
+    
+}
+
+// Properties
+@property (nonatomic,retain) UILabel *labelData;
+
+// Business
+- (void)loadThumb:(NSString*)thumb type:(NSString*)type;
 
 
 @end

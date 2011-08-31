@@ -70,28 +70,17 @@ EdgeMovie::EdgeMovie(string ide, NodePtr n1, NodePtr n2): Edge::Edge(ide,n1,n2) 
 }
 
 /**
- * Edge actor.
+ * Edge person.
  */
-EdgeActor::EdgeActor(): Edge::Edge()  {    
+EdgePerson::EdgePerson(): Edge::Edge()  {    
 }
-EdgeActor::EdgeActor(string ide, NodePtr n1, NodePtr n2): Edge::Edge(ide,n1,n2) {
+EdgePerson::EdgePerson(string ide, NodePtr n1, NodePtr n2): Edge::Edge(ide,n1,n2) {
     
     // type
-    type = edgeActor;
+    type = edgePerson;
 
 }
 
-/**
- * Edge director.
- */
-EdgeDirector::EdgeDirector(): Edge::Edge()  {    
-}
-EdgeDirector::EdgeDirector(string ide, NodePtr n1, NodePtr n2): Edge::Edge(ide,n1,n2) {
-    
-    // type
-    type = edgeDirector;
-
-}
 
 
 #pragma mark -
@@ -316,15 +305,15 @@ string Edge::info() {
         if (this->type == edgeMovie) {
             nfo = node1->label + " plays " + this->label + " in " + node2->label;
         }
-        else if (this->type == edgeActor) {
+        else if (this->type == edgePersonActor) {
             nfo = node2->label + " plays " + this->label + " in " + node1->label;
         }
-        else if (this->type == edgeDirector) {
-            if (node1->type == nodeDirector) {
-                nfo = node1->label + " is the director of " + node2->label;
+        else if (this->type == edgePersonDirector || this->type == edgePersonCrew) {
+            if (node1->type == nodePersonDirector || node1->type == nodePersonCrew) {
+                nfo = node1->label + " is the " + this->label + " of " + node2->label;
             }
             else {
-                nfo = node2->label + " is the director of " + node1->label;
+                nfo = node2->label + " is the " + this->label + " of " + node1->label;
             }
         }
     }
@@ -355,6 +344,15 @@ void Edge::renderLabel(string lbl) {
     // offset
     loff.x = - textureLabel.getWidth() / 2.0;
     
+}
+
+/**
+ * Updates the type.
+ */
+void Edge::updateType(string t) {
+    
+    // type
+    type = t;
 }
 
 

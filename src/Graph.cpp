@@ -317,7 +317,6 @@ NodePtr Graph::doubleTap(Vec2d tpos, int tid) {
         if (d < (*node)->core+harea) {
             
             // tapped
-            FLog("tid = %d, node = ",tid);
             (*node)->tapped();
           
             // return
@@ -404,15 +403,8 @@ NodePtr Graph::createNode(string nid, string type, double x, double y) {
         nodes.push_back(node);
         return node;
     }
-    else if (type == nodeActor) {
-        boost::shared_ptr<NodeActor> node(new NodeActor(nid,x,y));
-        node->sref = node;
-        node->setting(gsettings);
-        nodes.push_back(node);
-        return node;
-    }
-    else if (type == nodeDirector) {
-        boost::shared_ptr<NodeDirector> node(new NodeDirector(nid,x,y));
+    else if (type == nodePerson) {
+        boost::shared_ptr<NodePerson> node(new NodePerson(nid,x,y));
         node->sref = node;
         node->setting(gsettings);
         nodes.push_back(node);
@@ -461,14 +453,8 @@ EdgePtr Graph::createEdge(string eid, string type, NodePtr n1, NodePtr n2) {
         edges.push_back(edge);
         return edge;
     }
-    else if (type == edgeActor) {
-        boost::shared_ptr<Edge> edge(new EdgeActor(eid,n1,n2));
-        edge->setting(gsettings);
-        edges.push_back(edge);
-        return edge;
-    }
-    else if (type == edgeDirector) {
-        boost::shared_ptr<Edge> edge(new EdgeDirector(eid,n1,n2));
+    else if (type == edgePerson) {
+        boost::shared_ptr<Edge> edge(new EdgePerson(eid,n1,n2));
         edge->setting(gsettings);
         edges.push_back(edge);
         return edge;
@@ -507,7 +493,7 @@ EdgePtr Graph::getEdge(string nid1, string nid2) {
  * Sets the info.
  */
 void Graph::shint() {
-    FLog();
+    GLog();
     
     // enabled
     if (! hint_disabled) {

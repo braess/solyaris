@@ -32,9 +32,11 @@ typedef NodeVectorPtr::iterator NodeIt;
 
 
 // constants
-const string nodeMovie = "movie";	
-const string nodeActor = "actor";
-const string nodeDirector = "director";
+const string nodeMovie = "movie";
+const string nodePerson = "person";
+const string nodePersonActor = "person_actor";
+const string nodePersonDirector = "person_director";
+const string nodePersonCrew = "person_crew";
 
 
 /**
@@ -70,11 +72,13 @@ class Node {
     void load();
     void loaded();
     void hide();
+    void unfold();
     void show(bool animate);
     void touched();
     void untouched();
     void tapped();
     void renderLabel(string lbl);
+    void updateType(string t);
     bool isActive();
     bool isVisible();
     bool isSelected();
@@ -152,24 +156,16 @@ class NodeMovie: public Node {
     NodeMovie();
     NodeMovie(string idn, double x, double y);
 };
-class NodeActor: public Node {
+class NodePerson: public Node {
     
     // public
     public:
     
     // Node
-    NodeActor();
-    NodeActor(string idn, double x, double y);
+    NodePerson();
+    NodePerson(string idn, double x, double y);
 };
-class NodeDirector: public Node {
-    
-    // public
-    public:
-    
-    // Node
-    NodeDirector();
-    NodeDirector(string idn, double x, double y);
-};
+
 
 
 

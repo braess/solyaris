@@ -76,7 +76,7 @@ int aboutFooterHeight = 45;
     // title
 	UILabel *lblTitle = [[UILabel alloc] initWithFrame:tframe];
 	lblTitle.backgroundColor = [UIColor clearColor];
-	lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:18.0];
+	lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
 	lblTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
 	lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
 	lblTitle.shadowOffset = CGSizeMake(1,1);

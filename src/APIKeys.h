@@ -7,9 +7,9 @@
 //
 
 
-// API
-#define apiIMDBKey      @"this-is-the-key-to-happiness"
-#define apiIMDBSearch   @"http://imdg.cecinestpasparis.net/api/search.php"
-#define apiIMDBMovie    @"http://imdg.cecinestpasparis.net/api/movie.php"
-#define apiIMDBActor    @"http://imdg.cecinestpasparis.net/api/actor.php"
-#define apiIMDBDirector @"http://imdg.cecinestpasparis.net/api/director.php"
+// TMDb
+#define apiTMDbKey              @"c2c73ebd1e25cbc29cf61158c04ad78a"
+#define apiTMDbSearchMovie      @"http://api.themoviedb.org/2.1/Movie.search"
+#define apiTMDbSearchPerson     @"http://api.themoviedb.org/2.1/Person.search"
+#define apiTMDbMovie            @"http://api.themoviedb.org/2.1/Movie.getInfo"
+#define apiTMDbPerson           @"http://api.themoviedb.org/2.1/Person.getInfo"

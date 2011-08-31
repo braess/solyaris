@@ -1,25 +1,25 @@
 //
-//  IMDB.h
+//  TMDb.h
 //  IMDG
 //
-//  Created by CNPP on 8.7.2011.
+//  Created by CNPP on 26.8.2011.
 //  Copyright 2011 Beat Raess. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "Search.h"
+#import "SearchResult.h"
 #import "Movie.h"
-#import "Actor.h"
-#import "Director.h"
-#import "MovieActor.h"
-#import "MovieDirector.h"
+#import "Person.h"
+#import "Movie2Person.h"
+#import "Asset.h"
 
 
 // alerts
 enum {
-    IMDB_AlertFatal,
-	IMDB_AlertError
+    TMDb_AlertFatal,
+	TMDb_AlertError
 };
 
 
@@ -29,22 +29,21 @@ enum {
 @protocol APIDelegate <NSObject>
 - (void)loadedSearch:(Search*)result;
 - (void)loadedMovie:(Movie*)movie;
-- (void)loadedActor:(Actor*)movie;
-- (void)loadedDirector:(Director*)movie;
+- (void)loadedPerson:(Person*)person;
 - (void)quit;
 @end
 
 /**
- * API IMDB.
+ * API TMDb.
  */
-@interface IMDB : NSObject <UIAlertViewDelegate> {
+@interface TMDb : NSObject <UIAlertViewDelegate> {
     
     // delegate
 	id<APIDelegate>delegate;
     
     // queue
     NSOperationQueue *queue;
-   
+    
     // core data
 	NSManagedObjectModel *managedObjectModel;
     NSManagedObjectContext *managedObjectContext;	    
@@ -57,9 +56,9 @@ enum {
 - (void)cancel;
 - (void)search:(NSString*)q type:(NSString*)t;
 - (void)movie:(NSNumber*)mid;
-- (void)actor:(NSNumber*)aid;
-- (void)director:(NSNumber*)did;
-
+- (void)person:(NSNumber*)mid;
+- (Movie*)dataMovie:(NSNumber*)mid;
+- (Person*)dataPerson:(NSNumber*)pid;
 
 
 @end

@@ -28,8 +28,11 @@ typedef EdgeVectorPtr::iterator EdgeIt;
 
 // constants
 const string edgeMovie = "movie";	
-const string edgeActor = "actor";
-const string edgeDirector = "director";
+const string edgePerson = "person";
+const string edgePersonActor = "person_actor";
+const string edgePersonDirector = "person_director";
+const string edgePersonCrew = "person_crew";
+
 
 
 /**
@@ -57,6 +60,7 @@ class Edge {
     void hide();
     void show();
     void renderLabel(string lbl);
+    void updateType(string t);
     bool isActive();
     bool isVisible();
     bool isTouched();
@@ -110,21 +114,12 @@ class EdgeMovie: public Edge {
     EdgeMovie();
     EdgeMovie(string ide, NodePtr n1, NodePtr n2);
 };
-class EdgeActor: public Edge {
+class EdgePerson: public Edge {
     
     // public
     public:
     
     // Node
-    EdgeActor();
-    EdgeActor(string ide, NodePtr n1, NodePtr n2);
-};
-class EdgeDirector: public Edge {
-    
-    // public
-    public:
-    
-    // Node
-    EdgeDirector();
-    EdgeDirector(string ide, NodePtr n1, NodePtr n2);
+    EdgePerson();
+    EdgePerson(string ide, NodePtr n1, NodePtr n2);
 };

@@ -1,29 +1,27 @@
 //
-//  Movie.m
+//  Person.m
 //  IMDG
 //
 //  Created by CNPP on 31.8.2011.
 //  Copyright (c) 2011 Beat Raess. All rights reserved.
 //
 
-#import "Movie.h"
+#import "Person.h"
 #import "Asset.h"
 #import "Movie2Person.h"
 
 
-@implementation Movie
-@dynamic released;
-@dynamic mid;
-@dynamic trailer;
+@implementation Person
+@dynamic known_movies;
 @dynamic loaded;
-@dynamic runtime;
-@dynamic overview;
-@dynamic homepage;
-@dynamic tagline;
-@dynamic imdb_id;
+@dynamic pid;
+@dynamic birthday;
+@dynamic type;
+@dynamic biography;
+@dynamic birthplace;
 @dynamic name;
 @dynamic assets;
-@dynamic persons;
+@dynamic movies;
 
 - (void)addAssetsObject:(Asset *)value {    
     NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
@@ -54,32 +52,32 @@
 }
 
 
-- (void)addPersonsObject:(Movie2Person *)value {    
+- (void)addMoviesObject:(Movie2Person *)value {    
     NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
-    [self willChangeValueForKey:@"persons" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
-    [[self primitiveValueForKey:@"persons"] addObject:value];
-    [self didChangeValueForKey:@"persons" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
+    [self willChangeValueForKey:@"movies" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
+    [[self primitiveValueForKey:@"movies"] addObject:value];
+    [self didChangeValueForKey:@"movies" withSetMutation:NSKeyValueUnionSetMutation usingObjects:changedObjects];
     [changedObjects release];
 }
 
-- (void)removePersonsObject:(Movie2Person *)value {
+- (void)removeMoviesObject:(Movie2Person *)value {
     NSSet *changedObjects = [[NSSet alloc] initWithObjects:&value count:1];
-    [self willChangeValueForKey:@"persons" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
-    [[self primitiveValueForKey:@"persons"] removeObject:value];
-    [self didChangeValueForKey:@"persons" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
+    [self willChangeValueForKey:@"movies" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
+    [[self primitiveValueForKey:@"movies"] removeObject:value];
+    [self didChangeValueForKey:@"movies" withSetMutation:NSKeyValueMinusSetMutation usingObjects:changedObjects];
     [changedObjects release];
 }
 
-- (void)addPersons:(NSSet *)value {    
-    [self willChangeValueForKey:@"persons" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
-    [[self primitiveValueForKey:@"persons"] unionSet:value];
-    [self didChangeValueForKey:@"persons" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
+- (void)addMovies:(NSSet *)value {    
+    [self willChangeValueForKey:@"movies" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
+    [[self primitiveValueForKey:@"movies"] unionSet:value];
+    [self didChangeValueForKey:@"movies" withSetMutation:NSKeyValueUnionSetMutation usingObjects:value];
 }
 
-- (void)removePersons:(NSSet *)value {
-    [self willChangeValueForKey:@"persons" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
-    [[self primitiveValueForKey:@"persons"] minusSet:value];
-    [self didChangeValueForKey:@"persons" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
+- (void)removeMovies:(NSSet *)value {
+    [self willChangeValueForKey:@"movies" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
+    [[self primitiveValueForKey:@"movies"] minusSet:value];
+    [self didChangeValueForKey:@"movies" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
 }
 
 

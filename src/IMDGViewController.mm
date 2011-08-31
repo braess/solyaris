@@ -75,8 +75,8 @@
 		GLog();
         
         // api
-        imdb = [[IMDB alloc] init];
-        imdb.delegate = self;
+        tmdb = [[TMDb alloc] init];
+        tmdb.delegate = self;
         
         // mode
         mode_settings = NO;
@@ -257,11 +257,10 @@
  * Cleanup rotation.
  */
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    
+
     // resize
     [_searchViewController resize];
     [_informationViewController resize];
-    
     
 }
 
@@ -329,64 +328,28 @@
     if (node != NULL) {
         
         // properties
-        node->renderLabel([movie.title UTF8String]);
-        
-        
-        // directors
-        NSSortDescriptor *dsorter = [[NSSortDescriptor alloc] initWithKey:@"year" ascending:YES];
-        NSArray *directors = [[movie.directors allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:dsorter]];
-        [dsorter release];
-        
-        // create nodes
-        for (MovieDirector *mdirector in directors) {
-            
-            // child
-            NSString *cid = [self makeNodeId:mdirector.director.did type:typeDirector];
-            NodePtr child = imdgApp->getNode([cid UTF8String]);
-            bool existing = true;
-            if (child == NULL) {
-                existing = false;
-                
-                // new child
-                child = imdgApp->createNode([cid UTF8String],[typeDirector UTF8String], node->pos.x, node->pos.y);
-                child->renderLabel([mdirector.director.name UTF8String]);
-            }
-            
-            // add to node
-            node->addChild(child);
-            
-            // create edge
-            EdgePtr edge = imdgApp->getEdge([nid UTF8String], [cid UTF8String]);
-            if (edge == NULL) {
-                NSString *eid = [self makeEdgeId:nid to:cid];
-                edge = imdgApp->createEdge([eid UTF8String],[typeDirector UTF8String],node,child);
-                edge->renderLabel([mdirector.movie.year UTF8String]);
-            }
-            if (existing) {
-                edge->show();
-            }
-            
-        }
+        node->renderLabel([movie.name UTF8String]);
         
         
         // actors
-        NSSortDescriptor *asorter = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
-        NSArray *actors = [[movie.actors allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:asorter]];
-        [asorter release];
+        NSSortDescriptor *psorter = [[NSSortDescriptor alloc] initWithKey:@"order" ascending:YES];
+        NSArray *persons = [[movie.persons allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:psorter]];
+        [psorter release];
         
         // create nodes
-        for (MovieActor *mactor in actors) {
+        for (Movie2Person *m2p in persons) {
             
             // child
-            NSString *cid = [self makeNodeId:mactor.actor.aid type:typeActor];
+            NSString *cid = [self makeNodeId:m2p.person.pid type:typePerson];
             NodePtr child = imdgApp->getNode([cid UTF8String]);
             bool existing = true;
             if (child == NULL) {
                 existing = false;
                  
                 // new child
-                child = imdgApp->createNode([cid UTF8String],[typeActor UTF8String], node->pos.x, node->pos.y);
-                child->renderLabel([mactor.actor.name UTF8String]);
+                child = imdgApp->createNode([cid UTF8String],[typePerson UTF8String], node->pos.x, node->pos.y);
+                child->renderLabel([m2p.person.name UTF8String]);
+                child->updateType([m2p.person.type UTF8String]);
             }
             
             // add to node
@@ -395,9 +358,22 @@
             // create edge
             EdgePtr edge = imdgApp->getEdge([nid UTF8String], [cid UTF8String]);
             if (edge == NULL) {
+                
+                // this is the edge
                 NSString *eid = [self makeEdgeId:nid to:cid];
-                edge = imdgApp->createEdge([eid UTF8String],[typeActor UTF8String],node,child);
-                edge->renderLabel([mactor.character UTF8String]);
+                edge = imdgApp->createEdge([eid UTF8String],[typePerson UTF8String],node,child);
+                
+                // type
+                edge->updateType([m2p.person.type UTF8String]);
+                
+                // label
+                NSString *clabel = m2p.character;
+                if ([m2p.person.type isEqualToString:typePersonDirector] || [m2p.person.type isEqualToString:typePersonCrew]) {
+                    clabel = m2p.job;
+                }
+                
+                // render
+                edge->renderLabel([clabel UTF8String]);
             }
             if (existing) {
                 edge->show();
@@ -413,32 +389,37 @@
 
 }
 
+
+
 /*
- * Loaded actor.
+ * Loaded person.
  */
-- (void)loadedActor:(Actor*)actor {
+- (void)loadedPerson:(Person*)person {
     DLog();
     
     // node
-    NSString *nid = [self makeNodeId:actor.aid type:typeActor];
+    NSString *nid = [self makeNodeId:person.pid type:typePerson];
     NodePtr node = imdgApp->getNode([nid UTF8String]);
     
     // check
     if (node != NULL) {
         
         // properties
-        node->renderLabel([actor.name UTF8String]);
+        node->renderLabel([person.name UTF8String]);
+        node->updateType([person.type UTF8String]);
         
         // movies
         NSSortDescriptor *msorter = [[NSSortDescriptor alloc] initWithKey:@"year" ascending:NO];
-        NSArray *movies = [[actor.movies allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:msorter]];
+        NSArray *movies = [[person.movies allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:msorter]];
         [msorter release];
         
+        
         // create nodes
-        for (MovieActor *mactor in movies) {
+        for (Movie2Person *m2p in movies) {
+            
             
             // child
-            NSString *cid = [self makeNodeId:mactor.movie.mid type:typeMovie];
+            NSString *cid = [self makeNodeId:m2p.movie.mid type:typeMovie];
             NodePtr child = imdgApp->getNode([cid UTF8String]);
             bool existing = true;
             if (child == NULL) {
@@ -446,7 +427,8 @@
                 
                 // new child
                 child = imdgApp->createNode([cid UTF8String],[typeMovie UTF8String], node->pos.x, node->pos.y);
-                child->renderLabel([mactor.movie.title UTF8String]);
+                child->renderLabel([m2p.movie.name UTF8String]);
+                node->updateType([person.type UTF8String]);
             }
             
             // add to node
@@ -455,69 +437,22 @@
             // create edge
             EdgePtr edge = imdgApp->getEdge([nid UTF8String], [cid UTF8String]);
             if (edge == NULL) {
+                
+                // on the edge
                 NSString *eid = [self makeEdgeId:nid to:cid];
                 edge = imdgApp->createEdge([eid UTF8String],[typeMovie UTF8String],node,child);
-                edge->renderLabel([mactor.character UTF8String]);
-            }
-            if (existing) {
-                edge->show();
-            }
-            
-        }
-        
-        // loaded
-        node->loaded();
-        
-    }
-    
-}
-
-/*
- * Loaded director.
- */
-- (void)loadedDirector:(Director*)director {
-    DLog();
-    
-    
-    // node
-    NSString *nid = [self makeNodeId:director.did type:typeDirector];
-    NodePtr node = imdgApp->getNode([nid UTF8String]);
-    
-    // check
-    if (node != NULL) {
-        
-        // properties
-        node->renderLabel([director.name UTF8String]);
-        
-        // movies
-        NSSortDescriptor *msorter = [[NSSortDescriptor alloc] initWithKey:@"year" ascending:NO];
-        NSArray *movies = [[director.movies allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:msorter]];
-        [msorter release];
-        
-        // create nodes
-        for (MovieActor *mactor in movies) {
-            
-            // child
-            NSString *cid = [self makeNodeId:mactor.movie.mid type:typeMovie];
-            NodePtr child = imdgApp->getNode([cid UTF8String]);
-            bool existing = true;
-            if (child == NULL) {
-                existing = false;
                 
-                // new child
-                child = imdgApp->createNode([cid UTF8String],[typeMovie UTF8String], node->pos.x, node->pos.y);
-                child->renderLabel([mactor.movie.title UTF8String]);
-            }
-            
-            // add to node
-            node->addChild(child);
-            
-            // create edge
-            EdgePtr edge = imdgApp->getEdge([nid UTF8String], [cid UTF8String]);
-            if (edge == NULL) {
-                NSString *eid = [self makeEdgeId:nid to:cid];
-                edge = imdgApp->createEdge([eid UTF8String],[typeDirector UTF8String],node,child);
-                edge->renderLabel([mactor.movie.year UTF8String]);
+                // type
+                edge->updateType([person.type UTF8String]);
+                
+                // label
+                NSString *clabel = m2p.character;
+                if ([person.type isEqualToString:typePersonDirector] || [person.type isEqualToString:typePersonCrew]) {
+                    clabel = m2p.job;
+                }
+                
+                // render
+                edge->renderLabel([clabel UTF8String]);
             }
             if (existing) {
                 edge->show();
@@ -550,7 +485,7 @@
 /* 
  * Search selected.
  */
-- (void)searchSelected:(SearchResult*)result type:(NSString*)type {
+- (void)searchSelected:(SearchResult*)result {
     DLog();
     
     
@@ -565,10 +500,11 @@
     
     
     // node
-    NSString *nid = [self makeNodeId:result.rid type:type];
+    NSString *nid = [self makeNodeId:result.ref type:result.type];
     NodePtr node = imdgApp->getNode([nid UTF8String]);
     if (node == NULL) {
-        node = imdgApp->createNode([nid UTF8String],[type UTF8String], nx, ny);
+        NSLog(@"type = %@",result.type);
+        node = imdgApp->createNode([nid UTF8String],[result.type UTF8String], nx, ny);
     }
     
     // active
@@ -578,19 +514,16 @@
         node->load();
             
         // movie
-        if ([type isEqualToString:typeMovie]) {
-            [imdb movie:result.rid];
+        if ([result.type isEqualToString:typeMovie]) {
+            [tmdb movie:result.ref];
         }
         
-        // actor
-        if ([type isEqualToString:typeActor]) {
-            [imdb actor:result.rid];
+        // person
+        if ([result.type isEqualToString:typePerson]) {
+            [tmdb person:result.ref];
         }
-        
-        // director
-        if ([type isEqualToString:typeDirector]) {
-            [imdb director:result.rid];
-        }
+
+
     }
 
 
@@ -625,18 +558,13 @@
         
         // movie
         if ([type isEqualToString:typeMovie]) {
-            [imdb movie:nid];
+            [tmdb movie:nid];
         }
-        
-        // actor
-        if ([type isEqualToString:typeActor]) {
-            [imdb actor:nid];
+        // person
+        else {
+            [tmdb person:nid];
         }
-        
-        // director
-        if ([type isEqualToString:typeDirector]) {
-            [imdb director:nid];
-        }
+
     }
     
 }
@@ -666,7 +594,7 @@
     FLog();
     
     // cancel
-    [imdb cancel];
+    [tmdb cancel];
 }
 
 
@@ -683,17 +611,24 @@
     // reset
     [_searchResultViewController searchResultReset];
     
-    // api
-    [imdb search:s type:t];
-    
     // framed
-    CGRect srframe = _searchViewController.buttonMovie.frame;
-    if (t == typeActor) {
+    CGRect srframe = _searchViewController.searchBar.frame;
+    NSString *type = typeAll;
+    if (t == typeMovie) {
+        type = typeMovie;
+        srframe = _searchViewController.buttonMovie.frame;
+    }
+    else if (t == typePersonActor) {
+        type = typePerson;
         srframe = _searchViewController.buttonActor.frame;
     }
-    else if (t == typeDirector) {
-        srframe = _searchViewController.buttonDirector.frame;
+    else if (t == typePersonCrew) {
+        type = typePerson;
+        srframe = _searchViewController.buttonCrew.frame;
     }
+    
+    // api
+    [tmdb search:s type:type];
     
     // pop it
     [_searchResultsPopoverController setPopoverContentSize:CGSizeMake(_searchResultViewController.view.frame.size.width, 125) animated:NO];
@@ -788,17 +723,11 @@
         
         // movie
         if ([type isEqualToString:typeMovie]) {
-            [imdb performSelector:@selector(movie:) withObject:dbid afterDelay:dload];
+            [tmdb performSelector:@selector(movie:) withObject:dbid afterDelay:dload];
         }
-        
-        // actor
-        if ([type isEqualToString:typeActor]) {
-            [imdb performSelector:@selector(actor:) withObject:dbid afterDelay:dload];
-        }
-        
-        // director
-        if ([type isEqualToString:typeDirector]) {
-            [imdb performSelector:@selector(director:) withObject:dbid afterDelay:dload];
+        // person
+        else {
+            [tmdb performSelector:@selector(person:) withObject:dbid afterDelay:dload];
         }
         
     }
@@ -817,15 +746,58 @@
     // info
     if (node->isActive()) {
         
+        // parent
+        NSString *pid = [NSString stringWithCString:node->nid.c_str() encoding:[NSString defaultCStringEncoding]];
         
-        // information
-        [_informationViewController informationTitle:[NSString stringWithCString:node->label.c_str() encoding:[NSString defaultCStringEncoding]]];
+        // type
+        NSString *ntype = [NSString stringWithCString:node->type.c_str() encoding:[NSString defaultCStringEncoding]];
+        
+        // movie
+        if ([ntype isEqualToString:typeMovie]) {
+            
+            // data
+            Movie *movie = [tmdb dataMovie:[self toDBId:pid]];
+            
+            // images
+            NSString *poster = @"";
+            for (Asset *a in movie.assets) {
+                
+                // poster
+                if ([a.type isEqualToString:assetPoster] && [a.size isEqualToString:assetSizeThumb]) {
+                    poster = a.url;
+                    break;
+                }
+            }
+            
+            // information
+            [_informationViewController informationMovie:movie.name poster:poster tagline:movie.tagline overview:movie.overview released:movie.released runtime:movie.runtime trailer:movie.trailer homepage:movie.homepage imdb_id:movie.imdb_id];
+        }
+        else {
+            
+            // data
+            Person *person = [tmdb dataPerson:[self toDBId:pid]];
+            
+            // images
+            NSString *profile = @"";
+            for (Asset *a in person.assets) {
+                
+                // poster
+                if ([a.type isEqualToString:assetProfile] && [a.size isEqualToString:assetSizeMid]) {
+                    profile = a.url;
+                    break;
+                }
+            }
+            
+            // information
+            [_informationViewController informationPerson:person.name profile:profile biography:person.biography birthday:person.birthday birthplace:person.birthplace known_movies:person.known_movies];
+        }
+        
+        
+        // node information
         NSMutableArray *movies = [[NSMutableArray alloc] init];
         NSMutableArray *actors = [[NSMutableArray alloc] init];
         NSMutableArray *directors = [[NSMutableArray alloc] init];
-        
-        // parent
-        NSString *pid = [NSString stringWithCString:node->nid.c_str() encoding:[NSString defaultCStringEncoding]];
+        NSMutableArray *crew = [[NSMutableArray alloc] init];
         
         
         // children
@@ -861,14 +833,20 @@
             }
             
             // actor
-            if ([type isEqualToString:typeActor]) {
+            if ([type isEqualToString:typePersonActor]) {
                 [actors addObject:nfo];
             }
             
-            // director
-            if ([type isEqualToString:typeDirector]) {
+            // crew
+            if ([type isEqualToString:typePersonDirector]) {
                 [directors addObject:nfo];
             }
+            
+            // crew
+            if ([type isEqualToString:typePersonCrew]) {
+                [crew addObject:nfo];
+            }
+            
             
         }
         
@@ -876,6 +854,7 @@
         _informationViewController.movies = movies;
         _informationViewController.actors = actors;
         _informationViewController.directors = directors;
+        _informationViewController.crew = crew ;
 
         // animate
         [self animationInformationShow];        
@@ -1147,6 +1126,7 @@
     NSNumber *dbid = [nf numberFromString:[chunks objectAtIndex:1]];
     return dbid;
 }
+
 
 
 

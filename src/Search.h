@@ -2,7 +2,7 @@
 //  Search.h
 //  IMDG
 //
-//  Created by CNPP on 29.7.2011.
+//  Created by CNPP on 31.8.2011.
 //  Copyright (c) 2011 Beat Raess. All rights reserved.
 //
 
@@ -15,7 +15,8 @@
 @private
 }
 @property (nonatomic, retain) NSString * query;
+@property (nonatomic, retain) NSNumber * count;
 @property (nonatomic, retain) NSString * type;
-@property (nonatomic, retain) NSSet* data;
+@property (nonatomic, retain) NSSet* results;
 
 @end

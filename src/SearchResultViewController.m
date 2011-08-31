@@ -11,6 +11,9 @@
 
 
 
+#pragma mark -
+#pragma mark SearchResultViewController
+#pragma mark -
 
 /**
  * SearchResultViewController.
@@ -36,7 +39,6 @@
     FLog();
    
     // data
-    _type = [[NSMutableString alloc] init];
     _data = [[NSMutableArray alloc] init];
     
     // resize
@@ -57,8 +59,7 @@
     
     
     // data
-    [_type setString:search.type];
-    for (SearchResult* s in search.data) {
+    for (SearchResult* s in search.results) {
         [_data addObject:s];
     }
     
@@ -68,14 +69,7 @@
 	[sorter release];
     
     // title
-    NSString *sType = NSLocalizedString(@"Movies", @"Movies");
-    if ([_type isEqualToString:typeActor]) {
-        sType = NSLocalizedString(@"Actors", @"Actors");
-    }
-    else if ([_type isEqualToString:typeDirector]) {
-        sType = NSLocalizedString(@"Directors", @"Directors");
-    }
-    self.navigationItem.title = [NSString stringWithFormat:@"%i %@", [_data count], sType];
+    self.navigationItem.title = [NSString stringWithFormat:@"%i %@",[_data count], NSLocalizedString(@"Results", @"Results")];
     
     // reload
     [self.tableView reloadData];
@@ -133,27 +127,26 @@
  * Cells.
  */
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    DLog();
     
     // identifiers
     static NSString *CellSearchResultIdentifier = @"CellSearchResult";
 	
 	// create cell
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellSearchResultIdentifier];
+	SearchResultCell *cell = (SearchResultCell*) [tableView dequeueReusableCellWithIdentifier:CellSearchResultIdentifier];
 	if (cell == nil) {
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellSearchResultIdentifier] autorelease];
-		cell.accessoryType = UITableViewCellAccessoryNone;
+		cell = [[[SearchResultCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellSearchResultIdentifier] autorelease];
 	}
 	
-	// configure
-	cell.textLabel.font = [UIFont fontWithName:@"Helvetica" size:15.0]; 
-	cell.textLabel.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
-
     
     // result 
     SearchResult *sr = [_data objectAtIndex:indexPath.row];
-    cell.textLabel.text = sr.data;
-    cell.detailTextLabel.text = @"";
+    
+    // cell
+    [cell.labelData setText:sr.data];
+    [cell loadThumb:sr.thumb type:sr.type];
+    
+    // return
     return cell;
 }
 
@@ -164,8 +157,8 @@
     FLog();
     
     // delegate
-	if (delegate != nil && [delegate respondsToSelector:@selector(searchSelected:type:)]) {
-		[delegate searchSelected:[_data objectAtIndex:indexPath.row] type:_type];
+	if (delegate != nil && [delegate respondsToSelector:@selector(searchSelected:)]) {
+		[delegate searchSelected:[_data objectAtIndex:indexPath.row]];
 	}
 }
 
@@ -182,7 +175,6 @@
     GLog();
     
     // data
-    [_type release];
     [_data release];
     
     // super
@@ -192,3 +184,161 @@
 
 
 @end
+
+
+
+
+#pragma mark -
+#pragma mark InformationCell
+#pragma mark -
+
+/**
+ * SearchResultCell.
+ */
+@implementation SearchResultCell
+
+
+#pragma mark -
+#pragma mark Properties
+
+// accessors
+@synthesize labelData=_labelData;
+
+
+#pragma mark -
+#pragma mark Object Methods
+
+/*
+ * Init.
+ */
+-(id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    
+    // init
+    if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
+        
+        // cell
+        self.accessoryType = UITableViewCellAccessoryNone;
+        
+        // labels
+        UILabel *lblInfo = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
+        lblInfo.backgroundColor = [UIColor clearColor];
+        lblInfo.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
+        lblInfo.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
+        lblInfo.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
+        lblInfo.shadowOffset = CGSizeMake(1,1);
+        lblInfo.opaque = YES;
+        lblInfo.numberOfLines = 2;
+        
+        
+        _labelData = [lblInfo retain];
+        [self.contentView addSubview: _labelData];
+        [lblInfo release];
+        
+        // thumb
+        CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:CGRectMake(-10, 0, 32, 44)];
+        ciView.clipsToBounds = YES;
+        ciView.contentMode = UIViewContentModeScaleAspectFill;
+        ciView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
+        
+        _thumbImageView = [ciView retain];
+        [self.contentView addSubview:_thumbImageView];
+        [ciView release];
+        
+    }
+    return self;
+}
+
+#pragma mark -
+#pragma mark TableCell Methods
+
+/*
+ * Layout.
+ */
+- (void)layoutSubviews {
+    
+    // thumb
+    [_thumbImageView setFrame:CGRectMake(-10, 0, 32, 44)];
+    
+    // label
+    [_labelData setFrame:CGRectMake(30, 0, 270, 45)];
+}
+
+
+
+/*
+ * Draws the cell.
+ */
+- (void)drawRect:(CGRect)rect {
+    //[super drawRect:rect];
+	
+    // get the graphics context and clear it
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextClearRect(ctx, rect);
+    //CGContextSetShouldAntialias(ctx, NO);
+    
+    // background
+    UIColor *bgc = self.highlighted ? [UIColor colorWithWhite:0.96 alpha:1] : [UIColor colorWithWhite:1 alpha:1];
+    CGContextSetFillColorWithColor(ctx, bgc.CGColor);
+	CGContextFillRect(ctx, rect);
+    
+    // lines
+    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
+	CGContextMoveToPoint(ctx, rect.origin.x, 0);
+	CGContextAddLineToPoint(ctx, rect.origin.x+rect.size.width, 0);
+	CGContextStrokePath(ctx);
+    
+}
+
+
+/*
+ * Disable highlighting of currently selected cell.
+ */
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:selected animated:NO];
+    [self setSelectionStyle:UITableViewCellSelectionStyleNone];
+}
+
+/*
+ * Highlight.
+ */
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+    [super setHighlighted:highlighted animated:NO];
+    [self setNeedsDisplay];
+}
+
+
+
+#pragma mark -
+#pragma mark Business Methods
+
+/**
+ * Loads the thumb.
+ */
+- (void)loadThumb:(NSString *)thumb type:(NSString *)type {
+    DLog();
+    
+    if ([type isEqualToString:typeMovie]) {
+        [_thumbImageView placeholderImage:[UIImage imageNamed:@"placeholder_search_movie.png"]];
+    }
+    else {
+        [_thumbImageView placeholderImage:[UIImage imageNamed:@"placeholder_search_person.png"]];
+    }
+    [_thumbImageView loadImageFromURL:thumb];
+}
+
+#pragma mark -
+#pragma mark Memory management
+
+/*
+ * Deallocates all used memory.
+ */
+- (void)dealloc {
+	FLog();
+	
+	// super
+    [super dealloc];
+}
+
+
+@end
+
