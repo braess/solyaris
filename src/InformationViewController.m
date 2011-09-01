@@ -22,7 +22,7 @@
 
 
 /**
- * Action Stack.
+ * Swap Stack.
  */
 @interface InformationViewController (SwapStack)
 - (void)swapListing;
@@ -33,6 +33,17 @@
 @end
 
 
+/**
+ * Action Stack.
+ */
+@interface InformationViewController (ActionStack)
+- (void)actionResize:(id)sender;
+- (void)resizeFull;
+- (void)resizeDefault;
+@end
+
+
+
 #pragma mark -
 #pragma mark InformationViewController
 #pragma mark -
@@ -41,6 +52,27 @@
  * InformationViewController.
  */
 @implementation InformationViewController
+
+
+#pragma mark -
+#pragma mark Constants
+
+// constants
+#define kAnimateTimeResizeFull      0.3f
+#define kAnimateTimeResizeDefault	0.3f
+
+
+// local vars
+static float informationHeaderHeight = 110;
+static float informationFooterHeight = 60;
+
+static int informationCellHeight = 36;
+static int informationCellInset = 15;
+static int informationGapHeight = 39;
+static int informationGapOffset = 10;
+static int informationGapInset = 15;
+
+
 
 #pragma mark -
 #pragma mark Properties
@@ -54,19 +86,6 @@
 @synthesize directors = _directors;
 @synthesize crew = _crew;
 
-
-// local vars
-CGRect vframe;
-float informationHeaderHeight = 110;
-float informationFooterHeight = 60;
-
-
-// sections
-int cellHeight = 36;
-int cellInset = 15;
-int informationGapHeight = 39;
-int informationGapOffset = 10;
-int informationGapInset = 15;
 
 
 #pragma mark -
@@ -91,6 +110,9 @@ int informationGapInset = 15;
         mode_information = NO;
         mode_imdb = NO;
         mode_wikipedia = NO;
+        
+        // screen
+        fullscreen = NO;
 
 	}
 	return self;
@@ -107,26 +129,26 @@ int informationGapInset = 15;
 - (void)loadView {
 	[super loadView];
 	DLog();
+
     
     // window
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
     
     // frames
-    CGRect wframe = window.frame;
-    CGRect cframe = CGRectMake(wframe.size.width/2.0-vframe.size.width/2.0, wframe.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
-    CGRect hframe = CGRectMake(0, 0, cframe.size.width, informationHeaderHeight);
-    CGRect fframe = CGRectMake(0, cframe.size.height-informationFooterHeight, cframe.size.width, informationFooterHeight);
-    CGRect tframe = CGRectMake(0, informationHeaderHeight, cframe.size.width, cframe.size.height-informationHeaderHeight-informationFooterHeight);
-    CGRect aframe = CGRectMake(informationGapInset, informationGapOffset, fframe.size.width-2*informationGapInset, fframe.size.height-2*informationGapOffset);
+    CGRect windowFrame = window.frame;
+    CGRect contentFrame = CGRectMake(windowFrame.size.width/2.0-vframe.size.width/2.0, windowFrame.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
+    CGRect headerFrame = CGRectMake(0, 0, contentFrame.size.width, informationHeaderHeight);
+    CGRect footerFrame = CGRectMake(0, contentFrame.size.height-informationFooterHeight, contentFrame.size.width, informationFooterHeight);
+    CGRect componentFrame = CGRectMake(0, informationHeaderHeight, contentFrame.size.width, contentFrame.size.height-informationHeaderHeight-informationFooterHeight);
     
     
     // view
-    self.view = [[UIView alloc] initWithFrame:wframe];
+    self.view = [[UIView alloc] initWithFrame:windowFrame];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.view.hidden = YES;
     
     // modal
-    UIView *mView = [[UIView alloc] initWithFrame:wframe];
+    UIView *mView = [[UIView alloc] initWithFrame:windowFrame];
     mView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     mView.backgroundColor = [UIColor blackColor];
     mView.opaque = NO;
@@ -137,24 +159,18 @@ int informationGapInset = 15;
 
 	
 	// content
-    InformationBackgroundView *ctView = [[InformationBackgroundView alloc] initWithFrame:cframe];
+    InformationBackgroundView *ctView = [[InformationBackgroundView alloc] initWithFrame:contentFrame];
     
     
     // header view
-    InformationMovieView *nfoMovieView = [[InformationMovieView alloc] initWithFrame:hframe];
-    nfoMovieView.tag = TagInformationMovie;
+    InformationMovieView *nfoMovieView = [[InformationMovieView alloc] initWithFrame:headerFrame];
+    nfoMovieView.tag = TagInformationHeaderMovie;
     nfoMovieView.hidden = YES;
     
-    InformationPersonView *nfoPersonView = [[InformationPersonView alloc] initWithFrame:hframe];
-    nfoPersonView.tag = TagInformationMovie;
+    InformationPersonView *nfoPersonView = [[InformationPersonView alloc] initWithFrame:headerFrame];
+    nfoPersonView.tag = TagInformationHeaderPerson;
     nfoPersonView.hidden = YES;
     
-    // drop that shadow
-	CAGradientLayer *dropShadow = [[[CAGradientLayer alloc] init] autorelease];
-	dropShadow.frame = CGRectMake(0, hframe.size.height, hframe.size.width, 15);
-	dropShadow.colors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:0 alpha:0.02].CGColor,(id)[UIColor colorWithWhite:0 alpha:0].CGColor,nil];
-	[nfoMovieView.layer insertSublayer:dropShadow atIndex:0];
-    [nfoPersonView.layer insertSublayer:dropShadow atIndex:0];
     
     // add header view to content
     _informationMovieView = [nfoMovieView retain];
@@ -164,35 +180,93 @@ int informationGapInset = 15;
     _informationPersonView = [nfoPersonView retain];
     [ctView addSubview:_informationPersonView];
     [nfoPersonView release];
+    
+    
+    // resize
+	UIButton *btnResize = [UIButton buttonWithType:UIButtonTypeCustom]; 
+    btnResize.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+	btnResize.frame = CGRectMake(contentFrame.size.width-32, 0, 32, 32);
+	[btnResize setImage:[UIImage imageNamed:@"btn_resize-full.png"] forState:UIControlStateNormal];
+	[btnResize addTarget:self action:@selector(actionResize:) forControlEvents:UIControlEventTouchUpInside];
+    _buttonResize = [btnResize retain];
+	[ctView  addSubview:_buttonResize];
+    [btnResize release];
 
     
-    // table view
-    UITableView *listingTableView = [[UITableView alloc] initWithFrame:tframe style:UITableViewStyleGrouped];
-    listingTableView.tag = TagInformationContent;
-    listingTableView.delegate = self;
-    listingTableView.dataSource = self;
-	listingTableView.backgroundColor = [UIColor clearColor];
-	listingTableView.opaque = YES;
-	listingTableView.backgroundView = nil;
-    listingTableView.sectionHeaderHeight = 0; 
-    listingTableView.sectionFooterHeight = 0;
+    // component listing
+    UITableView *componentListing = [[UITableView alloc] initWithFrame:componentFrame style:UITableViewStyleGrouped];
+    componentListing.tag = TagInformationComponentListing;
+    //componentListing.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin);
+    componentListing.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+    componentListing.delegate = self;
+    componentListing.dataSource = self;
+	componentListing.backgroundColor = [UIColor clearColor];
+	componentListing.opaque = YES;
+	componentListing.backgroundView = nil;
+    componentListing.sectionHeaderHeight = 0; 
+    componentListing.sectionFooterHeight = 0;
+    componentListing.hidden = YES;
     
-    // add table view to content
-    _listingTableView = [listingTableView retain];
-    [ctView addSubview:_listingTableView];
-    [ctView sendSubviewToBack:_listingTableView];
-    [listingTableView release];
+    // add listing to content
+    _componentListing = [componentListing retain];
+    [ctView addSubview:_componentListing];
+    [componentListing release];
     
+    // component information
+	UITextView *componentInformation = [[UITextView alloc] initWithFrame:CGRectMake(componentFrame.origin.x+8, componentFrame.origin.y+6, componentFrame.size.width-20, componentFrame.size.height-20)];
+    componentInformation.tag = TagInformationComponentInformation;
+    componentInformation.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+    componentInformation.textAlignment = UITextAlignmentLeft;
+	componentInformation.backgroundColor = [UIColor clearColor];
+	componentInformation.font = [UIFont fontWithName:@"Helvetica" size:15.0];
+	componentInformation.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
+	componentInformation.opaque = YES;
+    componentInformation.userInteractionEnabled = YES;
+    componentInformation.editable = NO;
+    componentInformation.scrollEnabled = YES;
+    componentInformation.hidden = YES;
+    
+    // add information to content
+    _componentInformation = [componentInformation retain];
+    [ctView addSubview:_componentInformation];
+    [componentInformation release];
+    
+    
+    // component imdb
+    UIWebView *componentIMDb = [[UIWebView alloc] initWithFrame:componentFrame];
+    componentIMDb.tag = TagInformationComponentIMDb;
+    componentIMDb.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+    componentIMDb.hidden = YES;
+    componentIMDb.scalesPageToFit = YES;
+    
+    // add imdb to content
+    _componentIMDb = [componentIMDb retain];
+    [ctView addSubview:_componentIMDb];
+    [componentIMDb release];
+    
+    // component wikipedia
+    UIWebView *componentWikipedia = [[UIWebView alloc] initWithFrame:componentFrame];
+    componentWikipedia.tag = TagInformationComponentWikipedia;
+    componentWikipedia.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+    componentWikipedia.hidden = YES;
+    componentWikipedia.scalesPageToFit = YES;
+    
+    // add wikipedia to content
+    _componentWikipedia = [componentWikipedia retain];
+    [ctView addSubview:_componentWikipedia];
+    [componentWikipedia release];
+    
+
     
     // footer view
-    UIView *footerView = [[UIView alloc] initWithFrame:fframe];
-    footerView.autoresizingMask = UIViewAutoresizingNone;
+    UIView *footerView = [[UIView alloc] initWithFrame:footerFrame];
+    footerView.autoresizingMask = (UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin);
     footerView.tag = TagInformationFooter;
 	footerView.backgroundColor = [UIColor clearColor];
 	footerView.opaque = YES;
     
     // actions
-    ActionBar *abar = [[ActionBar alloc] initWithFrame:aframe];
+    ActionBar *abar = [[ActionBar alloc] initWithFrame:CGRectMake(informationGapInset, informationGapOffset, footerFrame.size.width-2*informationGapInset, footerFrame.size.height-2*informationGapOffset)];
     
     // flex
 	UIBarButtonItem *itemFlex = [[UIBarButtonItem alloc] 
@@ -248,9 +322,8 @@ int informationGapInset = 15;
     [ctView addSubview:footerView];
     [footerView release];
     
-    
     // add & release content
-    self.contentView = [ctView retain];
+    _contentView = [ctView retain];
     [self.view addSubview:_contentView];
     [self.view bringSubviewToFront:_contentView];
     [ctView release];
@@ -275,10 +348,9 @@ int informationGapInset = 15;
 	DLog();
     
     // reload
-    [_listingTableView reloadData];
+    [_componentListing reloadData];
     
-    // scroll to top
-    [_listingTableView setContentOffset:CGPointMake(0, 0) animated:NO];
+    NSLog(@"load %f %f %f %f",vframe.origin.x, vframe.origin.y, vframe.size.width, vframe.size.height);
 
 }
 
@@ -336,8 +408,25 @@ int informationGapInset = 15;
     [_informationMovieView.labelReleased setText:[NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:released]]];
     [_informationMovieView.labelRuntime setText:[NSString stringWithFormat:@"%im",[runtime intValue]]];
     
-    // actions
+    // component listing
     [_actionListing setTitle:NSLocalizedString(@"Cast", @"Cast")];
+    
+    // component information
+    [_componentInformation setText:overview];
+    
+    
+    // component imdb
+    NSString *imdbURL = ([imdb_id length] > 0) ? 
+        [NSString stringWithFormat:@"%@%@",urlIMDBMovie,imdb_id] 
+        : [NSString stringWithFormat:@"%@%@",urlIMDBSearch,[name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    
+    NSMutableURLRequest *imdbRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:imdbURL]];
+    [_componentIMDb loadRequest:imdbRequest];
+    
+    // component wikipedia
+    NSString *wikipediaURL = [NSString stringWithFormat:@"%@%@",urlWikipediaSearch,[name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSMutableURLRequest *wikipediaRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:wikipediaURL]];
+    [_componentWikipedia loadRequest:wikipediaRequest];
     
     // swap listing
     [self swapListing];
@@ -372,9 +461,21 @@ int informationGapInset = 15;
     [_informationPersonView.labelBirthplace setText:birthplace];
     [_informationPersonView.labelKnownMovies setText:[NSString stringWithFormat:@"%i",[known_movies intValue]]];
     
-    
-    // actions
+    // component listing
     [_actionListing setTitle:NSLocalizedString(@"Movies", @"Movies")];
+    
+    // component information
+    [_componentInformation setText:biography];
+    
+    // component imdb
+    NSString *imdbURL = [NSString stringWithFormat:@"%@%@",urlIMDBSearch,[name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSMutableURLRequest *imdbRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:imdbURL]];
+    [_componentIMDb loadRequest:imdbRequest];
+    
+    // component wikipedia
+    NSString *wikipediaURL = [NSString stringWithFormat:@"%@%@",urlWikipediaSearch,[name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSMutableURLRequest *wikipediaRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:wikipediaURL]];
+    [_componentWikipedia loadRequest:wikipediaRequest];
     
     // swap listing
     [self swapListing];
@@ -407,8 +508,10 @@ int informationGapInset = 15;
         // action
         [_actionListing setSelected:YES];
         
-        // views
-        _listingTableView.hidden = NO;
+        // component
+        [_componentListing setHidden:NO];
+        [_componentListing reloadData];
+        [_componentListing setContentOffset:CGPointMake(0, 0) animated:NO];
     }
 
 }
@@ -431,7 +534,9 @@ int informationGapInset = 15;
         // action
         [_actionInformation setSelected:YES];
         
-
+        // component
+        [_componentInformation setHidden:NO];
+        [_componentInformation setContentOffset:CGPointZero animated:NO];
     }
 }
 
@@ -453,6 +558,14 @@ int informationGapInset = 15;
         // action
         [_actionIMDb setSelected:YES];
         
+        // component
+        [_componentIMDb setHidden:NO];
+        for (UIView *subview in _componentIMDb.subviews) {
+            if ([subview isKindOfClass:[UIScrollView class]]) {
+                [(UIScrollView*)subview setContentOffset:CGPointZero animated:YES];
+            }
+        }
+        
     }
 }
 
@@ -473,6 +586,14 @@ int informationGapInset = 15;
         
         // action
         [_actionWikipedia setSelected:YES];
+        
+        // component
+        [_componentWikipedia setHidden:NO];
+        for (UIView *subview in _componentIMDb.subviews) {
+            if ([subview isKindOfClass:[UIScrollView class]]) {
+                [(UIScrollView*)subview setContentOffset:CGPointZero animated:YES];
+            }
+        }
         
     }
 }
@@ -496,8 +617,72 @@ int informationGapInset = 15;
     [_actionWikipedia setSelected:NO];
     
     // hide views
-    _listingTableView.hidden = YES;
+    _componentListing.hidden = YES;
+    _componentInformation.hidden = YES;
+    _componentIMDb.hidden = YES;
+    _componentWikipedia.hidden = YES;
     
+}
+
+
+#pragma mark -
+#pragma mark Actions
+
+/*
+ * Resize.
+ */
+- (void)actionResize:(id)sender {
+    FLog();
+    
+    // toggle
+    if (fullscreen) {
+        [self resizeDefault];
+    }
+    else {
+        [self resizeFull];
+    }
+    fullscreen = ! fullscreen;
+}
+- (void)resizeFull {
+    GLog();
+    
+    // window
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    CGRect wframe = window.frame;
+    if ([self.delegate informationOrientationLandscape]) {
+        wframe.size.width = window.frame.size.height;
+        wframe.size.height = window.frame.size.width;
+    }
+
+    
+    // frame
+    CGRect rframe = wframe;
+    
+    // animate
+	[UIView beginAnimations:@"resize_default" context:nil];
+    [UIView setAnimationDuration:kAnimateTimeResizeFull];
+	_contentView.frame = rframe;
+	[UIView commitAnimations];
+}
+- (void)resizeDefault {
+    GLog();
+    
+    // window
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    CGRect wframe = window.frame;
+    if ([self.delegate informationOrientationLandscape]) {
+        wframe.size.width = window.frame.size.height;
+        wframe.size.height = window.frame.size.width;
+    }
+    
+    // frame
+    CGRect rframe = CGRectMake(wframe.size.width/2.0-vframe.size.width/2.0, wframe.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
+    
+    // animate
+	[UIView beginAnimations:@"resize_default" context:nil];
+    [UIView setAnimationDuration:kAnimateTimeResizeDefault];
+	_contentView.frame = rframe;
+	[UIView commitAnimations];
 }
 
 
@@ -569,7 +754,7 @@ int informationGapInset = 15;
  * Customize the cell height.
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return cellHeight;
+    return informationCellHeight;
 }
 
 /*
@@ -752,7 +937,7 @@ int informationGapInset = 15;
         
         // state
         nfo.loaded = YES;
-        [_listingTableView reloadData];
+        [_componentListing reloadData];
         
         // load
         if (delegate && [delegate respondsToSelector:@selector(informationSelected:type:)]) {
@@ -785,7 +970,7 @@ int informationGapInset = 15;
     [_actionWikipedia release];
     
     // listing
-    [_listingTableView release];
+    [_componentListing release];
 	
 	// duper
     [super dealloc];
@@ -892,8 +1077,8 @@ int informationGapInset = 15;
 		// add
 		self.opaque = YES;
 		self.backgroundColor = [UIColor whiteColor];
-        self.autoresizesSubviews = NO;
-        self.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+        self.autoresizesSubviews = YES;
+        self.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin);
         self.contentMode = UIViewContentModeRedraw; // Thats the one
         
 		// return
@@ -970,11 +1155,38 @@ int informationGapInset = 15;
  * Touches.
  */
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    GLog();
+    FLog();
     
-    // scroll to top
-    UITableView *tv = (UITableView*) [self viewWithTag:TagInformationContent];
-    [tv setContentOffset:CGPointMake(0, 0) animated:YES];
+    // whats the point
+    CGPoint tPoint = [[touches anyObject] locationInView:self];
+    
+    // header
+    if (tPoint.y < informationHeaderHeight) {
+        
+        // listing
+        UITableView *cListing = (UITableView*) [self viewWithTag:TagInformationComponentListing];
+        [cListing setContentOffset:CGPointMake(0, 0) animated:YES];
+        
+        // information
+        UITextView *cInformation = (UITextView*) [self viewWithTag:TagInformationComponentInformation];
+        [cInformation setContentOffset:CGPointMake(0, 0) animated:YES];
+        
+        // imdb
+        UITextView *cIMDb = (UITextView*) [self viewWithTag:TagInformationComponentIMDb];
+        for (UIView *subview in cIMDb.subviews) {
+            if ([subview isKindOfClass:[UIScrollView class]]) {
+                [(UIScrollView*)subview setContentOffset:CGPointZero animated:YES];
+            }
+        }
+        
+        // wikipedia
+        UITextView *cWikipedia = (UITextView*) [self viewWithTag:TagInformationComponentWikipedia];
+        for (UIView *subview in cWikipedia.subviews) {
+            if ([subview isKindOfClass:[UIScrollView class]]) {
+                [(UIScrollView*)subview setContentOffset:CGPointZero animated:YES];
+            }
+        }
+    }
 }
 
 /*
@@ -1393,7 +1605,7 @@ int informationGapInset = 15;
     //CGContextSetShouldAntialias(ctx, NO);
     
     // background
-    CGRect bg = CGRectMake(cellInset, 0, self.frame.size.width-2*cellInset, cellHeight+1);
+    CGRect bg = CGRectMake(informationCellInset, 0, self.frame.size.width-2*informationCellInset, informationCellHeight+1);
     UIColor *bgc = self.highlighted ? [UIColor colorWithWhite:0 alpha:0.06] : [UIColor colorWithWhite:0 alpha:0.03];
     CGContextSetFillColorWithColor(ctx, bgc.CGColor);
 	CGContextFillRect(ctx, bg);
@@ -1491,7 +1703,7 @@ int informationGapInset = 15;
  * Deallocates all used memory.
  */
 - (void)dealloc {
-	FLog();
+	GLog();
 	
 	// super
     [super dealloc];

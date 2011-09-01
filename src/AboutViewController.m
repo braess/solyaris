@@ -19,12 +19,11 @@
 
 
 #pragma mark -
-#pragma mark Properties
+#pragma mark Constants
 
 // local vars
-CGRect vframe;
-int aboutHeaderHeight = 45;
-int aboutFooterHeight = 60;
+static int aboutHeaderHeight = 45;
+static int aboutFooterHeight = 60;
 
 
 #pragma mark -

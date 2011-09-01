@@ -23,9 +23,6 @@
 @synthesize delegate;
 @synthesize contentView = _contentView;
 
-// local vars
-CGRect vframe;
-
 
 #pragma mark -
 #pragma mark Object Methods

@@ -23,6 +23,9 @@ enum {
  */
 @interface AboutViewController : UITableViewController <UIAlertViewDelegate, MFMailComposeViewControllerDelegate> {
     
+    // private
+    @private
+    CGRect vframe;
 }
 
 // Object Methods

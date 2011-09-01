@@ -20,13 +20,20 @@
 @end
 
 
-#define kAlphaBtn 0.8f
-#define kAlphaBtnActive 0.96f
 
 /**
  * CellButton.
  */
 @implementation CellButton
+
+#pragma mark -
+#pragma mark Constants
+
+// constants
+#define kAlphaBtn 0.8f
+#define kAlphaBtnActive 0.96f
+
+
 
 #pragma mark -
 #pragma mark Properties

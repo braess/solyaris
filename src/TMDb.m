@@ -74,7 +74,7 @@
 #pragma mark Constants
 
 // constants
-NSString* TMDbStore = @"TMDb.sqlite";
+static NSString* TMDbStore = @"TMDb.sqlite";
 
 
 #pragma mark -

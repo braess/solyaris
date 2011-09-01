@@ -22,9 +22,12 @@ enum {
 
 //  Tags
 enum {
-    TagInformationMovie,
-    TagInformationPerson,
-	TagInformationContent,
+    TagInformationHeaderMovie,
+    TagInformationHeaderPerson,
+	TagInformationComponentListing,
+    TagInformationComponentInformation,
+    TagInformationComponentIMDb,
+    TagInformationComponentWikipedia,
 	TagInformationFooter
 };
 
@@ -111,6 +114,7 @@ enum {
 @protocol InformationDelegate <NSObject>
 - (void)informationDismiss;
 - (void)informationSelected:(NSNumber*)nid type:(NSString*)type;
+- (bool)informationOrientationLandscape;
 @end
 
 
@@ -127,13 +131,19 @@ enum {
     UIView *_contentView;
     InformationMovieView *_informationMovieView;
     InformationPersonView *_informationPersonView;
-    UITableView *_listingTableView;
+    UITableView *_componentListing;
+    UITextView *_componentInformation;
+    UIWebView *_componentIMDb;
+    UIWebView *_componentWikipedia;
     
     // switch
     ActionBarButtonItem *_actionListing;
     ActionBarButtonItem *_actionInformation;
     ActionBarButtonItem *_actionIMDb;
     ActionBarButtonItem *_actionWikipedia;
+    
+    // buttons
+    UIButton *_buttonResize;
     
     // data
 	NSMutableArray *_movies;
@@ -147,6 +157,8 @@ enum {
     bool mode_information;
     bool mode_imdb;
     bool mode_wikipedia;
+    bool fullscreen;
+    CGRect vframe;
     
 }
 

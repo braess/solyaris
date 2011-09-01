@@ -24,6 +24,17 @@
  */
 @implementation PreferencesViewController
 
+#pragma mark -
+#pragma mark Constants
+
+// constants
+#define kKeyResetDefaults	@"key_reset_defaults"
+#define kKeyClearCache      @"key_clear_cache"
+
+// local vars
+static int preferencesHeaderHeight = 45;
+static int preferencesHeaderGap = 10;
+
 
 #pragma mark -
 #pragma mark Properties
@@ -31,14 +42,6 @@
 // accessors
 @synthesize delegate;
 
-
-// constants
-#define kKeyResetDefaults	@"key_reset_defaults"
-#define kKeyClearCache      @"key_clear_cache"
-
-// local vars
-int preferencesHeaderHeight = 45;
-int preferencesHeaderGap = 10;
 
 
 

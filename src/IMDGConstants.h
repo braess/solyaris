@@ -8,20 +8,20 @@
 
 
 // Types
-#define typeMovie                 @"movie"
-#define typePerson                @"person"	
-#define typePersonActor           @"person_actor"	
-#define typePersonDirector        @"person_director"	
-#define typePersonCrew            @"person_crew"	
-#define typeAll                   @"all"
+#define typeMovie                       @"movie"
+#define typePerson                      @"person"	
+#define typePersonActor                 @"person_actor"	
+#define typePersonDirector              @"person_director"	
+#define typePersonCrew                  @"person_crew"	
+#define typeAll                         @"all"
 
 
 // Assets
-#define assetProfile          @"profile"
-#define assetPoster           @"poster"
-#define assetSizeOriginal     @"original"
-#define assetSizeMid          @"mid"
-#define assetSizeThumb        @"thumb"
+#define assetProfile                    @"profile"
+#define assetPoster                     @"poster"
+#define assetSizeOriginal               @"original"
+#define assetSizeMid                    @"mid"
+#define assetSizeThumb                  @"thumb"
 
 
 
@@ -31,6 +31,12 @@
 #define udGraphNodeCrewEnabled          @"graph_node_crew_enabled"	
 #define udGraphNodeChildren             @"graph_node_children"	
 #define udGraphEdgeLength               @"graph_edge_length"	
+
+
+// URLs
+#define urlIMDBMovie                    @"http://imdb.com/title/"
+#define urlIMDBSearch                   @"http://imdb.com/find?q="
+#define urlWikipediaSearch              @"http://en.wikipedia.org/w/index.php?search="
 
 
 // Values

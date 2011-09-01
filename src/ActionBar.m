@@ -31,6 +31,9 @@
         self.opaque = NO;
         self.translucent = YES;
         self.barStyle = UIBarStyleDefault;
+        
+        // resize
+        self.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
     }
     return self;
     

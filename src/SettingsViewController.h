@@ -33,6 +33,10 @@
     AboutViewController *_aboutViewController;
     PreferencesViewController *_preferencesViewController;
     
+    // private
+    @private
+    CGRect vframe;
+    
 }
 
 // Properties

@@ -37,6 +37,7 @@
 #define kAlphaTxtActive 0.6f
 
 
+
 #pragma mark -
 #pragma mark Properties
 
@@ -48,11 +49,6 @@
 @synthesize buttonDirector=_buttonDirector;
 
 
-// local vars
-CGRect vframe;
-float inset = 5;
-float swidth = 300;
-float sheight = 30;
 
 
 #pragma mark -
@@ -68,6 +64,7 @@ float sheight = 30;
         
         // frame
         vframe = frame;
+        
         
 		// return
 		return self;
@@ -97,6 +94,9 @@ float sheight = 30;
 	float fwidth = self.view.frame.size.width;
 	float fheight = self.view.frame.size.height;
     float border = 10;
+    float inset = 5;
+    float swidth = 300;
+    float sheight = 30;
     
     
     // title
@@ -256,9 +256,12 @@ float sheight = 30;
     float fwidth = self.view.frame.size.width;
 	float fheight = self.view.frame.size.height;
     
+    
     // buttons
     float bwidth = 60;
     float bheight = 24;
+    float inset = 5;
+    float swidth = 300;
     
     // frames
     CGRect bframe =  CGRectMake(fwidth*0.5+swidth*0.5+inset, (fheight-bheight)/2.0, 3*(bwidth+inset), bheight);

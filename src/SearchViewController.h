@@ -35,6 +35,7 @@
     
     // private
     @private
+    CGRect vframe;
     UIView *_background;
     UILabel *_labelTitle;
     UILabel *_labelClaim;

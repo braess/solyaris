@@ -38,13 +38,6 @@
 @end
 
 
-// constants
-#define kAnimateTimeInformationShow	0.6f
-#define kAnimateTimeInformationHide	0.45f
-#define kAnimateTimeSettingsShow	0.6f
-#define kAnimateTimeSettingsHide	0.3f
-#define kOffsetSettings 480
-
 
 
 /**
@@ -52,6 +45,16 @@
  */
 @implementation IMDGViewController
 
+
+#pragma mark -
+#pragma mark Constants
+
+// constants
+#define kAnimateTimeInformationShow	0.6f
+#define kAnimateTimeInformationHide	0.45f
+#define kAnimateTimeSettingsShow	0.6f
+#define kAnimateTimeSettingsHide	0.3f
+#define kOffsetSettings 480
 
 
 #pragma mark -
@@ -588,6 +591,12 @@
 }
 
 
+/*
+ * Orientation landscape.
+*/
+- (bool)informationOrientationLandscape {
+    return (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft || self.interfaceOrientation == UIInterfaceOrientationLandscapeRight);
+}
 
 
 #pragma mark -
