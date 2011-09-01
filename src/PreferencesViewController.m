@@ -350,6 +350,34 @@ int preferencesHeaderGap = 10;
         
     }
     
+    // crew
+    if ([indexPath row] == PreferenceGraphNodeCrewEnabled) {
+        
+        // create cell
+        CellSwitch *cswitch = (CellSwitch*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesSwitchIdentifier];
+        if (cswitch == nil) {
+            cswitch = [[[CellSwitch alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellPreferencesSwitchIdentifier] autorelease];
+        }	
+        
+        // prepare cell
+        cswitch.delegate = self;
+        cswitch.key = udGraphNodeCrewEnabled;
+        cswitch.textLabel.text = NSLocalizedString(@"Crew",@"Crew");
+        cswitch.switchAccessory.on = NO;
+        cswitch.disabler = NO;
+        
+        // enabled
+        NSString *graphNodeCrewEnabled = [self retrievePreference:udGraphNodeCrewEnabled];
+        if (graphNodeCrewEnabled && [graphNodeCrewEnabled isEqualToString:@"1"]) {
+            cswitch.switchAccessory.on = YES;
+        }
+        [cswitch update:YES];
+        
+        // set cell
+        cell = cswitch;
+        
+    }
+    
     // graph
     if ([indexPath row] == PreferenceGraphNodeChildren) {
         
@@ -362,7 +390,7 @@ int preferencesHeaderGap = 10;
         // prepare cell
         cslider.delegate = self;
         cslider.key = udGraphNodeChildren;
-        cslider.textLabel.text = NSLocalizedString(@"Visible Children",@"Visible Children");
+        cslider.textLabel.text = NSLocalizedString(@"Children",@"Children");
         cslider.sliderAccessory.minimumValue = 0;
         cslider.sliderAccessory.maximumValue = 30;
         cslider.sliderAccessory.value = 12;
@@ -380,35 +408,6 @@ int preferencesHeaderGap = 10;
     }
     
     
-    // node perimeter
-    if ([indexPath row] == PreferenceGraphNodePerimeter) {
-        
-        // create cell
-        CellSlider *cslider = (CellSlider*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesSliderIndentifier];
-        if (cslider == nil) {
-            cslider = [[[CellSlider alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellPreferencesSliderIndentifier] autorelease];
-        }	
-        
-        // prepare cell
-        cslider.delegate = self;
-        cslider.key = udGraphNodePerimeter;
-        cslider.textLabel.text = NSLocalizedString(@"Node Perimeter",@"Node Perimeter");
-        cslider.sliderAccessory.minimumValue = 100;
-        cslider.sliderAccessory.maximumValue = 600;
-        cslider.sliderAccessory.value = 390;
-        
-        // preference
-        NSString *graphNodePerimeter = [self retrievePreference:udGraphNodePerimeter];
-        if (graphNodePerimeter) {
-            cslider.sliderAccessory.value = [graphNodePerimeter floatValue];
-        }
-        [cslider update:YES];
-        
-        // set
-        cell = cslider;
-        
-    }
-    
     // edge length
     if ([indexPath row] == PreferenceGraphEdgeLength) {
         
@@ -421,7 +420,7 @@ int preferencesHeaderGap = 10;
         // prepare cell
         cslider.delegate = self;
         cslider.key = udGraphEdgeLength;
-        cslider.textLabel.text = NSLocalizedString(@"Edge Length",@"Edge Length");
+        cslider.textLabel.text = NSLocalizedString(@"Length",@"Length");
         cslider.sliderAccessory.minimumValue = 200;
         cslider.sliderAccessory.maximumValue = 600;
         cslider.sliderAccessory.value = 400;

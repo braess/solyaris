@@ -45,7 +45,7 @@
 @synthesize searchBar=_searchBar;
 @synthesize buttonMovie=_buttonMovie;
 @synthesize buttonActor=_buttonActor;
-@synthesize buttonCrew=_buttonCrew;
+@synthesize buttonDirector=_buttonDirector;
 
 
 // local vars
@@ -210,25 +210,25 @@ float sheight = 30;
 	[btnActor release];
     
     
-    // button crew 
-	UIButton *btnCrew = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnCrew.layer.cornerRadius = 3;
-    btnCrew.layer.masksToBounds = YES;
-    btnCrew.alpha = kAlphaBtn;
-    btnCrew.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+    // button cirector 
+	UIButton *btnDirector = [UIButton buttonWithType:UIButtonTypeCustom];
+    btnDirector.layer.cornerRadius = 3;
+    btnDirector.layer.masksToBounds = YES;
+    btnDirector.alpha = kAlphaBtn;
+    btnDirector.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnCrew setBackgroundColor:[UIColor colorWithRed:131/255.0 green:136/255.0 blue:138/255.0 alpha:1]];
-    [btnCrew setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
-    [btnCrew setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
-    [btnCrew setTitle:NSLocalizedString(@"Crew",@"Crew") forState:UIControlStateNormal];
-	[btnCrew addTarget:self action:@selector(actionCrew:) forControlEvents:UIControlEventTouchUpInside];
-    [btnCrew addTarget:self action:@selector(buttonDown:) forControlEvents:UIControlEventTouchDown];
-    [btnCrew addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpInside];
-    [btnCrew addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpOutside];
+    [btnDirector setBackgroundColor:[UIColor colorWithRed:131/255.0 green:136/255.0 blue:138/255.0 alpha:1]];
+    [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
+    [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
+    [btnDirector setTitle:NSLocalizedString(@"Director",@"Director") forState:UIControlStateNormal];
+	[btnDirector addTarget:self action:@selector(actionDirector:) forControlEvents:UIControlEventTouchUpInside];
+    [btnDirector addTarget:self action:@selector(buttonDown:) forControlEvents:UIControlEventTouchDown];
+    [btnDirector addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpInside];
+    [btnDirector addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpOutside];
     
-	self.buttonCrew = [btnCrew retain];
-	[self.view addSubview:_buttonCrew];
-	[btnCrew release];
+	self.buttonDirector = [btnDirector retain];
+	[self.view addSubview:_buttonDirector];
+	[btnDirector release];
     
     
     // button reset
@@ -269,7 +269,7 @@ float sheight = 30;
     // buttons
     _buttonMovie.frame = bmframe;
     _buttonActor.frame = baframe;
-    _buttonCrew.frame = bdframe;
+    _buttonDirector.frame = bdframe;
     
 }
 
@@ -361,9 +361,9 @@ float sheight = 30;
 }
 
 /*
- * Action Crew.
+ * Action Director.
  */
-- (void)actionCrew:(id)sender {
+- (void)actionDirector:(id)sender {
 	DLog();
     
     // hide keyboard
@@ -374,7 +374,7 @@ float sheight = 30;
     
     // search
     if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
-        [delegate search:[_searchBar text] type:typePersonCrew];
+        [delegate search:[_searchBar text] type:typePersonDirector];
     }
 }
 
@@ -421,7 +421,7 @@ float sheight = 30;
     [_searchBar release];
     [_buttonMovie release];
     [_buttonActor release];
-    [_buttonCrew release];
+    [_buttonDirector release];
     [_buttonReset release];
 	
 	// release global

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "CacheImageView.h"
+#import "ActionBar.h"
 
 
 
@@ -126,7 +127,13 @@ enum {
     UIView *_contentView;
     InformationMovieView *_informationMovieView;
     InformationPersonView *_informationPersonView;
-    UITableView *_castTableView;
+    UITableView *_listingTableView;
+    
+    // switch
+    ActionBarButtonItem *_actionListing;
+    ActionBarButtonItem *_actionInformation;
+    ActionBarButtonItem *_actionIMDb;
+    ActionBarButtonItem *_actionWikipedia;
     
     // data
 	NSMutableArray *_movies;
@@ -134,7 +141,15 @@ enum {
     NSMutableArray *_directors;
     NSMutableArray *_crew;
     
+    // private
+    @private
+    bool mode_listing;
+    bool mode_information;
+    bool mode_imdb;
+    bool mode_wikipedia;
+    
 }
+
 
 // Properties
 @property (assign) id<InformationDelegate> delegate;

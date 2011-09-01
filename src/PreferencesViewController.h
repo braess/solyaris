@@ -25,8 +25,8 @@
 //  Fields
 enum {
     PreferenceGraphHintDisabled,
+    PreferenceGraphNodeCrewEnabled,
     PreferenceGraphNodeChildren,
-    PreferenceGraphNodePerimeter,
     PreferenceGraphEdgeLength,
 	PreferenceDefaultsReset,
     PreferenceCacheClear

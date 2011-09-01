@@ -59,5 +59,9 @@ CPP_CLASS(IMDGApp);
 - (void)nodeInformation:(NSString*)nid;
 - (void)nodeLoad:(NSString*)nid;
 
+// Helpers
+- (NSObject*)getUserDefault:(NSString*)key;
+- (BOOL)getUserDefaultBool:(NSString*)key;
+
 
 @end

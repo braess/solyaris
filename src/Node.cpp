@@ -125,22 +125,15 @@ void Node::setting(GraphSettings s) {
     
     // distance
     dist = 420;
+    perimeter = 390;
     double length = 400;
     Default graphEdgeLength = s.getDefault("graph_edge_length");
     if (graphEdgeLength.isSet()) {
         length = graphEdgeLength.doubleVal();
         dist = length * 1.05;
+        perimeter = 0.9 * dist;
     }
-    
-    
-    
-    // perimeter
-    perimeter = 390;
-    Default graphNodePerimeter = s.getDefault("graph_node_perimeter");
-    if (graphNodePerimeter.isSet()) {
-        perimeter = graphNodePerimeter.doubleVal();
-    }
-    perimeter = min(perimeter,length);
+
 }
 
 

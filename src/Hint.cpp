@@ -39,7 +39,7 @@ Hint::Hint(Vec2d b) {
     font = Font("Helvetica",12);
     sfont = Font("Helvetica",3);
     size.set(0,0);
-    offset.set(0,-45);
+    offset.set(0,-60);
     inset.set(6,6);
     textureText = gl::Texture(0,0);
 }

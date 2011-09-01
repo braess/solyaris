@@ -55,7 +55,7 @@
     NSURL *url = [NSURL URLWithString: link];
 	
     // request
-	NSURLRequest* request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:20.0];
+	NSURLRequest* request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:20.0];
 	connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
 }
 

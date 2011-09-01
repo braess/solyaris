@@ -336,8 +336,16 @@
         NSArray *persons = [[movie.persons allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:psorter]];
         [psorter release];
         
+        // enablers
+        bool crew_enabled = [self getUserDefaultBool:udGraphNodeCrewEnabled];
+        
         // create nodes
         for (Movie2Person *m2p in persons) {
+            
+            // exclude crew
+            if (! crew_enabled && [m2p.person.type isEqualToString:typePersonCrew]) {
+                continue;
+            }
             
             // child
             NSString *cid = [self makeNodeId:m2p.person.pid type:typePerson];
@@ -503,7 +511,6 @@
     NSString *nid = [self makeNodeId:result.ref type:result.type];
     NodePtr node = imdgApp->getNode([nid UTF8String]);
     if (node == NULL) {
-        NSLog(@"type = %@",result.type);
         node = imdgApp->createNode([nid UTF8String],[result.type UTF8String], nx, ny);
     }
     
@@ -622,9 +629,9 @@
         type = typePerson;
         srframe = _searchViewController.buttonActor.frame;
     }
-    else if (t == typePersonCrew) {
+    else if (t == typePersonDirector || t == typePersonCrew) {
         type = typePerson;
-        srframe = _searchViewController.buttonCrew.frame;
+        srframe = _searchViewController.buttonDirector.frame;
     }
     
     // api
@@ -1127,6 +1134,29 @@
     return dbid;
 }
 
+
+
+/**
+ * Gets a user default.
+ */
+- (NSObject*)getUserDefault:(NSString*)key {
+	GLog();
+    
+	// user defaults
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+	
+	// return
+	return [userDefaults objectForKey:key];
+}
+- (BOOL)getUserDefaultBool:(NSString*)key {
+    GLog();
+    
+	// user defaults
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+	
+	// return
+	return [userDefaults boolForKey:key]; 
+}
 
 
 

@@ -8,6 +8,7 @@
 
 #import "AboutViewController.h"
 #import "IMDGConstants.h"
+#import "ActionBar.h"
 
 
 
@@ -23,7 +24,7 @@
 // local vars
 CGRect vframe;
 int aboutHeaderHeight = 45;
-int aboutFooterHeight = 45;
+int aboutFooterHeight = 60;
 
 
 #pragma mark -
@@ -69,9 +70,7 @@ int aboutFooterHeight = 45;
     CGRect tframe = CGRectMake(0, 0, vframe.size.width, 18);
     CGRect cframe = CGRectMake(0, 18, vframe.size.width, 18);
     CGRect aframe = CGRectMake(0, aboutHeaderHeight+5, vframe.size.width+20, vframe.size.height-aboutFooterHeight-aboutHeaderHeight);
-    CGRect bframe = CGRectMake(0, vframe.size.height-aboutFooterHeight+5, vframe.size.width, 40);
-    CGRect btnframe = CGRectMake(0, 0, 32, 32);
-    float spacer = 15;
+    CGRect abframe = CGRectMake(0, vframe.size.height-aboutFooterHeight+5, vframe.size.width, 45);
     
     // title
 	UILabel *lblTitle = [[UILabel alloc] initWithFrame:tframe];
@@ -116,44 +115,62 @@ int aboutFooterHeight = 45;
 	[txtAbout release];
     
     
-    // buttons
-    UIView *buttonView = [[UIView alloc] initWithFrame:bframe];
-    buttonView.backgroundColor = [UIColor clearColor];
-	buttonView.opaque = YES;
+    // actions
+    ActionBar *actionBar = [[ActionBar alloc] initWithFrame:abframe];
     
-    // button feedback
-	UIButton *btnFeedback = [UIButton buttonWithType:UIButtonTypeCustom]; 
-	btnFeedback.frame = btnframe;
-	[btnFeedback setImage:[UIImage imageNamed:@"btn_feedback.png"] forState:UIControlStateNormal];
-	[btnFeedback addTarget:self action:@selector(actionFeedback:) forControlEvents:UIControlEventTouchUpInside];
-	[buttonView addSubview:btnFeedback];
+    // flex
+	UIBarButtonItem *itemFlex = [[UIBarButtonItem alloc] 
+                                 initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
+                                 target:nil 
+                                 action:nil];
+    
+    // negative space (weird 12px offset...)
+    UIBarButtonItem *nspace = [[UIBarButtonItem alloc] 
+                                 initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace 
+                                 target:nil 
+                                 action:nil];
+    nspace.width = -12;
+    
+    
+    // action feedback
+    ActionBarButtonItem *actionFeedback = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_feedback.png"] 
+                                                                              title:NSLocalizedString(@"Feedback", @"Feedback") 
+                                                                              target:self 
+                                                                              action:@selector(actionFeedback:)];
+    [actionFeedback modeDarkie];
 
     
-    // button app store
-	UIButton *btnAppStore = [UIButton buttonWithType:UIButtonTypeCustom]; 
-	btnAppStore.frame = CGRectMake(bframe.origin.x+bframe.size.width-btnframe.size.width-5, 0, btnframe.size.width, btnframe.size.height);
-	[btnAppStore setImage:[UIImage imageNamed:@"btn_appstore.png"] forState:UIControlStateNormal];
-	[btnAppStore addTarget:self action:@selector(actionAppStore:) forControlEvents:UIControlEventTouchUpInside];
-	[buttonView addSubview:btnAppStore];
+    // action email
+    ActionBarButtonItem *actionEmail = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_email.png"] 
+                                                                            title:NSLocalizedString(@"Email", @"Email") 
+                                                                           target:self 
+                                                                           action:@selector(actionEmail:)];
+    [actionEmail modeDarkie];
     
-    // button twitter
-	UIButton *btnTwitter = [UIButton buttonWithType:UIButtonTypeCustom]; 
-	btnTwitter.frame = CGRectMake(btnAppStore.frame.origin.x-btnframe.size.width-spacer, 0, btnframe.size.width, btnframe.size.height);
-	[btnTwitter setImage:[UIImage imageNamed:@"btn_twitter.png"] forState:UIControlStateNormal];
-	[btnTwitter addTarget:self action:@selector(actionTwitter:) forControlEvents:UIControlEventTouchUpInside];
-	[buttonView addSubview:btnTwitter];
+    // action twitter
+    ActionBarButtonItem *actionTwitter = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_twitter.png"] 
+                                                                              title:NSLocalizedString(@"Twitter", @"Twitter") 
+                                                                             target:self 
+                                                                             action:@selector(actionTwitter:)];
+    [actionTwitter modeDarkie];
     
+    // action app store
+    ActionBarButtonItem *actionAppStore = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_appstore.png"] 
+                                                                               title:NSLocalizedString(@"AppStore", @"AppStore")
+                                                                              target:self 
+                                                                              action:@selector(actionAppStore:)];
+    [actionAppStore modeDarkie];
+
     
-    // button email
-	UIButton *btnEmail = [UIButton buttonWithType:UIButtonTypeCustom]; 
-	btnEmail.frame = CGRectMake(btnTwitter.frame.origin.x-btnframe.size.width-spacer, 0, btnframe.size.width, btnframe.size.height);
-	[btnEmail setImage:[UIImage imageNamed:@"btn_email.png"] forState:UIControlStateNormal];
-	[btnEmail addTarget:self action:@selector(actionEmail:) forControlEvents:UIControlEventTouchUpInside];
-	[buttonView addSubview:btnEmail];
+    // add actions
+    [actionBar setItems:[NSArray arrayWithObjects:nspace,actionFeedback,itemFlex,actionEmail,actionTwitter,actionAppStore,nspace,nil]];
+    [actionFeedback release];
+    [actionEmail release];
+    [actionTwitter release];
+    [actionAppStore release];
     
-    
-    // add buttons
-    [self.view addSubview:buttonView];
+    // add action bar
+    [self.view addSubview:actionBar];
     
 }
 

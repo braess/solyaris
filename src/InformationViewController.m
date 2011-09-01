@@ -20,6 +20,19 @@
 @end
 
 
+
+/**
+ * Action Stack.
+ */
+@interface InformationViewController (SwapStack)
+- (void)swapListing;
+- (void)swapInformation;
+- (void)swapIMDb;
+- (void)swapWikipedia;
+- (void)swapReset;
+@end
+
+
 #pragma mark -
 #pragma mark InformationViewController
 #pragma mark -
@@ -51,9 +64,9 @@ float informationFooterHeight = 60;
 // sections
 int cellHeight = 36;
 int cellInset = 15;
-int sectionGapHeight = 39;
-int sectionGapOffset = 10;
-int sectionGapInset = 15;
+int informationGapHeight = 39;
+int informationGapOffset = 10;
+int informationGapInset = 15;
 
 
 #pragma mark -
@@ -72,6 +85,12 @@ int sectionGapInset = 15;
         
 		// view
 		vframe = frame;
+        
+        // modes
+        mode_listing = NO;
+        mode_information = NO;
+        mode_imdb = NO;
+        mode_wikipedia = NO;
 
 	}
 	return self;
@@ -98,6 +117,7 @@ int sectionGapInset = 15;
     CGRect hframe = CGRectMake(0, 0, cframe.size.width, informationHeaderHeight);
     CGRect fframe = CGRectMake(0, cframe.size.height-informationFooterHeight, cframe.size.width, informationFooterHeight);
     CGRect tframe = CGRectMake(0, informationHeaderHeight, cframe.size.width, cframe.size.height-informationHeaderHeight-informationFooterHeight);
+    CGRect aframe = CGRectMake(informationGapInset, informationGapOffset, fframe.size.width-2*informationGapInset, fframe.size.height-2*informationGapOffset);
     
     
     // view
@@ -147,29 +167,82 @@ int sectionGapInset = 15;
 
     
     // table view
-    UITableView *castTableView = [[UITableView alloc] initWithFrame:tframe style:UITableViewStyleGrouped];
-    castTableView.tag = TagInformationContent;
-    castTableView.delegate = self;
-    castTableView.dataSource = self;
-	castTableView.backgroundColor = [UIColor clearColor];
-	castTableView.opaque = YES;
-	castTableView.backgroundView = nil;
-    castTableView.sectionHeaderHeight = 0; 
-    castTableView.sectionFooterHeight = 0;
+    UITableView *listingTableView = [[UITableView alloc] initWithFrame:tframe style:UITableViewStyleGrouped];
+    listingTableView.tag = TagInformationContent;
+    listingTableView.delegate = self;
+    listingTableView.dataSource = self;
+	listingTableView.backgroundColor = [UIColor clearColor];
+	listingTableView.opaque = YES;
+	listingTableView.backgroundView = nil;
+    listingTableView.sectionHeaderHeight = 0; 
+    listingTableView.sectionFooterHeight = 0;
     
     // add table view to content
-    _castTableView = [castTableView retain];
-    [ctView addSubview:_castTableView];
-    [ctView sendSubviewToBack:_castTableView];
-    [castTableView release];
+    _listingTableView = [listingTableView retain];
+    [ctView addSubview:_listingTableView];
+    [ctView sendSubviewToBack:_listingTableView];
+    [listingTableView release];
     
     
     // footer view
-    UITableView *footerView = [[UIView alloc] initWithFrame:fframe];
+    UIView *footerView = [[UIView alloc] initWithFrame:fframe];
     footerView.autoresizingMask = UIViewAutoresizingNone;
     footerView.tag = TagInformationFooter;
 	footerView.backgroundColor = [UIColor clearColor];
 	footerView.opaque = YES;
+    
+    // actions
+    ActionBar *abar = [[ActionBar alloc] initWithFrame:aframe];
+    
+    // flex
+	UIBarButtonItem *itemFlex = [[UIBarButtonItem alloc] 
+                             initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
+                             target:nil 
+                             action:nil];
+    
+    // negative space (weird 12px offset...)
+    UIBarButtonItem *nspace = [[UIBarButtonItem alloc] 
+                               initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace 
+                               target:nil 
+                               action:nil];
+    nspace.width = -12;
+
+    
+    // action items
+    ActionBarButtonItem *actionListing = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_listing.png"] 
+                                                                              title:NSLocalizedString(@"Cast", @"Cast") 
+                                                                             target:self 
+                                                                             action:@selector(swapListing)];
+    _actionListing = [actionListing retain];
+    [actionListing release];
+    
+    ActionBarButtonItem *actionInformation = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_information.png"] 
+                                                                                  title:NSLocalizedString(@"Info", @"Info")
+                                                                                 target:self 
+                                                                                 action:@selector(swapInformation)];
+    _actionInformation = [actionInformation retain];
+    [actionInformation release];
+    
+    ActionBarButtonItem *actionIMDb = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_imdb.png"] 
+                                                                           title:NSLocalizedString(@"IMDb", @"IMDb")
+                                                                          target:self 
+                                                                          action:@selector(swapIMDb)];
+    _actionIMDb = [actionIMDb retain];
+    [actionIMDb release];
+    
+    ActionBarButtonItem *actionWikipedia = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_wikipedia.png"] 
+                                                                                title:NSLocalizedString(@"Wikipedia", @"Wikipedia")
+                                                                               target:self 
+                                                                               action:@selector(swapWikipedia)];
+    _actionWikipedia = [actionWikipedia retain];
+    [actionWikipedia release];
+    
+    
+    
+    // add action tab bar
+    [abar setItems:[NSArray arrayWithObjects:nspace,itemFlex,_actionListing,_actionInformation,_actionIMDb,_actionWikipedia,itemFlex,nspace,nil]];
+    [footerView addSubview:abar];
+    [itemFlex release];
     
     // add footer view to content
     [ctView addSubview:footerView];
@@ -202,10 +275,10 @@ int sectionGapInset = 15;
 	DLog();
     
     // reload
-    [_castTableView reloadData];
+    [_listingTableView reloadData];
     
     // scroll to top
-    [_castTableView setContentOffset:CGPointMake(0, 0) animated:NO];
+    [_listingTableView setContentOffset:CGPointMake(0, 0) animated:NO];
 
 }
 
@@ -263,6 +336,12 @@ int sectionGapInset = 15;
     [_informationMovieView.labelReleased setText:[NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:released]]];
     [_informationMovieView.labelRuntime setText:[NSString stringWithFormat:@"%im",[runtime intValue]]];
     
+    // actions
+    [_actionListing setTitle:NSLocalizedString(@"Cast", @"Cast")];
+    
+    // swap listing
+    [self swapListing];
+    
     // show
     _informationMovieView.hidden = NO;
     
@@ -293,12 +372,133 @@ int sectionGapInset = 15;
     [_informationPersonView.labelBirthplace setText:birthplace];
     [_informationPersonView.labelKnownMovies setText:[NSString stringWithFormat:@"%i",[known_movies intValue]]];
     
+    
+    // actions
+    [_actionListing setTitle:NSLocalizedString(@"Movies", @"Movies")];
+    
+    // swap listing
+    [self swapListing];
+    
     // show
     _informationPersonView.hidden = NO;
     
 }
 
 
+
+#pragma mark -
+#pragma mark Swap
+
+/*
+ * Swap listing.
+ */
+- (void)swapListing {
+    FLog();
+    
+    // change mode
+    if (! mode_listing) {
+        
+        // reset
+        [self swapReset];
+        
+        // mode
+        mode_listing = YES;
+        
+        // action
+        [_actionListing setSelected:YES];
+        
+        // views
+        _listingTableView.hidden = NO;
+    }
+
+}
+
+/*
+ * Swap information.
+ */
+- (void)swapInformation {
+    FLog();
+    
+    // change mode
+    if (! mode_information) {
+        
+        // reset
+        [self swapReset];
+        
+        // mode
+        mode_information = YES;
+        
+        // action
+        [_actionInformation setSelected:YES];
+        
+
+    }
+}
+
+/*
+ * Swap imdb.
+ */
+- (void)swapIMDb {
+    FLog();
+    
+    // change mode
+    if (! mode_imdb) {
+        
+        // reset
+        [self swapReset];
+        
+        // mode
+        mode_imdb = YES;
+        
+        // action
+        [_actionIMDb setSelected:YES];
+        
+    }
+}
+
+/*
+ * Swap listing.
+ */
+- (void)swapWikipedia {
+    FLog();
+    
+    // change mode
+    if (! mode_wikipedia) {
+        
+        // reset
+        [self swapReset];
+        
+        // mode
+        mode_wikipedia = YES;
+        
+        // action
+        [_actionWikipedia setSelected:YES];
+        
+    }
+}
+
+/*
+ * Swap reset.
+ */
+- (void)swapReset {
+    FLog();
+    
+    // reset mode
+    mode_listing = NO;
+    mode_information = NO;
+    mode_imdb = NO;
+    mode_wikipedia = NO;
+    
+    // actions
+    [_actionListing setSelected:NO];
+    [_actionInformation setSelected:NO];
+    [_actionIMDb setSelected:NO];
+    [_actionWikipedia setSelected:NO];
+    
+    // hide views
+    _listingTableView.hidden = YES;
+    
+}
 
 
 #pragma mark -
@@ -349,7 +549,7 @@ int sectionGapInset = 15;
     if ([self tableView:tableView numberOfRowsInSection:section]==0) {
         return 0.0000000000000000000000000001; // null is ignored...
     }
-    return sectionGapHeight;
+    return informationGapHeight;
 }
 
 /*
@@ -357,7 +557,7 @@ int sectionGapInset = 15;
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (section == SectionInformationCrew) {
-        return sectionGapInset;
+        return informationGapInset;
     }
     else if ([self tableView:tableView numberOfRowsInSection:section]==0) {
         return 0.0000000000000000000000000001; // null is ignored...
@@ -389,10 +589,10 @@ int sectionGapInset = 15;
 - (UIView *)sectionHeader:(NSString*)label {
     
     // view
-    UIView *shView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, vframe.size.width, sectionGapHeight)];
+    UIView *shView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, vframe.size.width, informationGapHeight)];
     
     // label
-    UILabel *lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(sectionGapInset, sectionGapOffset, shView.frame.size.width-2*sectionGapInset, sectionGapHeight-sectionGapOffset)];
+    UILabel *lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(informationGapInset, informationGapOffset, shView.frame.size.width-2*informationGapInset, informationGapHeight-informationGapOffset)];
 	lblHeader.backgroundColor = [UIColor clearColor];
 	lblHeader.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
 	lblHeader.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
@@ -431,7 +631,7 @@ int sectionGapInset = 15;
     UIView *sfView = [[UIView alloc] initWithFrame:vframe];
     
     // view
-    UIView *sfLine = [[UIView alloc] initWithFrame:CGRectMake(sectionGapInset, -1, 550, 1)];
+    UIView *sfLine = [[UIView alloc] initWithFrame:CGRectMake(informationGapInset, -1, 550, 1)];
     sfLine.backgroundColor = [UIColor colorWithWhite:0.82 alpha:0.6];
     
     // add & release
@@ -552,7 +752,7 @@ int sectionGapInset = 15;
         
         // state
         nfo.loaded = YES;
-        [_castTableView reloadData];
+        [_listingTableView reloadData];
         
         // load
         if (delegate && [delegate respondsToSelector:@selector(informationSelected:type:)]) {
@@ -577,6 +777,15 @@ int sectionGapInset = 15;
     [_actors release];
     [_directors release];
 	[_crew release];
+    
+    // actions
+    [_actionListing release];
+    [_actionInformation release];
+    [_actionIMDb release];
+    [_actionWikipedia release];
+    
+    // listing
+    [_listingTableView release];
 	
 	// duper
     [super dealloc];
@@ -821,8 +1030,8 @@ int sectionGapInset = 15;
         self.opaque = YES;
         
         // frames
-        CGRect iframe = CGRectMake(sectionGapInset, sectionGapOffset, 60, 90);
-        CGRect mframe = CGRectMake(2*sectionGapInset+60, sectionGapOffset, frame.size.width-(2*sectionGapInset+90), frame.size.height-2*sectionGapOffset);
+        CGRect iframe = CGRectMake(informationGapInset, informationGapOffset, 60, 90);
+        CGRect mframe = CGRectMake(2*informationGapInset+60, informationGapOffset, frame.size.width-(2*informationGapInset+90), frame.size.height-2*informationGapOffset);
         
         // poster
         CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:iframe];
@@ -956,8 +1165,8 @@ int sectionGapInset = 15;
         self.opaque = YES;
         
         // frames
-        CGRect iframe = CGRectMake(sectionGapInset, sectionGapOffset, 60, 90);
-        CGRect mframe = CGRectMake(2*sectionGapInset+60, sectionGapOffset, frame.size.width-(2*sectionGapInset+90), frame.size.height-2*sectionGapOffset);
+        CGRect iframe = CGRectMake(informationGapInset, informationGapOffset, 60, 90);
+        CGRect mframe = CGRectMake(2*informationGapInset+60, informationGapOffset, frame.size.width-(2*informationGapInset+90), frame.size.height-2*informationGapOffset);
         
         // poster
         CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:iframe];
@@ -1097,7 +1306,7 @@ int sectionGapInset = 15;
         self.opaque = NO;
         
         // intendation
-        self.indentationWidth = sectionGapInset;
+        self.indentationWidth = informationGapInset;
         self.indentationLevel = 0;
         
         

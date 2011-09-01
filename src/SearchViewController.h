@@ -30,7 +30,7 @@
     UISearchBar *_searchBar;
     UIButton *_buttonMovie;
     UIButton *_buttonActor;
-    UIButton *_buttonCrew;
+    UIButton *_buttonDirector;
     UIButton *_buttonReset;
     
     // private
@@ -46,13 +46,13 @@
 @property (nonatomic, retain) UISearchBar *searchBar;
 @property (nonatomic, retain) UIButton *buttonMovie;
 @property (nonatomic, retain) UIButton *buttonActor;
-@property (nonatomic, retain) UIButton *buttonCrew;
+@property (nonatomic, retain) UIButton *buttonDirector;
 
 
 // Action Methods
 - (void)actionMovie:(id)sender;
 - (void)actionActor:(id)sender;
-- (void)actionCrew:(id)sender;
+- (void)actionDirector:(id)sender;
 - (void)actionReset:(id)sender;
 
 // Business
