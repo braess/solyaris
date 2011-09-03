@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "CacheImageView.h"
 #import "ActionBar.h"
-
+#import "HTMLView.h"
+#import "Movie.h"
+#import "Person.h"
+#import "Asset.h"
 
 
 //  Sections
@@ -29,6 +32,11 @@ enum {
     TagInformationComponentIMDb,
     TagInformationComponentWikipedia,
 	TagInformationFooter
+};
+
+//  Actions
+enum {
+    ActionInformationToolsReference
 };
 
 
@@ -121,7 +129,7 @@ enum {
 /**
  * InformationViewController.
  */
-@interface InformationViewController : UIViewController <UITableViewDataSource, UITableViewDelegate> {
+@interface InformationViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, HTMLDelegate> {
     
     // delegate
 	id<InformationDelegate> delegate;
@@ -133,8 +141,9 @@ enum {
     InformationPersonView *_informationPersonView;
     UITableView *_componentListing;
     UITextView *_componentInformation;
-    UIWebView *_componentIMDb;
-    UIWebView *_componentWikipedia;
+    HTMLView *_componentIMDb;
+    HTMLView *_componentWikipedia;
+    HTMLNavigatorView *_htmlNavigator;
     
     // switch
     ActionBarButtonItem *_actionListing;
@@ -153,12 +162,23 @@ enum {
     
     // private
     @private
+    CGRect vframe;
+    
+    bool type_movie;
+    bool type_person;
+    
     bool mode_listing;
     bool mode_information;
     bool mode_imdb;
     bool mode_wikipedia;
+    
     bool fullscreen;
-    CGRect vframe;
+    
+    NSMutableString *_referenceTMDb;
+    NSMutableString *_referenceIMDb;
+    NSMutableString *_referenceWikipedia;
+    NSMutableString *_referenceAmazon;
+    NSMutableString *_referenceITunes;
     
 }
 
@@ -178,8 +198,8 @@ enum {
 
 // Business Methods
 - (void)resize;
-- (void)informationMovie:(NSString*)name poster:(NSString*)poster tagline:(NSString*)tagline overview:(NSString*)overview released:(NSDate*)released runtime:(NSNumber*)runtime trailer:(NSString*)trailer homepage:(NSString*)homepage imdb_id:(NSString*)imdb_id;
-- (void)informationPerson:(NSString*)name profile:(NSString*)profile biography:(NSString*)biography birthday:(NSDate*)birthday birthplace:(NSString*)birthplace known_movies:(NSNumber*)known_movies;
+- (void)informationMovie:(Movie*)movie;
+- (void)informationPerson:(Person*)person;
 
 
 @end

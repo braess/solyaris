@@ -774,38 +774,16 @@
             // data
             Movie *movie = [tmdb dataMovie:[self toDBId:pid]];
             
-            // images
-            NSString *poster = @"";
-            for (Asset *a in movie.assets) {
-                
-                // poster
-                if ([a.type isEqualToString:assetPoster] && [a.size isEqualToString:assetSizeThumb]) {
-                    poster = a.url;
-                    break;
-                }
-            }
-            
             // information
-            [_informationViewController informationMovie:movie.name poster:poster tagline:movie.tagline overview:movie.overview released:movie.released runtime:movie.runtime trailer:movie.trailer homepage:movie.homepage imdb_id:movie.imdb_id];
+            [_informationViewController informationMovie:movie];
         }
         else {
             
             // data
             Person *person = [tmdb dataPerson:[self toDBId:pid]];
             
-            // images
-            NSString *profile = @"";
-            for (Asset *a in person.assets) {
-                
-                // poster
-                if ([a.type isEqualToString:assetProfile] && [a.size isEqualToString:assetSizeMid]) {
-                    profile = a.url;
-                    break;
-                }
-            }
-            
             // information
-            [_informationViewController informationPerson:person.name profile:profile biography:person.biography birthday:person.birthday birthplace:person.birthplace known_movies:person.known_movies];
+            [_informationViewController informationPerson:person];
         }
         
         

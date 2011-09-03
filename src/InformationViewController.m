@@ -9,6 +9,7 @@
 #import "InformationViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "IMDGConstants.h"
+#import "BlockerView.h"
 
 
 /**
@@ -40,6 +41,15 @@
 - (void)actionResize:(id)sender;
 - (void)resizeFull;
 - (void)resizeDefault;
+- (void)actionToolsReference:(id)sender;
+@end
+
+/**
+ * Reference Stack.
+ */
+@interface InformationViewController (ReferenceStack)
+- (void)referenceAmazon;
+- (void)referenceITunes;
 @end
 
 
@@ -105,6 +115,10 @@ static int informationGapInset = 15;
 		// view
 		vframe = frame;
         
+        // type
+        type_movie = NO;
+        type_person = NO;
+        
         // modes
         mode_listing = NO;
         mode_information = NO;
@@ -113,6 +127,13 @@ static int informationGapInset = 15;
         
         // screen
         fullscreen = NO;
+        
+        // fields
+        _referenceTMDb = [[NSMutableString alloc] init];
+        _referenceIMDb = [[NSMutableString alloc] init];
+        _referenceWikipedia = [[NSMutableString alloc] init];
+        _referenceAmazon = [[NSMutableString alloc] init];
+        _referenceITunes = [[NSMutableString alloc] init];
 
 	}
 	return self;
@@ -156,6 +177,11 @@ static int informationGapInset = 15;
     self.modalView = [mView retain];
     [self.view addSubview:_modalView];
     [mView release];
+    
+    // blocker
+    float safety = 25;
+    BlockerView *bView = [[BlockerView alloc] initWithFrame:CGRectMake(contentFrame.origin.x-safety, contentFrame.origin.y-safety, contentFrame.size.width+2*safety, contentFrame.size.height+2*safety)];
+    [_modalView addSubview:bView];
 
 	
 	// content
@@ -233,11 +259,9 @@ static int informationGapInset = 15;
     
     
     // component imdb
-    UIWebView *componentIMDb = [[UIWebView alloc] initWithFrame:componentFrame];
+    HTMLView *componentIMDb = [[HTMLView alloc] initWithFrame:componentFrame];
     componentIMDb.tag = TagInformationComponentIMDb;
-    componentIMDb.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
     componentIMDb.hidden = YES;
-    componentIMDb.scalesPageToFit = YES;
     
     // add imdb to content
     _componentIMDb = [componentIMDb retain];
@@ -245,17 +269,14 @@ static int informationGapInset = 15;
     [componentIMDb release];
     
     // component wikipedia
-    UIWebView *componentWikipedia = [[UIWebView alloc] initWithFrame:componentFrame];
+    HTMLView *componentWikipedia = [[HTMLView alloc] initWithFrame:componentFrame];
     componentWikipedia.tag = TagInformationComponentWikipedia;
-    componentWikipedia.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
     componentWikipedia.hidden = YES;
-    componentWikipedia.scalesPageToFit = YES;
     
     // add wikipedia to content
     _componentWikipedia = [componentWikipedia retain];
     [ctView addSubview:_componentWikipedia];
     [componentWikipedia release];
-    
 
     
     // footer view
@@ -318,6 +339,37 @@ static int informationGapInset = 15;
     [footerView addSubview:abar];
     [itemFlex release];
     
+    
+    
+    // navigator
+    HTMLNavigatorView *htmlNavigator = [[HTMLNavigatorView alloc] initWithFrame:CGRectMake(informationGapInset, 10, 80, 40)];
+    htmlNavigator.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin);
+    htmlNavigator.delegate = self;
+    
+    // add navigator to footer
+    _htmlNavigator = [htmlNavigator retain];
+    [footerView addSubview:_htmlNavigator];
+    [htmlNavigator release];
+    
+    
+    // tools
+    UIView *toolsView = [[UIView alloc] initWithFrame:CGRectMake(footerFrame.size.width-informationGapInset-80, 10, 80, 40)];
+    toolsView.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin);
+    toolsView.backgroundColor = [UIColor clearColor];
+    
+    // reference
+    UIButton *btnReference = [UIButton buttonWithType:UIButtonTypeCustom];
+    btnReference.frame = CGRectMake(toolsView.frame.size.width-40, 4, 32, 32);
+    btnReference.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+    [btnReference setImage:[UIImage imageNamed:@"btn_reference.png"] forState:UIControlStateNormal];
+    [btnReference addTarget:self action:@selector(actionToolsReference:) forControlEvents:UIControlEventTouchUpInside];
+    [toolsView addSubview:btnReference];
+
+    
+    // add tools to footer
+    [footerView addSubview:toolsView];
+    
+    
     // add footer view to content
     [ctView addSubview:footerView];
     [footerView release];
@@ -336,7 +388,11 @@ static int informationGapInset = 15;
  * Resize.
  */
 - (void)resize {
-    // handled by default ui resize
+    
+    // fullscreen
+    if (fullscreen) {
+        [self resizeFull];
+    }
 }
 
 
@@ -349,8 +405,6 @@ static int informationGapInset = 15;
     
     // reload
     [_componentListing reloadData];
-    
-    NSLog(@"load %f %f %f %f",vframe.origin.x, vframe.origin.y, vframe.size.width, vframe.size.height);
 
 }
 
@@ -380,13 +434,14 @@ static int informationGapInset = 15;
 }
 
 
+
 #pragma mark -
 #pragma mark Business
 
 /*
  * Information movie.
  */
-- (void)informationMovie:(NSString *)name poster:(NSString*)poster tagline:(NSString *)tagline overview:(NSString *)overview released:(NSDate *)released runtime:(NSNumber *)runtime trailer:(NSString *)trailer homepage:(NSString *)homepage imdb_id:(NSString *)imdb_id {
+- (void)informationMovie:(Movie*)movie {
     FLog();
     
     // formatter
@@ -396,50 +451,68 @@ static int informationGapInset = 15;
         [dateFormatter setDateFormat:@"yyyy"];
     }
     
-    // show
-    _informationPersonView.hidden = YES;
+    // type
+    type_person = NO;
+    type_movie = YES;
     
-    // poster
+    // poset
+    NSString *poster = @"";
+    for (Asset *a in movie.assets) {
+        
+        // poster
+        if ([a.type isEqualToString:assetPoster] && [a.size isEqualToString:assetSizeThumb]) {
+            poster = a.url;
+            break;
+        }
+    }
+
+    
+    // header
     [_informationMovieView.imagePoster loadImageFromURL:poster];
+    [_informationMovieView.labelName setText:movie.name];
+    [_informationMovieView.labelTagline setText:movie.tagline];
+    [_informationMovieView.labelReleased setText:[NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:movie.released]]];
+    [_informationMovieView.labelRuntime setText:[NSString stringWithFormat:@"%im",[movie.runtime intValue]]];
     
-    // data
-    [_informationMovieView.labelName setText:name];
-    [_informationMovieView.labelTagline setText:tagline];
-    [_informationMovieView.labelReleased setText:[NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:released]]];
-    [_informationMovieView.labelRuntime setText:[NSString stringWithFormat:@"%im",[runtime intValue]]];
+    // references
+    [_referenceTMDb setString:[NSString stringWithFormat:@"%@%i",urlTMDbMovie,[movie.mid intValue]]];
+    if (([movie.imdb_id length] > 0)) {
+        [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",urlIMDbMovie,movie.imdb_id]];
+    }
+    else {
+        [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",urlIMDbSearch,[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    }
+    [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",urlWikipediaSearch,[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",urlAmazonSearch,[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceITunes setString:[NSString stringWithFormat:@"%@%@",urlITunesSearch,[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+
     
     // component listing
     [_actionListing setTitle:NSLocalizedString(@"Cast", @"Cast")];
     
     // component information
-    [_componentInformation setText:overview];
-    
+    [_componentInformation setText:movie.overview];
     
     // component imdb
-    NSString *imdbURL = ([imdb_id length] > 0) ? 
-        [NSString stringWithFormat:@"%@%@",urlIMDBMovie,imdb_id] 
-        : [NSString stringWithFormat:@"%@%@",urlIMDBSearch,[name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    
-    NSMutableURLRequest *imdbRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:imdbURL]];
-    [_componentIMDb loadRequest:imdbRequest];
+    [_componentIMDb reset:_referenceIMDb];
     
     // component wikipedia
-    NSString *wikipediaURL = [NSString stringWithFormat:@"%@%@",urlWikipediaSearch,[name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    NSMutableURLRequest *wikipediaRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:wikipediaURL]];
-    [_componentWikipedia loadRequest:wikipediaRequest];
+    [_componentWikipedia reset:_referenceWikipedia];
+
+    
+    // show
+    _informationPersonView.hidden = YES;
+    _informationMovieView.hidden = NO;
     
     // swap listing
     [self swapListing];
-    
-    // show
-    _informationMovieView.hidden = NO;
     
 }
 
 /**
  * Information person.
  */
-- (void)informationPerson:(NSString *)name profile:(NSString *)profile biography:(NSString *)biography birthday:(NSDate *)birthday birthplace:(NSString *)birthplace known_movies:(NSNumber *)known_movies {
+- (void)informationPerson:(Person*)person {
     FLog();
     
     // formatter
@@ -449,39 +522,55 @@ static int informationGapInset = 15;
         [dateFormatter setDateFormat:@"dd.MM.yyyy"];
     }
     
-    // show
-    _informationMovieView.hidden = YES;
+    // type
+    type_movie = NO;
+    type_person = YES;
     
     // profile
-    [_informationPersonView.imageProfile loadImageFromURL:profile];
+    NSString *profile = @"";
+    for (Asset *a in person.assets) {
+        
+        // profile
+        if ([a.type isEqualToString:assetProfile] && [a.size isEqualToString:assetSizeMid]) {
+            profile = a.url;
+            break;
+        }
+    }
     
-    // data
-    [_informationPersonView.labelName setText:name];
-    [_informationPersonView.labelBirthday setText:[NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:birthday]]];
-    [_informationPersonView.labelBirthplace setText:birthplace];
-    [_informationPersonView.labelKnownMovies setText:[NSString stringWithFormat:@"%i",[known_movies intValue]]];
+    
+    // header
+    [_informationPersonView.imageProfile loadImageFromURL:profile];
+    [_informationPersonView.labelName setText:person.name];
+    [_informationPersonView.labelBirthday setText:[NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:person.birthday]]];
+    [_informationPersonView.labelBirthplace setText:person.birthplace];
+    [_informationPersonView.labelKnownMovies setText:[NSString stringWithFormat:@"%i",[person.known_movies intValue]]];
+    
+    // references
+    [_referenceTMDb setString:[NSString stringWithFormat:@"%@%i",urlTMDbPerson,[person.pid intValue]]];
+    [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",urlIMDbSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",urlWikipediaSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",urlAmazonSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceITunes setString:[NSString stringWithFormat:@"%@%@",urlITunesSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    
     
     // component listing
     [_actionListing setTitle:NSLocalizedString(@"Movies", @"Movies")];
     
     // component information
-    [_componentInformation setText:biography];
+    [_componentInformation setText:person.biography];
     
     // component imdb
-    NSString *imdbURL = [NSString stringWithFormat:@"%@%@",urlIMDBSearch,[name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    NSMutableURLRequest *imdbRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:imdbURL]];
-    [_componentIMDb loadRequest:imdbRequest];
+    [_componentIMDb reset:_referenceIMDb];
     
     // component wikipedia
-    NSString *wikipediaURL = [NSString stringWithFormat:@"%@%@",urlWikipediaSearch,[name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    NSMutableURLRequest *wikipediaRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:wikipediaURL]];
-    [_componentWikipedia loadRequest:wikipediaRequest];
+    [_componentWikipedia reset:_referenceWikipedia];
+    
+    // show
+    _informationMovieView.hidden = YES;
+    _informationPersonView.hidden = NO;
     
     // swap listing
     [self swapListing];
-    
-    // show
-    _informationPersonView.hidden = NO;
     
 }
 
@@ -559,12 +648,10 @@ static int informationGapInset = 15;
         [_actionIMDb setSelected:YES];
         
         // component
+        [_componentIMDb load];
+        [_componentIMDb scrollTop:NO];
         [_componentIMDb setHidden:NO];
-        for (UIView *subview in _componentIMDb.subviews) {
-            if ([subview isKindOfClass:[UIScrollView class]]) {
-                [(UIScrollView*)subview setContentOffset:CGPointZero animated:YES];
-            }
-        }
+        [_htmlNavigator setHidden:NO];
         
     }
 }
@@ -588,12 +675,10 @@ static int informationGapInset = 15;
         [_actionWikipedia setSelected:YES];
         
         // component
+        [_componentWikipedia load];
+        [_componentWikipedia scrollTop:NO];
         [_componentWikipedia setHidden:NO];
-        for (UIView *subview in _componentIMDb.subviews) {
-            if ([subview isKindOfClass:[UIScrollView class]]) {
-                [(UIScrollView*)subview setContentOffset:CGPointZero animated:YES];
-            }
-        }
+        [_htmlNavigator setHidden:NO];
         
     }
 }
@@ -621,7 +706,40 @@ static int informationGapInset = 15;
     _componentInformation.hidden = YES;
     _componentIMDb.hidden = YES;
     _componentWikipedia.hidden = YES;
+    _htmlNavigator.hidden = YES;
     
+}
+
+
+#pragma mark -
+#pragma mark HTML Delegate
+
+/*
+ * Navigator.
+ */
+- (void)navigateBack {
+    
+    // imdb
+    if (mode_imdb) {
+        [_componentIMDb navigateBack];
+    }
+    
+    // imdb
+    if (mode_wikipedia) {
+        [_componentWikipedia navigateBack];
+    }
+}
+- (void)navigateForward {
+    
+    // imdb
+    if (mode_imdb) {
+        [_componentIMDb navigateForward];
+    }
+    
+    // imdb
+    if (mode_wikipedia) {
+        [_componentWikipedia navigateForward];
+    }
 }
 
 
@@ -663,6 +781,10 @@ static int informationGapInset = 15;
     [UIView setAnimationDuration:kAnimateTimeResizeFull];
 	_contentView.frame = rframe;
 	[UIView commitAnimations];
+    
+    // button
+    [_buttonResize setImage:[UIImage imageNamed:@"btn_resize-default.png"] forState:UIControlStateNormal];
+    
 }
 - (void)resizeDefault {
     GLog();
@@ -683,6 +805,140 @@ static int informationGapInset = 15;
     [UIView setAnimationDuration:kAnimateTimeResizeDefault];
 	_contentView.frame = rframe;
 	[UIView commitAnimations];
+    
+    // button
+    [_buttonResize setImage:[UIImage imageNamed:@"btn_resize-full.png"] forState:UIControlStateNormal];
+}
+
+
+/*
+ * Tools reference.
+ */
+- (void)actionToolsReference:(id)sender {
+    FLog();
+    
+    // last action hero
+    UIActionSheet *referenceActions = [[UIActionSheet alloc]
+                                  initWithTitle:nil
+                                  delegate:self
+                                  cancelButtonTitle:nil
+                                  destructiveButtonTitle:nil
+                                  otherButtonTitles:NSLocalizedString(@"Open on TMDb",@"Open on TMDb"),NSLocalizedString(@"Open on IMDb",@"Open on IMDb"),NSLocalizedString(@"Open on Wikipedia",@"Open on Wikipedia"),NSLocalizedString(@"Find on Amazon",@"Find on Amazon"),NSLocalizedString(@"Find on iTunes",@"Find on iTunes"),nil];
+    
+    // show
+    [referenceActions setTag:ActionInformationToolsReference];
+    [referenceActions showFromRect:CGRectMake(_contentView.frame.origin.x + _contentView.frame.size.width-informationGapInset-32, _contentView.frame.origin.y + _contentView.frame.size.height-informationGapOffset-(informationFooterHeight/2.0), 32, 32) inView:self.view animated:YES];
+    [referenceActions release];
+    
+}
+
+
+#pragma mark -
+#pragma mark Reference
+
+/*
+ * Reference TMDb.
+ */
+- (void)referenceTMDb {
+    FLog();
+    
+    // open
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:_referenceTMDb]];
+}
+
+/*
+ * Reference IMDb.
+ */
+- (void)referenceIMDb {
+    FLog();
+    
+    // open
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:_referenceIMDb]];
+}
+
+/*
+ * Reference Wikipedia.
+ */
+- (void)referenceWikipedia {
+    FLog();
+    
+    // open
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:_referenceWikipedia]];
+}
+
+/*
+ * Reference amazon.
+ */
+- (void)referenceAmazon {
+    FLog();
+
+    // open
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:_referenceAmazon]];
+}
+
+/*
+ * Reference iTunes.
+ */
+- (void)referenceITunes {
+    FLog();
+    
+    // open
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:_referenceITunes]];
+}
+
+
+#pragma mark -
+#pragma mark UIActionSheet Delegate
+
+/*
+ * Action selected.
+ */
+- (void)actionSheet:(UIActionSheet*)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+	DLog();
+	
+	// tag
+	switch ([actionSheet tag]) {
+            
+        // reference
+		case ActionInformationToolsReference: {
+            
+            // TMDb
+			if (buttonIndex == 0) {
+				[self referenceTMDb];
+			} 
+            
+			// IMDb
+			if (buttonIndex == 1) {
+				[self referenceIMDb];
+			} 
+            
+			// Wikipedia
+			if (buttonIndex == 2) {
+				[self referenceWikipedia];
+			} 
+            
+			// Amazon
+			if (buttonIndex == 3) {
+				[self referenceAmazon];
+			} 
+            
+            // iTunes
+			if (buttonIndex == 4) {
+				[self referenceITunes];
+			} 
+            
+            // kit kat time
+			break;
+		}
+            
+            
+            // default
+		default: {
+			break;
+		}
+	}
+	
+	
 }
 
 
@@ -969,8 +1225,18 @@ static int informationGapInset = 15;
     [_actionIMDb release];
     [_actionWikipedia release];
     
-    // listing
+    // components
     [_componentListing release];
+    [_componentInformation release];
+    [_componentIMDb release];
+    [_componentWikipedia release];
+    
+    // reference
+    [_referenceTMDb release]; 
+    [_referenceIMDb release]; 
+    [_referenceWikipedia release]; 
+    [_referenceAmazon release]; 
+    [_referenceITunes release]; 
 	
 	// duper
     [super dealloc];
@@ -1074,7 +1340,7 @@ static int informationGapInset = 15;
 	// init self
     if (self != nil) {
 		
-		// add
+		// init
 		self.opaque = YES;
 		self.backgroundColor = [UIColor whiteColor];
         self.autoresizesSubviews = YES;
@@ -1172,20 +1438,12 @@ static int informationGapInset = 15;
         [cInformation setContentOffset:CGPointMake(0, 0) animated:YES];
         
         // imdb
-        UITextView *cIMDb = (UITextView*) [self viewWithTag:TagInformationComponentIMDb];
-        for (UIView *subview in cIMDb.subviews) {
-            if ([subview isKindOfClass:[UIScrollView class]]) {
-                [(UIScrollView*)subview setContentOffset:CGPointZero animated:YES];
-            }
-        }
+        HTMLView *cIMDb = (HTMLView*) [self viewWithTag:TagInformationComponentIMDb];
+        [cIMDb scrollTop:YES];
         
         // wikipedia
-        UITextView *cWikipedia = (UITextView*) [self viewWithTag:TagInformationComponentWikipedia];
-        for (UIView *subview in cWikipedia.subviews) {
-            if ([subview isKindOfClass:[UIScrollView class]]) {
-                [(UIScrollView*)subview setContentOffset:CGPointZero animated:YES];
-            }
-        }
+        HTMLView *cWikipedia = (HTMLView*) [self viewWithTag:TagInformationComponentWikipedia];
+        [cWikipedia scrollTop:YES];
     }
 }
 

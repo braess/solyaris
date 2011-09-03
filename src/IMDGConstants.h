@@ -34,9 +34,13 @@
 
 
 // URLs
-#define urlIMDBMovie                    @"http://imdb.com/title/"
-#define urlIMDBSearch                   @"http://imdb.com/find?q="
+#define urlIMDbMovie                    @"http://www.imdb.com/title/"
+#define urlIMDbSearch                   @"http://www.imdb.com/find?q="
 #define urlWikipediaSearch              @"http://en.wikipedia.org/w/index.php?search="
+#define urlTMDbMovie                    @"http://www.themoviedb.org/movie/"
+#define urlTMDbPerson                   @"http://www.themoviedb.org/person/"
+#define urlAmazonSearch                 @"http://www.amazon.com/s/field-keywords="
+#define urlITunesSearch                 @"http://www.amazon.com/s/field-keywords="
 
 
 // Values
