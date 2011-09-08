@@ -2,7 +2,7 @@
 //  Person.m
 //  IMDG
 //
-//  Created by CNPP on 31.8.2011.
+//  Created by CNPP on 8.9.2011.
 //  Copyright (c) 2011 Beat Raess. All rights reserved.
 //
 
@@ -18,8 +18,8 @@
 @dynamic birthday;
 @dynamic type;
 @dynamic biography;
-@dynamic birthplace;
 @dynamic name;
+@dynamic birthplace;
 @dynamic assets;
 @dynamic movies;
 

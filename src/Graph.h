@@ -8,7 +8,7 @@
 #include "cinder/app/TouchEvent.h"
 #include "Node.h"
 #include "Edge.h"
-#include "Hint.h"
+#include "Tooltip.h"
 #include "GraphSettings.h"
 #include <vector>
 #include <map>
@@ -57,7 +57,7 @@ class Graph {
     NodePtr getNode(string nid);
     EdgePtr createEdge(string eid, string type, NodePtr n1, NodePtr n2);
     EdgePtr getEdge(string nid1, string nid2);
-    void shint();
+    void tooltip();
     
     
     // private
@@ -84,9 +84,9 @@ class Graph {
     // touched nodes
     map<int, NodePtr> touched;
     
-    // hint
-    Hint hint;
-    bool hint_disabled;
+    // tooltip
+    Tooltip ttip;
+    bool tooltip_disabled;
     
     // Settings
     GraphSettings gsettings;

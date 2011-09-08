@@ -2,7 +2,7 @@
 //  Asset.h
 //  IMDG
 //
-//  Created by CNPP on 31.8.2011.
+//  Created by CNPP on 8.9.2011.
 //  Copyright (c) 2011 Beat Raess. All rights reserved.
 //
 

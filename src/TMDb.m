@@ -23,7 +23,7 @@
 @property (nonatomic, retain, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 // Methods
-- (NSString *)applicationDocumentsDirectory;
+- (NSString *)applicationCachesDirectory;
 @end
 
 
@@ -39,7 +39,11 @@
 - (NSString*)updateJob:(NSString*)original updated:(NSString*)updated;
 - (NSString*)updateDepartment:(NSString*)original updated:(NSString*)updated;
 - (NSNumber*)updateOrder:(NSNumber*)original updated:(NSNumber*)updated;
+- (NSString*)assignType:(NSString *)department;
 - (BOOL)isEmpty:(id)thing;
+- (BOOL)validSearchResult:(NSDictionary*)dresult;
+- (BOOL)validMovie:(NSDictionary*)dmovie;
+- (BOOL)validPerson:(NSDictionary*)dperson;
 @end
 
 
@@ -96,7 +100,11 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         // context
         NSManagedObjectContext *context = [self managedObjectContext];
         if (!context) {
-            // Handle the error.
+            
+            // handle the error
+            if (delegate && [delegate respondsToSelector:@selector(apiFatal:)]) {
+                [delegate apiFatal:NSLocalizedString(@"Corrupted Data", "Corrupted Data")];
+            }
         }
     }
     
@@ -259,6 +267,41 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     
 }
 
+/**
+ * Clears the cache.
+ */
+- (void)clearCache {
+    DLog();
+    
+    // path
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+	NSString *storePath = [[self applicationCachesDirectory] stringByAppendingPathComponent:TMDbStore];
+	
+	// remove existing db
+	if ([fileManager fileExistsAtPath:storePath]) {
+		[fileManager removeItemAtPath:storePath error:NULL];
+	}
+    
+    // context
+    [managedObjectContext release];
+    managedObjectContext = nil;
+    
+    [managedObjectModel release];
+    managedObjectModel = nil;
+    
+    [persistentStoreCoordinator release];
+    persistentStoreCoordinator = nil;
+    
+    NSManagedObjectContext *context = [self managedObjectContext];
+    if (!context) {
+        
+        // handle the error
+        if (delegate && [delegate respondsToSelector:@selector(apiFatal:)]) {
+            [delegate apiFatal:NSLocalizedString(@"Corrupted Data", "Corrupted Data")];
+        }
+    }
+}
+
 
 
 
@@ -269,7 +312,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
  * Cached search.
  */
 - (Search *)cachedSearch:(NSString*)query type:(NSString *)type {
-    GLog();
+    FLog();
     
     // context
     NSManagedObjectContext *moc = [self managedObjectContext];
@@ -455,7 +498,17 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // error
         if (error) {
+            
             // oops
+            if (delegate && [delegate respondsToSelector:@selector(apiError:type:message:)]) {
+                [delegate apiError:[NSNumber numberWithInt:-1] type:typeMovie message:[error localizedDescription]];
+            }
+            
+            // roll back tha thing
+            [managedObjectContext rollback];
+            
+            // fluff search
+            return NULL;
         }
         
         
@@ -471,8 +524,8 @@ static NSString* TMDbStore = @"TMDb.sqlite";
             for (NSDictionary *dresult in results)	{
                 SearchResult *searchResult = (SearchResult*)[NSEntityDescription insertNewObjectForEntityForName:@"SearchResult" inManagedObjectContext:managedObjectContext];
                 
-                // filter adult
-                if (! [[dresult objectForKey:@"adult"] boolValue]) {
+                // validate
+                if ([self validSearchResult:dresult]) {
                     
                     // dta
                     NSString *dta = [self parseString:[dresult objectForKey:@"name"]];
@@ -537,7 +590,17 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // error
         if (error) {
+            
             // oops
+            if (delegate && [delegate respondsToSelector:@selector(apiError:type:message:)]) {
+                [delegate apiError:[NSNumber numberWithInt:-1] type:typePerson message:[error localizedDescription]];
+            }
+            
+            // roll back tha thing
+            [managedObjectContext rollback];
+            
+            // fluff search
+            return NULL;
         }
         
         
@@ -553,35 +616,39 @@ static NSString* TMDbStore = @"TMDb.sqlite";
             for (NSDictionary *dresult in results)	{
                 SearchResult *searchResult = (SearchResult*)[NSEntityDescription insertNewObjectForEntityForName:@"SearchResult" inManagedObjectContext:managedObjectContext];
                 
-                // data
-                searchResult.ref = [self parseNumber:[dresult objectForKey:@"id"]];
-                searchResult.data = [self parseString:[dresult objectForKey:@"name"]];
-                searchResult.type = typePerson;
+                // validate
+                if ([self validSearchResult:dresult]) {
                 
-                // thumb
-                BOOL thumb = NO;
-                NSArray *profiles = [dresult objectForKey:@"profile"];
-                for (NSDictionary *dprofile in profiles)	{
+                    // data
+                    searchResult.ref = [self parseNumber:[dresult objectForKey:@"id"]];
+                    searchResult.data = [self parseString:[dresult objectForKey:@"name"]];
+                    searchResult.type = typePerson;
                     
-                    // first thumb
-                    if (! thumb) {
+                    // thumb
+                    BOOL thumb = NO;
+                    NSArray *profiles = [dresult objectForKey:@"profile"];
+                    for (NSDictionary *dprofile in profiles)	{
                         
-                        // type
-                        NSDictionary *dimage = [dprofile objectForKey:@"image"];
-                        NSString *ptype = [self parseString:[dimage objectForKey:@"type"]];
-                        NSString *psize = [self parseString:[dimage objectForKey:@"size"]];
-                        
-                        // compare
-                        if ([ptype isEqualToString:@"profile"] && [psize isEqualToString:@"thumb"]) {
-                            searchResult.thumb = [self parseString:[dimage objectForKey:@"url"]];
-                            thumb = YES;
+                        // first thumb
+                        if (! thumb) {
+                            
+                            // type
+                            NSDictionary *dimage = [dprofile objectForKey:@"image"];
+                            NSString *ptype = [self parseString:[dimage objectForKey:@"type"]];
+                            NSString *psize = [self parseString:[dimage objectForKey:@"size"]];
+                            
+                            // compare
+                            if ([ptype isEqualToString:@"profile"] && [psize isEqualToString:@"thumb"]) {
+                                searchResult.thumb = [self parseString:[dimage objectForKey:@"url"]];
+                                thumb = YES;
+                            }
                         }
+                        
                     }
                     
+                    // add
+                    [search addResultsObject:searchResult];
                 }
-                
-                // add
-                [search addResultsObject:searchResult];
             }
             [parser release];
         }
@@ -604,6 +671,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
  */
 - (Movie*)queryMovie:(NSNumber*)mid {
     FLog();
+    
 	
     // request
     NSString *url = [NSString stringWithFormat:@"%@/en/json/%@/%i",apiTMDbMovie,apiTMDbKey,[mid intValue]];
@@ -620,7 +688,14 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     
     // error
     if (error) {
+        
         // oops
+        if (delegate && [delegate respondsToSelector:@selector(apiError:type:message:)]) {
+            [delegate apiError:mid type:typeMovie message:[error localizedDescription]];
+        }
+        
+        // fluff back
+        return NULL;
     }
     
     // movie
@@ -637,11 +712,11 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // movie
     NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
     
-    // filter adult
-    if (! [[djson objectForKey:@"adult"] boolValue]) {
+    // validate
+    movie.mid = [self parseNumber:[djson objectForKey:@"id"]];
+    if ([self validMovie:djson]) {
         
         // set data
-        movie.mid = [self parseNumber:[djson objectForKey:@"id"]];
         movie.name = [self parseString:[djson objectForKey:@"name"]];
         movie.released = [self parseDate:[djson objectForKey:@"released"]];
         movie.tagline = [self parseString:[djson objectForKey:@"tagline"]];
@@ -656,81 +731,86 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         NSArray *persons = [djson objectForKey:@"cast"];
         for (NSDictionary *dperson in persons)	{
             
-            // Person
-            NSNumber *pid = [self parseNumber:[dperson objectForKey:@"id"]];
-            Person *person = [self cachedPerson:pid];
-            if (person == NULL) {
-                
-                // create object
-                person = (Person*)[NSEntityDescription insertNewObjectForEntityForName:@"Person" inManagedObjectContext:managedObjectContext];
-                
-                // set data
-                person.pid = pid;
-                person.name = [self parseString:[dperson objectForKey:@"name"]];
-                person.type = typePerson;
-                
-                
-                // profile
-                Asset *asset = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
-                
-                // set data
-                asset.type = assetProfile;
-                asset.size = assetSizeThumb;
-                asset.url = [self parseString:[dperson objectForKey:@"profile"]];
-                
-                // relation
-                asset.person = person;
-                [person addAssetsObject:asset];
-                
-                // defaults
-                person.loaded = NO;
-                
-            }
+            // validate
+            if ([self validPerson:dperson]) {
             
-            // Movie2Person
-            Movie2Person *m2p = [self cachedMovie2Person:mid person:pid];
-            if (m2p == NULL) {
+                // Person
+                NSNumber *pid = [self parseNumber:[dperson objectForKey:@"id"]];
+                Person *person = [self cachedPerson:pid];
+                if (person == NULL) {
+                    
+                    // create object
+                    person = (Person*)[NSEntityDescription insertNewObjectForEntityForName:@"Person" inManagedObjectContext:managedObjectContext];
+                    
+                    // set data
+                    person.pid = pid;
+                    person.name = [self parseString:[dperson objectForKey:@"name"]];
+                    person.type = typePerson;
+                    
+                    
+                    // profile
+                    Asset *asset = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
+                    
+                    // set data
+                    asset.type = assetProfile;
+                    asset.size = assetSizeThumb;
+                    asset.url = [self parseString:[dperson objectForKey:@"profile"]];
+                    
+                    // relation
+                    asset.person = person;
+                    [person addAssetsObject:asset];
+                    
+                    // defaults
+                    person.loaded = NO;
+                    
+                }
                 
-                // create object
-                m2p = (Movie2Person*)[NSEntityDescription insertNewObjectForEntityForName:@"Movie2Person" inManagedObjectContext:managedObjectContext];
-                
-                // set data
-                m2p.mid = mid;
-                m2p.pid = pid;
-                m2p.year = movie.released;
-                
-                // reference
-                m2p.movie = movie;
-                m2p.person = person;
+                // Movie2Person
+                Movie2Person *m2p = [self cachedMovie2Person:mid person:pid];
+                if (m2p == NULL) {
+                    
+                    // create object
+                    m2p = (Movie2Person*)[NSEntityDescription insertNewObjectForEntityForName:@"Movie2Person" inManagedObjectContext:managedObjectContext];
+                    
+                    // set data
+                    m2p.mid = mid;
+                    m2p.pid = pid;
+                    m2p.type = [self assignType:[dperson objectForKey:@"department"]];
+                    m2p.year = movie.released;
+                    
+                    // reference
+                    m2p.movie = movie;
+                    m2p.person = person;
 
-            }
-            
-            // update data
-            m2p.department = [self updateDepartment:m2p.department updated:[self parseString:[dperson objectForKey:@"department"]]];
-            m2p.job = [self updateJob:m2p.job updated:[self parseString:[dperson objectForKey:@"job"]]];
-            m2p.character = [self updateCharacter:m2p.character updated:[self parseString:[dperson objectForKey:@"character"]]];
-            m2p.order = [self updateOrder:m2p.order updated:[dperson objectForKey:@"order"]];
-            
-            // type
-            if (! person.loaded) {
+                }
                 
-                // director
-                if ([m2p.department rangeOfString:@"Directing"].location != NSNotFound) {
-                    person.type = typePersonDirector;
+                // update data
+                m2p.department = [self updateDepartment:m2p.department updated:[self parseString:[dperson objectForKey:@"department"]]];
+                m2p.job = [self updateJob:m2p.job updated:[self parseString:[dperson objectForKey:@"job"]]];
+                m2p.character = [self updateCharacter:m2p.character updated:[self parseString:[dperson objectForKey:@"character"]]];
+                m2p.order = [self updateOrder:m2p.order updated:[dperson objectForKey:@"order"]];
+                
+                // type
+                if (! person.loaded) {
+                    
+                    // director
+                    if ([m2p.department rangeOfString:@"Directing"].location != NSNotFound) {
+                        person.type = typePersonDirector;
+                    }
+                    // crew
+                    else if ([m2p.department rangeOfString:@"Actors"].location == NSNotFound) {
+                        person.type = typePersonCrew;
+                    }
+                    else {
+                        person.type = typePersonActor;
+                    }
                 }
-                // crew
-                else if ([m2p.department rangeOfString:@"Actors"].location == NSNotFound) {
-                    person.type = typePersonCrew;
-                }
-                else {
-                    person.type = typePersonActor;
-                }
-            }
 
-            
-            
-            // add
-            [movie addPersonsObject:m2p];
+                
+                
+                // add
+                [movie addPersonsObject:m2p];
+            }
             
         }
         
@@ -848,7 +928,15 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     
     // error
     if (error) {
+        
         // oops
+        if (delegate && [delegate respondsToSelector:@selector(apiError:type:message:)]) {
+            [delegate apiError:pid type:typePerson message:[error localizedDescription]];
+        }
+        
+        
+        // fluff back
+        return NULL;
     }
     
     
@@ -869,187 +957,192 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // person
     NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
     
-    // movie
+    // validate
     person.pid = [self parseNumber:[djson objectForKey:@"id"]];
-    person.name = [self parseString:[djson objectForKey:@"name"]];
-    person.biography = [self parseString:[djson objectForKey:@"biography"]];
-    person.birthday = [self parseDate:[djson objectForKey:@"birthday"]];
-    person.birthplace = [self parseString:[djson objectForKey:@"birthplace"]];
-    person.known_movies = [self parseNumber:[djson objectForKey:@"known_movies"]];
-    
-    
-    // estimate if director, crew or actor...
-    int dcount = 0;
-    int ccount = 0;
-    int acount = 0;
-    
-    // movies
-    NSArray *movies = [djson objectForKey:@"filmography"];
-    for (NSDictionary *dmovie in movies)	{
+    if ([self validPerson:djson]) {
+            
         
-        // filter adult
-        if (! [[dmovie objectForKey:@"adult"] boolValue]) {
+        // movie
+        person.name = [self parseString:[djson objectForKey:@"name"]];
+        person.biography = [self parseString:[djson objectForKey:@"biography"]];
+        person.birthday = [self parseDate:[djson objectForKey:@"birthday"]];
+        person.birthplace = [self parseString:[djson objectForKey:@"birthplace"]];
+        person.known_movies = [self parseNumber:[djson objectForKey:@"known_movies"]];
         
-            // Movie
-            NSNumber *mid = [self parseNumber:[dmovie objectForKey:@"id"]];
-            Movie *movie = [self cachedMovie:mid];
-            if (movie == NULL) {
+        
+        // estimate if director, crew or actor...
+        int dcount = 0;
+        int ccount = 0;
+        int acount = 0;
+        
+        // movies
+        NSArray *movies = [djson objectForKey:@"filmography"];
+        for (NSDictionary *dmovie in movies)	{
+            
+            // validate
+            if ([self validMovie:dmovie]) {
+            
+                // Movie
+                NSNumber *mid = [self parseNumber:[dmovie objectForKey:@"id"]];
+                Movie *movie = [self cachedMovie:mid];
+                if (movie == NULL) {
+                    
+                    // object
+                    movie = (Movie*)[NSEntityDescription insertNewObjectForEntityForName:@"Movie" inManagedObjectContext:managedObjectContext];
+                    
+                    // data
+                    movie.mid = mid;
+                    movie.name = [self parseString:[dmovie objectForKey:@"name"]];
+                    movie.released = [self parseDate:[dmovie objectForKey:@"release"]];
+                    
+                    // profile
+                    Asset *asset = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
+                    
+                    // set data
+                    asset.type = assetPoster;
+                    asset.size = assetSizeThumb;
+                    asset.url = [self parseString:[dmovie objectForKey:@"poster"]];
+                    
+                    // relation
+                    asset.movie = movie;
+                    [movie addAssetsObject:asset];
+                    
+                    // defaults
+                    movie.loaded = NO;
+                }
                 
-                // object
-                movie = (Movie*)[NSEntityDescription insertNewObjectForEntityForName:@"Movie" inManagedObjectContext:managedObjectContext];
+                // Movie2Person
+                Movie2Person *m2p = [self cachedMovie2Person:mid person:pid];
+                if (m2p == NULL) {
+                    
+                    // create object
+                    m2p = (Movie2Person*)[NSEntityDescription insertNewObjectForEntityForName:@"Movie2Person" inManagedObjectContext:managedObjectContext];
+                    
+                    // set data
+                    m2p.mid = mid;
+                    m2p.pid = pid;
+                    m2p.type = [self assignType:[dmovie objectForKey:@"department"]];
+                    m2p.year = movie.released;
+                    
+                    // reference
+                    m2p.movie = movie;
+                    m2p.person = person;
+                }
+                               
+                // update data
+                m2p.department = [self updateDepartment:m2p.department updated:[self parseString:[dmovie objectForKey:@"department"]]];
+                m2p.job = [self updateJob:m2p.job updated:[self parseString:[dmovie objectForKey:@"job"]]];
+                m2p.character = [self updateCharacter:m2p.character updated:[self parseString:[dmovie objectForKey:@"character"]]];
+                m2p.order = [self updateOrder:m2p.order updated:[dmovie objectForKey:@"order"]];
                 
-                // data
-                movie.mid = mid;
-                movie.name = [self parseString:[dmovie objectForKey:@"name"]];
-                movie.released = [self parseDate:[dmovie objectForKey:@"release"]];
+                // count
+                if ([m2p.type isEqualToString:typePersonDirector]) {
+                    // director
+                    dcount++;
+                }
+                else if ([m2p.type isEqualToString:typePersonCrew]) {
+                    // crew
+                    ccount++;
+                }
+                else {
+                    // actor
+                    acount++;
+                }
                 
-                // profile
+                // add
+                [person addMoviesObject:m2p];
+            }
+        }
+        
+        // type crew/actor
+        if (ccount > acount) {
+            person.type = typePersonCrew;
+        }
+        else {
+            person.type = typePersonActor;
+        }
+        
+        // director
+        if (dcount > acount || dcount > ccount || dcount >= 3) {
+            person.type = typePersonDirector;
+        }
+        
+        
+        
+        // assets
+        BOOL asset_thumb = NO;
+        BOOL asset_mid = NO;
+        BOOL asset_original = NO;
+        NSArray *profiles = [djson objectForKey:@"profile"];
+        for (NSDictionary *dprofile in profiles)	{
+            
+            // type
+            NSDictionary *dimage = [dprofile objectForKey:@"image"];
+            NSString *ptype = [self parseString:[dimage objectForKey:@"type"]];
+            NSString *psize = [self parseString:[dimage objectForKey:@"size"]];
+            
+            // profile original
+            if (! asset_original && [ptype isEqualToString:@"profile"] && [psize isEqualToString:@"original"]) {
+                
+                // create object
                 Asset *asset = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
                 
                 // set data
-                asset.type = assetPoster;
-                asset.size = assetSizeThumb;
-                asset.url = [self parseString:[dmovie objectForKey:@"poster"]];
+                asset.type = assetProfile;
+                asset.size = assetSizeOriginal;
+                asset.url = [self parseString:[dimage objectForKey:@"url"]];
                 
                 // relation
-                asset.movie = movie;
-                [movie addAssetsObject:asset];
+                asset.person = person;
+                [person addAssetsObject:asset];
                 
-                // defaults
-                movie.loaded = NO;
+                // done
+                asset_original = YES;
+                
             }
             
-            // Movie2Person
-            Movie2Person *m2p = [self cachedMovie2Person:mid person:pid];
-            if (m2p == NULL) {
+            // profile mid
+            if (! asset_mid && [ptype isEqualToString:@"profile"] && [psize isEqualToString:@"profile"]) {
                 
                 // create object
-                m2p = (Movie2Person*)[NSEntityDescription insertNewObjectForEntityForName:@"Movie2Person" inManagedObjectContext:managedObjectContext];
+                Asset *asset = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
                 
                 // set data
-                m2p.mid = mid;
-                m2p.pid = pid;
-                m2p.year = movie.released;
+                asset.type = assetProfile;
+                asset.size = assetSizeMid;
+                asset.url = [self parseString:[dimage objectForKey:@"url"]];
                 
-                // reference
-                m2p.movie = movie;
-                m2p.person = person;
-            }
-                           
-            // update data
-            m2p.department = [self updateDepartment:m2p.department updated:[self parseString:[dmovie objectForKey:@"department"]]];
-            m2p.job = [self updateJob:m2p.job updated:[self parseString:[dmovie objectForKey:@"job"]]];
-            m2p.character = [self updateCharacter:m2p.character updated:[self parseString:[dmovie objectForKey:@"character"]]];
-            m2p.order = [self updateOrder:m2p.order updated:[dmovie objectForKey:@"order"]];
-            
-            // count
-            NSString *od = [self parseString:[dmovie objectForKey:@"department"]];
-            if ([od rangeOfString:@"Directing"].location != NSNotFound) {
-                // director
-                dcount++;
-            }
-            else if ([od rangeOfString:@"Actors"].location == NSNotFound) {
-                // crew
-                ccount++;
-            }
-            else {
-                // actor
-                acount++;
+                // relation
+                asset.person = person;
+                [person addAssetsObject:asset];
+                
+                // done
+                asset_mid = YES;
+                
             }
             
-            // add
-            [person addMoviesObject:m2p];
+            // profile thumb
+            if (! asset_thumb && [ptype isEqualToString:@"profile"] && [psize isEqualToString:@"thumb"]) {
+                
+                // create object
+                Asset *asset = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
+                
+                // set data
+                asset.type = assetProfile;
+                asset.size = assetSizeThumb;
+                asset.url = [self parseString:[dimage objectForKey:@"url"]];
+                
+                // relation
+                asset.person = person;
+                [person addAssetsObject:asset];
+                
+                // done
+                asset_thumb = YES;
+                
+            }
         }
     }
-    
-    // type crew/actor
-    if (ccount > acount) {
-        person.type = typePersonCrew;
-    }
-    else {
-        person.type = typePersonActor;
-    }
-    
-    // director
-    if (dcount > acount || dcount > ccount || dcount >= 3) {
-        person.type = typePersonDirector;
-    }
-    
-    
-    
-    // assets
-    BOOL asset_thumb = NO;
-    BOOL asset_mid = NO;
-    BOOL asset_original = NO;
-    NSArray *profiles = [djson objectForKey:@"profile"];
-    for (NSDictionary *dprofile in profiles)	{
         
-        // type
-        NSDictionary *dimage = [dprofile objectForKey:@"image"];
-        NSString *ptype = [self parseString:[dimage objectForKey:@"type"]];
-        NSString *psize = [self parseString:[dimage objectForKey:@"size"]];
-        
-        // profile original
-        if (! asset_original && [ptype isEqualToString:@"profile"] && [psize isEqualToString:@"original"]) {
-            
-            // create object
-            Asset *asset = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
-            
-            // set data
-            asset.type = assetProfile;
-            asset.size = assetSizeOriginal;
-            asset.url = [self parseString:[dimage objectForKey:@"url"]];
-            
-            // relation
-            asset.person = person;
-            [person addAssetsObject:asset];
-            
-            // done
-            asset_original = YES;
-            
-        }
-        
-        // profile mid
-        if (! asset_mid && [ptype isEqualToString:@"profile"] && [psize isEqualToString:@"profile"]) {
-            
-            // create object
-            Asset *asset = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
-            
-            // set data
-            asset.type = assetProfile;
-            asset.size = assetSizeMid;
-            asset.url = [self parseString:[dimage objectForKey:@"url"]];
-            
-            // relation
-            asset.person = person;
-            [person addAssetsObject:asset];
-            
-            // done
-            asset_mid = YES;
-            
-        }
-        
-        // profile thumb
-        if (! asset_thumb && [ptype isEqualToString:@"profile"] && [psize isEqualToString:@"thumb"]) {
-            
-            // create object
-            Asset *asset = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
-            
-            // set data
-            asset.type = assetProfile;
-            asset.size = assetSizeThumb;
-            asset.url = [self parseString:[dimage objectForKey:@"url"]];
-            
-            // relation
-            asset.person = person;
-            [person addAssetsObject:asset];
-            
-            // done
-            asset_thumb = YES;
-            
-        }
-    }
-    
     // loaded
     person.loaded = [NSNumber numberWithBool:YES];
     
@@ -1060,6 +1153,8 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         NSLog(@"TMDb CoreData Error\n%@\n%@", error, [error userInfo]);
     }
     
+
+    
     // return
     return person;
 }
@@ -1067,7 +1162,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 
 
 #pragma mark -
-#pragma mark Query
+#pragma mark Parser
 
 /*
  * Parse.
@@ -1188,6 +1283,19 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // original
     return original;
 }
+- (NSString*)assignType:(NSString *)department {
+    
+    // type
+    if ([department rangeOfString:@"Directing"].location != NSNotFound) {
+        return typePersonDirector;
+    }
+    else if ([department rangeOfString:@"Actors"].location == NSNotFound) {
+        return typePersonCrew;
+    }
+    else {
+        return typePersonActor;
+    }
+}
 
 /*
  * Checks if empty.
@@ -1201,17 +1309,67 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         && [(NSArray *)thing count] == 0);
 }
 
+/*
+ * Validate SearchResult.
+ */
+- (BOOL)validSearchResult:(NSDictionary *)dresult {
+    
+    // exclude adult
+    if ([[dresult objectForKey:@"adult"] boolValue]) {
+        return NO;
+    }
+    
+    // valid
+    return YES;
+}
+
+/*
+ * Validate Movie.
+ */
+- (BOOL)validMovie:(NSDictionary *)dmovie {
+    
+    // exclude adult
+    if ([[dmovie objectForKey:@"adult"] boolValue]) {
+        return NO;
+    }
+    
+    // exclude by title
+    NSString *name = [[self parseString:[dmovie objectForKey:@"name"]] lowercaseString];
+    if ([name rangeOfString:@"obsolete"].location != NSNotFound) {
+        return NO; 
+    }
+    
+    // valid
+    return YES;
+}
+
+/*
+ * Validate Person.
+ */
+- (BOOL)validPerson:(NSDictionary *)dperson {
+    
+    // exclude adult
+    if ([[dperson objectForKey:@"adult"] boolValue]) {
+        return NO;
+    }
+    
+    // valid
+    return YES;
+}
+
+
+
 
 #pragma mark -
 #pragma mark Core Data stack
 
 
 /**
- * Returns the path to the application's Documents directory.
+ * Returns the path to the application's Cache directory.
  */
-- (NSString *)applicationDocumentsDirectory {
+- (NSString *)applicationCachesDirectory {
     GLog();
-	return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+	return [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
 }
 
 /**
@@ -1265,7 +1423,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     }
 	
 	// store path
-	NSString *storePath = [[self applicationDocumentsDirectory] stringByAppendingPathComponent:TMDbStore];
+	NSString *storePath = [[self applicationCachesDirectory] stringByAppendingPathComponent:TMDbStore];
 	
 	// store url
     NSURL *storeUrl = [NSURL fileURLWithPath:storePath];
@@ -1284,60 +1442,16 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 		NSLog(@"TMDb CoreData Error\n%@\n%@", error, [error userInfo]);
 		
 		// show info
-		UIAlertView *alert = [[UIAlertView alloc]
-							  initWithTitle:@"Corrupted Cache" 
-							  message:@"Please try to clear the cache or reinstall the application... Sorry about this." 
-							  delegate:self 
-							  cancelButtonTitle: @"Cancel"
-							  otherButtonTitles:@"Quit",nil];
-		[alert setTag:TMDb_AlertFatal];
-		[alert show];    
-		[alert release];
+        if (delegate && [delegate respondsToSelector:@selector(apiFatal:)]) {
+            [delegate apiFatal:@"Corrupted Cache. Please try to clear the cache or reinstall the application... Sorry about this."];
+        }
+    
     }    
 	
 	// return
     return persistentStoreCoordinator;
 }
 
-
-#pragma mark -
-#pragma mark UIAlertViewDelegate Delegate
-
-/*
- * Alert view button clicked.
- */
-- (void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-	FLog();
-	
-	// determine alert
-	switch ([actionSheet tag]) {
-            
-        // fatal
-		case TMDb_AlertFatal: {
-			// cancel
-			if (buttonIndex == 0) {
-			}
-			// quit
-			else {
-				if (delegate && [delegate respondsToSelector:@selector(quit)]) {
-                    [delegate quit];
-                }
-			}
-			
-			break;
-		}
-        // error
-		case TMDb_AlertError: {
-			break;
-		}
-        
-        // default
-		default:
-			break;
-	}
-	
-	
-}
 
 
 

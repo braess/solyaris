@@ -17,6 +17,7 @@
 @protocol SettingsDelegate <NSObject>
 - (void)settingsDismiss;
 - (void)settingsApply;
+- (void)settingsClearCache;
 @end
 
 

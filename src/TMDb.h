@@ -16,11 +16,6 @@
 #import "Asset.h"
 
 
-// alerts
-enum {
-    TMDb_AlertFatal,
-	TMDb_AlertError
-};
 
 
 /*
@@ -30,13 +25,14 @@ enum {
 - (void)loadedSearch:(Search*)result;
 - (void)loadedMovie:(Movie*)movie;
 - (void)loadedPerson:(Person*)person;
-- (void)quit;
+- (void)apiError:(NSNumber*)did type:(NSString*)type message:(NSString*)msg;
+- (void)apiFatal:(NSString*)msg;
 @end
 
 /**
  * API TMDb.
  */
-@interface TMDb : NSObject <UIAlertViewDelegate> {
+@interface TMDb : NSObject {
     
     // delegate
 	id<APIDelegate>delegate;
@@ -57,6 +53,7 @@ enum {
 - (void)search:(NSString*)q type:(NSString*)t;
 - (void)movie:(NSNumber*)mid;
 - (void)person:(NSNumber*)mid;
+- (void)clearCache;
 - (Movie*)dataMovie:(NSNumber*)mid;
 - (Person*)dataPerson:(NSNumber*)pid;
 

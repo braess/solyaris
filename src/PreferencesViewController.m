@@ -14,6 +14,7 @@
  */
 @interface PreferencesViewController (Helpers)
 - (void)resetPreferences;
+- (void)clearCache;
 - (void)updatePreference:(NSString*)key value:(NSObject*)value;
 - (NSString*)retrievePreference:(NSString*)key;
 @end
@@ -28,8 +29,7 @@
 #pragma mark Constants
 
 // constants
-#define kKeyResetDefaults	@"key_reset_defaults"
-#define kKeyClearCache      @"key_clear_cache"
+#define kKeyReset	@"key_reset"
 
 // local vars
 static int preferencesHeaderHeight = 45;
@@ -116,36 +116,20 @@ static int preferencesHeaderGap = 10;
 	GLog();
 	
 	// reset
-	if ([c.key isEqualToString:kKeyResetDefaults]) {
+	if ([c.key isEqualToString:kKeyReset]) {
 		// action sheet
 		UIActionSheet *resetAction = [[UIActionSheet alloc]
-                                      initWithTitle:NSLocalizedString(@"Reset all defaults?",@"Reset all defaults?")
+                                      initWithTitle:NSLocalizedString(@"Reset",@"Reset")
                                       delegate:self
                                       cancelButtonTitle:NSLocalizedString(@"Cancel",@"Cancel")
-                                      destructiveButtonTitle:NSLocalizedString(@"Reset",@"Reset")
-                                      otherButtonTitles:nil];
+                                      destructiveButtonTitle:nil
+                                      otherButtonTitles:NSLocalizedString(@"Settings",@"Settings"),NSLocalizedString(@"Cache",@"Cache"),nil];
         
 		// show
-		[resetAction setTag:ActionPreferenceResetDefaults];
 		[resetAction showFromRect:c.frame inView:self.view animated:YES];
 		[resetAction release];
 	}
     
-    // clear
-	if ([c.key isEqualToString:kKeyClearCache]) {
-		// action sheet
-		UIActionSheet *resetAction = [[UIActionSheet alloc]
-                                      initWithTitle:NSLocalizedString(@"Clear Cache?",@"Clear Cache?")
-                                      delegate:self
-                                      cancelButtonTitle:NSLocalizedString(@"Cancel",@"Cancel")
-                                      destructiveButtonTitle:NSLocalizedString(@"Clear",@"Clear")
-                                      otherButtonTitles:nil];
-        
-		// show
-		[resetAction setTag:ActionPreferenceClearCache];
-		[resetAction showFromRect:c.frame inView:self.view animated:YES];
-		[resetAction release];
-	}
     
 }
 
@@ -190,28 +174,26 @@ static int preferencesHeaderGap = 10;
 	switch ([actionSheet tag]) {
             
         // reset
-		case ActionPreferenceResetDefaults: {
+		case ActionPreferenceReset: {
             
-			// reset
+            // preference
 			if (buttonIndex == 0) {
-				FLog("reset");
+				FLog("preference");
 				[self resetPreferences];
 			} 
-			break;
-		}
-            
-        // reset
-		case ActionPreferenceClearCache: {
-            
-			// reset
-			if (buttonIndex == 0) {
-				FLog("clear");
-
+            // cache
+			if (buttonIndex == 1) {
+				FLog("cache");
+				[self clearCache];
+			} 
+            // cancel
+			if (buttonIndex == 2) {
+				FLog("cancel");
 			} 
 			break;
 		}
             
-            // default
+        // default
 		default: {
 			break;
 		}
@@ -233,12 +215,24 @@ static int preferencesHeaderGap = 10;
 	FLog();
 	
     // delegate
-    if (delegate && [delegate respondsToSelector:@selector(resetPreferences)]) {
-        [delegate resetPreferences];
+    if (delegate && [delegate respondsToSelector:@selector(preferencesResetDefaults)]) {
+        [delegate preferencesResetDefaults];
     }
     
 	// update
 	[self.tableView reloadData];
+}
+
+/*
+ * Clears the cache.
+ */
+- (void)clearCache {
+    FLog();
+    
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(preferencesClearCache)]) {
+        [delegate preferencesClearCache];
+    }
 }
 
 /*
@@ -288,7 +282,7 @@ static int preferencesHeaderGap = 10;
  * Customize the number of rows in the table view.
  */
 - (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section {
-    return 6;
+    return 5;
 }
 
 
@@ -325,8 +319,8 @@ static int preferencesHeaderGap = 10;
 	}
     
     
-    // hint
-    if ([indexPath row] == PreferenceGraphHintDisabled) {
+    // tooltip
+    if ([indexPath row] == PreferenceGraphTooltipDisabled) {
         
         // create cell
         CellSwitch *cswitch = (CellSwitch*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesSwitchIdentifier];
@@ -336,14 +330,14 @@ static int preferencesHeaderGap = 10;
         
         // prepare cell
         cswitch.delegate = self;
-        cswitch.key = udGraphHintDisabled;
-        cswitch.textLabel.text = NSLocalizedString(@"Hints",@"Hints");
+        cswitch.key = udGraphTooltipDisabled;
+        cswitch.textLabel.text = NSLocalizedString(@"Tooltip",@"Tooltip");
         cswitch.switchAccessory.on = YES;
         cswitch.disabler = YES;
         
         // enabled
-        NSString *graphHintDisabled = [self retrievePreference:udGraphHintDisabled];
-        if (graphHintDisabled && [graphHintDisabled isEqualToString:@"1"]) {
+        NSString *graphTooltipDisabled = [self retrievePreference:udGraphTooltipDisabled];
+        if (graphTooltipDisabled && [graphTooltipDisabled isEqualToString:@"1"]) {
             cswitch.switchAccessory.on = NO;
         }
         [cswitch update:YES];
@@ -444,7 +438,7 @@ static int preferencesHeaderGap = 10;
     
     
     // reset user defaults
-    if ([indexPath row] == PreferenceDefaultsReset) {
+    if ([indexPath row] == PreferenceReset) {
         
         // create cell
         CellButton *cbutton = (CellButton*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesButtonIdentifier];
@@ -454,9 +448,8 @@ static int preferencesHeaderGap = 10;
         
         // prepare cell
         cbutton.delegate = self;
-        cbutton.key = kKeyResetDefaults;
-        cbutton.textLabel.text = NSLocalizedString(@"Defaults",@"Defaults");
-        cbutton.detailTextLabel.text = NSLocalizedString(@"Reset Defaults",@"Reset Defaults");
+        cbutton.key = kKeyReset;
+        cbutton.textLabel.text = NSLocalizedString(@"Reset",@"Reset");
         [cbutton.buttonAccessory setTitle:NSLocalizedString(@"Reset",@"Reset") forState:UIControlStateNormal];
         [cbutton update:YES];
         
@@ -465,28 +458,6 @@ static int preferencesHeaderGap = 10;
         
     }
     
-    
-    // clear cache
-    if ([indexPath row] == PreferenceCacheClear) {
-        
-        // create cell
-        CellButton *cbutton = (CellButton*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesButtonIdentifier];
-        if (cbutton == nil) {
-            cbutton = [[[CellButton alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellPreferencesButtonIdentifier] autorelease];
-        }
-        
-        // prepare cell
-        cbutton.delegate = self;
-        cbutton.key = kKeyClearCache;
-        cbutton.textLabel.text = NSLocalizedString(@"Cache",@"Cache");
-        cbutton.detailTextLabel.text = NSLocalizedString(@"Clear Cached Data",@"Clear Cached Data");
-        [cbutton.buttonAccessory setTitle:NSLocalizedString(@"Clear",@"Clear") forState:UIControlStateNormal];
-        [cbutton update:YES];
-        
-        // set cell
-        cell = cbutton;
-        
-    }
 
 	
 	// configure

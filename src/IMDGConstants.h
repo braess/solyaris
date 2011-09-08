@@ -27,7 +27,7 @@
 
 // User Default Keys
 #define udInformationAppVersion			@"information_app_version"		
-#define udGraphHintDisabled             @"graph_hint_disabled"	
+#define udGraphTooltipDisabled          @"graph_tooltip_disabled"	
 #define udGraphNodeCrewEnabled          @"graph_node_crew_enabled"	
 #define udGraphNodeChildren             @"graph_node_children"	
 #define udGraphEdgeLength               @"graph_edge_length"	

@@ -33,9 +33,9 @@ Graph::Graph(int w, int h, int o) {
     // hitarea
     harea = 6;
     
-    // hint
-    hint = Hint(Vec2d(w,h));
-    hint_disabled = false;
+    // tooltip
+    ttip = Tooltip(Vec2d(w,h));
+    tooltip_disabled = false;
 
 }
 
@@ -53,8 +53,8 @@ void Graph::resize(int w, int h, int o) {
     height = h;
     orientation = o;
     
-    // hint
-    hint.resize(w,h);
+    // tooltip
+    ttip.resize(w,h);
 }
 
 
@@ -67,11 +67,11 @@ void Graph::setting(GraphSettings s) {
     gsettings = s;
     
     
-    // hint 
-    hint_disabled = false;
-    Default graphHintDisabled = s.getDefault("graph_hint_disabled");
-    if (graphHintDisabled.isSet()) {
-        hint_disabled = graphHintDisabled.boolVal();
+    // tooltip 
+    tooltip_disabled = false;
+    Default graphTooltipDisabled = s.getDefault("graph_tooltip_disabled");
+    if (graphTooltipDisabled.isSet()) {
+        tooltip_disabled = graphTooltipDisabled.boolVal();
     }
     
     // apply to nodes
@@ -157,9 +157,9 @@ void Graph::update() {
         }
     }
     
-    // hint
-    if (hint.isVisible()) {
-        hint.update();
+    // tooltip
+    if (ttip.isVisible()) {
+        ttip.update();
     }
 
 
@@ -189,9 +189,9 @@ void Graph::draw() {
         }
     }
     
-    // hint
-    if (hint.isVisible()) {
-        hint.draw();
+    // tooltip
+    if (ttip.isVisible()) {
+        ttip.draw();
     }
 
 }
@@ -241,9 +241,9 @@ void Graph::touchBegan(Vec2d tpos, int tid) {
                 // state
                 touched[tid]->touched();
                 
-                // set the info
-                this->shint();
-                hint.position(tpos);
+                // set the tooltip
+                this->tooltip();
+                ttip.position(tpos);
                 
                 
                 // have a break
@@ -266,7 +266,7 @@ void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
         touched[tid]->moveTo(tpos);
         
         // position
-        hint.position(tpos);
+        ttip.position(tpos);
 
     }
     // graph
@@ -287,8 +287,8 @@ void Graph::touchEnded(Vec2d tpos, int tid){
         GLog("tid = %d, node = ",tid);
         touched[tid]->untouched();
         
-        // hide info
-        hint.hide();
+        // hide tooltip
+        ttip.hide();
     }
     // graph
     else {
@@ -490,13 +490,13 @@ EdgePtr Graph::getEdge(string nid1, string nid2) {
 
 
 /**
- * Sets the info.
+ * Sets the tooltip.
  */
-void Graph::shint() {
+void Graph::tooltip() {
     GLog();
     
     // enabled
-    if (! hint_disabled) {
+    if (! tooltip_disabled) {
         
         // selected edges
         bool etouch;
@@ -512,8 +512,8 @@ void Graph::shint() {
         
         // touched
         if (etouch) {
-            hint.renderText(txts);
-            hint.show();
+            ttip.renderText(txts);
+            ttip.show();
         }
         
     }

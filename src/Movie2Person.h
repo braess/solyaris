@@ -2,7 +2,7 @@
 //  Movie2Person.h
 //  IMDG
 //
-//  Created by CNPP on 31.8.2011.
+//  Created by CNPP on 8.9.2011.
 //  Copyright (c) 2011 Beat Raess. All rights reserved.
 //
 
@@ -21,6 +21,7 @@
 @property (nonatomic, retain) NSString * job;
 @property (nonatomic, retain) NSString * department;
 @property (nonatomic, retain) NSNumber * pid;
+@property (nonatomic, retain) NSString * type;
 @property (nonatomic, retain) Person * person;
 @property (nonatomic, retain) Movie * movie;
 

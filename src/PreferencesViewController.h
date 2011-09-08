@@ -18,25 +18,24 @@
 @protocol PreferencesDelegate <NSObject>
 - (void)setPreference:(NSString*)key value:(NSObject*)value;
 - (NSObject*)getPreference:(NSString*)key;
-- (void)resetPreferences;
+- (void)preferencesResetDefaults;
+- (void)preferencesClearCache;
 @end
 
 
 //  Fields
 enum {
-    PreferenceGraphHintDisabled,
+    PreferenceGraphTooltipDisabled,
     PreferenceGraphNodeCrewEnabled,
     PreferenceGraphNodeChildren,
     PreferenceGraphEdgeLength,
-	PreferenceDefaultsReset,
-    PreferenceCacheClear
+	PreferenceReset
 };
 
 
 // Actions
 enum {
-    ActionPreferenceResetDefaults,
-    ActionPreferenceClearCache
+    ActionPreferenceReset
 };
 
 /**

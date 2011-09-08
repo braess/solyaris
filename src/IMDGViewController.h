@@ -17,10 +17,16 @@
 // Declarations
 CPP_CLASS(IMDGApp);
 
+// alerts
+enum {
+    IMDGAlertAPIError,
+	IMDGAlertAPIFatal
+};
+
 /**
  * IMDG ViewController.
  */
-@interface IMDGViewController : UIViewController <UIPopoverControllerDelegate, APIDelegate, SearchDelegate, SearchResultDelegate, InformationDelegate, SettingsDelegate> {
+@interface IMDGViewController : UIViewController <UIPopoverControllerDelegate, UIAlertViewDelegate, APIDelegate, SearchDelegate, SearchResultDelegate, InformationDelegate, SettingsDelegate> {
     
     // app
     IMDGApp *imdgApp;
@@ -58,6 +64,7 @@ CPP_CLASS(IMDGApp);
 // Business Methods
 - (void)nodeInformation:(NSString*)nid;
 - (void)nodeLoad:(NSString*)nid;
+- (void)quit;
 
 // Helpers
 - (NSObject*)getUserDefault:(NSString*)key;

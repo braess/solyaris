@@ -8,7 +8,7 @@
 
 
 // TMDb
-#define apiTMDbKey              @"c2c73ebd1e25cbc29cf61158c04ad78a"
+#define apiTMDbKey              @"d835394b2ed39de681905a96f0e63ce5"
 #define apiTMDbSearchMovie      @"http://api.themoviedb.org/2.1/Movie.search"
 #define apiTMDbSearchPerson     @"http://api.themoviedb.org/2.1/Person.search"
 #define apiTMDbMovie            @"http://api.themoviedb.org/2.1/Movie.getInfo"

@@ -375,11 +375,11 @@
                 edge = imdgApp->createEdge([eid UTF8String],[typePerson UTF8String],node,child);
                 
                 // type
-                edge->updateType([m2p.person.type UTF8String]);
+                edge->updateType([m2p.type UTF8String]);
                 
                 // label
                 NSString *clabel = m2p.character;
-                if ([m2p.person.type isEqualToString:typePersonDirector] || [m2p.person.type isEqualToString:typePersonCrew]) {
+                if ([m2p.type isEqualToString:typePersonDirector] || [m2p.type isEqualToString:typePersonCrew]) {
                     clabel = m2p.job;
                 }
                 
@@ -454,11 +454,11 @@
                 edge = imdgApp->createEdge([eid UTF8String],[typeMovie UTF8String],node,child);
                 
                 // type
-                edge->updateType([person.type UTF8String]);
+                edge->updateType([m2p.type UTF8String]);
                 
                 // label
                 NSString *clabel = m2p.character;
-                if ([person.type isEqualToString:typePersonDirector] || [person.type isEqualToString:typePersonCrew]) {
+                if ([m2p.type isEqualToString:typePersonDirector] || [m2p.type isEqualToString:typePersonCrew]) {
                     clabel = m2p.job;
                 }
                 
@@ -478,14 +478,93 @@
     
 }
 
+/*
+ * API Error.
+*/
+- (void)apiError:(NSNumber*)did type:(NSString*)type message:(NSString*)msg {
+    DLog();
+    
+    // alert
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:@"API Error" 
+                          message:msg 
+                          delegate:self 
+                          cancelButtonTitle: @"OK"
+                          otherButtonTitles:nil];
+    [alert setTag:IMDGAlertAPIError];
+    [alert show];    
+    [alert release];
+    
+    // stop loader
+    NSString *nid = [self makeNodeId:did type:type];
+    NodePtr node = imdgApp->getNode([nid UTF8String]);
+    
+    // check
+    if (node != NULL) {
+        
+        // loaded
+        node->loaded();
+    }
+}
 
 /*
- * Quits the application.
+ * API Quit.
  */
-- (void)quit {
-    NSLog(@"Aus die Maus.");
-    imdgApp->quit();
-    abort();
+- (void)apiFatal:(NSString *)msg {
+    DLog();
+    
+    // alert
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:@"Data Error" 
+                          message:msg 
+                          delegate:self 
+                          cancelButtonTitle: @"Cancel"
+                          otherButtonTitles:@"Quit",nil];
+    [alert setTag:IMDGAlertAPIFatal];
+    [alert show];    
+    [alert release];
+    
+    
+}
+
+
+#pragma mark -
+#pragma mark UIAlertViewDelegate Delegate
+
+/*
+ * Alert view button clicked.
+ */
+- (void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+	FLog();
+	
+	// determine alert
+	switch ([actionSheet tag]) {
+            
+        // fatal
+		case IMDGAlertAPIFatal: {
+            
+			// cancel
+			if (buttonIndex == 0) {
+			}
+			// quit
+			else {
+				[self quit];
+			}
+			
+			break;
+		}
+            
+        // error
+		case IMDGAlertAPIError: {
+			break;
+		}
+            
+            // default
+		default:
+			break;
+	}
+	
+	
 }
 
 
@@ -688,6 +767,20 @@
     imdgApp->applySettings();
 }
 
+/*
+ * Resets the cache.
+ */
+- (void)settingsClearCache {
+    FLog();
+    
+    // api
+    [tmdb clearCache];
+    
+    // reset 
+    [self reset];
+    
+}
+
 
 
 
@@ -857,7 +950,16 @@
 }
 
 
-
+/**
+ * Quit.
+ */
+- (void)quit {
+    NSLog(@"Aus die Maus.");
+    
+    // quit app
+    imdgApp->quit();
+    abort();
+}
 
 
 

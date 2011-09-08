@@ -1,5 +1,5 @@
 //
-//  Hint.h
+//  Tooltip.h
 //  IMDG
 //
 //  Created by CNPP on 4.8.2011.
@@ -18,17 +18,17 @@ using namespace ci;
 
 
 /**
- * Graph Hint.
+ * Graph Tooltip.
  */
-class Hint {
+class Tooltip {
     
     
     // public
     public:
     
-    // Hint
-    Hint();
-    Hint(Vec2d b);
+    // Tooltip
+    Tooltip();
+    Tooltip(Vec2d b);
     
     // Cinder
     void resize(int w, int h);

@@ -187,7 +187,7 @@
 	return v;
                 
 }
-- (void)resetPreferences {
+- (void)preferencesResetDefaults {
     GLog();
     
 	// user defaults
@@ -200,6 +200,14 @@
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(settingsApply)]) {
         [delegate settingsApply];
+    }
+}
+- (void)preferencesClearCache {
+    GLog();
+    
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(settingsClearCache)]) {
+        [delegate settingsClearCache];
     }
 }
 

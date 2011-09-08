@@ -301,20 +301,27 @@ string Edge::info() {
     NodePtr node2 = wnode2.lock();
     if (node1 && node2) {
         
-        // type
+        // person / movie
+        string person = node1->label;
+        string movie = node2->label;
+        if (node1->type == nodeMovie) {
+            person = node2->label;
+            movie = node1->label;
+        }
+        
+        // movie
         if (this->type == edgeMovie) {
-            nfo = node1->label + " plays " + this->label + " in " + node2->label;
+            nfo = person + " plays " + this->label + " in " + movie;
         }
+        
+        // actor
         else if (this->type == edgePersonActor) {
-            nfo = node2->label + " plays " + this->label + " in " + node1->label;
+            nfo = person + " plays " + this->label + " in " + movie;
         }
+        
+        // director / crew
         else if (this->type == edgePersonDirector || this->type == edgePersonCrew) {
-            if (node1->type == nodePersonDirector || node1->type == nodePersonCrew) {
-                nfo = node1->label + " is the " + this->label + " of " + node2->label;
-            }
-            else {
-                nfo = node2->label + " is the " + this->label + " of " + node1->label;
-            }
+            nfo = person + " is the " + this->label + " of " + movie;
         }
     }
     return nfo;

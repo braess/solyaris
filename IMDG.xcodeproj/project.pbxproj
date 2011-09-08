@@ -13,7 +13,7 @@
 		18069B2F13FE521F0068F4AD /* GraphSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18069B2D13FE521F0068F4AD /* GraphSettings.cpp */; };
 		180907F3140E51A30087BF8B /* icon_mini_crew.png in Resources */ = {isa = PBXBuildFile; fileRef = 180907F2140E51A30087BF8B /* icon_mini_crew.png */; };
 		180D8FCD13E1F27800364F54 /* InformationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 180D8FCC13E1F27800364F54 /* InformationViewController.m */; };
-		180E501613EB09F6000E0ADB /* Hint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 180E501413EB09F6000E0ADB /* Hint.cpp */; };
+		180E501613EB09F6000E0ADB /* Tooltip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 180E501413EB09F6000E0ADB /* Tooltip.cpp */; };
 		1819227413C72CEB00C89C74 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1819227313C72CEB00C89C74 /* CoreData.framework */; };
 		1837D62F140EA01E00D3FF7F /* CacheImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1837D62E140EA01E00D3FF7F /* CacheImageView.m */; };
 		183B97AE13C6EA1700B7563D /* SearchResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183B97AD13C6EA1700B7563D /* SearchResultViewController.m */; };
@@ -31,12 +31,6 @@
 		186613A813F44EC6006DDFFB /* icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 186613A513F44EC6006DDFFB /* icon-72.png */; };
 		186613A913F44EC6006DDFFB /* icon-small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 186613A613F44EC6006DDFFB /* icon-small-50.png */; };
 		186613AA13F44EC6006DDFFB /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 186613A713F44EC6006DDFFB /* icon.png */; };
-		186BCDE3140E6E4100A86966 /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 186BCDE2140E6E4100A86966 /* Search.m */; };
-		186BCDE6140E6E4200A86966 /* Movie2Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 186BCDE5140E6E4200A86966 /* Movie2Person.m */; };
-		186BCDE9140E6E4200A86966 /* Asset.m in Sources */ = {isa = PBXBuildFile; fileRef = 186BCDE8140E6E4200A86966 /* Asset.m */; };
-		186BCDEC140E6E4200A86966 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 186BCDEB140E6E4200A86966 /* Person.m */; };
-		186BCDEF140E6E4200A86966 /* Movie.m in Sources */ = {isa = PBXBuildFile; fileRef = 186BCDEE140E6E4200A86966 /* Movie.m */; };
-		186BCDF2140E6E4200A86966 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 186BCDF1140E6E4200A86966 /* SearchResult.m */; };
 		186F8B951407F1130067ADF8 /* TMDb.m in Sources */ = {isa = PBXBuildFile; fileRef = 186F8B941407F1130067ADF8 /* TMDb.m */; };
 		187ABF9C13EC6DEB00090C63 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 187ABF9B13EC6DEB00090C63 /* SearchViewController.m */; };
 		187ABFAC13EC909500090C63 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 187ABFAB13EC909500090C63 /* SettingsViewController.m */; };
@@ -77,6 +71,12 @@
 		18EFCAFA139AB745002081B7 /* Graph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18EFCAF5139AB745002081B7 /* Graph.cpp */; };
 		18EFCAFB139AB745002081B7 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18EFCAF7139AB745002081B7 /* Node.cpp */; };
 		18F05BA214125BCD0074F670 /* BlockerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F05BA114125BCD0074F670 /* BlockerView.m */; };
+		18F6551F1418EB0B00162C13 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F6551E1418EB0B00162C13 /* Person.m */; };
+		18F655221418EB0C00162C13 /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F655211418EB0C00162C13 /* Search.m */; };
+		18F655251418EB0C00162C13 /* Movie.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F655241418EB0C00162C13 /* Movie.m */; };
+		18F655281418EB0C00162C13 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F655271418EB0C00162C13 /* SearchResult.m */; };
+		18F6552B1418EB0C00162C13 /* Movie2Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F6552A1418EB0C00162C13 /* Movie2Person.m */; };
+		18F6552E1418EB0C00162C13 /* Asset.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F6552D1418EB0C00162C13 /* Asset.m */; };
 		18F8192913AA920F00D2F5C3 /* btn_reset.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F8192813AA920F00D2F5C3 /* btn_reset.png */; };
 		18F849FE1408D52C00B97AE8 /* TMDb.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 18F849FC1408D52C00B97AE8 /* TMDb.xcdatamodeld */; };
 		18FE6EC313ED332000C379BC /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18FE6EC213ED332000C379BC /* AboutViewController.m */; };
@@ -107,8 +107,8 @@
 		180907F2140E51A30087BF8B /* icon_mini_crew.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon_mini_crew.png; path = Assets/icon_mini_crew.png; sourceTree = "<group>"; };
 		180D8FCB13E1F27800364F54 /* InformationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InformationViewController.h; path = src/InformationViewController.h; sourceTree = "<group>"; };
 		180D8FCC13E1F27800364F54 /* InformationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InformationViewController.m; path = src/InformationViewController.m; sourceTree = "<group>"; };
-		180E501413EB09F6000E0ADB /* Hint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Hint.cpp; path = src/Hint.cpp; sourceTree = "<group>"; };
-		180E501513EB09F6000E0ADB /* Hint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Hint.h; path = src/Hint.h; sourceTree = "<group>"; };
+		180E501413EB09F6000E0ADB /* Tooltip.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Tooltip.cpp; path = src/Tooltip.cpp; sourceTree = "<group>"; };
+		180E501513EB09F6000E0ADB /* Tooltip.h */ = {isa = PBXFileReference; fileEncoding = 4; name = Tooltip.h; path = src/Tooltip.h; sourceTree = "<group>"; };
 		1819227313C72CEB00C89C74 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		1837D62D140EA01E00D3FF7F /* CacheImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CacheImageView.h; path = src/CacheImageView.h; sourceTree = "<group>"; };
 		1837D62E140EA01E00D3FF7F /* CacheImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CacheImageView.m; path = src/CacheImageView.m; sourceTree = "<group>"; };
@@ -129,18 +129,6 @@
 		186613A513F44EC6006DDFFB /* icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-72.png"; sourceTree = "<group>"; };
 		186613A613F44EC6006DDFFB /* icon-small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-small-50.png"; sourceTree = "<group>"; };
 		186613A713F44EC6006DDFFB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
-		186BCDE1140E6E4100A86966 /* Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Search.h; path = src/Search.h; sourceTree = "<group>"; };
-		186BCDE2140E6E4100A86966 /* Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Search.m; path = src/Search.m; sourceTree = "<group>"; };
-		186BCDE4140E6E4200A86966 /* Movie2Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Movie2Person.h; path = src/Movie2Person.h; sourceTree = "<group>"; };
-		186BCDE5140E6E4200A86966 /* Movie2Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Movie2Person.m; path = src/Movie2Person.m; sourceTree = "<group>"; };
-		186BCDE7140E6E4200A86966 /* Asset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Asset.h; path = src/Asset.h; sourceTree = "<group>"; };
-		186BCDE8140E6E4200A86966 /* Asset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Asset.m; path = src/Asset.m; sourceTree = "<group>"; };
-		186BCDEA140E6E4200A86966 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Person.h; path = src/Person.h; sourceTree = "<group>"; };
-		186BCDEB140E6E4200A86966 /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Person.m; path = src/Person.m; sourceTree = "<group>"; };
-		186BCDED140E6E4200A86966 /* Movie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Movie.h; path = src/Movie.h; sourceTree = "<group>"; };
-		186BCDEE140E6E4200A86966 /* Movie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Movie.m; path = src/Movie.m; sourceTree = "<group>"; };
-		186BCDF0140E6E4200A86966 /* SearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchResult.h; path = src/SearchResult.h; sourceTree = "<group>"; };
-		186BCDF1140E6E4200A86966 /* SearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchResult.m; path = src/SearchResult.m; sourceTree = "<group>"; };
 		186F8B931407F1130067ADF8 /* TMDb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TMDb.h; path = src/TMDb.h; sourceTree = "<group>"; };
 		186F8B941407F1130067ADF8 /* TMDb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TMDb.m; path = src/TMDb.m; sourceTree = "<group>"; };
 		187ABF9A13EC6DEB00090C63 /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchViewController.h; path = src/SearchViewController.h; sourceTree = "<group>"; };
@@ -206,6 +194,18 @@
 		18EFCAF8139AB745002081B7 /* Node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Node.h; path = src/Node.h; sourceTree = "<group>"; };
 		18F05BA014125BCD0074F670 /* BlockerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlockerView.h; path = src/BlockerView.h; sourceTree = "<group>"; };
 		18F05BA114125BCD0074F670 /* BlockerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlockerView.m; path = src/BlockerView.m; sourceTree = "<group>"; };
+		18F6551D1418EB0B00162C13 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Person.h; path = src/Person.h; sourceTree = "<group>"; };
+		18F6551E1418EB0B00162C13 /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Person.m; path = src/Person.m; sourceTree = "<group>"; };
+		18F655201418EB0C00162C13 /* Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Search.h; path = src/Search.h; sourceTree = "<group>"; };
+		18F655211418EB0C00162C13 /* Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Search.m; path = src/Search.m; sourceTree = "<group>"; };
+		18F655231418EB0C00162C13 /* Movie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Movie.h; path = src/Movie.h; sourceTree = "<group>"; };
+		18F655241418EB0C00162C13 /* Movie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Movie.m; path = src/Movie.m; sourceTree = "<group>"; };
+		18F655261418EB0C00162C13 /* SearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchResult.h; path = src/SearchResult.h; sourceTree = "<group>"; };
+		18F655271418EB0C00162C13 /* SearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchResult.m; path = src/SearchResult.m; sourceTree = "<group>"; };
+		18F655291418EB0C00162C13 /* Movie2Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Movie2Person.h; path = src/Movie2Person.h; sourceTree = "<group>"; };
+		18F6552A1418EB0C00162C13 /* Movie2Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Movie2Person.m; path = src/Movie2Person.m; sourceTree = "<group>"; };
+		18F6552C1418EB0C00162C13 /* Asset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Asset.h; path = src/Asset.h; sourceTree = "<group>"; };
+		18F6552D1418EB0C00162C13 /* Asset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Asset.m; path = src/Asset.m; sourceTree = "<group>"; };
 		18F8192813AA920F00D2F5C3 /* btn_reset.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_reset.png; path = Assets/btn_reset.png; sourceTree = "<group>"; };
 		18F849FD1408D52C00B97AE8 /* TMDb.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TMDb.xcdatamodel; sourceTree = "<group>"; };
 		18FE6EC113ED332000C379BC /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AboutViewController.h; path = src/AboutViewController.h; sourceTree = "<group>"; };
@@ -343,18 +343,18 @@
 		1819227813C731F200C89C74 /* model */ = {
 			isa = PBXGroup;
 			children = (
-				186BCDF0140E6E4200A86966 /* SearchResult.h */,
-				186BCDF1140E6E4200A86966 /* SearchResult.m */,
-				186BCDED140E6E4200A86966 /* Movie.h */,
-				186BCDEE140E6E4200A86966 /* Movie.m */,
-				186BCDEA140E6E4200A86966 /* Person.h */,
-				186BCDEB140E6E4200A86966 /* Person.m */,
-				186BCDE7140E6E4200A86966 /* Asset.h */,
-				186BCDE8140E6E4200A86966 /* Asset.m */,
-				186BCDE4140E6E4200A86966 /* Movie2Person.h */,
-				186BCDE5140E6E4200A86966 /* Movie2Person.m */,
-				186BCDE1140E6E4100A86966 /* Search.h */,
-				186BCDE2140E6E4100A86966 /* Search.m */,
+				18F6552C1418EB0C00162C13 /* Asset.h */,
+				18F6552D1418EB0C00162C13 /* Asset.m */,
+				18F655291418EB0C00162C13 /* Movie2Person.h */,
+				18F6552A1418EB0C00162C13 /* Movie2Person.m */,
+				18F655261418EB0C00162C13 /* SearchResult.h */,
+				18F655271418EB0C00162C13 /* SearchResult.m */,
+				18F655231418EB0C00162C13 /* Movie.h */,
+				18F655241418EB0C00162C13 /* Movie.m */,
+				18F655201418EB0C00162C13 /* Search.h */,
+				18F655211418EB0C00162C13 /* Search.m */,
+				18F6551D1418EB0B00162C13 /* Person.h */,
+				18F6551E1418EB0B00162C13 /* Person.m */,
 			);
 			name = model;
 			sourceTree = "<group>";
@@ -492,8 +492,8 @@
 				18EFCAF7139AB745002081B7 /* Node.cpp */,
 				18EFCAF4139AB745002081B7 /* Edge.h */,
 				18EFCAF3139AB745002081B7 /* Edge.cpp */,
-				180E501513EB09F6000E0ADB /* Hint.h */,
-				180E501413EB09F6000E0ADB /* Hint.cpp */,
+				180E501513EB09F6000E0ADB /* Tooltip.h */,
+				180E501413EB09F6000E0ADB /* Tooltip.cpp */,
 				18069B2E13FE521F0068F4AD /* GraphSettings.h */,
 				18069B2D13FE521F0068F4AD /* GraphSettings.cpp */,
 			);
@@ -694,7 +694,7 @@
 				18EE9EFB13C7483C00BA13CF /* SBJsonUTF8Stream.m in Sources */,
 				18EE9EFC13C7483C00BA13CF /* SBJsonWriter.m in Sources */,
 				180D8FCD13E1F27800364F54 /* InformationViewController.m in Sources */,
-				180E501613EB09F6000E0ADB /* Hint.cpp in Sources */,
+				180E501613EB09F6000E0ADB /* Tooltip.cpp in Sources */,
 				187ABF9C13EC6DEB00090C63 /* SearchViewController.m in Sources */,
 				187ABFAC13EC909500090C63 /* SettingsViewController.m in Sources */,
 				18FE6EC313ED332000C379BC /* AboutViewController.m in Sources */,
@@ -706,16 +706,16 @@
 				18069B2F13FE521F0068F4AD /* GraphSettings.cpp in Sources */,
 				186F8B951407F1130067ADF8 /* TMDb.m in Sources */,
 				18F849FE1408D52C00B97AE8 /* TMDb.xcdatamodeld in Sources */,
-				186BCDE3140E6E4100A86966 /* Search.m in Sources */,
-				186BCDE6140E6E4200A86966 /* Movie2Person.m in Sources */,
-				186BCDE9140E6E4200A86966 /* Asset.m in Sources */,
-				186BCDEC140E6E4200A86966 /* Person.m in Sources */,
-				186BCDEF140E6E4200A86966 /* Movie.m in Sources */,
-				186BCDF2140E6E4200A86966 /* SearchResult.m in Sources */,
 				1837D62F140EA01E00D3FF7F /* CacheImageView.m in Sources */,
 				18EE991B140F774A008EE675 /* ActionBar.m in Sources */,
 				184632641410D2C700CC5B70 /* HTMLView.m in Sources */,
 				18F05BA214125BCD0074F670 /* BlockerView.m in Sources */,
+				18F6551F1418EB0B00162C13 /* Person.m in Sources */,
+				18F655221418EB0C00162C13 /* Search.m in Sources */,
+				18F655251418EB0C00162C13 /* Movie.m in Sources */,
+				18F655281418EB0C00162C13 /* SearchResult.m in Sources */,
+				18F6552B1418EB0C00162C13 /* Movie2Person.m in Sources */,
+				18F6552E1418EB0C00162C13 /* Asset.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

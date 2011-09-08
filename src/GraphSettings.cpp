@@ -87,6 +87,5 @@ double Default::doubleVal() {
     return boost::lexical_cast<double>(value);
 }
 bool Default::boolVal() {
-    std::cout << value << std::endl;
     return boost::lexical_cast<bool>(value);
 }

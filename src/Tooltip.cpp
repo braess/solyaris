@@ -1,12 +1,12 @@
 //
-//  Hint.cpp
+//  Tooltip.cpp
 //  IMDG
 //
 //  Created by CNPP on 4.8.2011.
 //  Copyright 2011 Beat Raess. All rights reserved.
 //
 
-#include "Hint.h"
+#include "Tooltip.h"
 #include "cinder/gl/gl.h"
 #include "cinder/Text.h"
 #include "cinder/CinderMath.h"
@@ -16,11 +16,11 @@
 #pragma mark Object
 
 /**
- * Creates an Hint object.
+ * Creates a Tooltip object.
  */
-Hint::Hint() {
+Tooltip::Tooltip() {
 }
-Hint::Hint(Vec2d b) {
+Tooltip::Tooltip(Vec2d b) {
     
     // state
     visible = false;
@@ -51,7 +51,7 @@ Hint::Hint(Vec2d b) {
 /*
  * Resize.
  */
-void Hint::resize(int w, int h) {
+void Tooltip::resize(int w, int h) {
     
     // fields
     bounds = Vec2d(w,h);
@@ -62,9 +62,9 @@ void Hint::resize(int w, int h) {
 #pragma mark Sketch
 
 /**
- * Updates the Hint.
+ * Updates the Tooltip.
  */
-void Hint::update() {
+void Tooltip::update() {
    
     // timeout (avoids flickering)
     timeout--;
@@ -77,9 +77,9 @@ void Hint::update() {
 }
 
 /**
- * Draws the Hint.
+ * Draws the Tooltip.
  */
-void Hint::draw() {
+void Tooltip::draw() {
     
     // position
     float px = max(border.x,(pos.x-size.x/2.0+offset.x));
@@ -113,7 +113,7 @@ void Hint::draw() {
 /**
  * States.
  */
-bool Hint::isVisible() {
+bool Tooltip::isVisible() {
     return visible;
 }
 
@@ -122,7 +122,7 @@ bool Hint::isVisible() {
 /**
  * Renders the text.
  */
-void Hint::renderText(vector<string> txts) {
+void Tooltip::renderText(vector<string> txts) {
     GLog();
     
     // text
@@ -152,7 +152,7 @@ void Hint::renderText(vector<string> txts) {
 /**
  * Show / Hide.
  */
-void Hint::show() {
+void Tooltip::show() {
     
     // props
     visible = true;
@@ -160,7 +160,7 @@ void Hint::show() {
     timeout = 12;
     
 }
-void Hint::hide() {
+void Tooltip::hide() {
     visible = false;
     alpha = 0;
 }
@@ -169,7 +169,7 @@ void Hint::hide() {
 /**
  * Position.
  */
-void Hint::position(Vec2d p) {
+void Tooltip::position(Vec2d p) {
     pos = p;
 }
 
