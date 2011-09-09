@@ -119,11 +119,11 @@ static int preferencesHeaderGap = 10;
 	if ([c.key isEqualToString:kKeyReset]) {
 		// action sheet
 		UIActionSheet *resetAction = [[UIActionSheet alloc]
-                                      initWithTitle:NSLocalizedString(@"Reset",@"Reset")
+                                      initWithTitle:nil
                                       delegate:self
                                       cancelButtonTitle:NSLocalizedString(@"Cancel",@"Cancel")
                                       destructiveButtonTitle:nil
-                                      otherButtonTitles:NSLocalizedString(@"Settings",@"Settings"),NSLocalizedString(@"Cache",@"Cache"),nil];
+                                      otherButtonTitles:NSLocalizedString(@"Reset Settings",@"Reset Settings"),NSLocalizedString(@"Clear Cache",@"Clear Cache"),nil];
         
 		// show
 		[resetAction showFromRect:c.frame inView:self.view animated:YES];
@@ -159,6 +159,23 @@ static int preferencesHeaderGap = 10;
     
     // update
     [self updatePreference:c.key value:[NSString stringWithFormat:@"%f", [c.sliderAccessory value]]];
+}
+
+/*
+ * CellSegment.
+ */
+- (void)cellSegmentChanged:(CellSegment *)c {
+	FLog();
+    
+    NSString *layout = udGraphLayoutForce;
+    if (c.segmentAccessory.selectedSegmentIndex == 0) {
+        layout = udGraphLayoutNone;
+    }
+    [self updatePreference:c.key value:layout];
+    
+    // update segment
+    [c update:NO];
+
 }
 
 
@@ -282,7 +299,7 @@ static int preferencesHeaderGap = 10;
  * Customize the number of rows in the table view.
  */
 - (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section {
-    return 5;
+    return 6;
 }
 
 
@@ -309,7 +326,7 @@ static int preferencesHeaderGap = 10;
 	static NSString *CellPreferencesButtonIdentifier = @"CellPreferencesButton";
 	static NSString *CellPreferencesSwitchIdentifier = @"CellPreferencesSwitch";
     static NSString *CellPreferencesSliderIndentifier = @"CellPreferencesSlider";
-	
+	static NSString *CellPreferencesSegmentIndentifier = @"CellPreferencesSegment";
 	
 	// cell
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellPreferencesIdentifier];
@@ -317,6 +334,39 @@ static int preferencesHeaderGap = 10;
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellPreferencesIdentifier] autorelease];
 		cell.accessoryType = UITableViewCellAccessoryNone;
 	}
+    
+    // reset user defaults
+    if ([indexPath row] == PreferenceGraphLayout) {
+        
+        // create cell
+        CellSegment *csegment = (CellSegment*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesSegmentIndentifier];
+        if (csegment == nil) {
+            csegment = [[[CellSegment alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellPreferencesSegmentIndentifier] autorelease];
+        }		
+        
+        // prepare cell
+        csegment.delegate = self;
+        csegment.key = udGraphLayout;
+        csegment.help =  NSLocalizedString(@"Graph algorithm",@"Graph algorithm");
+        csegment.textLabel.text = NSLocalizedString(@"Layout",@"Layout");
+        [csegment removeSegments];
+        [csegment addSegment:NSLocalizedString(@"None", @"None")];
+        [csegment addSegment:NSLocalizedString(@"Force", @"Force")];
+        
+        // set
+        NSString *graphLayout = [self retrievePreference:udGraphLayout];
+        if (graphLayout && [graphLayout isEqualToString:udGraphLayoutNone]) {
+            [csegment selectSegment:0];
+        }
+        else {
+            [csegment selectSegment:1];
+        }
+        [csegment update:YES];
+        
+        // set cell
+        cell = csegment;
+        
+    }
     
     
     // tooltip
@@ -331,6 +381,7 @@ static int preferencesHeaderGap = 10;
         // prepare cell
         cswitch.delegate = self;
         cswitch.key = udGraphTooltipDisabled;
+        cswitch.help =  NSLocalizedString(@"Enable information",@"Enable information");
         cswitch.textLabel.text = NSLocalizedString(@"Tooltip",@"Tooltip");
         cswitch.switchAccessory.on = YES;
         cswitch.disabler = YES;
@@ -359,6 +410,7 @@ static int preferencesHeaderGap = 10;
         // prepare cell
         cswitch.delegate = self;
         cswitch.key = udGraphNodeCrewEnabled;
+        cswitch.help =  NSLocalizedString(@"Include Staff",@"Include Staff");
         cswitch.textLabel.text = NSLocalizedString(@"Crew",@"Crew");
         cswitch.switchAccessory.on = NO;
         cswitch.disabler = NO;
@@ -375,7 +427,7 @@ static int preferencesHeaderGap = 10;
         
     }
     
-    // graph
+    // graph children
     if ([indexPath row] == PreferenceGraphNodeChildren) {
         
         // create cell
@@ -387,7 +439,8 @@ static int preferencesHeaderGap = 10;
         // prepare cell
         cslider.delegate = self;
         cslider.key = udGraphNodeChildren;
-        cslider.textLabel.text = NSLocalizedString(@"Children",@"Children");
+        cslider.help =  NSLocalizedString(@"Initial",@"Initial");
+        cslider.textLabel.text = NSLocalizedString(@"Node",@"Node");
         cslider.sliderAccessory.minimumValue = 0;
         cslider.sliderAccessory.maximumValue = 30;
         cslider.sliderAccessory.value = 12;
@@ -417,7 +470,8 @@ static int preferencesHeaderGap = 10;
         // prepare cell
         cslider.delegate = self;
         cslider.key = udGraphEdgeLength;
-        cslider.textLabel.text = NSLocalizedString(@"Length",@"Length");
+        cslider.help =  NSLocalizedString(@"Length",@"Length");
+        cslider.textLabel.text = NSLocalizedString(@"Edge",@"Edge");
         cslider.sliderAccessory.minimumValue = 200;
         cslider.sliderAccessory.maximumValue = 600;
         cslider.sliderAccessory.value = 400;
@@ -443,12 +497,13 @@ static int preferencesHeaderGap = 10;
         // create cell
         CellButton *cbutton = (CellButton*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesButtonIdentifier];
         if (cbutton == nil) {
-            cbutton = [[[CellButton alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellPreferencesButtonIdentifier] autorelease];
+            cbutton = [[[CellButton alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellPreferencesButtonIdentifier] autorelease];
         }		
         
         // prepare cell
         cbutton.delegate = self;
         cbutton.key = kKeyReset;
+        cbutton.help = NSLocalizedString(@"Settings/Cache",@"Settings/Cache");
         cbutton.textLabel.text = NSLocalizedString(@"Reset",@"Reset");
         [cbutton.buttonAccessory setTitle:NSLocalizedString(@"Reset",@"Reset") forState:UIControlStateNormal];
         [cbutton update:YES];
@@ -461,10 +516,6 @@ static int preferencesHeaderGap = 10;
 
 	
 	// configure
-	cell.textLabel.font = [UIFont fontWithName:@"Helvetica" size:15.0]; 
-	cell.textLabel.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
-    cell.detailTextLabel.font = [UIFont fontWithName:@"Helvetica" size:15.0]; 
-	cell.detailTextLabel.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
     cell.imageView.image = [UIImage imageNamed:@"icon_preference.png"];
 	
 	// return

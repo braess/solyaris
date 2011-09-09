@@ -95,24 +95,9 @@
     return self;
 }
 
-/*
- * Disable highlighting of currently selected cell.
- */
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:NO];
-    [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-}
 
 
-#pragma mark -
-#pragma mark Business
 
-/**
-* Updates the cell.
-*/
-- (void)update:(BOOL)reset {
-	GLog();
-}
 
 
 #pragma mark -

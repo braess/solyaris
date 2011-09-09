@@ -16,11 +16,16 @@
 
 	// data
 	NSString *key;
+    NSString *help;
+    
+    // data
+    @protected
 
 }
 
 // Properties
 @property (nonatomic, retain) NSString *key;
+@property (nonatomic, retain) NSString *help;
 
 // Business
 - (void)update:(BOOL)reset;

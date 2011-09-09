@@ -27,6 +27,7 @@ Node::Node(string idn, double x, double y) {
     nid = idn;
     parent = NodeWeakPtr();
     label = " ";
+    meta = " ";
     type = "Node";
     
     
@@ -56,7 +57,8 @@ Node::Node(string idn, double x, double y) {
     // radius / mass
     core = 9;
     radius = 9;
-    mradius = 90;
+    maxr = 90;
+    minr = 60;
     mass = calcmass();
     
     // velocity
@@ -180,7 +182,7 @@ void Node::update() {
         mass = calcmass();
         
         // grown
-        if (radius >= growradius) {
+        if (radius >= growr) {
             this->grown();
         }
         
@@ -390,7 +392,7 @@ void Node::loaded() {
     FLog();
 
     // field
-    growradius = min((int)children.size()*3,mradius);
+    growr = min(minr+(int)children.size(),maxr);
     grow = true;
   
 }
@@ -410,9 +412,15 @@ void Node::show(bool animate) {
         if (pp) {
             
             // radius & position
-            float r = pp->radius * 0.5;
-            Vec2d p = Vec2d(pp->pos.x+Rand::randFloat(-r,r),pp->pos.y+Rand::randFloat(-r,r));
-            
+            float dmin = 0.2;
+            float dmax = 1.2;
+            float rx = Rand::randFloat(pp->radius * dmin,pp->radius * dmax);
+            rx *= (Rand::randFloat(1) > 0.5) ? 1 : -1;
+            float ry = Rand::randFloat(pp->radius * dmin,pp->radius * dmax);
+            ry *= (Rand::randFloat(1) > 0.5) ? 1 : -1;
+            Vec2d p = Vec2d(pp->pos.x+rx,pp->pos.y+ry);
+   
+ 
             // animate
             if (animate) {
                 this->pos.set(pp->pos);
@@ -568,6 +576,13 @@ void Node::updateType(string t) {
     }
 }
 
+
+/**
+ * Updates the meta.
+ */
+void Node::updateMeta(string m) {
+    meta = m;
+}
 
 /*
  * Calculates the mass.

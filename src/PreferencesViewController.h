@@ -10,6 +10,7 @@
 #import "CellButton.h"
 #import "CellSwitch.h"
 #import "CellSlider.h"
+#import "CellSegment.h"
 
 
 /*
@@ -25,6 +26,7 @@
 
 //  Fields
 enum {
+    PreferenceGraphLayout,
     PreferenceGraphTooltipDisabled,
     PreferenceGraphNodeCrewEnabled,
     PreferenceGraphNodeChildren,
@@ -41,7 +43,7 @@ enum {
 /**
  * Preferences Controller.
  */
-@interface PreferencesViewController : UITableViewController <UIActionSheetDelegate, CellButtonDelegate, CellSwitchDelegate, CellSliderDelegate> {
+@interface PreferencesViewController : UITableViewController <UIActionSheetDelegate, CellButtonDelegate, CellSwitchDelegate, CellSliderDelegate, CellSegmentDelegate> {
     
     // delegate
 	id<PreferencesDelegate> delegate;

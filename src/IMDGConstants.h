@@ -19,6 +19,7 @@
 // Assets
 #define assetProfile                    @"profile"
 #define assetPoster                     @"poster"
+#define assetBackdrop                   @"backdrop"
 #define assetSizeOriginal               @"original"
 #define assetSizeMid                    @"mid"
 #define assetSizeThumb                  @"thumb"
@@ -26,7 +27,10 @@
 
 
 // User Default Keys
-#define udInformationAppVersion			@"information_app_version"		
+#define udInformationAppVersion			@"information_app_version"	
+#define udGraphLayout                   @"graph_layout"
+#define udGraphLayoutNone               @"graph_layout_none"
+#define udGraphLayoutForce              @"graph_layout_force"
 #define udGraphTooltipDisabled          @"graph_tooltip_disabled"	
 #define udGraphNodeCrewEnabled          @"graph_node_crew_enabled"	
 #define udGraphNodeChildren             @"graph_node_children"	

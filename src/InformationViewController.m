@@ -10,6 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "IMDGConstants.h"
 #import "BlockerView.h"
+#import "DataNode.h"
 
 
 /**
@@ -27,7 +28,7 @@
  */
 @interface InformationViewController (SwapStack)
 - (void)swapListing;
-- (void)swapInformation;
+- (void)swapTMDb;
 - (void)swapIMDb;
 - (void)swapWikipedia;
 - (void)swapReset;
@@ -76,9 +77,6 @@
 static float informationHeaderHeight = 110;
 static float informationFooterHeight = 60;
 
-static int informationCellHeight = 36;
-static int informationCellInset = 15;
-static int informationGapHeight = 39;
 static int informationGapOffset = 10;
 static int informationGapInset = 15;
 
@@ -91,10 +89,6 @@ static int informationGapInset = 15;
 @synthesize delegate;
 @synthesize modalView = _modalView;
 @synthesize contentView = _contentView;
-@synthesize movies = _movies;
-@synthesize actors = _actors;
-@synthesize directors = _directors;
-@synthesize crew = _crew;
 
 
 
@@ -121,7 +115,7 @@ static int informationGapInset = 15;
         
         // modes
         mode_listing = NO;
-        mode_information = NO;
+        mode_tmdb = NO;
         mode_imdb = NO;
         mode_wikipedia = NO;
         
@@ -220,17 +214,9 @@ static int informationGapInset = 15;
 
     
     // component listing
-    UITableView *componentListing = [[UITableView alloc] initWithFrame:componentFrame style:UITableViewStyleGrouped];
-    componentListing.tag = TagInformationComponentListing;
-    //componentListing.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin);
-    componentListing.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+    ListingView *componentListing = [[ListingView alloc] initWithFrame:componentFrame];
     componentListing.delegate = self;
-    componentListing.dataSource = self;
-	componentListing.backgroundColor = [UIColor clearColor];
-	componentListing.opaque = YES;
-	componentListing.backgroundView = nil;
-    componentListing.sectionHeaderHeight = 0; 
-    componentListing.sectionFooterHeight = 0;
+    componentListing.tag = TagInformationComponentListing;
     componentListing.hidden = YES;
     
     // add listing to content
@@ -238,25 +224,15 @@ static int informationGapInset = 15;
     [ctView addSubview:_componentListing];
     [componentListing release];
     
-    // component information
-	UITextView *componentInformation = [[UITextView alloc] initWithFrame:CGRectMake(componentFrame.origin.x+8, componentFrame.origin.y+6, componentFrame.size.width-20, componentFrame.size.height-20)];
-    componentInformation.tag = TagInformationComponentInformation;
-    componentInformation.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-    componentInformation.textAlignment = UITextAlignmentLeft;
-	componentInformation.backgroundColor = [UIColor clearColor];
-	componentInformation.font = [UIFont fontWithName:@"Helvetica" size:15.0];
-	componentInformation.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
-	componentInformation.opaque = YES;
-    componentInformation.userInteractionEnabled = YES;
-    componentInformation.editable = NO;
-    componentInformation.scrollEnabled = YES;
-    componentInformation.hidden = YES;
     
-    // add information to content
-    _componentInformation = [componentInformation retain];
-    [ctView addSubview:_componentInformation];
-    [componentInformation release];
+    // component tmdb
+	TMDbView *componentTMDb = [[TMDbView alloc] initWithFrame:componentFrame];
+    componentTMDb.tag = TagInformationComponentTMDb;
     
+    // add tmdb to content
+    _componentTMDb = [componentTMDb retain];
+    [ctView addSubview:_componentTMDb];
+    [componentTMDb release];
     
     // component imdb
     HTMLView *componentIMDb = [[HTMLView alloc] initWithFrame:componentFrame];
@@ -278,6 +254,7 @@ static int informationGapInset = 15;
     [ctView addSubview:_componentWikipedia];
     [componentWikipedia release];
 
+    
     
     // footer view
     UIView *footerView = [[UIView alloc] initWithFrame:footerFrame];
@@ -311,12 +288,12 @@ static int informationGapInset = 15;
     _actionListing = [actionListing retain];
     [actionListing release];
     
-    ActionBarButtonItem *actionInformation = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_information.png"] 
+    ActionBarButtonItem *actionTMDb = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_tmdb.png"] 
                                                                                   title:NSLocalizedString(@"Info", @"Info")
                                                                                  target:self 
-                                                                                 action:@selector(swapInformation)];
-    _actionInformation = [actionInformation retain];
-    [actionInformation release];
+                                                                                 action:@selector(swapTMDb)];
+    _actionTMDb = [actionTMDb retain];
+    [actionTMDb release];
     
     ActionBarButtonItem *actionIMDb = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_imdb.png"] 
                                                                            title:NSLocalizedString(@"IMDb", @"IMDb")
@@ -335,7 +312,7 @@ static int informationGapInset = 15;
     
     
     // add action tab bar
-    [abar setItems:[NSArray arrayWithObjects:nspace,itemFlex,_actionListing,_actionInformation,_actionIMDb,_actionWikipedia,itemFlex,nspace,nil]];
+    [abar setItems:[NSArray arrayWithObjects:nspace,itemFlex,_actionListing,_actionTMDb,_actionIMDb,_actionWikipedia,itemFlex,nspace,nil]];
     [footerView addSubview:abar];
     [itemFlex release];
     
@@ -402,9 +379,7 @@ static int informationGapInset = 15;
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	DLog();
-    
-    // reload
-    [_componentListing reloadData];
+
 
 }
 
@@ -441,38 +416,12 @@ static int informationGapInset = 15;
 /*
  * Information movie.
  */
-- (void)informationMovie:(Movie*)movie {
+- (void)informationMovie:(Movie*)movie nodes:(NSArray *)nodes {
     FLog();
-    
-    // formatter
-    static NSDateFormatter *dateFormatter;
-    if (dateFormatter == nil) {
-        dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"yyyy"];
-    }
     
     // type
     type_person = NO;
     type_movie = YES;
-    
-    // poset
-    NSString *poster = @"";
-    for (Asset *a in movie.assets) {
-        
-        // poster
-        if ([a.type isEqualToString:assetPoster] && [a.size isEqualToString:assetSizeThumb]) {
-            poster = a.url;
-            break;
-        }
-    }
-
-    
-    // header
-    [_informationMovieView.imagePoster loadImageFromURL:poster];
-    [_informationMovieView.labelName setText:movie.name];
-    [_informationMovieView.labelTagline setText:movie.tagline];
-    [_informationMovieView.labelReleased setText:[NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:movie.released]]];
-    [_informationMovieView.labelRuntime setText:[NSString stringWithFormat:@"%im",[movie.runtime intValue]]];
     
     // references
     [_referenceTMDb setString:[NSString stringWithFormat:@"%@%i",urlTMDbMovie,[movie.mid intValue]]];
@@ -486,12 +435,18 @@ static int informationGapInset = 15;
     [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",urlAmazonSearch,[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceITunes setString:[NSString stringWithFormat:@"%@%@",urlITunesSearch,[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 
+    // header
+    [_informationMovieView reset:movie];
+    _informationPersonView.hidden = YES;
+    _informationMovieView.hidden = NO;
+    
     
     // component listing
+    [_componentListing reset:nodes];
     [_actionListing setTitle:NSLocalizedString(@"Cast", @"Cast")];
     
-    // component information
-    [_componentInformation setText:movie.overview];
+    // component tmdb
+    [_componentTMDb reset:movie.overview slides:nil];
     
     // component imdb
     [_componentIMDb reset:_referenceIMDb];
@@ -499,10 +454,6 @@ static int informationGapInset = 15;
     // component wikipedia
     [_componentWikipedia reset:_referenceWikipedia];
 
-    
-    // show
-    _informationPersonView.hidden = YES;
-    _informationMovieView.hidden = NO;
     
     // swap listing
     [self swapListing];
@@ -512,38 +463,12 @@ static int informationGapInset = 15;
 /**
  * Information person.
  */
-- (void)informationPerson:(Person*)person {
+- (void)informationPerson:(Person*)person nodes:(NSArray *)nodes {
     FLog();
-    
-    // formatter
-    static NSDateFormatter *dateFormatter;
-    if (dateFormatter == nil) {
-        dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"dd.MM.yyyy"];
-    }
     
     // type
     type_movie = NO;
     type_person = YES;
-    
-    // profile
-    NSString *profile = @"";
-    for (Asset *a in person.assets) {
-        
-        // profile
-        if ([a.type isEqualToString:assetProfile] && [a.size isEqualToString:assetSizeMid]) {
-            profile = a.url;
-            break;
-        }
-    }
-    
-    
-    // header
-    [_informationPersonView.imageProfile loadImageFromURL:profile];
-    [_informationPersonView.labelName setText:person.name];
-    [_informationPersonView.labelBirthday setText:[NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:person.birthday]]];
-    [_informationPersonView.labelBirthplace setText:person.birthplace];
-    [_informationPersonView.labelKnownMovies setText:[NSString stringWithFormat:@"%i",[person.known_movies intValue]]];
     
     // references
     [_referenceTMDb setString:[NSString stringWithFormat:@"%@%i",urlTMDbPerson,[person.pid intValue]]];
@@ -552,22 +477,23 @@ static int informationGapInset = 15;
     [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",urlAmazonSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceITunes setString:[NSString stringWithFormat:@"%@%@",urlITunesSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     
+    // header
+    [_informationPersonView reset:person];
+    _informationMovieView.hidden = YES;
+    _informationPersonView.hidden = NO;
     
     // component listing
+    [_componentListing reset:nodes];
     [_actionListing setTitle:NSLocalizedString(@"Movies", @"Movies")];
     
-    // component information
-    [_componentInformation setText:person.biography];
+    // component tmdb
+    [_componentTMDb reset:person.biography slides:nil];
     
     // component imdb
     [_componentIMDb reset:_referenceIMDb];
     
     // component wikipedia
     [_componentWikipedia reset:_referenceWikipedia];
-    
-    // show
-    _informationMovieView.hidden = YES;
-    _informationPersonView.hidden = NO;
     
     // swap listing
     [self swapListing];
@@ -598,39 +524,40 @@ static int informationGapInset = 15;
         [_actionListing setSelected:YES];
         
         // component
+        [_componentListing load];
         [_componentListing setHidden:NO];
-        [_componentListing reloadData];
-        [_componentListing setContentOffset:CGPointMake(0, 0) animated:NO];
+        [_componentListing scrollTop:NO];
     }
 
 }
 
 /*
- * Swap information.
+ * Swap TMDb.
  */
-- (void)swapInformation {
+- (void)swapTMDb {
     FLog();
     
     // change mode
-    if (! mode_information) {
+    if (! mode_tmdb) {
         
         // reset
         [self swapReset];
         
         // mode
-        mode_information = YES;
+        mode_tmdb = YES;
         
         // action
-        [_actionInformation setSelected:YES];
+        [_actionTMDb setSelected:YES];
         
         // component
-        [_componentInformation setHidden:NO];
-        [_componentInformation setContentOffset:CGPointZero animated:NO];
+        [_componentTMDb load];
+        [_componentTMDb setHidden:NO];
+        [_componentTMDb scrollTop:NO];
     }
 }
 
 /*
- * Swap imdb.
+ * Swap IMDb.
  */
 - (void)swapIMDb {
     FLog();
@@ -691,24 +618,40 @@ static int informationGapInset = 15;
     
     // reset mode
     mode_listing = NO;
-    mode_information = NO;
+    mode_tmdb = NO;
     mode_imdb = NO;
     mode_wikipedia = NO;
     
     // actions
     [_actionListing setSelected:NO];
-    [_actionInformation setSelected:NO];
+    [_actionTMDb setSelected:NO];
     [_actionIMDb setSelected:NO];
     [_actionWikipedia setSelected:NO];
     
     // hide views
     _componentListing.hidden = YES;
-    _componentInformation.hidden = YES;
+    _componentTMDb.hidden = YES;
     _componentIMDb.hidden = YES;
     _componentWikipedia.hidden = YES;
     _htmlNavigator.hidden = YES;
     
 }
+
+
+#pragma mark -
+#pragma mark Listing Delegate
+
+/*
+ * Selected.
+ */
+- (void)listingSelected:(NSNumber *)nid type:(NSString *)type {
+    
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(informationSelected:type:)]) {
+        [delegate informationSelected:nid type:type];
+    }
+}
+
 
 
 #pragma mark -
@@ -943,268 +886,6 @@ static int informationGapInset = 15;
 
 
 #pragma mark -
-#pragma mark Table view data source
-
-/*
- * Customize the number of sections in the table view.
- */
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)aTableView {
-    return 4;
-}
-
-
-/*
- * Customize the number of rows in the table view.
- */
-- (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section {
-    
-    // section
-    switch (section) {
-		case SectionInformationMovies: {
-			return [_movies count];
-            break;
-		}
-        case SectionInformationActors: {
-			return [_actors count];
-            break;
-		}
-        case SectionInformationDirectors: {
-			return [_directors count];
-            break;
-		}
-		case SectionInformationCrew: {
-			return [_crew count];
-            break;
-		}
-        
-    }
-    
-    return 0;
-}
-
-
-/*
- * Customize the section header height.
- */
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if ([self tableView:tableView numberOfRowsInSection:section]==0) {
-        return 0.0000000000000000000000000001; // null is ignored...
-    }
-    return informationGapHeight;
-}
-
-/*
- * Customize the section footer height.
- */
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == SectionInformationCrew) {
-        return informationGapInset;
-    }
-    else if ([self tableView:tableView numberOfRowsInSection:section]==0) {
-        return 0.0000000000000000000000000001; // null is ignored...
-    }
-    return 1;
-}
-
-/*
- * Customize the cell height.
- */
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return informationCellHeight;
-}
-
-/*
- * Customize the section header.
- */
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    
-    // filler
-    if ([self tableView:tableView numberOfRowsInSection:section]==0) {
-        return [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
-    }
-    // header
-    else {
-        return [self sectionHeader:[self tableView:tableView titleForHeaderInSection:section]];
-    }
-}
-- (UIView *)sectionHeader:(NSString*)label {
-    
-    // view
-    UIView *shView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, vframe.size.width, informationGapHeight)];
-    
-    // label
-    UILabel *lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(informationGapInset, informationGapOffset, shView.frame.size.width-2*informationGapInset, informationGapHeight-informationGapOffset)];
-	lblHeader.backgroundColor = [UIColor clearColor];
-	lblHeader.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
-	lblHeader.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
-	lblHeader.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-	lblHeader.shadowOffset = CGSizeMake(1,1);
-	lblHeader.opaque = YES;
-	lblHeader.numberOfLines = 1;
-    
-    // text
-    lblHeader.text = label;
-    
-    // add & release
-    [shView addSubview:lblHeader];
-    [lblHeader release];
-    
-    // and back
-    return shView;
-}
-
-/*
- * Customize the footer view.
- */
-- (UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    // filler
-    if ([self tableView:tableView numberOfRowsInSection:section]==0) {
-        return [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
-    }
-    // header
-    else {
-        return [self sectionFooter];
-    }
-}
-- (UIView *)sectionFooter{
-    
-    // view
-    UIView *sfView = [[UIView alloc] initWithFrame:vframe];
-    
-    // view
-    UIView *sfLine = [[UIView alloc] initWithFrame:CGRectMake(informationGapInset, -1, 550, 1)];
-    sfLine.backgroundColor = [UIColor colorWithWhite:0.82 alpha:0.6];
-    
-    // add & release
-    [sfView addSubview:sfLine];
-    [sfLine release];
-
-    
-    // and back
-    return sfView;
-}
-
-
-#pragma mark -
-#pragma mark UITableViewDelegate Protocol
-
-/*
- * Section titles.
- */
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	
-	// section
-    switch (section) {
-		case SectionInformationMovies: {
-			if ([_movies count] > 0)  return NSLocalizedString(@"Movies",@"Movies");
-            break;
-		}
-        case SectionInformationActors: {
-			if ([_actors count] > 0)  return NSLocalizedString(@"Actors",@"Actors");
-            break;
-		}
-        case SectionInformationDirectors: {
-			if ([_directors count] > 0)  return NSLocalizedString(@"Directors",@"Directors");
-            break;
-		}
-		case SectionInformationCrew: {
-			if ([_crew count] > 0)  return NSLocalizedString(@"Crew",@"Crew");
-            break;
-		}
-    }
-    return nil;
-    
-}
-
-
-/*
- * Customize the appearance of table view cells.
- */
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-	// identifiers
-    static NSString *CellInformationIdentifier = @"CellInformation";
-	
-	// create cell
-	InformationCell *cell = (InformationCell*) [tableView dequeueReusableCellWithIdentifier:CellInformationIdentifier];
-	if (cell == nil) {
-		cell = [[[InformationCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellInformationIdentifier] autorelease];
-	}
-	
-	// info
-	Information *nfo;
-	if ([indexPath section] == SectionInformationMovies) {
-		nfo = [_movies objectAtIndex:[indexPath row]];
-	}
-    else if ([indexPath section] == SectionInformationActors) {
-		nfo = [_actors objectAtIndex:[indexPath row]];
-	}
-    else if ([indexPath section] == SectionInformationDirectors) {
-		nfo = [_directors objectAtIndex:[indexPath row]];
-	}
-	else if ([indexPath section] == SectionInformationCrew) {
-		nfo = [_crew objectAtIndex:[indexPath row]];
-	}
-
-    
-    // label
-	cell.labelInfo.text = nfo.value;
-	cell.labelMeta.text = nfo.meta;
-    cell.type = nfo.type;
-    cell.loaded = NO;
-    cell.visible = NO;
-    if (nfo.loaded) {
-        cell.loaded = YES;
-    }
-    if (nfo.visible) {
-        cell.visible = YES;
-    }
-    [cell setNeedsDisplay];
-
-	// return
-    return cell;
-    
-}
-
-
-/*
- * Called when a table cell is selected.
- */
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	FLog();
-
-    // nfo
-	Information *nfo;
-	if ([indexPath section] == SectionInformationMovies) {
-		nfo = [_movies objectAtIndex:[indexPath row]];
-	}
-    else if ([indexPath section] == SectionInformationActors) {
-		nfo = [_actors objectAtIndex:[indexPath row]];
-	}
-    else if ([indexPath section] == SectionInformationDirectors) {
-		nfo = [_directors objectAtIndex:[indexPath row]];
-	}
-	else if ([indexPath section] == SectionInformationCrew) {
-		nfo = [_crew objectAtIndex:[indexPath row]];
-	}
-    
-    // check
-    if (! nfo.loaded) {
-        
-        // state
-        nfo.loaded = YES;
-        [_componentListing reloadData];
-        
-        // load
-        if (delegate && [delegate respondsToSelector:@selector(informationSelected:type:)]) {
-            NSString *type = [nfo.type isEqualToString:typeMovie] ? typeMovie : typePerson;
-            [delegate informationSelected:nfo.nid type:type];
-        }
-    }
-}
-
-
-#pragma mark -
 #pragma mark Memory management
 
 /**
@@ -1213,21 +894,16 @@ static int informationGapInset = 15;
 - (void)dealloc {
 	GLog();
     
-    // data
-	[_movies release];
-    [_actors release];
-    [_directors release];
-	[_crew release];
-    
+
     // actions
     [_actionListing release];
-    [_actionInformation release];
+    [_actionTMDb release];
     [_actionIMDb release];
     [_actionWikipedia release];
     
     // components
     [_componentListing release];
-    [_componentInformation release];
+    [_componentTMDb release];
     [_componentIMDb release];
     [_componentWikipedia release];
     
@@ -1242,73 +918,6 @@ static int informationGapInset = 15;
     [super dealloc];
 }
 
-
-@end
-
-
-
-#pragma mark -
-#pragma mark Information
-#pragma mark -
-
-
-/**
- * Information.
- */
-@implementation Information
-
-#pragma mark -
-#pragma mark Properties
-
-// accessors
-@synthesize value;
-@synthesize meta;
-@synthesize type;
-@synthesize nid;
-@synthesize loaded;
-@synthesize visible;
-
-
-#pragma mark -
-#pragma mark Object
-
-/**
- * Init.
- */
-- (id)initWithValue:(NSString *)v meta:(NSString *)m type:(NSString *)t nid:(NSNumber *)n visible:(bool)iv loaded:(bool)il{
-    GLog();
-    if ((self = [super init])) {
-		self.value = v;
-		self.meta = m;
-		self.type = t;
-        self.nid = n;
-        self.visible = iv;
-        self.loaded = il;
-		return self;
-	}
-	return nil;
-}
-
-
-
-#pragma mark -
-#pragma mark Memory management
-
-/*
- * Deallocates all used memory.
- */
-- (void)dealloc {
-	GLog();
-	
-	// self
-	[value release];
-	[meta release];
-	[type release];
-    [nid release];
-	
-	// super
-    [super dealloc];
-}
 
 @end
 
@@ -1430,12 +1039,12 @@ static int informationGapInset = 15;
     if (tPoint.y < informationHeaderHeight) {
         
         // listing
-        UITableView *cListing = (UITableView*) [self viewWithTag:TagInformationComponentListing];
-        [cListing setContentOffset:CGPointMake(0, 0) animated:YES];
+        ListingView *cListing = (ListingView*) [self viewWithTag:TagInformationComponentListing];
+        [cListing scrollTop:YES];
         
-        // information
-        UITextView *cInformation = (UITextView*) [self viewWithTag:TagInformationComponentInformation];
-        [cInformation setContentOffset:CGPointMake(0, 0) animated:YES];
+        // tmdb
+        TMDbView *cTMDb = (TMDbView*) [self viewWithTag:TagInformationComponentTMDb];
+        [cTMDb scrollTop:YES];
         
         // imdb
         HTMLView *cIMDb = (HTMLView*) [self viewWithTag:TagInformationComponentIMDb];
@@ -1471,16 +1080,6 @@ static int informationGapInset = 15;
  */
 @implementation InformationMovieView
 
-
-#pragma mark -
-#pragma mark Properties
-
-// accessors
-@synthesize labelName = _labelName;
-@synthesize labelTagline = _labelTagline;
-@synthesize labelReleased = _labelReleased;
-@synthesize labelRuntime = _labelRuntime;
-@synthesize imagePoster = _imagePoster;
 
 
 #pragma mark -
@@ -1592,6 +1191,58 @@ static int informationGapInset = 15;
 }
 
 
+#pragma mark -
+#pragma mark Interface
+
+/**
+ * Reset.
+ */
+- (void)reset:(Movie *)movie {
+    
+    // formatter
+    static NSDateFormatter *dateFormatter;
+    if (dateFormatter == nil) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"dd.MM.yyyy"];
+    }
+    
+    // poset
+    NSString *poster = @"";
+    for (Asset *a in movie.assets) {
+        
+        // poster
+        if ([a.type isEqualToString:assetPoster] && [a.size isEqualToString:assetSizeThumb]) {
+            poster = a.url;
+            break;
+        }
+    }
+    
+    
+    // header
+    [_imagePoster loadFromURL:poster];
+    [_labelName setText:movie.name];
+    [_labelTagline setText:movie.tagline];
+    [_labelReleased setText:[NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:movie.released]]];
+    [_labelRuntime setText:[NSString stringWithFormat:@"%im",[movie.runtime intValue]]];
+    
+}
+
+
+#pragma mark -
+#pragma mark Memory
+
+/*
+ * Deallocates all used memory.
+ */
+- (void)dealloc {
+
+    
+    // sup
+    [super dealloc];
+}
+
+
+
 @end
 
 
@@ -1606,16 +1257,6 @@ static int informationGapInset = 15;
  */
 @implementation InformationPersonView
 
-
-#pragma mark -
-#pragma mark Properties
-
-// accessors
-@synthesize labelName = _labelName;
-@synthesize labelBirthday = _labelBirthday;
-@synthesize labelBirthplace = _labelBirthplace;
-@synthesize labelKnownMovies = _labelKnownMovies;
-@synthesize imageProfile = _imageProfile;
 
 
 #pragma mark -
@@ -1736,237 +1377,64 @@ static int informationGapInset = 15;
 }
 
 
-@end
-
 
 
 #pragma mark -
-#pragma mark InformationCell
-#pragma mark -
+#pragma mark Interface
 
 /**
- * InformationCell.
+ * Reset.
  */
-@implementation InformationCell
-
-
-#pragma mark -
-#pragma mark Properties
-
-// accessors
-@synthesize labelInfo=_labelInfo;
-@synthesize labelMeta=_labelMeta;
-@synthesize type=_type;
-@synthesize loaded, visible;
-
-
-#pragma mark -
-#pragma mark Object Methods
-
-/*
- * Init.
- */
--(id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (void)reset:(Person *)person {
     
-    // init
-    if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
-        
-        // background
-        self.backgroundColor = [UIColor clearColor];
-        self.opaque = NO;
-        
-        // intendation
-        self.indentationWidth = informationGapInset;
-        self.indentationLevel = 0;
-        
-        
-        // back
-        UIView *backView = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
-        backView.backgroundColor = [UIColor clearColor];
-        self.backgroundView = backView;
-        
-        
-        // labels
-        UILabel *lblInfo = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
-        lblInfo.backgroundColor = [UIColor clearColor];
-        lblInfo.font = [UIFont fontWithName:@"Helvetica" size:15.0];
-        lblInfo.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
-        lblInfo.opaque = YES;
-        lblInfo.numberOfLines = 1;
-        
-        _labelInfo = [lblInfo retain];
-        [self.contentView addSubview: _labelInfo];
-        [lblInfo release];
-        
-        UILabel *lblMeta = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
-        lblMeta.backgroundColor = [UIColor clearColor];
-        lblMeta.font = [UIFont fontWithName:@"Helvetica" size:15.0];
-        lblMeta.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
-        lblMeta.opaque = YES;
-        lblMeta.numberOfLines = 1;
-        
-        _labelMeta = [lblMeta retain];
-        [self.contentView addSubview: lblMeta];
-        [lblMeta release];
-        
-        // icons
-        CGRect iframe = CGRectMake(0, 0, 16, 16);
-        
-		_iconMovie = [[UIImageView alloc] initWithFrame:iframe];
-		_iconMovie.image = [UIImage imageNamed:@"icon_mini_movie.png"];
-		_iconMovie.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-		_iconMovie.backgroundColor = [UIColor clearColor];
-		_iconMovie.contentMode = UIViewContentModeCenter;
-        _iconMovie.hidden = YES;
-        [self.contentView addSubview: _iconMovie];
-        
-        _iconActor = [[UIImageView alloc] initWithFrame:iframe];
-		_iconActor.image = [UIImage imageNamed:@"icon_mini_actor.png"];
-		_iconActor.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-		_iconActor.backgroundColor = [UIColor clearColor];
-		_iconActor.contentMode = UIViewContentModeCenter;
-        _iconActor.hidden = YES;
-        [self.contentView addSubview: _iconActor];
-        
-        _iconDirector = [[UIImageView alloc] initWithFrame:iframe];
-		_iconDirector.image = [UIImage imageNamed:@"icon_mini_director.png"];
-		_iconDirector.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-		_iconDirector.backgroundColor = [UIColor clearColor];
-		_iconDirector.contentMode = UIViewContentModeCenter;
-        _iconDirector.hidden = YES;
-        [self.contentView addSubview: _iconDirector];
-        
-        _iconCrew = [[UIImageView alloc] initWithFrame:iframe];
-		_iconCrew.image = [UIImage imageNamed:@"icon_mini_crew.png"];
-		_iconCrew.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-		_iconCrew.backgroundColor = [UIColor clearColor];
-		_iconCrew.contentMode = UIViewContentModeCenter;
-        _iconCrew.hidden = YES;
-        [self.contentView addSubview: _iconCrew];
-        
+    // formatter
+    static NSDateFormatter *dateFormatter;
+    if (dateFormatter == nil) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"dd.MM.yyyy"];
     }
-    return self;
-}
-
-#pragma mark -
-#pragma mark TableCell Methods
-
-/*
- * Draws the cell.
- */
-- (void)drawRect:(CGRect)rect {
-    //[super drawRect:rect];
-	
-    // get the graphics context and clear it
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    CGContextClearRect(ctx, rect);
-    //CGContextSetShouldAntialias(ctx, NO);
     
-    // background
-    CGRect bg = CGRectMake(informationCellInset, 0, self.frame.size.width-2*informationCellInset, informationCellHeight+1);
-    UIColor *bgc = self.highlighted ? [UIColor colorWithWhite:0 alpha:0.06] : [UIColor colorWithWhite:0 alpha:0.03];
-    CGContextSetFillColorWithColor(ctx, bgc.CGColor);
-	CGContextFillRect(ctx, bg);
     
-    // lines
-    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
-	CGContextMoveToPoint(ctx, bg.origin.x, 0);
-	CGContextAddLineToPoint(ctx, bg.origin.x+bg.size.width, 0);
-	CGContextStrokePath(ctx);
-    
-}
-
-
-/* 
- * Sub stuff.
-*/
-- (void) layoutSubviews {
-
-    // size
-    [_labelInfo sizeToFit];
-    [_labelMeta sizeToFit];
-    
-    // position
-    CGRect finfo = _labelInfo.frame;
-    finfo.origin.x = CGRectGetMinX (self.contentView.bounds) + 12;
-    finfo.origin.y = CGRectGetMinY (self.contentView.bounds) + 9;
-    [_labelInfo setFrame: finfo];
-    
-    // meta
-    CGRect fmeta = _labelMeta.frame;
-    fmeta.origin.x = CGRectGetMaxX (_labelInfo.frame) + 10;
-    fmeta.origin.y = CGRectGetMinY (self.contentView.bounds) + 9;
-    [_labelMeta setFrame: fmeta];
-    
-    // disclosure
-    CGRect fdisc = CGRectMake(self.frame.size.width-50, 9, 16, 16);
-    _iconMovie.hidden = YES;
-    _iconActor.hidden = YES;
-    _iconDirector.hidden = YES;
-    _iconCrew.hidden = YES;
-    if (loaded) {
+    // profile
+    NSString *profile = @"";
+    for (Asset *a in person.assets) {
         
-        // movie
-        if ([_type isEqualToString:typeMovie]) {
-            _iconMovie.frame = fdisc;
-            _iconMovie.hidden = NO;
+        // profile
+        if ([a.type isEqualToString:assetProfile] && [a.size isEqualToString:assetSizeMid]) {
+            profile = a.url;
+            break;
         }
-        // actor
-        else if ([_type isEqualToString:typePersonActor]) {
-            _iconActor.frame = fdisc;
-            _iconActor.hidden = NO;
-        }
-        // crew
-        else if ([_type isEqualToString:typePersonDirector]) {
-            _iconDirector.frame = fdisc;
-            _iconDirector.hidden = NO;
-        }
-        // crew
-        else if ([_type isEqualToString:typePersonCrew]) {
-            _iconCrew.frame = fdisc;
-            _iconCrew.hidden = NO;
-        }
-        
-
     }
-
+    
+    
+    // header
+    [_imageProfile loadFromURL:profile];
+    [_labelName setText:person.name];
+    [_labelBirthday setText:[NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:person.birthday]]];
+    [_labelBirthplace setText:person.birthplace];
+    [_labelKnownMovies setText:[NSString stringWithFormat:@"%i",[person.known_movies intValue]]];
+    
 }
-
-
-/*
-* Disable highlighting of currently selected cell.
-*/
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:NO];
-    [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-}
-
-/*
- * Highlight.
- */
-- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
-    [super setHighlighted:highlighted animated:NO];
-    [self setNeedsDisplay];
-}
-
- 
-
-
 
 
 #pragma mark -
-#pragma mark Memory management
+#pragma mark Memory
 
 /*
  * Deallocates all used memory.
  */
 - (void)dealloc {
-	GLog();
-	
-	// super
+    
+    // ui
+    [_imageProfile release];
+    [_labelName release];
+    [_labelBirthday release];
+    [_labelBirthplace release];
+    [_labelKnownMovies release];
+    
+    // sup
     [super dealloc];
 }
 
 
 @end
-

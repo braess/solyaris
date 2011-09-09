@@ -9,26 +9,21 @@
 #import <UIKit/UIKit.h>
 #import "CacheImageView.h"
 #import "ActionBar.h"
+#import "ListingView.h"
 #import "HTMLView.h"
+#import "TMDbView.h"
 #import "Movie.h"
 #import "Person.h"
 #import "Asset.h"
 
 
-//  Sections
-enum {
-    SectionInformationDirectors,
-	SectionInformationActors,
-	SectionInformationMovies,
-    SectionInformationCrew
-};
 
 //  Tags
 enum {
     TagInformationHeaderMovie,
     TagInformationHeaderPerson,
 	TagInformationComponentListing,
-    TagInformationComponentInformation,
+    TagInformationComponentTMDb,
     TagInformationComponentIMDb,
     TagInformationComponentWikipedia,
 	TagInformationFooter
@@ -38,35 +33,6 @@ enum {
 enum {
     ActionInformationToolsReference
 };
-
-
-/**
- * Information.
- */
-@interface Information : NSObject {
-    
-}
-
-// Properties
-@property (nonatomic, retain) NSString *value;
-@property (nonatomic, retain) NSString *meta;
-@property (nonatomic, retain) NSString *type;
-@property (nonatomic, retain) NSNumber *nid;
-@property bool visible;
-@property bool loaded;
-
-// Initializer
-- (id)initWithValue:(NSString*)v meta:(NSString*)m type:(NSString*)t nid:(NSNumber*)n visible:(bool)iv loaded:(bool)il;
-
-@end
-
-
-/**
- * InformationBackgroundView.
- */
-@interface InformationBackgroundView : UIView {
-}
-@end
 
 
 /**
@@ -82,12 +48,8 @@ enum {
     CacheImageView *_imagePoster;
 }
 
-// Properteis
-@property (nonatomic,retain) UILabel *labelName;
-@property (nonatomic,retain) UILabel *labelTagline;
-@property (nonatomic,retain) UILabel *labelRuntime;
-@property (nonatomic,retain) UILabel *labelReleased;
-@property (nonatomic,retain) CacheImageView *imagePoster;
+// Interface
+- (void)reset:(Movie*)movie;
 
 @end
 
@@ -105,12 +67,8 @@ enum {
     CacheImageView *_imageProfile;
 }
 
-// Properteis
-@property (nonatomic,retain) UILabel *labelName;
-@property (nonatomic,retain) UILabel *labelBirthday;
-@property (nonatomic,retain) UILabel *labelBirthplace;
-@property (nonatomic,retain) UILabel *labelKnownMovies;
-@property (nonatomic,retain) CacheImageView *imageProfile;
+// Interface
+- (void)reset:(Person*)person;
 
 @end
 
@@ -129,7 +87,7 @@ enum {
 /**
  * InformationViewController.
  */
-@interface InformationViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate, HTMLDelegate> {
+@interface InformationViewController : UIViewController <UIActionSheetDelegate, ListingDelegate, HTMLDelegate> {
     
     // delegate
 	id<InformationDelegate> delegate;
@@ -139,26 +97,20 @@ enum {
     UIView *_contentView;
     InformationMovieView *_informationMovieView;
     InformationPersonView *_informationPersonView;
-    UITableView *_componentListing;
-    UITextView *_componentInformation;
+    ListingView *_componentListing;
+    TMDbView *_componentTMDb;
     HTMLView *_componentIMDb;
     HTMLView *_componentWikipedia;
     HTMLNavigatorView *_htmlNavigator;
     
     // switch
     ActionBarButtonItem *_actionListing;
-    ActionBarButtonItem *_actionInformation;
+    ActionBarButtonItem *_actionTMDb;
     ActionBarButtonItem *_actionIMDb;
     ActionBarButtonItem *_actionWikipedia;
     
     // buttons
     UIButton *_buttonResize;
-    
-    // data
-	NSMutableArray *_movies;
-	NSMutableArray *_actors;
-    NSMutableArray *_directors;
-    NSMutableArray *_crew;
     
     // private
     @private
@@ -168,7 +120,7 @@ enum {
     bool type_person;
     
     bool mode_listing;
-    bool mode_information;
+    bool mode_tmdb;
     bool mode_imdb;
     bool mode_wikipedia;
     
@@ -187,10 +139,7 @@ enum {
 @property (assign) id<InformationDelegate> delegate;
 @property (nonatomic, retain) UIView *modalView;
 @property (nonatomic, retain) UIView *contentView;
-@property (nonatomic, retain) NSMutableArray *movies;
-@property (nonatomic, retain) NSMutableArray *actors;
-@property (nonatomic, retain) NSMutableArray *directors;
-@property (nonatomic, retain) NSMutableArray *crew;
+
 
 
 // Object Methods
@@ -198,39 +147,19 @@ enum {
 
 // Business Methods
 - (void)resize;
-- (void)informationMovie:(Movie*)movie;
-- (void)informationPerson:(Person*)person;
+- (void)informationMovie:(Movie*)movie nodes:(NSArray*)nodes;
+- (void)informationPerson:(Person*)person nodes:(NSArray*)nodes;
 
 
 @end
+
 
 
 
 /**
- * InformationCell.
+ * InformationBackgroundView.
  */
-@interface InformationCell : UITableViewCell {
-    
-    // ui
-    UILabel *_labelInfo;
-    UILabel *_labelMeta;
-    NSString *_type;
-    UIImageView *_iconMovie;
-    UIImageView *_iconActor;
-    UIImageView *_iconDirector;
-    UIImageView *_iconCrew;
-    
-    // state
-    bool loaded;
-
+@interface InformationBackgroundView : UIView {
 }
-
-// Properties
-@property (nonatomic,retain) UILabel *labelInfo;
-@property (nonatomic,retain) UILabel *labelMeta;
-@property (nonatomic,retain) NSString *type;
-@property bool loaded;
-@property bool visible;
-
-
 @end
+

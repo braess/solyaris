@@ -79,6 +79,7 @@ class Node {
     void tapped();
     void renderLabel(string lbl);
     void updateType(string t);
+    void updateMeta(string m);
     bool isActive();
     bool isVisible();
     bool isSelected();
@@ -88,6 +89,7 @@ class Node {
     // Public Fields
     string nid;
     string label;
+    string meta;
     string type;
     NodeWeakPtr sref;
     NodeWeakPtr parent;
@@ -96,7 +98,7 @@ class Node {
     Vec2d ppos;
     Vec2d mpos;
     float core;
-    float radius,growradius;
+    float radius,growr;
     float mass;
 	Vec2d velocity;
 
@@ -132,7 +134,7 @@ class Node {
     double speed;
     int nbchildren;
     int fcount;
-    int mradius;
+    int minr,maxr;
     
     
     // Color

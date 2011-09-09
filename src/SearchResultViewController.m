@@ -323,7 +323,7 @@
     else {
         [_thumbImageView placeholderImage:[UIImage imageNamed:@"placeholder_search_person.png"]];
     }
-    [_thumbImageView loadImageFromURL:thumb];
+    [_thumbImageView loadFromURL:thumb];
 }
 
 #pragma mark -

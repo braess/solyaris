@@ -35,7 +35,7 @@
 /**
  * Loads an image.
  */
-- (void)loadImageFromURL:(NSString*)link {
+- (void)loadFromURL:(NSString*)link {
     GLog();
     
     // loader
@@ -56,6 +56,27 @@
     // request
 	NSURLRequest* request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:20.0];
 	connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
+}
+
+
+/**
+ * Lazyloads an image.
+ */
+- (void)lazyloadFromURL:(NSString *)link {
+    GLog();
+    
+    // url
+    _url = [link copy];
+}
+
+/**
+ * Lazyloads the image.
+ */
+- (void)lazyload {
+    // check
+    if (! loaded) {
+        [self loadFromURL:_url];
+    }
 }
 
 
@@ -92,6 +113,9 @@
     // release data
 	[data release]; 
 	data=nil;
+    
+    // loaded
+    loaded = YES;
 }
 
 

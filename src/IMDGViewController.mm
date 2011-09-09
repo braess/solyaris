@@ -8,6 +8,7 @@
 
 #import "IMDGViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "DataNode.h"
 #import "IMDGApp.h"
 #import "IMDGConstants.h"
 
@@ -330,8 +331,16 @@
     // check
     if (node != NULL) {
         
+        // formatter
+        static NSDateFormatter *yearFormatter;
+        if (yearFormatter == nil) {
+            yearFormatter = [[NSDateFormatter alloc] init];
+            [yearFormatter setDateFormat:@"yyyy"];
+        }
+        
         // properties
         node->renderLabel([movie.name UTF8String]);
+        node->updateMeta([[yearFormatter stringFromDate:movie.released] UTF8String]);
         
         
         // actors
@@ -415,6 +424,13 @@
     // check
     if (node != NULL) {
         
+        // formatter
+        static NSDateFormatter *yearFormatter;
+        if (yearFormatter == nil) {
+            yearFormatter = [[NSDateFormatter alloc] init];
+            [yearFormatter setDateFormat:@"yyyy"];
+        }
+        
         // properties
         node->renderLabel([person.name UTF8String]);
         node->updateType([person.type UTF8String]);
@@ -439,7 +455,7 @@
                 // new child
                 child = imdgApp->createNode([cid UTF8String],[typeMovie UTF8String], node->pos.x, node->pos.y);
                 child->renderLabel([m2p.movie.name UTF8String]);
-                node->updateType([person.type UTF8String]);
+                child->updateMeta([[yearFormatter stringFromDate:m2p.year] UTF8String]);
             }
             
             // add to node
@@ -851,6 +867,7 @@
     
     // node
     NodePtr node = imdgApp->getNode([nid UTF8String]);
+    NSMutableArray *nodes = [[[NSMutableArray alloc] init] autorelease];
     
     // info
     if (node->isActive()) {
@@ -861,31 +878,6 @@
         // type
         NSString *ntype = [NSString stringWithCString:node->type.c_str() encoding:[NSString defaultCStringEncoding]];
         
-        // movie
-        if ([ntype isEqualToString:typeMovie]) {
-            
-            // data
-            Movie *movie = [tmdb dataMovie:[self toDBId:pid]];
-            
-            // information
-            [_informationViewController informationMovie:movie];
-        }
-        else {
-            
-            // data
-            Person *person = [tmdb dataPerson:[self toDBId:pid]];
-            
-            // information
-            [_informationViewController informationPerson:person];
-        }
-        
-        
-        // node information
-        NSMutableArray *movies = [[NSMutableArray alloc] init];
-        NSMutableArray *actors = [[NSMutableArray alloc] init];
-        NSMutableArray *directors = [[NSMutableArray alloc] init];
-        NSMutableArray *crew = [[NSMutableArray alloc] init];
-        
         
         // children
         for (NodeIt child = node->children.begin(); child != node->children.end(); ++child) {
@@ -894,54 +886,49 @@
             NSString *cid = [NSString stringWithCString:(*child)->nid.c_str() encoding:[NSString defaultCStringEncoding]];
             
             // edge
-            EdgePtr edge = imdgApp->getEdge([pid UTF8String], [cid UTF8String]);
+            EdgePtr nedge = imdgApp->getEdge([pid UTF8String], [cid UTF8String]);
             
             // properties
             NSNumber *nid = [self toDBId:[NSString stringWithCString:(*child)->nid.c_str() encoding:[NSString defaultCStringEncoding]]];
             NSString *type = [NSString stringWithCString:(*child)->type.c_str() encoding:[NSString defaultCStringEncoding]];
-            NSString *value = [NSString stringWithCString:(*child)->label.c_str() encoding:[NSString defaultCStringEncoding]];
-            NSString *meta = @"meta";
+            NSString *label = [NSString stringWithCString:(*child)->label.c_str() encoding:[NSString defaultCStringEncoding]];
+            NSString *meta = [NSString stringWithCString:(*child)->meta.c_str() encoding:[NSString defaultCStringEncoding]];
+            NSString *edge = @"";
             bool visible = (*child)->isVisible();
             bool loaded = ( (*child)->isActive() || (*child)->isLoading() );
-            if (edge != NULL) {
+            if (nedge != NULL) {
                 
                 // label
-                meta = [NSString stringWithCString:edge->label.c_str() encoding:[NSString defaultCStringEncoding]];
+                edge = [NSString stringWithCString:nedge->label.c_str() encoding:[NSString defaultCStringEncoding]];
                 
             }
             
-            
-            // information
-            Information *nfo = [[Information alloc] initWithValue:value meta:meta type:type nid:nid visible:visible loaded:loaded];
-            
-            // movie
-            if ([type isEqualToString:typeMovie]) {
-                [movies addObject:nfo];
-            }
-            
-            // actor
-            if ([type isEqualToString:typePersonActor]) {
-                [actors addObject:nfo];
-            }
-            
-            // crew
-            if ([type isEqualToString:typePersonDirector]) {
-                [directors addObject:nfo];
-            }
-            
-            // crew
-            if ([type isEqualToString:typePersonCrew]) {
-                [crew addObject:nfo];
-            }
+            // data
+            DataNode *dta = [[DataNode alloc] initData:nid type:type label:label meta:meta edge:edge visible:visible loaded:loaded];
+            [nodes addObject:dta];
             
             
         }
         
-        // set 
-        _informationViewController.movies = movies;
-        _informationViewController.actors = actors;
-        _informationViewController.directors = directors;
-        _informationViewController.crew = crew ;
+        
+        // movie
+        if ([ntype isEqualToString:typeMovie]) {
+            
+            // data
+            Movie *movie = [tmdb dataMovie:[self toDBId:pid]];
+            
+            // information
+            [_informationViewController informationMovie:movie nodes:nodes];
+        }
+        else {
+            
+            // data
+            Person *person = [tmdb dataPerson:[self toDBId:pid]];
+            
+            // information
+            [_informationViewController informationPerson:person nodes:nodes];
+        }
+        
 
         // animate
         [self animationInformationShow];        

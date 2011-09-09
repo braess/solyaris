@@ -249,7 +249,7 @@ static int aboutFooterHeight = 60;
 	
 	// show info
 	UIAlertView *alert = [[UIAlertView alloc]
-						  initWithTitle:@"App Store" 
+						  initWithTitle:@"AppStore" 
 						  message:NSLocalizedString(@"Thank you for rating IMDG or writing a nice review.",@"Thank you for rating IMDG or writing a nice review.")
 						  delegate:self 
 						  cancelButtonTitle:NSLocalizedString(@"Maybe later",@"Maybe later")

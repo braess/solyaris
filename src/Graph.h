@@ -12,12 +12,17 @@
 #include "GraphSettings.h"
 #include <vector>
 #include <map>
+#include "IMDGConstants.h"
 
 
 // namespace
 using namespace std;
 using namespace ci;
 
+
+// constants
+const string graphLayoutNone = "graph_layout_none";
+const string graphLayoutForce = "graph_layout_force";
 
 
 /**
@@ -69,6 +74,7 @@ class Graph {
     int orientation;
     float friction;
     float harea;
+    bool layout_none,layout_force;
     
     // data
     NodeVectorPtr nodes;

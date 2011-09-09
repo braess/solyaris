@@ -312,7 +312,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
  * Cached search.
  */
 - (Search *)cachedSearch:(NSString*)query type:(NSString *)type {
-    FLog();
+    GLog();
     
     // context
     NSManagedObjectContext *moc = [self managedObjectContext];
@@ -708,15 +708,16 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // parse json
     SBJsonParser *parser = [[SBJsonParser alloc] init];
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]; 
+    NSLog(@"%@",json);
     
     // movie
     NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
     
     // validate
-    movie.mid = [self parseNumber:[djson objectForKey:@"id"]];
     if ([self validMovie:djson]) {
         
         // set data
+        movie.mid = [self parseNumber:[djson objectForKey:@"id"]];
         movie.name = [self parseString:[djson objectForKey:@"name"]];
         movie.released = [self parseDate:[djson objectForKey:@"released"]];
         movie.tagline = [self parseString:[djson objectForKey:@"tagline"]];
@@ -885,6 +886,34 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 asset_thumb = YES;
                 
             }
+            
+        }
+        
+        // backdrops
+        NSArray *backdrops = [djson objectForKey:@"backdrops"];
+        for (NSDictionary *dbackdrop in backdrops)	{
+            
+            // type
+            NSDictionary *bimage = [dbackdrop objectForKey:@"image"];
+            NSString *btype = [self parseString:[bimage objectForKey:@"type"]];
+            NSString *bsize = [self parseString:[bimage objectForKey:@"size"]];
+            
+            // backdrop
+            if ([btype isEqualToString:@"backdrop"] && [bsize isEqualToString:@"original"]) {
+                
+                // create object
+                Asset *asset = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
+                
+                // set data
+                asset.type = assetBackdrop;
+                asset.size = assetSizeOriginal;
+                asset.url = [self parseString:[bimage objectForKey:@"url"]];
+                
+                // relation
+                asset.movie = movie;
+                [movie addAssetsObject:asset];
+                
+            }
         }
     }
     
@@ -952,17 +981,18 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // parse json
     SBJsonParser *parser = [[SBJsonParser alloc] init];
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
+    NSLog(@"%@",json);
     
     
     // person
     NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
     
     // validate
-    person.pid = [self parseNumber:[djson objectForKey:@"id"]];
     if ([self validPerson:djson]) {
             
         
         // movie
+        person.pid = [self parseNumber:[djson objectForKey:@"id"]];
         person.name = [self parseString:[djson objectForKey:@"name"]];
         person.biography = [self parseString:[djson objectForKey:@"biography"]];
         person.birthday = [self parseDate:[djson objectForKey:@"birthday"]];
@@ -1328,6 +1358,11 @@ static NSString* TMDbStore = @"TMDb.sqlite";
  */
 - (BOOL)validMovie:(NSDictionary *)dmovie {
     
+    // kosher
+    if ([[self parseNumber:[dmovie objectForKey:@"id"]] intValue] <= 0) {
+        return NO;
+    }
+    
     // exclude adult
     if ([[dmovie objectForKey:@"adult"] boolValue]) {
         return NO;
@@ -1347,6 +1382,11 @@ static NSString* TMDbStore = @"TMDb.sqlite";
  * Validate Person.
  */
 - (BOOL)validPerson:(NSDictionary *)dperson {
+    
+    // kosher
+    if ([[self parseNumber:[dperson objectForKey:@"id"]] intValue] <= 0) {
+        return NO;
+    }
     
     // exclude adult
     if ([[dperson objectForKey:@"adult"] boolValue]) {

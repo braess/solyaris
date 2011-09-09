@@ -20,10 +20,17 @@
     
     // loader
     UIImage *_placeholderImage;
+    
+    // private
+    @private
+    NSString *_url;
+    bool loaded;
 }
 
 // Business
 - (void)placeholderImage:(UIImage*)img;
-- (void)loadImageFromURL:(NSString*)link;
+- (void)loadFromURL:(NSString*)link;
+- (void)lazyloadFromURL:(NSString*)link;
+- (void)lazyload;
 
 @end

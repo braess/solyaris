@@ -19,6 +19,45 @@
 
 // accessors
 @synthesize key;
+@synthesize help;
+
+
+#pragma mark -
+#pragma mark TableCell Methods
+
+/*
+ * Init cell.
+ */
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)identifier {
+	GLog();
+	
+	// init cell
+    self = [super initWithStyle:style reuseIdentifier:identifier];
+    if (self == nil) { 
+        return nil;
+    }
+	
+	// self
+	self.textLabel.font = [UIFont fontWithName:@"Helvetica" size:15.0]; 
+    self.textLabel.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
+    self.detailTextLabel.font = [UIFont fontWithName:@"Helvetica" size:15.0]; 
+    self.detailTextLabel.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
+    
+    // help
+    help = @"";
+    
+    // return
+    return self;
+}
+
+/*
+ * Disable highlighting of currently selected cell.
+ */
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:selected animated:NO];
+    [self setSelectionStyle:UITableViewCellSelectionStyleNone];
+}
+
 
 
 #pragma mark -
@@ -29,8 +68,9 @@
 */
 - (void)update:(BOOL)reset {
 	GLog();
-	self.detailTextLabel.text = @"";
+	self.detailTextLabel.text = help;
 }
+
 
 
 
@@ -70,6 +110,7 @@
 - (void)dealloc {
 	GLog();
 	[key release];
+    [help release];
     [super dealloc];
 }
 

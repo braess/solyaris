@@ -36,6 +36,10 @@ Graph::Graph(int w, int h, int o) {
     // tooltip
     ttip = Tooltip(Vec2d(w,h));
     tooltip_disabled = false;
+    
+    // layout
+    layout_none = false;
+    layout_force = true;
 
 }
 
@@ -66,6 +70,25 @@ void Graph::setting(GraphSettings s) {
     // reference
     gsettings = s;
     
+    
+    // layout 
+    layout_none = false;
+    layout_force = true;
+    Default graphLayout = s.getDefault("graph_layout");
+    if (graphLayout.isSet()) {
+        
+        // none
+        if (graphLayout.stringVal() == graphLayoutNone) {
+            layout_none = true;
+            layout_force = false;
+        }
+        
+        // force
+        if (graphLayout.stringVal() == graphLayoutForce) {
+            layout_none = false;
+            layout_force = true;
+        }
+    }
     
     // tooltip 
     tooltip_disabled = false;
@@ -99,11 +122,16 @@ void Graph::update() {
     // randomize
     Rand::randomize();
     
-    // attract
-    this->attract();
-    
-    // repulse
-    this->repulse();
+    // layout force
+    if (layout_force) {
+        
+        // attract
+        this->attract();
+        
+        // repulse
+        this->repulse();
+        
+    }
 
     
     // nodes
@@ -129,7 +157,7 @@ void Graph::update() {
                 NodePtr pp = (*child)->parent.lock();
 
                 // move visible children
-                if (! (*child)->isActive() && (*child)->isVisible() && pp == (*node)) {
+                if (! (*child)->isActive() && ! (*child)->isLoading() && (*child)->isVisible() && pp == (*node)) {
                     
                     // follow
                     (*child)->translate((*node)->pos - (*node)->ppos);
@@ -349,20 +377,6 @@ void Graph::attract() {
             if ((*n1)->isActive() && (*n2)->isActive() && (*n1) != (*n2)) {
                 (*n1)->attract(*n2);
             }
-        }
-        
-        // children
-        if ((*n1)->isActive()) {
-            
-            // brothers & sisters
-            for (NodeIt c1 = (*n1)->children.begin(); c1 != (*n1)->children.end(); ++c1) {
-                for (NodeIt c2 = (*n1)->children.begin(); c2 != (*n1)->children.end(); ++c2) {
-                    if ((*c1)->isVisible() && (*c2)->isVisible() && (*c1) != (*c2)) {
-                        (*c1)->attract(*c2);
-                    }
-                }
-            }
-            
         }
     }
     

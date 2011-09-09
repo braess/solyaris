@@ -60,13 +60,6 @@
     return self;
 }
 
-/*
- * Disable highlighting of currently selected cell.
- */
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:NO];
-    [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-}
 
 
 #pragma mark -
@@ -79,7 +72,7 @@
 	GLog();
 	
 	// detail label
-	self.detailTextLabel.text = [NSString stringWithFormat:@"%.0f",sliderAccessory.value];
+	self.detailTextLabel.text = [NSString stringWithFormat:@"%@: %.0f",help,sliderAccessory.value];
 	
 	
 }
