@@ -12,14 +12,16 @@
 /**
  * A simple cache image view.
  */
-@interface CacheImageView : UIImageView {
+@interface CacheImageView : UIView {
     
     // data
-    NSURLConnection* connection;
-    NSMutableData* data;
+    NSURLConnection *_connection;
+    NSMutableData *_receivedData;
     
     // loader
+    UIImageView *_imageView;
     UIImage *_placeholderImage;
+    UIActivityIndicatorView *_activityIndicator;
     
     // private
     @private
@@ -31,6 +33,6 @@
 - (void)placeholderImage:(UIImage*)img;
 - (void)loadFromURL:(NSString*)link;
 - (void)lazyloadFromURL:(NSString*)link;
-- (void)lazyload;
+- (void)load;
 
 @end

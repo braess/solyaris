@@ -708,7 +708,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // parse json
     SBJsonParser *parser = [[SBJsonParser alloc] init];
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]; 
-    NSLog(@"%@",json);
+    //NSLog(@"%@",json);
     
     // movie
     NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
@@ -981,7 +981,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // parse json
     SBJsonParser *parser = [[SBJsonParser alloc] init];
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
-    NSLog(@"%@",json);
+    //NSLog(@"%@",json);
     
     
     // person

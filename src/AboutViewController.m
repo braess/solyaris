@@ -80,7 +80,7 @@ static int aboutFooterHeight = 60;
 	lblTitle.shadowOffset = CGSizeMake(1,1);
 	lblTitle.opaque = YES;
 	lblTitle.numberOfLines = 1;
-	[lblTitle setText:NSLocalizedString(@"IMDG",@"IMDG")];
+	[lblTitle setText:NSLocalizedString(@"OMDG",@"OMDG")];
 	[self.view addSubview:lblTitle];
 	[lblTitle release];
     
@@ -93,7 +93,7 @@ static int aboutFooterHeight = 60;
 	lblClaim.shadowOffset = CGSizeMake(1,1);
 	lblClaim.opaque = YES;
 	lblClaim.numberOfLines = 1;
-	[lblClaim setText:NSLocalizedString(@"The Internet Movie Database Graph.",@"The Internet Movie Database Graph.")];
+	[lblClaim setText:NSLocalizedString(@"The Open Movie Database Graph",@"The Internet Movie Database Graph")];
 	[self.view addSubview:lblClaim];
 	[lblClaim release];
     
@@ -109,7 +109,7 @@ static int aboutFooterHeight = 60;
     txtAbout.userInteractionEnabled = YES;
     txtAbout.editable = NO;
     //txtAbout.dataDetectorTypes = UIDataDetectorTypeLink;
-	[txtAbout setText:NSLocalizedString(@"An exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nInformation courtesy of The Internet Movie Database (http://www.imdb.com). Used with permission.",@"An exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Internet Movie Database collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nInformation courtesy of The Internet Movie Database (http://www.imdb.com). Used with permission.")];
+	[txtAbout setText:NSLocalizedString(@"An exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of The Open Movie Database (TMDb) and Wikipedia. This product uses the TMDb API but is not endorsed or certified by TMDb.",@"An exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of The Open Movie Database (TMDb)  and Wikipedia. This product uses the TMDb API but is not endorsed or certified by TMDb.")];
     [self.view addSubview:txtAbout];
 	[txtAbout release];
     
@@ -211,10 +211,10 @@ static int aboutFooterHeight = 60;
         composer.modalPresentationStyle = UIModalPresentationFormSheet;
 		
 		// subject
-		[composer setSubject:[NSString stringWithFormat:@"IMDG"]];
+		[composer setSubject:[NSString stringWithFormat:@"OMDG"]];
         
 		// message
-		NSString *message = NSLocalizedString(@"\n\n\n---IMDG\nThe Internet Movie Database Graph.\nhttp://imdg.cecinestpasparis.net",@"\n\n\n---IMDG\nThe Internet Movie Database Graph.\nhttp://imdg.cecinestpasparis.net");
+		NSString *message = NSLocalizedString(@"\n\n\n---OMDG\nThe Open Movie Database Graph.\nhttp://omdg.cecinestpasparis.net",@"\n\n\n---OMDG\nThe Open Movie Database Graph.\nhttp://omdg.cecinestpasparis.net");
 		[composer setMessageBody:message isHTML:NO];
 		
 		// promo image
@@ -250,7 +250,7 @@ static int aboutFooterHeight = 60;
 	// show info
 	UIAlertView *alert = [[UIAlertView alloc]
 						  initWithTitle:@"AppStore" 
-						  message:NSLocalizedString(@"Thank you for rating IMDG or writing a nice review.",@"Thank you for rating IMDG or writing a nice review.")
+						  message:NSLocalizedString(@"Thank you for rating OMDG or writing a nice review.",@"Thank you for rating OMDG or writing a nice review.")
 						  delegate:self 
 						  cancelButtonTitle:NSLocalizedString(@"Maybe later",@"Maybe later")
 						  otherButtonTitles:NSLocalizedString(@"Visit",@"Visit"),nil];
@@ -283,7 +283,7 @@ static int aboutFooterHeight = 60;
 		[composer setToRecipients:[[[NSArray alloc] initWithObjects:vAppEmail,nil] autorelease]];
 		
 		// subject
-		[composer setSubject:[NSString stringWithFormat:@"[IMDG] Feedback"]];
+		[composer setSubject:[NSString stringWithFormat:@"[OMDG] Feedback"]];
         
 		// show off
 		[self presentModalViewController:composer animated:YES];

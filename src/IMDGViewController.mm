@@ -904,9 +904,8 @@
             }
             
             // data
-            DataNode *dta = [[DataNode alloc] initData:nid type:type label:label meta:meta edge:edge visible:visible loaded:loaded];
+            DataNode *dta = [[[DataNode alloc] initData:nid type:type label:label meta:meta edge:edge visible:visible loaded:loaded] autorelease];
             [nodes addObject:dta];
-            
             
         }
         

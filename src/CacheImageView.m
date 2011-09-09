@@ -15,6 +15,69 @@
 @implementation CacheImageView
 
 
+#pragma mark -
+#pragma mark Constants
+
+// constants
+#define kAnimateTimeImageLoaded	0.18f
+
+
+
+#pragma mark -
+#pragma mark Object
+
+/*
+ * Init.
+ */
+- (id)initWithFrame:(CGRect)frame {
+    
+    // init
+    if (self == [super initWithFrame:frame]) {
+        
+        // self
+        self.backgroundColor = [UIColor whiteColor];
+        self.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
+        
+        // image view
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+        imageView.backgroundColor = [UIColor clearColor];
+        imageView.contentMode = UIViewContentModeScaleAspectFill;
+        imageView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
+        imageView.clipsToBounds = YES;
+        
+        // add
+        _imageView = [imageView retain];
+        [self addSubview:_imageView];
+        [imageView release];
+        
+        // loader
+		UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+		activityIndicator.hidden = YES;
+        
+        // add
+        _activityIndicator = [activityIndicator retain];
+        [self addSubview:_activityIndicator];
+        [activityIndicator release];
+ 
+    }
+    return self;
+}
+
+/*
+ * Layout.
+ */
+- (void)layoutSubviews {
+    
+    // image view
+    _imageView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    
+    // activity
+    _activityIndicator.center = CGPointMake(self.frame.size.width/2.0, self.frame.size.height/2.0);
+    
+    // sup
+    [super layoutSubviews];
+}
+
 
 #pragma mark -
 #pragma mark Business
@@ -28,7 +91,7 @@
     
     // set
     _placeholderImage = [img retain];
-    self.image = _placeholderImage;
+    _imageView.image = _placeholderImage;
     [self setNeedsLayout];
 }
 
@@ -38,16 +101,19 @@
 - (void)loadFromURL:(NSString*)link {
     GLog();
     
+    // url
+    _url = [link copy];
+    
     // loader
-    self.image = _placeholderImage;
+    _imageView.image = _placeholderImage;
     [self setNeedsLayout];
 	
     // connection & data
-    if (connection!=nil) { 
-        [connection release]; 
+    if (_connection!=nil) { 
+        [_connection release]; 
     } 
-	if (data!=nil) { 
-        [data release]; 
+	if (_receivedData!=nil) { 
+        [_receivedData release]; 
     }
     
     // url
@@ -55,7 +121,7 @@
 	
     // request
 	NSURLRequest* request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:20.0];
-	connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
+	_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
 }
 
 
@@ -70,11 +136,17 @@
 }
 
 /**
- * Lazyloads the image.
+ * Loads the image.
  */
-- (void)lazyload {
+- (void)load {
+    
     // check
     if (! loaded) {
+        
+        // activity
+        _activityIndicator.hidden = NO;
+        
+        // load
         [self loadFromURL:_url];
     }
 }
@@ -87,13 +159,24 @@
 /*
  * Connection.
  */
-- (void)connection:(NSURLConnection *)theConnection didReceiveData:(NSData *)incrementalData {
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+	// every time we get an response it might be a forward, so we discard what data we have
+	[_receivedData release], _receivedData = nil;
     
-    // append data
-	if (data==nil) { 
-        data = [[NSMutableData alloc] initWithCapacity:2048]; 
-    } 
-	[data appendData:incrementalData];
+	// does not fire for local file URLs
+	if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+		NSHTTPURLResponse *httpResponse = (id)response;
+        
+		if (![[httpResponse MIMEType] hasPrefix:@"image"]) {
+			//[self cancelLoading];
+		}
+	}
+    
+	_receivedData = [[NSMutableData alloc] init];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+	[_receivedData appendData:data];
 }
 
 /*
@@ -102,17 +185,26 @@
 - (void)connectionDidFinishLoading:(NSURLConnection*)theConnection {
     GLog();
     
-	// release connection
-	[connection release];
-	connection=nil;
+    // hide activity
+    _activityIndicator.hidden = YES;
 	
-	//make an image view for the image
-    self.image = [UIImage imageWithData:data];
-	[self setNeedsLayout];
+	// make an image view for the image
+    _imageView.image = [UIImage imageWithData:_receivedData];
+    
+    // animate
+    _imageView.alpha = 0;
+	[UIView beginAnimations:@"cacheimage_loaded" context:nil];
+	[UIView setAnimationDuration:kAnimateTimeImageLoaded];
+    _imageView.alpha = 1.3f;
+	[UIView commitAnimations];
+    
+    // release connection
+	[_connection release];
+	_connection=nil;
     
     // release data
-	[data release]; 
-	data=nil;
+	[_receivedData release]; 
+	_receivedData=nil;
     
     // loaded
     loaded = YES;
@@ -128,12 +220,14 @@
 - (void)dealloc {
     
     // connection
-    [connection cancel]; 
-	[connection release];
-	[data release];
+    [_connection cancel]; 
+	[_connection release];
+	[_receivedData release];
     
-    // placeholder
+    // ui
+    [_imageView release];
     [_placeholderImage release];
+    [_activityIndicator release];
     
     // view
     [super dealloc];

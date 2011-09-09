@@ -46,8 +46,12 @@
 	// private
     @private
 	BOOL pageControlIsChangingPage;
-	int nbOfPages;
+    int currentSlide;
     
 }
+
+// Business
+- (void)setSlides:(NSArray*)slides;
+- (void)load;
 
 @end

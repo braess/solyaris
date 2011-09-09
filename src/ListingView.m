@@ -170,6 +170,14 @@ static int listingGapInset = 15;
 }
 
 
+/*
+ * Resize.
+ */
+- (void)resize {
+    // nothing to do today
+}
+
+
 
 
 #pragma mark -

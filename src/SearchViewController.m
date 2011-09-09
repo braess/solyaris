@@ -21,6 +21,15 @@
 
 
 /**
+ * SearchTerm Stack.
+ */
+@interface SearchViewController (SearchTermStack)
+- (void)persistSearchTerm:(NSString*)term;
+- (NSString*)retrieveSearchTerm;
+@end
+
+
+/**
  * SearchViewController.
  */
 @implementation SearchViewController
@@ -130,7 +139,7 @@
     lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
     lblTitle.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt];
     lblTitle.numberOfLines = 1;
-    lblTitle.text = NSLocalizedString(@"IMDG",@"IMDG");
+    lblTitle.text = NSLocalizedString(@"OMDG",@"OMDG");
     _labelTitle = [lblTitle retain];
     [self.view addSubview:_labelTitle];
     [lblTitle release];
@@ -141,7 +150,7 @@
     lblClaim.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     lblClaim.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt];
     lblClaim.numberOfLines = 1;
-    lblClaim.text = NSLocalizedString(@"The Internet Movie Database Graph",@"The Internet Movie Database Graph");
+    lblClaim.text = NSLocalizedString(@"The Open Movie Database Graph",@"The Open Movie Database Graph");
     _labelClaim = [lblClaim retain];
     [self.view addSubview:_labelClaim];
     [lblClaim release];
@@ -162,7 +171,7 @@
             break;
         }
     }
-    sBar.text = @"Kill Bill";
+    sBar.text = [self retrieveSearchTerm];
     _searchBar = [sBar retain];
 	[self.view addSubview:_searchBar];
 	[sBar release];
@@ -300,6 +309,9 @@
     
     // inactive
     _searchBar.alpha = kAlphaSearch;
+    
+    // persist
+    [self persistSearchTerm:searchBar.text];
 }
 
 
@@ -391,6 +403,33 @@
     if (delegate && [delegate respondsToSelector:@selector(reset)]) {
         [delegate reset];
     }
+}
+
+
+#pragma mark -
+#pragma mark SearchTerm
+
+/*
+ * Search Term.
+ */
+- (void)persistSearchTerm:(NSString *)term {
+    
+    // user defaults
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    // set
+    [userDefaults setObject:term forKey:udSearchTerm];
+    [userDefaults synchronize];
+    
+}
+- (NSString*)retrieveSearchTerm {
+    
+    // user defaults
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+	
+	// return
+	NSObject *v = [userDefaults objectForKey:udSearchTerm];
+	return v ? (NSString*)v : NSLocalizedString(@"Kill Bill", @"Kill Bill");
 }
 
 

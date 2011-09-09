@@ -35,6 +35,7 @@
 #define udGraphNodeCrewEnabled          @"graph_node_crew_enabled"	
 #define udGraphNodeChildren             @"graph_node_children"	
 #define udGraphEdgeLength               @"graph_edge_length"	
+#define udSearchTerm                    @"search_term"	
 
 
 // URLs
@@ -48,4 +49,4 @@
 
 
 // Values
-#define vAppEmail                       @"imdg@cecinestpasparis.net"	
+#define vAppEmail                       @"omdg@cecinestpasparis.net"	

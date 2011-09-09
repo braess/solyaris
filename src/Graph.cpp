@@ -525,7 +525,7 @@ void Graph::tooltip() {
         }
         
         // touched
-        if (etouch) {
+        if (etouch && txts.size() > 0) {
             ttip.renderText(txts);
             ttip.show();
         }

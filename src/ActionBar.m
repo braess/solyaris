@@ -123,6 +123,19 @@
     return self;
 }
 
+/**
+ * Selected.
+ */
+- (void)setSelected:(BOOL)s {
+    self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.024];
+    [self setTitleColor:[UIColor colorWithRed:180.0/255.0 green:180.0/255.0 blue:180.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+    if (s) {
+        self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.15];
+        [self setTitleColor:[UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+    }
+}
+
+
 
 #pragma mark -
 #pragma mark View

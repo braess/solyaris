@@ -51,6 +51,7 @@ enum {
 - (void)reset:(NSArray*)nodes;
 - (void)load;
 - (void)scrollTop:(bool)animated;
+- (void)resize;
 
 @end
 

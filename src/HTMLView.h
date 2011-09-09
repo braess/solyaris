@@ -53,6 +53,7 @@
 - (void)navigateBack;
 - (void)navigateForward;
 - (void)scrollTop:(bool)animated;
+- (void)resize;
 
 @end
 

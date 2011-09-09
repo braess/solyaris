@@ -76,7 +76,7 @@
     
     // size
     float height = MAX(self.tableView.rowHeight,self.tableView.rowHeight * [self.tableView numberOfRowsInSection:0]);
-    self.contentSizeForViewInPopover = CGSizeMake(self.view.frame.size.width,MIN(height, 480));
+    self.contentSizeForViewInPopover = CGSizeMake(320,MIN(height, 480));
     
 }
 
@@ -96,7 +96,7 @@
     [self.tableView reloadData];
     
     // size
-    self.contentSizeForViewInPopover = CGSizeMake(self.view.frame.size.width,self.tableView.rowHeight);
+    self.contentSizeForViewInPopover = CGSizeMake(320,self.tableView.rowHeight);
 
 }
 
@@ -236,9 +236,6 @@
         
         // thumb
         CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:CGRectMake(-10, 0, 32, 44)];
-        ciView.clipsToBounds = YES;
-        ciView.contentMode = UIViewContentModeScaleAspectFill;
-        ciView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
         
         _thumbImageView = [ciView retain];
         [self.contentView addSubview:_thumbImageView];

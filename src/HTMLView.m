@@ -175,6 +175,14 @@
 }
 
 
+/*
+ * Resize.
+ */
+- (void)resize {
+    // nothing to do today
+}
+
+
 
 #pragma mark -
 #pragma mark WebView Delegate

@@ -42,6 +42,7 @@
 - (void)actionResize:(id)sender;
 - (void)resizeFull;
 - (void)resizeDefault;
+- (void)resizeDone;
 - (void)actionToolsReference:(id)sender;
 @end
 
@@ -365,11 +366,18 @@ static int informationGapInset = 15;
  * Resize.
  */
 - (void)resize {
+    FLog();
     
     // fullscreen
     if (fullscreen) {
         [self resizeFull];
     }
+    
+    // resize components
+    [_componentListing resize];
+    [_componentTMDb resize];
+    [_componentIMDb resize];
+    [_componentWikipedia resize];
 }
 
 
@@ -446,7 +454,7 @@ static int informationGapInset = 15;
     [_actionListing setTitle:NSLocalizedString(@"Cast", @"Cast")];
     
     // component tmdb
-    [_componentTMDb reset:movie.overview slides:nil];
+    [_componentTMDb resetMovie:movie];
     
     // component imdb
     [_componentIMDb reset:_referenceIMDb];
@@ -487,7 +495,7 @@ static int informationGapInset = 15;
     [_actionListing setTitle:NSLocalizedString(@"Movies", @"Movies")];
     
     // component tmdb
-    [_componentTMDb reset:person.biography slides:nil];
+    [_componentTMDb resetPerson:person];
     
     // component imdb
     [_componentIMDb reset:_referenceIMDb];
@@ -728,6 +736,9 @@ static int informationGapInset = 15;
     // button
     [_buttonResize setImage:[UIImage imageNamed:@"btn_resize-default.png"] forState:UIControlStateNormal];
     
+    // resize done
+	[self performSelector:@selector(resizeDone) withObject:nil afterDelay:kAnimateTimeResizeFull];
+    
 }
 - (void)resizeDefault {
     GLog();
@@ -751,6 +762,18 @@ static int informationGapInset = 15;
     
     // button
     [_buttonResize setImage:[UIImage imageNamed:@"btn_resize-full.png"] forState:UIControlStateNormal];
+    
+    // resize done
+	[self performSelector:@selector(resizeDone) withObject:nil afterDelay:kAnimateTimeResizeDefault];
+}
+
+- (void)resizeDone {
+    
+    // resize components
+    [_componentListing resize];
+    [_componentTMDb resize];
+    [_componentIMDb resize];
+    [_componentWikipedia resize];
 }
 
 
@@ -1095,6 +1118,7 @@ static int informationGapInset = 15;
         
         // view
         self.frame = frame;
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         self.backgroundColor = [UIColor clearColor];
         self.opaque = YES;
         
@@ -1104,8 +1128,7 @@ static int informationGapInset = 15;
         
         // poster
         CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:iframe];
-        ciView.contentMode = UIViewContentModeScaleAspectFill;
-        ciView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
+        ciView.autoresizingMask = UIViewAutoresizingNone;
         [ciView placeholderImage:[UIImage imageNamed:@"placeholder_info_movie.png"]];
         
         _imagePoster = [ciView retain];
@@ -1114,6 +1137,7 @@ static int informationGapInset = 15;
         
         // name
         UILabel *lblName = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y, mframe.size.width, 36)];
+        lblName.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         lblName.backgroundColor = [UIColor clearColor];
         lblName.font = [UIFont fontWithName:@"Helvetica-Bold" size:21.0];
         lblName.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
@@ -1272,6 +1296,7 @@ static int informationGapInset = 15;
         
         // view
         self.frame = frame;
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         self.backgroundColor = [UIColor clearColor];
         self.opaque = YES;
         
@@ -1281,8 +1306,7 @@ static int informationGapInset = 15;
         
         // poster
         CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:iframe];
-        ciView.contentMode = UIViewContentModeScaleAspectFill;
-        ciView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
+        ciView.autoresizingMask = UIViewAutoresizingNone;
         [ciView placeholderImage:[UIImage imageNamed:@"placeholder_info_person.png"]];
         
         _imageProfile = [ciView retain];
