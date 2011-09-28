@@ -39,6 +39,7 @@
 		18A65CD9140EC58E009962D7 /* placeholder_info_person.png in Resources */ = {isa = PBXBuildFile; fileRef = 18A65CD5140EC58E009962D7 /* placeholder_info_person.png */; };
 		18A65CDA140EC58E009962D7 /* placeholder_search_movie.png in Resources */ = {isa = PBXBuildFile; fileRef = 18A65CD6140EC58E009962D7 /* placeholder_search_movie.png */; };
 		18A65CDB140EC58E009962D7 /* placeholder_search_person.png in Resources */ = {isa = PBXBuildFile; fileRef = 18A65CD7140EC58E009962D7 /* placeholder_search_person.png */; };
+		18BEF5EB1433B6B6003314FE /* logo_solyaris.png in Resources */ = {isa = PBXBuildFile; fileRef = 18BEF5EA1433B6B6003314FE /* logo_solyaris.png */; };
 		18D1732714191C250011CE5A /* CellSegment.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D1732614191C250011CE5A /* CellSegment.m */; };
 		18D1732B14193DDC0011CE5A /* SlidesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D1732A14193DDC0011CE5A /* SlidesView.m */; };
 		18EE991B140F774A008EE675 /* ActionBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EE991A140F774A008EE675 /* ActionBar.m */; };
@@ -145,6 +146,7 @@
 		18A65CD5140EC58E009962D7 /* placeholder_info_person.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = placeholder_info_person.png; path = Assets/placeholder_info_person.png; sourceTree = "<group>"; };
 		18A65CD6140EC58E009962D7 /* placeholder_search_movie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = placeholder_search_movie.png; path = Assets/placeholder_search_movie.png; sourceTree = "<group>"; };
 		18A65CD7140EC58E009962D7 /* placeholder_search_person.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = placeholder_search_person.png; path = Assets/placeholder_search_person.png; sourceTree = "<group>"; };
+		18BEF5EA1433B6B6003314FE /* logo_solyaris.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo_solyaris.png; path = Assets/logo_solyaris.png; sourceTree = "<group>"; };
 		18D1732514191C250011CE5A /* CellSegment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CellSegment.h; path = src/CellSegment.h; sourceTree = "<group>"; };
 		18D1732614191C250011CE5A /* CellSegment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellSegment.m; path = src/CellSegment.m; sourceTree = "<group>"; };
 		18D1732914193DDB0011CE5A /* SlidesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SlidesView.h; path = src/SlidesView.h; sourceTree = "<group>"; };
@@ -316,6 +318,7 @@
 		1804C6E213AA277200417D32 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				18BEF5E81433B6A8003314FE /* logo */,
 				184632661410DBE700CC5B70 /* html */,
 				18EE991D140F9FEA008EE675 /* actions */,
 				1837D631140EA86900D3FF7F /* placeholder */,
@@ -395,6 +398,14 @@
 				184632671410DC6C00CC5B70 /* preload.html */,
 			);
 			name = html;
+			sourceTree = "<group>";
+		};
+		18BEF5E81433B6A8003314FE /* logo */ = {
+			isa = PBXGroup;
+			children = (
+				18BEF5EA1433B6B6003314FE /* logo_solyaris.png */,
+			);
+			name = logo;
 			sourceTree = "<group>";
 		};
 		18E88A3013EC51F100529B73 /* icons */ = {
@@ -714,6 +725,7 @@
 				184632791410F55200CC5B70 /* btn_navigator-forward.png in Resources */,
 				184632821411100C00CC5B70 /* preload.gif in Resources */,
 				1846328A1411234F00CC5B70 /* btn_reference.png in Resources */,
+				18BEF5EB1433B6B6003314FE /* logo_solyaris.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
