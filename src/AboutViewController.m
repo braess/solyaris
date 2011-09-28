@@ -80,7 +80,7 @@ static int aboutFooterHeight = 60;
 	lblTitle.shadowOffset = CGSizeMake(1,1);
 	lblTitle.opaque = YES;
 	lblTitle.numberOfLines = 1;
-	[lblTitle setText:NSLocalizedString(@"OMDG",@"OMDG")];
+	[lblTitle setText:NSLocalizedString(@"SOLYARIS",@"SOLYARIS")];
 	[self.view addSubview:lblTitle];
 	[lblTitle release];
     
@@ -93,7 +93,7 @@ static int aboutFooterHeight = 60;
 	lblClaim.shadowOffset = CGSizeMake(1,1);
 	lblClaim.opaque = YES;
 	lblClaim.numberOfLines = 1;
-	[lblClaim setText:NSLocalizedString(@"The Open Movie Database Graph",@"The Internet Movie Database Graph")];
+	[lblClaim setText:NSLocalizedString(@"A Visual Movie Browser",@"A Visual Movie Browser")];
 	[self.view addSubview:lblClaim];
 	[lblClaim release];
     
@@ -109,7 +109,7 @@ static int aboutFooterHeight = 60;
     txtAbout.userInteractionEnabled = YES;
     txtAbout.editable = NO;
     //txtAbout.dataDetectorTypes = UIDataDetectorTypeLink;
-	[txtAbout setText:NSLocalizedString(@"An exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of The Open Movie Database (TMDb) and Wikipedia. This product uses the TMDb API but is not endorsed or certified by TMDb.",@"An exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of The Open Movie Database (TMDb)  and Wikipedia. This product uses the TMDb API but is not endorsed or certified by TMDb.")];
+	[txtAbout setText:NSLocalizedString(@"SOLYARIS is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This product uses the TMDb API but is not endorsed or certified by The Open Movie Database or any other third party.\n\nMade with Cinder.",@"SOLYARIS is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This product uses the TMDb API but is not endorsed or certified by The Open Movie Database or any other third party.\n\nMade with Cinder.")];
     [self.view addSubview:txtAbout];
 	[txtAbout release];
     

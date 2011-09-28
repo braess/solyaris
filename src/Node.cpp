@@ -554,7 +554,7 @@ void Node::updateType(string t) {
         type = t;
         
         // color 
-        cbg = Color(138/255.0, 134/255.0, 96/255.0);
+        cbg = Color(135/255.0, 138/255.0, 84/255.0);
     }
     // person actor
     else if (t == nodePersonActor) {
@@ -563,7 +563,7 @@ void Node::updateType(string t) {
         type = t;
         
         // color 
-        cbg = Color(88/255.0, 124/255.0, 138/255.0);
+        cbg = Color(28/255.0, 92/255.0, 138/255.0);
     }
     // person director/crew
     else if (t == nodePersonCrew || t == nodePersonDirector || t == nodePerson) {
@@ -572,7 +572,7 @@ void Node::updateType(string t) {
         type = t;
         
         // color 
-        cbg = Color(131/255.0, 136/255.0, 138/255.0);
+        cbg = Color(120/255.0, 120/255.0, 120/255.0);
     }
 }
 

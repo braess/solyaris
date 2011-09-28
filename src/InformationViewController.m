@@ -1152,6 +1152,7 @@ static int informationGapInset = 15;
         
         // tagline
         UILabel *lblTagline = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+30, mframe.size.width, 18)];
+        lblTagline.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         lblTagline.backgroundColor = [UIColor clearColor];
         lblTagline.font = [UIFont fontWithName:@"Helvetica" size:15.0];
         lblTagline.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];

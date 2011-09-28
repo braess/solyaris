@@ -38,12 +38,11 @@
 #pragma mark Constants
 
 // constants
-#define kAlphaSearch 0.8f
+#define kAlphaSearch 0.75f
 #define kAlphaSearchActive 0.96f
-#define kAlphaBtn 0.8f
-#define kAlphaBtnActive 0.6f
-#define kAlphaTxt 0.6f
-#define kAlphaTxtActive 0.6f
+#define kAlphaBtn 0.75f
+#define kAlphaBtnActive 0.5f
+#define kAlphaTxt 0.75f
 
 
 
@@ -127,7 +126,7 @@
     // background
     UIView *background = [[UIView alloc] initWithFrame:bgframe];
     background.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    background.backgroundColor = [UIColor colorWithWhite:1 alpha:0.06];
+    background.backgroundColor = [UIColor colorWithWhite:1 alpha:0.09];
     _background = [background retain];
     [self.view addSubview:_background];
     [background release];
@@ -139,7 +138,7 @@
     lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
     lblTitle.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt];
     lblTitle.numberOfLines = 1;
-    lblTitle.text = NSLocalizedString(@"OMDG",@"OMDG");
+    lblTitle.text = NSLocalizedString(@"SOLYARIS",@"SOLYARIS");
     _labelTitle = [lblTitle retain];
     [self.view addSubview:_labelTitle];
     [lblTitle release];
@@ -150,7 +149,7 @@
     lblClaim.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     lblClaim.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt];
     lblClaim.numberOfLines = 1;
-    lblClaim.text = NSLocalizedString(@"The Open Movie Database Graph",@"The Open Movie Database Graph");
+    lblClaim.text = NSLocalizedString(@"A Visual Movie Browser",@"A Visual Movie Browser");
     _labelClaim = [lblClaim retain];
     [self.view addSubview:_labelClaim];
     [lblClaim release];
@@ -183,7 +182,7 @@
     btnMovie.alpha = kAlphaBtn;
     btnMovie.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnMovie setBackgroundColor:[UIColor colorWithRed:138/255.0 green:134/255.0 blue:96/255.0 alpha:1]];
+    [btnMovie setBackgroundColor:[UIColor colorWithRed:135/255.0 green:138/255.0 blue:84/255.0 alpha:1]];
     [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnMovie setTitle:NSLocalizedString(@"Movie",@"Movie") forState:UIControlStateNormal];
@@ -204,7 +203,7 @@
     btnActor.alpha = kAlphaBtn;
     btnActor.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnActor setBackgroundColor:[UIColor colorWithRed:88/255.0 green:124/255.0 blue:138/255.0 alpha:1]];
+    [btnActor setBackgroundColor:[UIColor colorWithRed:28/255.0 green:92/255.0 blue:138/255.0 alpha:1]];
     [btnActor setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnActor setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnActor setTitle:NSLocalizedString(@"Actor",@"Actor") forState:UIControlStateNormal];
@@ -219,14 +218,14 @@
 	[btnActor release];
     
     
-    // button cirector 
+    // button director 
 	UIButton *btnDirector = [UIButton buttonWithType:UIButtonTypeCustom];
     btnDirector.layer.cornerRadius = 3;
     btnDirector.layer.masksToBounds = YES;
     btnDirector.alpha = kAlphaBtn;
     btnDirector.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnDirector setBackgroundColor:[UIColor colorWithRed:131/255.0 green:136/255.0 blue:138/255.0 alpha:1]];
+    [btnDirector setBackgroundColor:[UIColor colorWithRed:120/255.0 green:120/255.0 blue:120/255.0 alpha:1]];
     [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnDirector setTitle:NSLocalizedString(@"Director",@"Director") forState:UIControlStateNormal];
