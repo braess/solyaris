@@ -111,7 +111,7 @@
     // frames
     CGRect frameSearch = CGRectMake(0, 0, window.frame.size.width, 40);
     CGRect frameSearchResult = CGRectMake(0, 0, 320, 480);
-    CGRect frameInformation = CGRectMake(0, 0, 580, 620);
+    CGRect frameInformation = CGRectMake(0, 0, 580, 625);
     CGRect frameSettings = CGRectMake(0, 0, 708, kOffsetSettings);
     CGRect frameSettingsButton = CGRectMake(window.frame.size.width-32, window.frame.size.height-32, 32, 32);
     
@@ -222,15 +222,21 @@
     
     // close popups
     [_searchResultsPopoverController dismissPopoverAnimated:NO];
-    
+
+}
+
+
+/*
+ * Prepare rotation animation.
+ */
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     
     // app
     imdgApp->applyDeviceOrientation(toInterfaceOrientation);
     
     // animate cinder
     [UIView beginAnimations:@"flip" context:nil];
-    [UIView setAnimationDuration:0];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [UIView setAnimationDuration:0]; // animation distorts view
     
     // flip 
     if (toInterfaceOrientation == UIInterfaceOrientationPortrait) {      
@@ -254,20 +260,23 @@
         _cinderView.bounds = CGRectMake(0.0, 0.0, 1024, 768);
     }
     [UIView commitAnimations];
-
+    
+    // resize
+    [_searchViewController resize];
+    [_informationViewController resize];
 }
+
 
 /*
  * Cleanup rotation.
  */
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-
+    
     // resize
     [_searchViewController resize];
     [_informationViewController resize];
     
 }
-
 
 
 #pragma mark -

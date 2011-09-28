@@ -84,7 +84,7 @@
     }
     
     // page control
-    _pageControl.frame = CGRectMake(0, self.frame.size.height-3, self.frame.size.width, 30);
+    _pageControl.frame = CGRectMake(0, self.frame.size.height, self.frame.size.width, 30);
     [self bringSubviewToFront:_pageControl];
     [_pageControl setNeedsDisplay];
     

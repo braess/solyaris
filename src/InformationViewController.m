@@ -100,7 +100,7 @@ static int informationGapInset = 15;
  * Init.
  */
 -(id)init {
-	return [self initWithFrame:CGRectMake(0, 0, 600, 600)];
+	return [self initWithFrame:CGRectMake(0, 0, 580, 640)];
 }
 -(id)initWithFrame:(CGRect)frame {
 	GLog();
