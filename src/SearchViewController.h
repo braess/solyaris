@@ -29,8 +29,7 @@
     // ui
     UISearchBar *_searchBar;
     UIButton *_buttonMovie;
-    UIButton *_buttonActor;
-    UIButton *_buttonDirector;
+    UIButton *_buttonPerson;
     UIButton *_buttonReset;
     
     // private
@@ -46,14 +45,12 @@
 @property (assign) id<SearchDelegate> delegate;
 @property (nonatomic, retain) UISearchBar *searchBar;
 @property (nonatomic, retain) UIButton *buttonMovie;
-@property (nonatomic, retain) UIButton *buttonActor;
-@property (nonatomic, retain) UIButton *buttonDirector;
+@property (nonatomic, retain) UIButton *buttonPerson;
 
 
 // Action Methods
 - (void)actionMovie:(id)sender;
-- (void)actionActor:(id)sender;
-- (void)actionDirector:(id)sender;
+- (void)actionPerson:(id)sender;
 - (void)actionReset:(id)sender;
 
 // Business

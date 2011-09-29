@@ -53,8 +53,7 @@
 @synthesize delegate;
 @synthesize searchBar=_searchBar;
 @synthesize buttonMovie=_buttonMovie;
-@synthesize buttonActor=_buttonActor;
-@synthesize buttonDirector=_buttonDirector;
+@synthesize buttonPerson=_buttonPerson;
 
 
 
@@ -122,7 +121,7 @@
     CGRect bgframe = CGRectMake(0, 0, fwidth, fheight);
     CGRect sbframe = CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0)+1.5, swidth, sheight);
     CGRect lframe = CGRectMake(border, border, lwidth, lheight);
-    CGRect tframe = CGRectMake(border+lwidth+inset, border, twidth, theight);
+    CGRect tframe = CGRectMake(border+lwidth+border-3, border, twidth, theight);
     CGRect brframe = CGRectMake(fwidth-inset-iwidth, (fheight-iheight)/2.0, iwidth, iheight);
     
     
@@ -177,6 +176,7 @@
 	[self.view addSubview:_searchBar];
 	[sBar release];
     
+    
     // button movie 
 	UIButton *btnMovie = [UIButton buttonWithType:UIButtonTypeCustom];
     btnMovie.layer.cornerRadius = 3;
@@ -184,7 +184,7 @@
     btnMovie.alpha = kAlphaBtn;
     btnMovie.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnMovie setBackgroundColor:[UIColor colorWithRed:135/255.0 green:138/255.0 blue:84/255.0 alpha:1]];
+    [btnMovie setBackgroundColor:[UIColor colorWithRed:28/255.0 green:92/255.0 blue:138/255.0 alpha:1]];
     [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnMovie setTitle:NSLocalizedString(@"Movie",@"Movie") forState:UIControlStateNormal];
@@ -198,48 +198,26 @@
 	[btnMovie release];
     
     
-    // button actor
-	UIButton *btnActor = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnActor.layer.cornerRadius = 3;
-    btnActor.layer.masksToBounds = YES;
-    btnActor.alpha = kAlphaBtn;
-    btnActor.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+    // button person
+	UIButton *btnPerson = [UIButton buttonWithType:UIButtonTypeCustom];
+    btnPerson.layer.cornerRadius = 3;
+    btnPerson.layer.masksToBounds = YES;
+    btnPerson.alpha = kAlphaBtn;
+    btnPerson.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnActor setBackgroundColor:[UIColor colorWithRed:28/255.0 green:92/255.0 blue:138/255.0 alpha:1]];
-    [btnActor setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
-    [btnActor setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
-    [btnActor setTitle:NSLocalizedString(@"Actor",@"Actor") forState:UIControlStateNormal];
-	[btnActor addTarget:self action:@selector(actionActor:) forControlEvents:UIControlEventTouchUpInside];
-    [btnActor addTarget:self action:@selector(buttonDown:) forControlEvents:UIControlEventTouchDown];
-    [btnActor addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpInside];
-    [btnActor addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpOutside];
+    [btnPerson setBackgroundColor:[UIColor colorWithRed:138/255.0 green:136/255.0 blue:96/255.0 alpha:1]];
+    [btnPerson setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
+    [btnPerson setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
+    [btnPerson setTitle:NSLocalizedString(@"Person",@"Person") forState:UIControlStateNormal];
+	[btnPerson addTarget:self action:@selector(actionPerson:) forControlEvents:UIControlEventTouchUpInside];
+    [btnPerson addTarget:self action:@selector(buttonDown:) forControlEvents:UIControlEventTouchDown];
+    [btnPerson addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpInside];
+    [btnPerson addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpOutside];
     
-    
-	self.buttonActor = [btnActor retain];
-	[self.view addSubview:_buttonActor];
-	[btnActor release];
-    
-    
-    // button director 
-	UIButton *btnDirector = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnDirector.layer.cornerRadius = 3;
-    btnDirector.layer.masksToBounds = YES;
-    btnDirector.alpha = kAlphaBtn;
-    btnDirector.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
-    
-    [btnDirector setBackgroundColor:[UIColor colorWithRed:120/255.0 green:120/255.0 blue:120/255.0 alpha:1]];
-    [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
-    [btnDirector setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
-    [btnDirector setTitle:NSLocalizedString(@"Director",@"Director") forState:UIControlStateNormal];
-	[btnDirector addTarget:self action:@selector(actionDirector:) forControlEvents:UIControlEventTouchUpInside];
-    [btnDirector addTarget:self action:@selector(buttonDown:) forControlEvents:UIControlEventTouchDown];
-    [btnDirector addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpInside];
-    [btnDirector addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpOutside];
-    
-	self.buttonDirector = [btnDirector retain];
-	[self.view addSubview:_buttonDirector];
-	[btnDirector release];
-    
+	self.buttonPerson = [btnPerson retain];
+	[self.view addSubview:_buttonPerson];
+	[btnPerson release];
+        
     
     // button reset
 	UIButton *btnReset = [UIButton buttonWithType:UIButtonTypeCustom]; 
@@ -276,13 +254,11 @@
     // frames
     CGRect bframe =  CGRectMake(fwidth*0.5+swidth*0.5+inset, (fheight-bheight)/2.0, 3*(bwidth+inset), bheight);
     CGRect bmframe = CGRectMake(bframe.origin.x, bframe.origin.y, bwidth, bheight);
-    CGRect baframe = CGRectMake(bframe.origin.x+inset+bwidth, bframe.origin.y, bwidth, bheight);
-    CGRect bdframe = CGRectMake(bframe.origin.x+2*inset+2*bwidth, bframe.origin.y, bwidth, bheight);
+    CGRect bpframe = CGRectMake(bframe.origin.x+inset+bwidth, bframe.origin.y, bwidth, bheight);
     
     // buttons
     _buttonMovie.frame = bmframe;
-    _buttonActor.frame = baframe;
-    _buttonDirector.frame = bdframe;
+    _buttonPerson.frame = bpframe;
     
 }
 
@@ -359,9 +335,9 @@
 }
 
 /*
- * Action Actor.
+ * Action Person.
  */
-- (void)actionActor:(id)sender {
+- (void)actionPerson:(id)sender {
 	DLog();
     
     // hide keyboard
@@ -372,27 +348,10 @@
     
     // search
     if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
-        [delegate search:[_searchBar text] type:typePersonActor];
+        [delegate search:[_searchBar text] type:typePerson];
     }
 }
 
-/*
- * Action Director.
- */
-- (void)actionDirector:(id)sender {
-	DLog();
-    
-    // hide keyboard
-    [_searchBar resignFirstResponder];
-    
-    // inactive
-    _searchBar.alpha = kAlphaSearch;
-    
-    // search
-    if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
-        [delegate search:[_searchBar text] type:typePersonDirector];
-    }
-}
 
 /*
  * Action Reset.
@@ -463,8 +422,7 @@
     // ui
     [_searchBar release];
     [_buttonMovie release];
-    [_buttonActor release];
-    [_buttonDirector release];
+    [_buttonPerson release];
     [_buttonReset release];
 	
 	// release global

@@ -215,7 +215,16 @@ void Node::draw() {
     
     // core
     glColor4f(cbg.r,cbg.g,cbg.b,(selected ? ascore : acore));
-    gl::drawSolidCircle(pos, core);
+    
+    // movie / actor
+    if (type == nodeMovie || type == nodePerson || type == nodePersonActor) {
+        gl::drawSolidCircle(pos, core);
+    }
+    // director / crew
+    else {
+        gl::drawStrokedCircle(pos, core);
+        gl::drawSolidCircle(pos, core-3);
+    }
 
     
     // unblend
@@ -554,25 +563,16 @@ void Node::updateType(string t) {
         type = t;
         
         // color 
-        cbg = Color(135/255.0, 138/255.0, 84/255.0);
-    }
-    // person actor
-    else if (t == nodePersonActor) {
-        
-        // type
-        type = t;
-        
-        // color 
         cbg = Color(28/255.0, 92/255.0, 138/255.0);
     }
-    // person director/crew
-    else if (t == nodePersonCrew || t == nodePersonDirector || t == nodePerson) {
+    // person
+    else {
         
         // type
         type = t;
         
         // color 
-        cbg = Color(120/255.0, 120/255.0, 120/255.0);
+        cbg = Color(138/255.0, 136/255.0, 96/255.0);
     }
 }
 

@@ -738,14 +738,11 @@
         type = typeMovie;
         srframe = _searchViewController.buttonMovie.frame;
     }
-    else if (t == typePersonActor) {
+    else if (t == typePerson) {
         type = typePerson;
-        srframe = _searchViewController.buttonActor.frame;
+        srframe = _searchViewController.buttonPerson.frame;
     }
-    else if (t == typePersonDirector || t == typePersonCrew) {
-        type = typePerson;
-        srframe = _searchViewController.buttonDirector.frame;
-    }
+
     
     // api
     [tmdb search:s type:type];
