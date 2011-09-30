@@ -127,8 +127,8 @@ void IMDGApp::draw() {
     // prepare
     gl::setMatricesWindow( getWindowSize() );
 	gl::setViewport( getWindowBounds() );
-    gl::enableDepthWrite();
-    //gl::enableAlphaBlending( false );
+    //gl::enableDepthWrite();
+    //gl::enableAlphaBlending();
     
     // clear
 	gl::clear(bg);    

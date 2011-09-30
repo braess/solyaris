@@ -67,12 +67,10 @@ void Tooltip::resize(int w, int h) {
 void Tooltip::update() {
    
     // timeout (avoids flickering)
-    timeout--;
-    
-    // alpha
-    if (timeout < 0) {
-        alpha = min(cbg.a,alpha+0.3f);
+    if (timeout > 0) {
+        timeout--;
     }
+    
     
 }
 
@@ -81,18 +79,25 @@ void Tooltip::update() {
  */
 void Tooltip::draw() {
     
+    
     // position
     float px = max(border.x,(pos.x-size.x/2.0+offset.x));
     float py = max(border.y,(pos.y-size.y+offset.y));
     px += min(0.0,bounds.x-(px+size.x+border.x));
     py += min(0.0,bounds.y-(py+size.y+border.y));
     
+    // hide
+    if (! this->isVisible()) {
+        px = -10000;
+        py = -10000;
+    }
+    
     // blend
     gl::enableAlphaBlending();
     
     // background
     Rectf rect = Rectf(px,py,px+size.x,py+size.y);
-    glColor4f(cbg.r,cbg.g,cbg.b,alpha);
+    glColor4f(cbg.r,cbg.g,cbg.b,cbg.a);
     gl::drawSolidRect(rect, false);
         
     // unblend
@@ -114,7 +119,7 @@ void Tooltip::draw() {
  * States.
  */
 bool Tooltip::isVisible() {
-    return visible;
+    return visible && timeout <= 0;
 }
 
 

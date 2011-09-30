@@ -11,6 +11,7 @@
 #import "DataNode.h"
 #import "IMDGApp.h"
 #import "IMDGConstants.h"
+#import "SplashView.h"
 
 
 
@@ -109,6 +110,10 @@
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
     
     // frames
+    CGRect frame = CGRectMake(0,0,768,1024);
+    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+        frame = CGRectMake(0,0,1024,768);
+    }
     CGRect frameSearch = CGRectMake(0, 0, window.frame.size.width, 40);
     CGRect frameSearchResult = CGRectMake(0, 0, 320, 480);
     CGRect frameInformation = CGRectMake(0, 0, 580, 625);
@@ -116,7 +121,7 @@
     CGRect frameSettingsButton = CGRectMake(window.frame.size.width-44, window.frame.size.height-44, 44, 44);
     
     // view
-    self.view = [[[UIView alloc] initWithFrame:window.frame] autorelease];
+    self.view = [[[UIView alloc] initWithFrame:frame] autorelease];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.view.opaque = NO;
     [window addSubview:self.view];
@@ -198,6 +203,12 @@
             break;
         }
     }
+    
+    // splash
+    SplashView *splash = [[[SplashView alloc] initWithFrame:frame] autorelease];
+    [self.view addSubview:splash];
+    [self.view bringSubviewToFront:splash];
+    [splash dismissSplash];
 
 
 }

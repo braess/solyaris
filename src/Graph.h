@@ -5,6 +5,11 @@
 //  Created by CNPP on 22.5.2011.
 //  Copyright 2011 Beat Raess. All rights reserved.
 //
+#include "cinder/app/AppCocoaTouch.h"
+#include "cinder/gl/gl.h"
+#include "cinder/gl/Texture.h"
+#include "cinder/ImageIo.h"
+
 #include "cinder/app/TouchEvent.h"
 #include "Node.h"
 #include "Edge.h"
@@ -15,9 +20,13 @@
 #include "IMDGConstants.h"
 
 
+
+
+
 // namespace
-using namespace std;
 using namespace ci;
+using namespace ci::app;
+using namespace std;
 
 
 // constants
@@ -75,6 +84,7 @@ class Graph {
     float friction;
     float harea;
     bool layout_none,layout_force;
+    gl::Texture background;
     
     // data
     NodeVectorPtr nodes;

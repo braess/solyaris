@@ -40,6 +40,9 @@ Graph::Graph(int w, int h, int o) {
     // layout
     layout_none = false;
     layout_force = true;
+    
+    // background
+    background = gl::Texture(loadImage(loadResource("background.png")));
 
 }
 
@@ -186,10 +189,7 @@ void Graph::update() {
     }
     
     // tooltip
-    if (ttip.isVisible()) {
-        ttip.update();
-    }
-
+    ttip.update();
 
 }
 
@@ -197,6 +197,10 @@ void Graph::update() {
  * Draws the graph.
  */
 void Graph::draw() {
+    
+    
+    // background
+    gl::draw(background);
     
 
     // edges
@@ -218,9 +222,8 @@ void Graph::draw() {
     }
     
     // tooltip
-    if (ttip.isVisible()) {
-        ttip.draw();
-    }
+    ttip.draw();
+
 
 }
 

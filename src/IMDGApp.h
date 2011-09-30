@@ -7,6 +7,7 @@
 //
 #import <UIKit/UIKit.h>
 #include "cinder/Cinder.h"
+#include "cinder/gl/gl.h"
 #include "cinder/app/AppNative.h"
 #include "cinder/System.h"
 #include "Graph.h"
@@ -17,6 +18,7 @@
 using namespace std;
 using namespace ci;
 using namespace ci::app;
+
 
 
 /**

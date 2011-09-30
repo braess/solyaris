@@ -35,7 +35,9 @@
 		187ABF9C13EC6DEB00090C63 /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 187ABF9B13EC6DEB00090C63 /* SearchViewController.m */; };
 		187ABFAC13EC909500090C63 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 187ABFAB13EC909500090C63 /* SettingsViewController.m */; };
 		187ABFAE13EC977900090C63 /* btn_settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 187ABFAD13EC977900090C63 /* btn_settings.png */; };
-		187B738D1435DF3400015055 /* DataEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = 187B738C1435DF3400015055 /* DataEdge.m */; };
+		187B7397143604F900015055 /* SplashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 187B7396143604F900015055 /* SplashView.m */; };
+		187B739A1436052700015055 /* DataEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = 187B73991436052700015055 /* DataEdge.m */; };
+		187B73B114362A5C00015055 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 187B73B014362A5C00015055 /* background.png */; };
 		18A65CD8140EC58E009962D7 /* placeholder_info_movie.png in Resources */ = {isa = PBXBuildFile; fileRef = 18A65CD4140EC58E009962D7 /* placeholder_info_movie.png */; };
 		18A65CD9140EC58E009962D7 /* placeholder_info_person.png in Resources */ = {isa = PBXBuildFile; fileRef = 18A65CD5140EC58E009962D7 /* placeholder_info_person.png */; };
 		18A65CDA140EC58E009962D7 /* placeholder_search_movie.png in Resources */ = {isa = PBXBuildFile; fileRef = 18A65CD6140EC58E009962D7 /* placeholder_search_movie.png */; };
@@ -143,8 +145,11 @@
 		187ABFAA13EC909400090C63 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsViewController.h; path = src/SettingsViewController.h; sourceTree = "<group>"; };
 		187ABFAB13EC909500090C63 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingsViewController.m; path = src/SettingsViewController.m; sourceTree = "<group>"; };
 		187ABFAD13EC977900090C63 /* btn_settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_settings.png; path = Assets/btn_settings.png; sourceTree = "<group>"; };
-		187B738B1435DF3400015055 /* DataEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataEdge.h; sourceTree = "<group>"; };
-		187B738C1435DF3400015055 /* DataEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataEdge.m; sourceTree = "<group>"; };
+		187B7395143604F900015055 /* SplashView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SplashView.h; path = src/SplashView.h; sourceTree = "<group>"; };
+		187B7396143604F900015055 /* SplashView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SplashView.m; path = src/SplashView.m; sourceTree = "<group>"; };
+		187B73981436052700015055 /* DataEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataEdge.h; path = src/DataEdge.h; sourceTree = "<group>"; };
+		187B73991436052700015055 /* DataEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataEdge.m; path = src/DataEdge.m; sourceTree = "<group>"; };
+		187B73B014362A5C00015055 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = background.png; path = Assets/background.png; sourceTree = "<group>"; };
 		18A65CD4140EC58E009962D7 /* placeholder_info_movie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = placeholder_info_movie.png; path = Assets/placeholder_info_movie.png; sourceTree = "<group>"; };
 		18A65CD5140EC58E009962D7 /* placeholder_info_person.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = placeholder_info_person.png; path = Assets/placeholder_info_person.png; sourceTree = "<group>"; };
 		18A65CD6140EC58E009962D7 /* placeholder_search_movie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = placeholder_search_movie.png; path = Assets/placeholder_search_movie.png; sourceTree = "<group>"; };
@@ -321,6 +326,7 @@
 		1804C6E213AA277200417D32 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				187B73AB14361C6600015055 /* background */,
 				18BEF5E81433B6A8003314FE /* logo */,
 				184632661410DBE700CC5B70 /* html */,
 				18EE991D140F9FEA008EE675 /* actions */,
@@ -401,6 +407,14 @@
 				184632671410DC6C00CC5B70 /* preload.html */,
 			);
 			name = html;
+			sourceTree = "<group>";
+		};
+		187B73AB14361C6600015055 /* background */ = {
+			isa = PBXGroup;
+			children = (
+				187B73B014362A5C00015055 /* background.png */,
+			);
+			name = background;
 			sourceTree = "<group>";
 		};
 		18BEF5E81433B6A8003314FE /* logo */ = {
@@ -535,10 +549,10 @@
 		18F8FB7D1419FC9C00AFB2E9 /* data */ = {
 			isa = PBXGroup;
 			children = (
+				187B73981436052700015055 /* DataEdge.h */,
+				187B73991436052700015055 /* DataEdge.m */,
 				18F8FB7E1419FCBF00AFB2E9 /* DataNode.h */,
 				18F8FB83141A0B2500AFB2E9 /* DataNode.m */,
-				187B738B1435DF3400015055 /* DataEdge.h */,
-				187B738C1435DF3400015055 /* DataEdge.m */,
 			);
 			name = data;
 			sourceTree = "<group>";
@@ -571,6 +585,8 @@
 				18D1732A14193DDC0011CE5A /* SlidesView.m */,
 				18F05BA014125BCD0074F670 /* BlockerView.h */,
 				18F05BA114125BCD0074F670 /* BlockerView.m */,
+				187B7395143604F900015055 /* SplashView.h */,
+				187B7396143604F900015055 /* SplashView.m */,
 			);
 			name = views;
 			sourceTree = "<group>";
@@ -731,6 +747,7 @@
 				184632821411100C00CC5B70 /* preload.gif in Resources */,
 				1846328A1411234F00CC5B70 /* btn_reference.png in Resources */,
 				18BEF5EB1433B6B6003314FE /* logo_solyaris.png in Resources */,
+				187B73B114362A5C00015055 /* background.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -787,7 +804,8 @@
 				18F8FB781419F16D00AFB2E9 /* TMDbView.m in Sources */,
 				18F8FB7C1419F66300AFB2E9 /* ListingView.m in Sources */,
 				18F8FB84141A0B2500AFB2E9 /* DataNode.m in Sources */,
-				187B738D1435DF3400015055 /* DataEdge.m in Sources */,
+				187B7397143604F900015055 /* SplashView.m in Sources */,
+				187B739A1436052700015055 /* DataEdge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
