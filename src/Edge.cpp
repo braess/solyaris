@@ -48,7 +48,7 @@ Edge::Edge(string ide, NodePtr n1, NodePtr n2) {
     ctxts = Color(1,1,1);
     
     // label
-    label = " ";
+    label = "";
     
     // font
     font = Font("Helvetica",12);

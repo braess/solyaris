@@ -101,7 +101,6 @@
 	float fwidth = self.view.frame.size.width;
 	float fheight = self.view.frame.size.height;
     float border = 10;
-    float inset = 5;
     float swidth = 300;
     float sheight = 30;
     

@@ -1247,8 +1247,8 @@ static int informationGapInset = 15;
     [_imagePoster loadFromURL:poster];
     [_labelName setText:movie.name];
     [_labelTagline setText:movie.tagline];
-    [_labelReleased setText:[NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:movie.released]]];
-    [_labelRuntime setText:[NSString stringWithFormat:@"%im",[movie.runtime intValue]]];
+    [_labelReleased setText:(movie.released) ? [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:movie.released]] : @"-"];
+    [_labelRuntime setText:([movie.runtime intValue] > 0) ? [NSString stringWithFormat:@"%im",[movie.runtime intValue]] : @"-"];
     
 }
 
@@ -1435,9 +1435,9 @@ static int informationGapInset = 15;
     // header
     [_imageProfile loadFromURL:profile];
     [_labelName setText:person.name];
-    [_labelBirthday setText:[NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:person.birthday]]];
-    [_labelBirthplace setText:person.birthplace];
-    [_labelKnownMovies setText:[NSString stringWithFormat:@"%i",[person.known_movies intValue]]];
+    [_labelBirthday setText:person.birthday ? [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:person.birthday]] : @"-" ];
+    [_labelBirthplace setText: (person.birthplace && ! [person.birthplace isEqualToString:@""]) ? person.birthplace : @"-"];
+    [_labelKnownMovies setText:([person.known_movies intValue] > 0) ? [NSString stringWithFormat:@"%i",[person.known_movies intValue]]: @"-"];
     
 }
 

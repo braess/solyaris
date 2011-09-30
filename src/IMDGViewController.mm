@@ -349,7 +349,9 @@
         
         // properties
         node->renderLabel([movie.name UTF8String]);
-        node->updateMeta([[yearFormatter stringFromDate:movie.released] UTF8String]);
+        if (movie.released) {
+            node->updateMeta([[yearFormatter stringFromDate:movie.released] UTF8String]);
+        }
         
         
         // actors
@@ -464,7 +466,9 @@
                 // new child
                 child = imdgApp->createNode([cid UTF8String],[typeMovie UTF8String], node->pos.x, node->pos.y);
                 child->renderLabel([m2p.movie.name UTF8String]);
-                child->updateMeta([[yearFormatter stringFromDate:m2p.year] UTF8String]);
+                if (m2p.year) {
+                    child->updateMeta([[yearFormatter stringFromDate:m2p.year] UTF8String]);
+                }
             }
             
             // add to node

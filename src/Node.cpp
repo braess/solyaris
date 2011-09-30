@@ -26,8 +26,8 @@ Node::Node(string idn, double x, double y) {
     // node
     nid = idn;
     parent = NodeWeakPtr();
-    label = " ";
-    meta = " ";
+    label = "";
+    meta = "";
     type = "Node";
     
     

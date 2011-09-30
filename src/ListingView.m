@@ -118,6 +118,7 @@ static int listingGapInset = 15;
     [_crew removeAllObjects];
     
     for (DataNode *dta in nodes) {
+        NSLog(@"label = %@, edge type = %@",dta.label,dta.edge.type);
         
         // movie
         if ([dta.type isEqualToString:typeMovie]) {
@@ -129,7 +130,7 @@ static int listingGapInset = 15;
             [_actors addObject:dta];
         }
         
-        // crew
+        // director
         else if ([dta.edge.type isEqualToString:typePersonDirector]) {
             [_directors addObject:dta];
         }
@@ -396,7 +397,7 @@ static int listingGapInset = 15;
     
     // label
     NSString *nfo = dta.label;
-    if ([indexPath section] == SectionListingMovies) {
+    if ([indexPath section] == SectionListingMovies && ! [dta.meta isEqualToString:@""]) {
         nfo = [NSString stringWithFormat:@"%@ (%@)",dta.label,dta.meta];
     }
     

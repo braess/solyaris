@@ -39,7 +39,7 @@
 - (NSString*)updateJob:(NSString*)original updated:(NSString*)updated;
 - (NSString*)updateDepartment:(NSString*)original updated:(NSString*)updated;
 - (NSNumber*)updateOrder:(NSNumber*)original updated:(NSNumber*)updated;
-- (NSString*)assignType:(NSString *)department;
+- (NSString*)updateType:(NSString*)original updated:(NSString*)updated;
 - (BOOL)isEmpty:(id)thing;
 - (BOOL)validSearchResult:(NSDictionary*)dresult;
 - (BOOL)validMovie:(NSDictionary*)dmovie;
@@ -776,7 +776,6 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                     // set data
                     m2p.mid = mid;
                     m2p.pid = pid;
-                    m2p.type = [self assignType:[dperson objectForKey:@"department"]];
                     m2p.year = movie.released;
                     
                     // reference
@@ -786,6 +785,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 }
                 
                 // update data
+                m2p.type = [self updateType:m2p.type updated:[self parseString:[dperson objectForKey:@"department"]]];
                 m2p.department = [self updateDepartment:m2p.department updated:[self parseString:[dperson objectForKey:@"department"]]];
                 m2p.job = [self updateJob:m2p.job updated:[self parseString:[dperson objectForKey:@"job"]]];
                 m2p.character = [self updateCharacter:m2p.character updated:[self parseString:[dperson objectForKey:@"character"]]];
@@ -1051,7 +1051,6 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                     // set data
                     m2p.mid = mid;
                     m2p.pid = pid;
-                    m2p.type = [self assignType:[dmovie objectForKey:@"department"]];
                     m2p.year = movie.released;
                     
                     // reference
@@ -1060,6 +1059,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 }
                                
                 // update data
+                m2p.type = [self updateType:m2p.type updated:[self parseString:[dmovie objectForKey:@"department"]]];
                 m2p.department = [self updateDepartment:m2p.department updated:[self parseString:[dmovie objectForKey:@"department"]]];
                 m2p.job = [self updateJob:m2p.job updated:[self parseString:[dmovie objectForKey:@"job"]]];
                 m2p.character = [self updateCharacter:m2p.character updated:[self parseString:[dmovie objectForKey:@"character"]]];
@@ -1213,7 +1213,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     }
     
     // return
-    return (! [self isEmpty:token]) ? [dateFormatter dateFromString:(NSString*)token] : [dateFormatter dateFromString:@"1906-01-01"];
+    return (! [self isEmpty:token]) ? [dateFormatter dateFromString:(NSString*)token] : NULL;
     
 }
 - (NSString*)parseYear:(NSObject *)token {
@@ -1313,17 +1313,31 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // original
     return original;
 }
-- (NSString*)assignType:(NSString *)department {
+- (NSString*)updateType:(NSString *)original updated:(NSString *)updated {
     
-    // type
-    if ([department rangeOfString:@"Directing"].location != NSNotFound) {
+    // actor
+    if (! [self isEmpty:original] && [original rangeOfString:typePersonActor].location != NSNotFound) {
+        return typePersonActor;
+    }
+    // director
+    else if (! [self isEmpty:original] && [original rangeOfString:typePersonDirector].location != NSNotFound) {
         return typePersonDirector;
     }
-    else if ([department rangeOfString:@"Actors"].location == NSNotFound) {
-        return typePersonCrew;
-    }
+    // determine type
     else {
-        return typePersonActor;
+        
+        // director
+        if ([updated rangeOfString:@"Directing"].location != NSNotFound) {
+            return typePersonDirector;
+        }
+        // crew
+        else if ([updated rangeOfString:@"Actors"].location == NSNotFound) {
+            return typePersonCrew;
+        }
+        // actor
+        else {
+            return typePersonActor;
+        }
     }
 }
 
