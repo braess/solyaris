@@ -11,9 +11,9 @@
 //  Sections
 enum {
     SectionListingDirectors,
+    SectionListingCrew,
 	SectionListingActors,
-	SectionListingMovies,
-    SectionListingCrew
+	SectionListingMovies
 };
 
 /*

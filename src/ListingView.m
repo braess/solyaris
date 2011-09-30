@@ -125,17 +125,17 @@ static int listingGapInset = 15;
         }
         
         // actor
-        if ([dta.type isEqualToString:typePersonActor]) {
+        else if ([dta.edge.type isEqualToString:typePersonActor]) {
             [_actors addObject:dta];
         }
         
         // crew
-        if ([dta.type isEqualToString:typePersonDirector]) {
+        else if ([dta.edge.type isEqualToString:typePersonDirector]) {
             [_directors addObject:dta];
         }
         
         // crew
-        if ([dta.type isEqualToString:typePersonCrew]) {
+        else if ([dta.edge.type isEqualToString:typePersonCrew]) {
             [_crew addObject:dta];
         }
     }
@@ -165,6 +165,7 @@ static int listingGapInset = 15;
     FLog();
     
     // scrolling 
+    [_tableView reloadData];
     [_tableView setContentOffset:CGPointMake(0, 0) animated:animated];
 
 }
@@ -174,7 +175,9 @@ static int listingGapInset = 15;
  * Resize.
  */
 - (void)resize {
-    // nothing to do today
+    
+    // scroll to top (reloads data)
+    [self scrollTop:NO];
 }
 
 
@@ -235,7 +238,7 @@ static int listingGapInset = 15;
  * Customize the section footer height.
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == SectionListingCrew) {
+    if (section == SectionListingMovies) {
         return listingGapInset;
     }
     else if ([self tableView:tableView numberOfRowsInSection:section]==0) {
@@ -295,11 +298,12 @@ static int listingGapInset = 15;
  * Customize the footer view.
  */
 - (UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    
     // filler
     if ([self tableView:tableView numberOfRowsInSection:section]==0) {
         return [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
     }
-    // header
+    // footer
     else {
         return [self sectionFooter];
     }
@@ -310,13 +314,12 @@ static int listingGapInset = 15;
     UIView *sfView = [[UIView alloc] initWithFrame:self.frame];
     
     // view
-    UIView *sfLine = [[UIView alloc] initWithFrame:CGRectMake(listingGapInset, -1, 550, 1)];
+    UIView *sfLine = [[UIView alloc] initWithFrame:CGRectMake(listingGapInset, -1, self.frame.size.width-2*listingGapInset, 1)];
     sfLine.backgroundColor = [UIColor colorWithWhite:0.82 alpha:0.6];
     
     // add & release
     [sfView addSubview:sfLine];
     [sfLine release];
-    
     
     // and back
     return sfView;
@@ -400,7 +403,7 @@ static int listingGapInset = 15;
     
     // label
 	cell.labelInfo.text = nfo;
-	cell.labelMeta.text = dta.edge;
+	cell.labelMeta.text = dta.edge.label;
     cell.type = dta.type;
     cell.loaded = NO;
     cell.visible = NO;

@@ -113,7 +113,7 @@
     CGRect frameSearchResult = CGRectMake(0, 0, 320, 480);
     CGRect frameInformation = CGRectMake(0, 0, 580, 625);
     CGRect frameSettings = CGRectMake(0, 0, 708, kOffsetSettings);
-    CGRect frameSettingsButton = CGRectMake(window.frame.size.width-32, window.frame.size.height-32, 32, 32);
+    CGRect frameSettingsButton = CGRectMake(window.frame.size.width-44, window.frame.size.height-44, 44, 44);
     
     // view
     self.view = [[[UIView alloc] initWithFrame:window.frame] autorelease];
@@ -894,24 +894,23 @@
             // edge
             EdgePtr nedge = imdgApp->getEdge([pid UTF8String], [cid UTF8String]);
             
-            // properties
-            NSNumber *nid = [self toDBId:[NSString stringWithCString:(*child)->nid.c_str() encoding:[NSString defaultCStringEncoding]]];
-            NSString *type = [NSString stringWithCString:(*child)->type.c_str() encoding:[NSString defaultCStringEncoding]];
-            NSString *label = [NSString stringWithCString:(*child)->label.c_str() encoding:[NSString defaultCStringEncoding]];
-            NSString *meta = [NSString stringWithCString:(*child)->meta.c_str() encoding:[NSString defaultCStringEncoding]];
-            NSString *edge = @"";
+            // properties edge
+            NSString *eid = [self makeEdgeId:pid to:cid];
+            NSString *etype = [NSString stringWithCString:nedge->type.c_str() encoding:NSUTF8StringEncoding];
+            NSString *elabel = [NSString stringWithCString:nedge->label.c_str() encoding:NSUTF8StringEncoding];
+            
+            // properties node
+            NSNumber *nid = [self toDBId:[NSString stringWithCString:(*child)->nid.c_str() encoding:NSUTF8StringEncoding]];
+            NSString *type = [NSString stringWithCString:(*child)->type.c_str() encoding:NSUTF8StringEncoding];
+            NSString *label = [NSString stringWithCString:(*child)->label.c_str() encoding:NSUTF8StringEncoding];
+            NSString *meta = [NSString stringWithCString:(*child)->meta.c_str() encoding:NSUTF8StringEncoding];
             bool visible = (*child)->isVisible();
             bool loaded = ( (*child)->isActive() || (*child)->isLoading() );
-            if (nedge != NULL) {
-                
-                // label
-                edge = [NSString stringWithCString:nedge->label.c_str() encoding:[NSString defaultCStringEncoding]];
-                
-            }
             
             // data
-            DataNode *dta = [[[DataNode alloc] initData:nid type:type label:label meta:meta edge:edge visible:visible loaded:loaded] autorelease];
-            [nodes addObject:dta];
+            DataEdge *dtaEdge = [[DataEdge alloc] initData:eid type:etype label:elabel];
+            DataNode *dtaNode = [[[DataNode alloc] initData:nid type:type label:label meta:meta edge:dtaEdge visible:visible loaded:loaded] autorelease];
+            [nodes addObject:dtaNode];
             
         }
         

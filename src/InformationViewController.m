@@ -206,7 +206,7 @@ static int informationGapInset = 15;
     // resize
 	UIButton *btnResize = [UIButton buttonWithType:UIButtonTypeCustom]; 
     btnResize.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-	btnResize.frame = CGRectMake(contentFrame.size.width-32, 0, 32, 32);
+	btnResize.frame = CGRectMake(contentFrame.size.width-44, 0, 44, 44);
 	[btnResize setImage:[UIImage imageNamed:@"btn_resize-full.png"] forState:UIControlStateNormal];
 	[btnResize addTarget:self action:@selector(actionResize:) forControlEvents:UIControlEventTouchUpInside];
     _buttonResize = [btnResize retain];
@@ -337,7 +337,7 @@ static int informationGapInset = 15;
     
     // reference
     UIButton *btnReference = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnReference.frame = CGRectMake(toolsView.frame.size.width-40, 4, 32, 32);
+    btnReference.frame = CGRectMake(toolsView.frame.size.width-44, 0, 44, 44);
     btnReference.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     [btnReference setImage:[UIImage imageNamed:@"btn_reference.png"] forState:UIControlStateNormal];
     [btnReference addTarget:self action:@selector(actionToolsReference:) forControlEvents:UIControlEventTouchUpInside];

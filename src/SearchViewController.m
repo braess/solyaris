@@ -114,15 +114,15 @@
     float twidth = 200;
     
     // icons
-    float iwidth = 32;
-    float iheight = 32;
+    float iwidth = 44;
+    float iheight = 44;
     
     // frames
     CGRect bgframe = CGRectMake(0, 0, fwidth, fheight);
     CGRect sbframe = CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0)+1.5, swidth, sheight);
     CGRect lframe = CGRectMake(border, border, lwidth, lheight);
     CGRect tframe = CGRectMake(border+lwidth+border-3, border, twidth, theight);
-    CGRect brframe = CGRectMake(fwidth-inset-iwidth, (fheight-iheight)/2.0, iwidth, iheight);
+    CGRect brframe = CGRectMake(fwidth-iwidth, (fheight-iheight)/2.0, iwidth, iheight);
     
     
     // background

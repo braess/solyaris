@@ -286,7 +286,7 @@
         self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
         
         // framed
-        CGRect bframe = CGRectMake(0, 4, 32, 32);
+        CGRect bframe = CGRectMake(0, 0, 44, 44);
         float inset = 8;
         
         // button back

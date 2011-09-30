@@ -1,30 +1,25 @@
 //
-//  DataNode.m
+//  DataEdge.m
 //  IMDG
 //
-//  Created by CNPP on 9.9.2011.
+//  Created by CNPP on 30.9.2011.
 //  Copyright 2011 Beat Raess. All rights reserved.
 //
 
-#import "DataNode.h"
-
+#import "DataEdge.h"
 
 /**
- * DataNode.
+ * DataEdge.
  */
-@implementation DataNode
+@implementation DataEdge
 
 #pragma mark -
 #pragma mark Properties
 
 // accessors
-@synthesize nid;
+@synthesize eid;
 @synthesize type;
 @synthesize label;
-@synthesize meta;
-@synthesize edge;
-@synthesize loaded;
-@synthesize visible;
 
 
 #pragma mark -
@@ -33,16 +28,12 @@
 /**
  * Init.
  */
-- (id)initData:(NSNumber *)n type:(NSString *)t label:(NSString *)l meta:(NSString *)m edge:(DataEdge*)e visible:(_Bool)iv loaded:(_Bool)il {
+- (id)initData:(NSString*)e type:(NSString*)t label:(NSString*)l {
     GLog();
     if ((self = [super init])) {
-        self.nid = n;
+        self.eid = e;
         self.type = t;
 		self.label = l;
-		self.meta = m;
-        self.edge = [e retain];
-        self.visible = iv;
-        self.loaded = il;
 		return self;
 	}
 	return nil;
@@ -59,14 +50,13 @@
 	GLog();
 	
 	// self
-    [nid release];
+    [eid release];
     [type release];
 	[label release];
-	[meta release];
-    [edge release];
 	
 	// super
     [super dealloc];
 }
+
 
 @end

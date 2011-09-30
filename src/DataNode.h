@@ -6,6 +6,7 @@
 //  Copyright 2011 Beat Raess. All rights reserved.
 //
 #import <Foundation/Foundation.h>
+#import "DataEdge.h"
 
 
 /**
@@ -20,11 +21,11 @@
 @property (nonatomic, retain) NSString *type;
 @property (nonatomic, retain) NSString *label;
 @property (nonatomic, retain) NSString *meta;
-@property (nonatomic, retain) NSString *edge;
+@property (nonatomic, retain) DataEdge *edge;
 @property bool visible;
 @property bool loaded;
 
 // Object
-- (id)initData:(NSNumber*)n type:(NSString*)t label:(NSString*)l meta:(NSString*)m edge:(NSString*)e visible:(bool)iv loaded:(bool)il;
+- (id)initData:(NSNumber*)n type:(NSString*)t label:(NSString*)l meta:(NSString*)m edge:(DataEdge*)e visible:(bool)iv loaded:(bool)il;
 
 @end
