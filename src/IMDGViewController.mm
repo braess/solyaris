@@ -199,7 +199,7 @@
     // fluff cinder view
     for (UIView *subview in window.subviews) {
         if ([subview isKindOfClass:NSClassFromString(@"CinderViewCocoaTouch")]) {
-            _cinderView = [subview retain];
+            _cinderView = (CinderViewCocoaTouch*) [subview retain];
             break;
         }
     }

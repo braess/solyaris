@@ -226,9 +226,9 @@ void Edge::show() {
     if (node1 && node2) {
         
         // check if active
-        if (node1->isActive() && node2->isActive() 
-            || node1->isActive() && node2->isLoading()
-            || node2->isActive() && node1->isLoading()) {
+        if ((node1->isActive() && node2->isActive()) 
+            || (node1->isActive() && node2->isLoading())
+            || (node2->isActive() && node1->isLoading())) {
             
             // label
             font = Font("Helvetica-Bold",12);

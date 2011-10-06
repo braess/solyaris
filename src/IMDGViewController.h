@@ -36,7 +36,7 @@ enum {
     SearchViewController *_searchViewController;
     SearchResultViewController *_searchResultViewController;
     InformationViewController *_informationViewController;
-    InformationViewController *_settingsViewController;
+    SettingsViewController *_settingsViewController;
     UIButton *_buttonSettings;
     
     // cinder

@@ -41,6 +41,9 @@
     
 }
 
+// Object Methods
+- (id)initWithFrame:(CGRect)frame;
+
 // Properties
 @property (assign) id<SearchDelegate> delegate;
 @property (nonatomic, retain) UISearchBar *searchBar;
