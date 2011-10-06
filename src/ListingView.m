@@ -117,8 +117,8 @@ static int listingGapInset = 15;
     [_directors removeAllObjects];
     [_crew removeAllObjects];
     
+    // nodes
     for (DataNode *dta in nodes) {
-        NSLog(@"label = %@, edge type = %@",dta.label,dta.edge.type);
         
         // movie
         if ([dta.type isEqualToString:typeMovie]) {
@@ -627,7 +627,7 @@ static int listingGapInset = 15;
     
     // position
     CGRect finfo = _labelInfo.frame;
-    finfo.origin.x = CGRectGetMinX (self.contentView.bounds) + 12;
+    finfo.origin.x = CGRectGetMinX (self.contentView.bounds) + listingCellInset + 5;
     finfo.origin.y = CGRectGetMinY (self.contentView.bounds) + 9;
     [_labelInfo setFrame: finfo];
     
@@ -638,7 +638,7 @@ static int listingGapInset = 15;
     [_labelMeta setFrame: fmeta];
     
     // disclosure
-    CGRect fdisc = CGRectMake(self.frame.size.width-50, 9, 16, 16);
+    CGRect fdisc = CGRectMake(self.frame.size.width-listingCellInset-25, 9, 16, 16);
     _iconMovie.hidden = YES;
     _iconActor.hidden = YES;
     _iconDirector.hidden = YES;

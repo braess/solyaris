@@ -38,6 +38,7 @@
     UIView *_background;
     UIImageView *_logo;
     UILabel *_labelTitle;
+    UILabel *_labelClaim;
     
 }
 

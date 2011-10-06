@@ -108,7 +108,6 @@ static int aboutFooterHeight = 60;
 	txtAbout.opaque = YES;
     txtAbout.userInteractionEnabled = YES;
     txtAbout.editable = NO;
-    //txtAbout.dataDetectorTypes = UIDataDetectorTypeLink;
 	[txtAbout setText:NSLocalizedString(@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This product uses the TMDb API but is not endorsed or certified by The Open Movie Database or any other third party.\n\nMade with Cinder.",@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This product uses the TMDb API but is not endorsed or certified by The Open Movie Database or any other third party.\n\nMade with Cinder.")];
     [self.view addSubview:txtAbout];
 	[txtAbout release];
@@ -183,7 +182,12 @@ static int aboutFooterHeight = 60;
 
 }
 
-
+/*
+ * Rotate is the new black.
+ */
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return YES;
+}
 
 
 
@@ -199,28 +203,25 @@ static int aboutFooterHeight = 60;
 
 	
 	// check mail support
-	if (! [MFMailComposeViewController canSendMail]) {
-     
-	}
-	else {
-		
-		// mail composer
+	if ([MFMailComposeViewController canSendMail]) {
+        
+        // mail composer
 		MFMailComposeViewController *composer = [[MFMailComposeViewController alloc] init];
 		composer.mailComposeDelegate = self;
         composer.navigationBar.barStyle = UIBarStyleBlack;
         composer.modalPresentationStyle = UIModalPresentationFormSheet;
 		
 		// subject
-		[composer setSubject:[NSString stringWithFormat:@"OMDG"]];
+		[composer setSubject:[NSString stringWithFormat:@"Solyaris iPad App"]];
         
 		// message
-		NSString *message = NSLocalizedString(@"\n\n\n---OMDG\nThe Open Movie Database Graph.\nhttp://omdg.cecinestpasparis.net",@"\n\n\n---OMDG\nThe Open Movie Database Graph.\nhttp://omdg.cecinestpasparis.net");
+		NSString *message = NSLocalizedString(@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography.\n\n\n--- Solyaris\nA Visual Movie Browser\nhttp://solyaris.cecinestpasparis.net",@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography.\n\n\n--- Solyaris\nA Visual Movie Browser\nhttp://solyaris.cecinestpasparis.net");
 		[composer setMessageBody:message isHTML:NO];
 		
 		// promo image
-		UIImage *pimg = [UIImage imageNamed:@"iTunesArtwork"];
+		UIImage *pimg = [UIImage imageNamed:@"solyaris.png"];
 		NSData *data = UIImagePNGRepresentation(pimg);
-		[composer addAttachmentData:data mimeType:@"image/png" fileName:@"imdg"];
+		[composer addAttachmentData:data mimeType:@"image/png" fileName:@"solyaris"];
         
         
 		// show off
@@ -228,6 +229,10 @@ static int aboutFooterHeight = 60;
         
 		// release
 		[composer release];
+        
+	}
+	else {
+		
 		
 	}
 }
@@ -237,8 +242,40 @@ static int aboutFooterHeight = 60;
  */
 - (void)actionTwitter:(id)sender {
 	DLog();
+    
+    /*
+    // check twitter support
+    if ([TWTweetComposeViewController canSendTweet]) {
+        
+        // twitter composition view controller
+        TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
+        
+        // initial tweet text
+        [tweetViewController setInitialText:NSLocalizedString(@"Solyaris iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net",@"Solyaris iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net")];
+        
+        // completion handler
+        [tweetViewController setCompletionHandler:^(TWTweetComposeViewControllerResult result) {
+            
+            switch (result) {
+                case TWTweetComposeViewControllerResultCancelled:
+                    FLog("Twitter: cancel");
+                    break;
+                case TWTweetComposeViewControllerResultDone:
+                    FLog("Twitter: done");
+                    break;
+                default:
+                    break;
+            }
+            
+            // dismiss the tweet composition view controller
+            [self dismissModalViewControllerAnimated:YES];
+        }];
+        
+        // modal
+        [self presentModalViewController:tweetViewController animated:YES];
+    }
+     */
 
-	// ios5 twitter stuff
 }
 
 /*
@@ -250,7 +287,7 @@ static int aboutFooterHeight = 60;
 	// show info
 	UIAlertView *alert = [[UIAlertView alloc]
 						  initWithTitle:@"AppStore" 
-						  message:NSLocalizedString(@"Thank you for rating OMDG or writing a nice review.",@"Thank you for rating OMDG or writing a nice review.")
+						  message:NSLocalizedString(@"Thank you for rating Solyaris or writing a nice review.",@"Thank you for rating Solyaris or writing a nice review.")
 						  delegate:self 
 						  cancelButtonTitle:NSLocalizedString(@"Maybe later",@"Maybe later")
 						  otherButtonTitles:NSLocalizedString(@"Visit",@"Visit"),nil];
@@ -283,13 +320,14 @@ static int aboutFooterHeight = 60;
 		[composer setToRecipients:[[[NSArray alloc] initWithObjects:vAppEmail,nil] autorelease]];
 		
 		// subject
-		[composer setSubject:[NSString stringWithFormat:@"[OMDG] Feedback"]];
+		[composer setSubject:[NSString stringWithFormat:@"[Solyaris] Feedback"]];
         
 		// show off
-		[self presentModalViewController:composer animated:YES];
+        [self presentModalViewController:composer animated:YES];
         
 		// release
 		[composer release];
+
 		
 	}
 }
@@ -363,7 +401,7 @@ static int aboutFooterHeight = 60;
 	}
 	
 	// close modal
-	[self dismissModalViewControllerAnimated:YES];
+    [self dismissModalViewControllerAnimated:YES];
     
 }
 

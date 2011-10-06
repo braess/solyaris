@@ -463,6 +463,7 @@ void Node::hide() {
  */
 void Node::touched() {
     GLog();
+    std::cout << label << std::endl;
     
     // state
     selected = true;
@@ -572,7 +573,7 @@ void Node::updateType(string t) {
         type = t;
         
         // color 
-        cbg = Color(138/255.0, 136/255.0, 96/255.0);
+        cbg = Color(122/255.0, 122/255.0, 93/255.0);
     }
 }
 

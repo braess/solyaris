@@ -9,13 +9,15 @@
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMailComposeViewController.h>
-
+//#import <Accounts/Accounts.h>
+//#import <Twitter/Twitter.h>
 
 
 // Alerts
 enum {
     AlertAboutAppStore
 };
+
 
 
 /**
@@ -30,6 +32,7 @@ enum {
 
 // Object Methods
 - (id)initWithFrame:(CGRect)frame;
+
 
 // Action Methods
 - (void)actionEmail:(id)sender;

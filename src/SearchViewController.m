@@ -101,15 +101,16 @@
 	float fwidth = self.view.frame.size.width;
 	float fheight = self.view.frame.size.height;
     float border = 10;
+    float inset = 5;
     float swidth = 300;
     float sheight = 30;
     
     // logo
-    float lwidth = 20;
-    float lheight = 20;
+    float lwidth = 24;
+    float lheight = 24;
     
     // title
-    float theight = 20;
+    float theight = 15;
     float twidth = 200;
     
     // icons
@@ -118,9 +119,10 @@
     
     // frames
     CGRect bgframe = CGRectMake(0, 0, fwidth, fheight);
-    CGRect sbframe = CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0)+1.5, swidth, sheight);
-    CGRect lframe = CGRectMake(border, border, lwidth, lheight);
-    CGRect tframe = CGRectMake(border+lwidth+border-3, border, twidth, theight);
+    CGRect sbframe = CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0), swidth, sheight);
+    CGRect lframe = CGRectMake(border, ((fheight-lheight)/2.0), lwidth, lheight);
+    CGRect ltframe = CGRectMake(border+lwidth+inset, inset+1, twidth, theight);
+    CGRect lcframe = CGRectMake(border+lwidth+inset, inset+theight-1, twidth, theight);
     CGRect brframe = CGRectMake(fwidth-iwidth, (fheight-iheight)/2.0, iwidth, iheight);
     
     
@@ -144,15 +146,26 @@
    
     
     // title
-    UILabel *lblTitle = [[UILabel alloc] initWithFrame:tframe];
+    UILabel *lblTitle = [[UILabel alloc] initWithFrame:ltframe];
     lblTitle.backgroundColor = [UIColor clearColor];
-    lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
+    lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
     lblTitle.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt];
     lblTitle.numberOfLines = 1;
     lblTitle.text = NSLocalizedString(@"Solyaris",@"Solyaris");
     _labelTitle = [lblTitle retain];
     [self.view addSubview:_labelTitle];
     [lblTitle release];
+    
+    // claim
+    UILabel *lblClaim = [[UILabel alloc] initWithFrame:lcframe];
+    lblClaim.backgroundColor = [UIColor clearColor];
+    lblClaim.font = [UIFont fontWithName:@"Helvetica" size:12.0];
+    lblClaim.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt];
+    lblClaim.numberOfLines = 1;
+    lblClaim.text = NSLocalizedString(@"A Visual Movie Browser",@"A Visual Movie Browser");
+    _labelClaim = [lblClaim retain];
+    [self.view addSubview:_labelClaim];
+    [lblClaim release];
      
     
     // search bar
@@ -204,7 +217,7 @@
     btnPerson.alpha = kAlphaBtn;
     btnPerson.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnPerson setBackgroundColor:[UIColor colorWithRed:138/255.0 green:136/255.0 blue:96/255.0 alpha:1]];
+    [btnPerson setBackgroundColor:[UIColor colorWithRed:122/255.0 green:122/255.0 blue:93/255.0 alpha:1]];
     [btnPerson setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnPerson setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnPerson setTitle:NSLocalizedString(@"Person",@"Person") forState:UIControlStateNormal];

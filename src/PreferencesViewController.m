@@ -307,7 +307,7 @@ static int preferencesHeaderGap = 10;
  * Customize the section header height.
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 30;
+    return 0;
 }
 
 

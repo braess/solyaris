@@ -49,4 +49,4 @@
 
 
 // Values
-#define vAppEmail                       @"omdg@cecinestpasparis.net"	
+#define vAppEmail                       @"solyaris@cecinestpasparis.net"	

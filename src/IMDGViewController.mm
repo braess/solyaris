@@ -106,19 +106,19 @@
 	[super loadView];
 	FLog();
     
+    // orientation
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    
     // window
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
     
     // frames
-    CGRect frame = CGRectMake(0,0,768,1024);
-    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
-        frame = CGRectMake(0,0,1024,768);
-    }
-    CGRect frameSearch = CGRectMake(0, 0, window.frame.size.width, 40);
+    CGRect frame = CGRectMake(0, 0, 768, 1024);
+    CGRect frameSearch = CGRectMake(0, 0, frame.size.width, 40);
     CGRect frameSearchResult = CGRectMake(0, 0, 320, 480);
     CGRect frameInformation = CGRectMake(0, 0, 580, 625);
     CGRect frameSettings = CGRectMake(0, 0, 708, kOffsetSettings);
-    CGRect frameSettingsButton = CGRectMake(window.frame.size.width-44, window.frame.size.height-44, 44, 44);
+    CGRect frameSettingsButton = CGRectMake(frame.size.width-44, frame.size.height-44, 44, 44);
     
     // view
     self.view = [[[UIView alloc] initWithFrame:frame] autorelease];
@@ -128,7 +128,7 @@
     
     
     // background
-    UIView *bgView = [[UIView alloc] initWithFrame:window.frame];
+    UIView *bgView = [[UIView alloc] initWithFrame:frame];
     bgView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     bgView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"texture_background.png"]];
     bgView.opaque = NO;

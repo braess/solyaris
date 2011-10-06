@@ -65,7 +65,7 @@ void IMDGApp::applyDeviceOrientation(int dorientation) {
     }
     else {
         this->setWindowSize(768, 1024);
-        graph.resize(1024,768,UIDeviceOrientationPortrait);
+        graph.resize(768,1024,UIDeviceOrientationPortrait);
     }
     
 }

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "AboutViewController.h"
+#import "AboutViewController.h"
 #import "PreferencesViewController.h"
 
 

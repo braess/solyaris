@@ -148,9 +148,10 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // cache
         [managedObjectContext lock];
-        Search *search = [self cachedSearch:q type:t];
+        NSString *query = [q lowercaseString];
+        Search *search = [self cachedSearch:query type:t];
         if (search == NULL) {
-            search = [self querySearch:q type:t];
+            search = [self querySearch:query type:t];
         }
         [managedObjectContext unlock];
         
@@ -730,6 +731,8 @@ static NSString* TMDbStore = @"TMDb.sqlite";
             
         // persons
         NSArray *persons = [djson objectForKey:@"cast"];
+        NSMutableDictionary *parsedPersons = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary *parsedMovie2Persons = [[NSMutableDictionary alloc] init];
         for (NSDictionary *dperson in persons)	{
             
             // validate
@@ -737,8 +740,13 @@ static NSString* TMDbStore = @"TMDb.sqlite";
             
                 // Person
                 NSNumber *pid = [self parseNumber:[dperson objectForKey:@"id"]];
-                Person *person = [self cachedPerson:pid];
+                NSLog(@"%d",[pid intValue]);
+                Person *person = [parsedPersons objectForKey:pid];
                 if (person == NULL) {
+                    person = [self cachedPerson:pid];
+                }
+                if (person == NULL) {
+                    NSLog(@"no cache %d",[pid intValue]);
                     
                     // create object
                     person = (Person*)[NSEntityDescription insertNewObjectForEntityForName:@"Person" inManagedObjectContext:managedObjectContext];
@@ -767,7 +775,10 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 }
                 
                 // Movie2Person
-                Movie2Person *m2p = [self cachedMovie2Person:mid person:pid];
+                Movie2Person *m2p = [parsedMovie2Persons objectForKey:pid];
+                if (m2p == NULL) {
+                    m2p = [self cachedMovie2Person:mid person:pid];
+                }
                 if (m2p == NULL) {
                     
                     // create object
@@ -793,27 +804,22 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 
                 // type
                 if (! person.loaded) {
-                    
-                    // director
-                    if ([m2p.department rangeOfString:@"Directing"].location != NSNotFound) {
-                        person.type = typePersonDirector;
-                    }
-                    // crew
-                    else if ([m2p.department rangeOfString:@"Actors"].location == NSNotFound) {
-                        person.type = typePersonCrew;
-                    }
-                    else {
-                        person.type = typePersonActor;
-                    }
+                    person.type = [self updateType:person.type updated:m2p.department];
                 }
 
                 
-                
                 // add
                 [movie addPersonsObject:m2p];
+                [parsedPersons setObject:person forKey:pid];
+                [parsedMovie2Persons setObject:m2p forKey:pid];
+                
             }
             
         }
+        
+        // release
+        [parsedPersons release];
+        [parsedMovie2Persons release];
         
         // assets
         BOOL asset_thumb = NO;
@@ -1315,13 +1321,13 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 }
 - (NSString*)updateType:(NSString *)original updated:(NSString *)updated {
     
-    // actor
-    if (! [self isEmpty:original] && [original rangeOfString:typePersonActor].location != NSNotFound) {
-        return typePersonActor;
-    }
     // director
-    else if (! [self isEmpty:original] && [original rangeOfString:typePersonDirector].location != NSNotFound) {
+    if ((! [self isEmpty:original] && [original rangeOfString:typePersonDirector].location != NSNotFound) || [updated rangeOfString:@"Directing"].location != NSNotFound) {
         return typePersonDirector;
+    }
+    // actor
+    else if (! [self isEmpty:original] && [original rangeOfString:typePersonActor].location != NSNotFound) {
+        return typePersonActor;
     }
     // determine type
     else {

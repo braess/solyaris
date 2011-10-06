@@ -23,6 +23,7 @@ enum {
 	IMDGAlertAPIFatal
 };
 
+
 /**
  * IMDG ViewController.
  */
@@ -50,7 +51,6 @@ enum {
     
     // modes
     bool mode_settings;
-    
     
 }
 

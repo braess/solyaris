@@ -26,7 +26,7 @@
 #pragma mark Constants
 
 // constants
-#define kDelayTimeSplashDismiss             1.2f
+#define kDelayTimeSplashDismiss             3.0f
 #define kAnimateTimeSplashDismiss           0.9f
 
 
@@ -47,16 +47,10 @@
 		
 		// splash
 		_splash = [[UIImageView alloc] initWithFrame:frame];
-		if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation)) {
-			_splash.image = [UIImage imageNamed:@"Default-Portrait.png"];
-		} 
-		else {
-			_splash.image = [UIImage imageNamed:@"Default-Landscape.png"];
-		}
-        
-		_splash.autoresizingMask = UIViewAutoresizingNone;
+		_splash.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		_splash.backgroundColor = [UIColor clearColor];
-		_splash.contentMode = UIViewContentModeTopLeft;
+		_splash.contentMode = UIViewContentModeRedraw;
+        
 		
 		// add
 		self.opaque = YES;
@@ -71,6 +65,22 @@
 	return nil;
 }
 
+/*
+ * Layout.
+ */
+- (void)layoutSubviews {
+    
+    // frame
+    CGRect frame = CGRectMake(0, 0, 768, 1024);
+    _splash.image = [UIImage imageNamed:@"Default-Portrait.png"];
+    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+        frame = CGRectMake(0, 0, 1024, 768);
+        _splash.image = [UIImage imageNamed:@"Default-Landscape.png"];
+    }
+    self.frame = frame;
+    
+}
+
 
 #pragma mark -
 #pragma mark Business Methods
@@ -80,6 +90,11 @@
  */
 - (void)dismissSplash {
 	FLog();
+    
+    // layout
+    [self layoutSubviews];
+    
+    // make it so
 	[self performSelector:@selector(animationDismissSplash) withObject:nil afterDelay:kDelayTimeSplashDismiss];
 }
 
