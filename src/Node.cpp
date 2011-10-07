@@ -463,7 +463,6 @@ void Node::hide() {
  */
 void Node::touched() {
     GLog();
-    std::cout << label << std::endl;
     
     // state
     selected = true;

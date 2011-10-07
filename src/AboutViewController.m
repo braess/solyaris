@@ -219,7 +219,7 @@ static int aboutFooterHeight = 60;
 		[composer setMessageBody:message isHTML:NO];
 		
 		// promo image
-		UIImage *pimg = [UIImage imageNamed:@"solyaris.png"];
+		UIImage *pimg = [UIImage imageNamed:@"promo_solyaris.png"];
 		NSData *data = UIImagePNGRepresentation(pimg);
 		[composer addAttachmentData:data mimeType:@"image/png" fileName:@"solyaris"];
         

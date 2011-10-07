@@ -14,7 +14,7 @@
 		180907F3140E51A30087BF8B /* icon_mini_crew.png in Resources */ = {isa = PBXBuildFile; fileRef = 180907F2140E51A30087BF8B /* icon_mini_crew.png */; };
 		180D8FCD13E1F27800364F54 /* InformationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 180D8FCC13E1F27800364F54 /* InformationViewController.m */; };
 		180E501613EB09F6000E0ADB /* Tooltip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 180E501413EB09F6000E0ADB /* Tooltip.cpp */; };
-		18141BCD143E4A4100D8CCE0 /* solyaris.png in Resources */ = {isa = PBXBuildFile; fileRef = 18141BCC143E4A4100D8CCE0 /* solyaris.png */; };
+		18141BCD143E4A4100D8CCE0 /* promo_solyaris.png in Resources */ = {isa = PBXBuildFile; fileRef = 18141BCC143E4A4100D8CCE0 /* promo_solyaris.png */; };
 		1819227413C72CEB00C89C74 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1819227313C72CEB00C89C74 /* CoreData.framework */; };
 		1837D62F140EA01E00D3FF7F /* CacheImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1837D62E140EA01E00D3FF7F /* CacheImageView.m */; };
 		183B97AE13C6EA1700B7563D /* SearchResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183B97AD13C6EA1700B7563D /* SearchResultViewController.m */; };
@@ -119,7 +119,7 @@
 		180D8FCC13E1F27800364F54 /* InformationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = InformationViewController.m; path = src/InformationViewController.m; sourceTree = "<group>"; };
 		180E501413EB09F6000E0ADB /* Tooltip.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Tooltip.cpp; path = src/Tooltip.cpp; sourceTree = "<group>"; };
 		180E501513EB09F6000E0ADB /* Tooltip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Tooltip.h; path = src/Tooltip.h; sourceTree = "<group>"; };
-		18141BCC143E4A4100D8CCE0 /* solyaris.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = solyaris.png; path = Assets/solyaris.png; sourceTree = "<group>"; };
+		18141BCC143E4A4100D8CCE0 /* promo_solyaris.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = promo_solyaris.png; path = Assets/promo_solyaris.png; sourceTree = "<group>"; };
 		1819227313C72CEB00C89C74 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		1837D62D140EA01E00D3FF7F /* CacheImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CacheImageView.h; path = src/CacheImageView.h; sourceTree = "<group>"; };
 		1837D62E140EA01E00D3FF7F /* CacheImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CacheImageView.m; path = src/CacheImageView.m; sourceTree = "<group>"; };
@@ -367,7 +367,7 @@
 		18141BCB143E497900D8CCE0 /* images */ = {
 			isa = PBXGroup;
 			children = (
-				18141BCC143E4A4100D8CCE0 /* solyaris.png */,
+				18141BCC143E4A4100D8CCE0 /* promo_solyaris.png */,
 			);
 			name = images;
 			sourceTree = "<group>";
@@ -762,7 +762,7 @@
 				1846328A1411234F00CC5B70 /* btn_reference.png in Resources */,
 				18BEF5EB1433B6B6003314FE /* logo_solyaris.png in Resources */,
 				187B73B114362A5C00015055 /* background.png in Resources */,
-				18141BCD143E4A4100D8CCE0 /* solyaris.png in Resources */,
+				18141BCD143E4A4100D8CCE0 /* promo_solyaris.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

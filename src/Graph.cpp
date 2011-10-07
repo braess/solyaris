@@ -151,7 +151,7 @@ void Graph::update() {
             
             // node movement
             Vec2d ndist = (*node)->mpos - (*node)->pos;
-            float nmov = (ndist.length() > 1) ? ndist.length() * 0.01 : 0;
+            float nmov = (ndist.length() > 1) ? ndist.length() * 0.0045 : 0;
             
             // children
             for (NodeIt child = (*node)->children.begin(); child != (*node)->children.end(); ++child) {
@@ -215,8 +215,8 @@ void Graph::draw() {
     // nodes
     for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
         
-        // draw if visible
-        if ((*node)->isVisible()) {
+        // draw if visible and on stage
+        if ((*node)->isVisible() && (*node)->pos.x > -300 && (*node)->pos.x < 1500 && (*node)->pos.y > -300 && (*node)->pos.y < 1500) {
             (*node)->draw();
         }
     }
