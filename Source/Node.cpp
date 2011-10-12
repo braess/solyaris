@@ -564,6 +564,7 @@ void Node::updateType(string t) {
         
         // color 
         cbg = Color(15/255.0, 96/255.0, 153/255.0);
+        cbg = Color(84/255.0, 128/255.0, 153/255.0);
     }
     // person
     else {
@@ -573,6 +574,7 @@ void Node::updateType(string t) {
         
         // color 
         cbg = Color(118/255.0, 125/255.0, 130/255.0);
+        cbg = Color(138/255.0, 137/255.0, 129/255.0);
     }
 }
 

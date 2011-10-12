@@ -41,7 +41,7 @@
 // constants
 #define kAlphaSearch 0.75f
 #define kAlphaSearchActive 0.96f
-#define kAlphaBtn 0.75f
+#define kAlphaBtn 0.8f
 #define kAlphaBtnActive 0.5f
 #define kAlphaTxt 0.75f
 
@@ -202,7 +202,7 @@
     btnMovie.alpha = kAlphaBtn;
     btnMovie.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnMovie setBackgroundColor:[UIColor colorWithRed:15/255.0 green:96/255.0 blue:153/255.0 alpha:1]];
+    [btnMovie setBackgroundColor:[UIColor colorWithRed:84/255.0 green:128/255.0 blue:153/255.0 alpha:1]];
     [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnMovie setTitle:NSLocalizedString(@"Movie",@"Movie") forState:UIControlStateNormal];
@@ -223,7 +223,7 @@
     btnPerson.alpha = kAlphaBtn;
     btnPerson.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnPerson setBackgroundColor:[UIColor colorWithRed:118/255.0 green:125/255.0 blue:130/255.0 alpha:1]];
+    [btnPerson setBackgroundColor:[UIColor colorWithRed:138/255.0 green:137/255.0 blue:129/255.0 alpha:1]];
     [btnPerson setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnPerson setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnPerson setTitle:NSLocalizedString(@"Person",@"Person") forState:UIControlStateNormal];
