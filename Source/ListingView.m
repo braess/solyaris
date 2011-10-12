@@ -583,6 +583,7 @@ static int listingGapInset = 15;
         _iconCrew.hidden = YES;
         [self.contentView addSubview: _iconCrew];
         
+        
     }
     return self;
 }
@@ -621,13 +622,21 @@ static int listingGapInset = 15;
  */
 - (void) layoutSubviews {
     
+    // offsets
+    float oxinfo = 5;
+    float oxdisc = -25;
+    if (iOS4) {
+        oxinfo = -3;
+        oxdisc = -35;
+    }
+    
     // size
     [_labelInfo sizeToFit];
     [_labelMeta sizeToFit];
     
     // position
     CGRect finfo = _labelInfo.frame;
-    finfo.origin.x = CGRectGetMinX (self.contentView.bounds) + listingCellInset + 5;
+    finfo.origin.x = CGRectGetMinX (self.contentView.bounds) + listingCellInset + oxinfo;
     finfo.origin.y = CGRectGetMinY (self.contentView.bounds) + 9;
     [_labelInfo setFrame: finfo];
     
@@ -638,7 +647,7 @@ static int listingGapInset = 15;
     [_labelMeta setFrame: fmeta];
     
     // disclosure
-    CGRect fdisc = CGRectMake(self.frame.size.width-listingCellInset-25, 9, 16, 16);
+    CGRect fdisc = CGRectMake(self.frame.size.width-listingCellInset+oxdisc, 9, 16, 16);
     _iconMovie.hidden = YES;
     _iconActor.hidden = YES;
     _iconDirector.hidden = YES;

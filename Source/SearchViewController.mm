@@ -117,9 +117,15 @@
     float iwidth = 44;
     float iheight = 44;
     
+    // offset
+    float oysbar = 0;
+    if (iOS4) {
+        oysbar = 1;
+    }
+    
     // frames
     CGRect bgframe = CGRectMake(0, 0, fwidth, fheight);
-    CGRect sbframe = CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0), swidth, sheight);
+    CGRect sbframe = CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0)+oysbar, swidth, sheight);
     CGRect lframe = CGRectMake(border, ((fheight-lheight)/2.0), lwidth, lheight);
     CGRect ltframe = CGRectMake(border+lwidth+inset, inset+1, twidth, theight);
     CGRect lcframe = CGRectMake(border+lwidth+inset, inset+theight-1, twidth, theight);
@@ -196,7 +202,7 @@
     btnMovie.alpha = kAlphaBtn;
     btnMovie.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnMovie setBackgroundColor:[UIColor colorWithRed:28/255.0 green:92/255.0 blue:138/255.0 alpha:1]];
+    [btnMovie setBackgroundColor:[UIColor colorWithRed:15/255.0 green:96/255.0 blue:153/255.0 alpha:1]];
     [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnMovie setTitle:NSLocalizedString(@"Movie",@"Movie") forState:UIControlStateNormal];
@@ -217,7 +223,7 @@
     btnPerson.alpha = kAlphaBtn;
     btnPerson.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnPerson setBackgroundColor:[UIColor colorWithRed:122/255.0 green:122/255.0 blue:93/255.0 alpha:1]];
+    [btnPerson setBackgroundColor:[UIColor colorWithRed:118/255.0 green:125/255.0 blue:130/255.0 alpha:1]];
     [btnPerson setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnPerson setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnPerson setTitle:NSLocalizedString(@"Person",@"Person") forState:UIControlStateNormal];

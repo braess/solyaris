@@ -51,3 +51,7 @@
 
 // Values
 #define vAppEmail                       @"solyaris@cecinestpasparis.net"	
+
+
+// System Version
+#define iOS4    ([[[UIDevice currentDevice] systemVersion] compare:@"5.0" options:NSNumericSearch] == NSOrderedAscending)

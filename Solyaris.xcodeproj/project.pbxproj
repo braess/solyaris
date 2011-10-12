@@ -521,16 +521,16 @@
 			children = (
 				18AC0218143F2D1D0096259D /* Solyaris.h */,
 				18AC0219143F2D1D0096259D /* Solyaris.mm */,
-				18AC01DA143F2D1D0096259D /* Graph.cpp */,
 				18AC01DB143F2D1D0096259D /* Graph.h */,
-				18AC01DC143F2D1D0096259D /* GraphSettings.cpp */,
+				18AC01DA143F2D1D0096259D /* Graph.cpp */,
 				18AC01DD143F2D1D0096259D /* GraphSettings.h */,
-				18AC01EB143F2D1D0096259D /* Node.cpp */,
+				18AC01DC143F2D1D0096259D /* GraphSettings.cpp */,
 				18AC01EC143F2D1D0096259D /* Node.h */,
-				18AC01D8143F2D1D0096259D /* Edge.cpp */,
+				18AC01EB143F2D1D0096259D /* Node.cpp */,
 				18AC01D9143F2D1D0096259D /* Edge.h */,
-				18AC0220143F2D1D0096259D /* Tooltip.cpp */,
+				18AC01D8143F2D1D0096259D /* Edge.cpp */,
 				18AC0221143F2D1D0096259D /* Tooltip.h */,
+				18AC0220143F2D1D0096259D /* Tooltip.cpp */,
 			);
 			name = solyaris;
 			sourceTree = "<group>";

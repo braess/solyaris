@@ -116,6 +116,7 @@ static int aboutFooterHeight = 60;
     // actions
     ActionBar *actionBar = [[ActionBar alloc] initWithFrame:abframe];
     
+    
     // flex
 	UIBarButtonItem *itemFlex = [[UIBarButtonItem alloc] 
                                  initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
@@ -158,14 +159,28 @@ static int aboutFooterHeight = 60;
                                                                               target:self 
                                                                               action:@selector(actionAppStore:)];
     [actionAppStore modeDarkie];
+    
+    
+    // actions
+    NSMutableArray *actions = [[NSMutableArray alloc] init];
+    [actions addObject:nspace];
+    [actions addObject:actionFeedback];
+    [actions addObject:itemFlex];
+    [actions addObject:actionEmail];
+    if(NSClassFromString(@"TWTweetComposeViewController") != nil) {
+        [actions addObject:actionTwitter];
+    }
+    [actions addObject:actionAppStore];
+    [actions addObject:nspace];
 
     
-    // add actions
-    [actionBar setItems:[NSArray arrayWithObjects:nspace,actionFeedback,itemFlex,actionEmail,actionTwitter,actionAppStore,nspace,nil]];
+    // add & release actions
+    [actionBar setItems:actions];
     [actionFeedback release];
     [actionEmail release];
     [actionTwitter release];
     [actionAppStore release];
+    [actions release];
     
     // add action bar
     [self.view addSubview:actionBar];
