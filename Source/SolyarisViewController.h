@@ -65,6 +65,7 @@ enum {
 - (void)nodeInformation:(NSString*)nid;
 - (void)nodeLoad:(NSString*)nid;
 - (void)quit;
+- (void)activate;
 
 
 

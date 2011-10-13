@@ -252,6 +252,9 @@
 }
 
 
+#pragma mark -
+#pragma mark Business
+
 /*
  * Resize.
  */
@@ -278,6 +281,16 @@
     _buttonMovie.frame = bmframe;
     _buttonPerson.frame = bpframe;
     
+}
+
+/*
+ * Updates the claim.
+ */
+- (void)claim:(NSString *)claim {
+    FLog();
+    
+    // set
+    [_labelClaim setText:claim];
 }
 
 

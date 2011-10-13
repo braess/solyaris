@@ -58,6 +58,7 @@
 - (void)actionReset:(id)sender;
 
 // Business
+- (void)claim:(NSString*)claim;
 - (void)resize;
 
 @end

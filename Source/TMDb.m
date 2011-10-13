@@ -55,6 +55,7 @@
 - (Movie*)cachedMovie:(NSNumber*)mid;
 - (Person*)cachedPerson:(NSNumber*)pid;
 - (Movie2Person*)cachedMovie2Person:(NSNumber*)mid person:(NSNumber*)pid;
+- (NSArray*)cachedMovies;
 @end
 
 
@@ -269,6 +270,21 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 }
 
 /**
+ * Returns the loaded movies.
+ */
+- (NSArray*)dataMovies {
+    DLog();
+    
+    // cache
+    [managedObjectContext lock];
+    NSArray *movies = [self cachedMovies];
+    [managedObjectContext unlock];
+    
+    // return
+    return movies;
+}
+
+/**
  * Clears the cache.
  */
 - (void)clearCache {
@@ -382,6 +398,26 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // return
     return movie;
     
+}
+
+/*
+ * Cached movies.
+ */
+- (NSArray*)cachedMovies {
+    GLog();
+    
+    // context
+    NSManagedObjectContext *moc = [self managedObjectContext];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Movie" inManagedObjectContext:moc];
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    [request setEntity:entityDescription];
+    
+    // fetch
+    NSError *error = nil;
+    NSArray *array = [moc executeFetchRequest:request error:&error];
+    
+    // return
+    return array;
 }
 
 
@@ -678,7 +714,6 @@ static NSString* TMDbStore = @"TMDb.sqlite";
  */
 - (Movie*)queryMovie:(NSNumber*)mid {
     FLog();
-    
 	
     // request
     NSString *url = [NSString stringWithFormat:@"%@/en/json/%@/%i",apiTMDbMovie,apiTMDbKey,[mid intValue]];
@@ -689,6 +724,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // response
     NSError *error = nil;
     NSURLResponse *response = nil;
+    
 	
     // connection
 	NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
@@ -705,6 +741,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         return NULL;
     }
     
+    
     // movie
     Movie *movie = [self cachedMovie:mid];
     if (movie == NULL) {
@@ -714,14 +751,27 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     
     // parse json
     SBJsonParser *parser = [[SBJsonParser alloc] init];
-    NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]; 
-    //NSLog(@"%@",json);
+    NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    
+    // result
+    if (([json rangeOfString : @"Nothing found."].location != NSNotFound)) {
+        
+        // oops
+        if (delegate && [delegate respondsToSelector:@selector(apiError:type:message:)]) {
+            [delegate apiError:mid type:typeMovie message:NSLocalizedString(@"Nothing found.", @"Nothing found.")];
+        }
+        
+        // nothing
+        return NULL;
+    }
     
     // movie
     NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
     
+    
     // validate
     if ([self validMovie:djson]) {
+        
         
         // set data
         movie.mid = [self parseNumber:[djson objectForKey:@"id"]];
@@ -734,7 +784,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         movie.trailer = [self parseString:[djson objectForKey:@"trailer"]];
         movie.imdb_id = [self parseString:[djson objectForKey:@"imdb_id"]];
         
-            
+        
         // persons
         NSArray *persons = [djson objectForKey:@"cast"];
         NSMutableDictionary *parsedPersons = [[NSMutableDictionary alloc] init];
@@ -825,6 +875,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         // release
         [parsedPersons release];
         [parsedMovie2Persons release];
+
         
         // assets
         BOOL asset_thumb = NO;
@@ -902,6 +953,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
             }
             
         }
+
         
         // backdrops
         int bdcount = 0;
@@ -1006,6 +1058,19 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     //NSLog(@"%@",json);
     
     
+    // result
+    if (([json rangeOfString : @"Nothing found."].location != NSNotFound)) {
+        
+        // oops
+        if (delegate && [delegate respondsToSelector:@selector(apiError:type:message:)]) {
+            [delegate apiError:pid type:typePerson message:NSLocalizedString(@"Nothing found.", @"Nothing found.")];
+        }
+        
+        // nothing
+        return NULL;
+    }
+    
+    
     // person
     NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
     
@@ -1068,6 +1133,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                     // defaults
                     movie.loaded = NO;
                 }
+                NSLog(@"movie = %@ id = %i",movie.name,[movie.mid intValue]);
                 
                 // Movie2Person
                 Movie2Person *m2p = [parsedMovie2Persons objectForKey:mid];
@@ -1252,7 +1318,18 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     return (! [self isEmpty:token]) ? (NSString*)token : @"";
 }
 - (NSNumber*)parseNumber:(NSObject *)token {
-    return (! [self isEmpty:token]) ? (NSNumber*)token : [NSNumber numberWithInt:0];
+    
+    // formatter
+    static NSNumberFormatter *numberFormatter;
+    if (numberFormatter == nil) {
+        numberFormatter = [[NSNumberFormatter alloc] init];
+        [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+        [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle]; // crucial
+    }
+    
+    // return
+    NSString *nb = [NSString stringWithFormat:@"%@",(NSString*)token];
+    return (! [self isEmpty:token]) ? [numberFormatter numberFromString:nb] : [NSNumber numberWithInt:-1];
 }
 - (NSDate*)parseDate:(NSObject *)token {
     

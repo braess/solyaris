@@ -25,6 +25,8 @@
 - (NSNumber*)toDBId:(NSString*)nid;
 @end
 
+
+
 /**
  * Animation Stack.
  */
@@ -209,9 +211,14 @@
     [self.view addSubview:splash];
     [self.view bringSubviewToFront:splash];
     [splash dismissSplash];
-
+    
+    
+    // notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(activate) name: UIApplicationDidBecomeActiveNotification object:nil];
 
 }
+
+
 
 
 #pragma mark -
@@ -345,11 +352,14 @@
     DLog();
     
     // node
+    NodePtr node;
     NSString *nid = [self makeNodeId:movie.mid type:typeMovie];
-    NodePtr node = solyaris->getNode([nid UTF8String]);
+    if (movie != NULL) {
+        node = solyaris->getNode([nid UTF8String]);
+    }
     
     // check
-    if (movie != NULL && node != NULL) {
+    if (node != NULL) {
         
         // formatter
         static NSDateFormatter *yearFormatter;
@@ -423,10 +433,10 @@
             
         }
         
+        // loaded
+        node->loaded();
+        
     }
-    
-    // loaded
-    node->loaded();
 
 }
 
@@ -440,8 +450,11 @@
     
     
     // node
+    NodePtr node;
     NSString *nid = [self makeNodeId:person.pid type:typePerson];
-    NodePtr node = solyaris->getNode([nid UTF8String]);
+    if (person != NULL) {
+        node = solyaris->getNode([nid UTF8String]);
+    }
     
     // check node
     if (person != NULL && node != NULL) {
@@ -978,6 +991,40 @@
 }
 
 
+/*
+ * Activates the controller.
+ */
+- (void)activate {
+    FLog();
+    
+    // random tagline
+    NSArray *movies = [tmdb dataMovies];
+    NSMutableArray *taglines = [[NSMutableArray alloc] init];
+    for (Movie *m in movies) {
+        
+        // loaded
+        if (m.loaded) {
+            
+            // tagline
+            NSString *tagline = m.tagline;
+            if (tagline && [tagline length] > 1 && [tagline length] < 39) {
+                [taglines addObject:tagline];
+            }
+        }
+        
+    }
+    
+    // check
+    NSString *tagline = NSLocalizedString(@"A Visual Movie Browser", @"A Visual Movie Browser");
+    if ([taglines count] > 0) {
+        tagline = [taglines objectAtIndex:random() % ([taglines count])];
+    }
+    
+    // set
+    [_searchViewController claim:tagline];
+}
+
+
 /**
  * Quit.
  */
@@ -1267,6 +1314,9 @@
     [_searchViewController release];
     [_searchResultViewController release];
     [_informationViewController release];
+    
+    // notifications
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 	
 	// release global
     [super dealloc];

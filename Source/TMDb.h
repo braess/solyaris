@@ -56,6 +56,7 @@
 - (void)clearCache;
 - (Movie*)dataMovie:(NSNumber*)mid;
 - (Person*)dataPerson:(NSNumber*)pid;
+- (NSArray*)dataMovies;
 
 
 @end
