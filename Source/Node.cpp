@@ -208,18 +208,19 @@ void Node::draw() {
     // node expanded
     if (active || loading) {
         
-        // glow
-        float ga = selected ? asglow : aglow;
-        if (loading && ! grow) {
-            ga *= (1.5+sin((fcount*1.5*M_PI)/180)); 
-        }
-        gl::color( ColorA(1.0f, 1.0f, 1.0f, ga) ); // alpha channel
-        gl::draw(textureGlow, Rectf(pos.x-radius,pos.y-radius,pos.x+radius,pos.y+radius));
-        
         // core
         float ca = selected ? asglow : aglow;
         gl::color( ColorA(1.0f, 1.0f, 1.0f, ca) ); // alpha channel
         gl::draw(textureCore, Rectf(pos.x-core,pos.y-core,pos.x+core,pos.y+core));
+        
+        // glow
+        float ga = selected ? asglow : aglow;
+        if (loading && ! grow) {
+            ga *= (1.15+sin((fcount*1.15*M_PI)/180));
+            ga = fmin(1.0,ga);
+        }
+        gl::color( ColorA(1.0f, 1.0f, 1.0f, ga) ); // alpha channel
+        gl::draw(textureGlow, Rectf(pos.x-radius,pos.y-radius,pos.x+radius,pos.y+radius));
         
     }
     else {
@@ -239,7 +240,7 @@ void Node::draw() {
 	gl::draw(textureLabel, Vec2d(pos.x+loff.x, pos.y+radius+loff.y));
     
     // reset
-    gl::disableAlphaBlending();
+    //gl::disableAlphaBlending();
 
 }
 

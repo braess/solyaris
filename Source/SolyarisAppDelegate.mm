@@ -26,18 +26,20 @@
  * Application launched.
  */
 - (void) applicationDidFinishLaunching:(UIApplication *)application {
-    NSLog(@"Solyaris launched.");
+    
+    // launch
+	NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    NSLog(@"Solyaris version %@ launched.",appVersion);
     
     // track
 	[Tracker startTracker];
-	
-	// customize appearance
+    
+    // customize appearance
 	[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
     
     // version
-	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 	NSString *information_app_version = [userDefaults objectForKey:udInformationAppVersion];
-	NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
 	
 	// install
 	if (information_app_version == nil) {
@@ -57,7 +59,7 @@
  * App will enter foreground after resigning.
  */
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    NSLog(@"Solyaris will enter foreground.");
+    DLog();
     
     // cinder
     [super applicationWillEnterForeground:application];
@@ -68,7 +70,7 @@
  * App did become active and is now running.
  */
 - (void) applicationDidBecomeActive:(UIApplication *)application {
-    NSLog(@"Solyaris did become active.");
+    DLog();
     
     // track
 	[Tracker trackPageView:@"/"];
@@ -80,7 +82,7 @@
  * App will resign active.
  */
 - (void) applicationWillResignActive:(UIApplication *)application {
-    NSLog(@"Solyaris will resign active.");
+    DLog();
     
     // track
     [Tracker dispatch];
@@ -90,7 +92,7 @@
     
 }
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    NSLog(@"Solyaris did enter background.");
+    DLog();
     
     // cinder
     [super applicationDidEnterBackground:application];
@@ -101,7 +103,7 @@
  * App will terminate.
  */
 - (void)applicationWillTerminate:(UIApplication *)application {
-    NSLog(@"Solyaris will terminate.");
+    DLog();
     
     // cinder
     [super applicationWillTerminate:application];

@@ -206,6 +206,14 @@
         }
     }
     
+    
+    // note
+	NoteView *noteView = [[NoteView alloc] initWithFrame:frame];
+	[noteView setAutoresizingMask: (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight) ];
+	_noteView = [noteView retain];
+	[self.view addSubview:_noteView];
+	[noteView release];
+    
     // splash
     SplashView *splash = [[[SplashView alloc] initWithFrame:frame] autorelease];
     [self.view addSubview:splash];
@@ -217,7 +225,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(activate) name: UIApplicationDidBecomeActiveNotification object:nil];
 
 }
-
 
 
 
@@ -359,7 +366,7 @@
     }
     
     // check
-    if (node != NULL) {
+    if (movie != NULL && node != NULL) {
         
         // formatter
         static NSDateFormatter *yearFormatter;
@@ -531,25 +538,23 @@
     
 }
 
+
 /*
- * API Error.
-*/
-- (void)apiError:(NSNumber*)did type:(NSString*)type message:(NSString*)msg {
+ * API Info.
+ */
+- (void)apiInfo:(APIError *)error {
     DLog();
     
-    // alert
-    UIAlertView *alert = [[UIAlertView alloc]
-                          initWithTitle:@"API Error" 
-                          message:msg 
-                          delegate:self 
-                          cancelButtonTitle: @"OK"
-                          otherButtonTitles:nil];
-    [alert setTag:SolyarisAlertAPIError];
-    [alert show];    
-    [alert release];
+    // dismiss popover
+    [_searchResultsPopoverController dismissPopoverAnimated:YES];
+    
+    // note
+    [_noteView noteInfo:error.message]; 
+    [_noteView showNote];
+    [_noteView dismissNote];
     
     // stop loader
-    NSString *nid = [self makeNodeId:did type:type];
+    NSString *nid = [self makeNodeId:error.dataId type:error.dataType];
     NodePtr node = solyaris->getNode([nid UTF8String]);
     
     // check
@@ -560,6 +565,33 @@
     }
 }
 
+
+/*
+* API Error.
+*/
+- (void)apiError:(APIError *)error {
+    DLog();
+    
+    // dismiss popover
+    [_searchResultsPopoverController dismissPopoverAnimated:YES];
+    
+    // note
+    [_noteView noteError:error.message]; 
+    [_noteView showNote];
+    
+    // stop loader
+    NSString *nid = [self makeNodeId:error.dataId type:error.dataType];
+    NodePtr node = solyaris->getNode([nid UTF8String]);
+    
+    // check
+    if (node != NULL) {
+        
+        // loaded
+        node->loaded();
+    }
+}
+
+
 /*
  * API Quit.
  */
@@ -568,7 +600,7 @@
     
     // alert
     UIAlertView *alert = [[UIAlertView alloc]
-                          initWithTitle:@"Data Error" 
+                          initWithTitle:@"Fatal Error" 
                           message:msg 
                           delegate:self 
                           cancelButtonTitle: @"Cancel"
@@ -607,12 +639,7 @@
 			break;
 		}
             
-        // error
-		case SolyarisAlertAPIError: {
-			break;
-		}
-            
-            // default
+        // default
 		default:
 			break;
 	}
@@ -1007,7 +1034,7 @@
             
             // tagline
             NSString *tagline = m.tagline;
-            if (tagline && [tagline length] > 1 && [tagline length] < 39) {
+            if (tagline && [tagline length] > 1 && [tagline length] < 36) {
                 [taglines addObject:tagline];
             }
         }
@@ -1311,9 +1338,11 @@
 	GLog();
 	
     // controllers
+    [_noteView release];
     [_searchViewController release];
     [_searchResultViewController release];
     [_informationViewController release];
+    [_settingsViewController release];
     
     // notifications
     [[NSNotificationCenter defaultCenter] removeObserver:self];

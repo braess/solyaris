@@ -16,6 +16,22 @@
 #import "Asset.h"
 
 
+/**
+ * APIError.
+ */
+@interface APIError : NSObject {
+    
+}
+
+// Properties
+@property (nonatomic, retain) NSNumber *dataId;
+@property (nonatomic, retain) NSString *dataType;
+@property (nonatomic, retain) NSString *message;
+
+// Object
+- (id)initError:(NSNumber*)did type:(NSString*)dtype message:(NSString*)msg;
+
+@end
 
 
 /*
@@ -25,7 +41,8 @@
 - (void)loadedSearch:(Search*)result;
 - (void)loadedMovie:(Movie*)movie;
 - (void)loadedPerson:(Person*)person;
-- (void)apiError:(NSNumber*)did type:(NSString*)type message:(NSString*)msg;
+- (void)apiInfo:(APIError*)error;
+- (void)apiError:(APIError*)error;
 - (void)apiFatal:(NSString*)msg;
 @end
 
@@ -35,7 +52,7 @@
 @interface TMDb : NSObject {
     
     // delegate
-	id<APIDelegate>delegate;
+	NSObject<APIDelegate> *delegate;
     
     // queue
     NSOperationQueue *queue;
@@ -46,7 +63,7 @@
     NSPersistentStoreCoordinator *persistentStoreCoordinator;
 }
 // Properties
-@property (assign) id<APIDelegate> delegate;
+@property (nonatomic, assign) NSObject <APIDelegate> *delegate;
 
 // Business
 - (void)cancel;

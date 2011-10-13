@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "TMDb.h"
+#import "NoteView.h"
 #import "SearchViewController.h"
 #import "SearchResultViewController.h"
 #import "InformationViewController.h"
@@ -19,7 +20,6 @@ CPP_CLASS(Solyaris);
 
 // alerts
 enum {
-    SolyarisAlertAPIError,
 	SolyarisAlertAPIFatal
 };
 
@@ -34,6 +34,7 @@ enum {
     TMDb *tmdb;
     
     // controllers
+    NoteView *_noteView;
     SearchViewController *_searchViewController;
     SearchResultViewController *_searchResultViewController;
     InformationViewController *_informationViewController;

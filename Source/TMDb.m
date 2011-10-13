@@ -96,17 +96,15 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // fields
         queue = [[NSOperationQueue alloc] init];
-        [queue setMaxConcurrentOperationCount:1];
+        [queue setMaxConcurrentOperationCount:10];
         
         // context
         NSManagedObjectContext *context = [self managedObjectContext];
         if (!context) {
-            
-            // handle the error
-            if (delegate && [delegate respondsToSelector:@selector(apiFatal:)]) {
-                [delegate apiFatal:NSLocalizedString(@"Corrupted Data", "Corrupted Data")];
-            }
+            NSLog(@"TMDb CoreData Corrupted Cache");
         }
+
+        
     }
     
     // return
@@ -143,7 +141,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     DLog();
     
     // queue
-    [queue cancelAllOperations];
+    //[queue cancelAllOperations];
     [queue addOperationWithBlock:^{
         
         
@@ -309,14 +307,16 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     [persistentStoreCoordinator release];
     persistentStoreCoordinator = nil;
     
+    // managed context
     NSManagedObjectContext *context = [self managedObjectContext];
     if (!context) {
         
         // handle the error
         if (delegate && [delegate respondsToSelector:@selector(apiFatal:)]) {
-            [delegate apiFatal:NSLocalizedString(@"Corrupted Data", "Corrupted Data")];
+            [delegate apiFatal:NSLocalizedString(@"Corrupted Data. Please try to reinstall the application. Sorry about this.", "Corrupted Data. Please try to reinstall the application. Sorry about this.")];
         }
     }
+
 }
 
 
@@ -537,8 +537,11 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         if (error) {
             
             // oops
-            if (delegate && [delegate respondsToSelector:@selector(apiError:type:message:)]) {
-                [delegate apiError:[NSNumber numberWithInt:-1] type:typeMovie message:[error localizedDescription]];
+            if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
+                
+                // error
+                APIError *apiError = [[[APIError alloc] initError:[NSNumber numberWithInt:-1] type:typeMovie message:[error localizedDescription]] autorelease];
+                [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
             }
             
             // roll back tha thing
@@ -628,9 +631,10 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         // error
         if (error) {
             
-            // oops
-            if (delegate && [delegate respondsToSelector:@selector(apiError:type:message:)]) {
-                [delegate apiError:[NSNumber numberWithInt:-1] type:typePerson message:[error localizedDescription]];
+            // error
+            if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
+                APIError *apiError = [[[APIError alloc] initError:[NSNumber numberWithInt:-1] type:typePerson message:[error localizedDescription]] autorelease];
+                [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
             }
             
             // roll back tha thing
@@ -695,14 +699,19 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // save
     if (![managedObjectContext save:&error]) {
         
+        // error
+        if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
+            APIError *apiError = [[[APIError alloc] initError:[NSNumber numberWithInt:-1] type:typeSearch message:[error localizedDescription]] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
+        }
+        
         // handle the error
         NSLog(@"TMDb CoreData Error\n%@\n%@", error, [error userInfo]);
         [managedObjectContext rollback];
         
-        // notify
-        if (delegate && [delegate respondsToSelector:@selector(apiError:type:message:)]) {
-            [delegate apiError:[NSNumber numberWithInt:-1] type:typeSearch message:[error localizedDescription]];
-        }
+        // fluff
+        return NULL;
+
     }
     
     // return
@@ -732,9 +741,10 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // error
     if (error) {
         
-        // oops
-        if (delegate && [delegate respondsToSelector:@selector(apiError:type:message:)]) {
-            [delegate apiError:mid type:typeMovie message:[error localizedDescription]];
+        // error
+        if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
+            APIError *apiError = [[[APIError alloc] initError:mid type:typeMovie message:[error localizedDescription]] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
         }
         
         // fluff back
@@ -754,19 +764,20 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     
     // result
-    if (([json rangeOfString : @"Nothing found."].location != NSNotFound)) {
+    NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
+    if (([json rangeOfString : @"Nothing found."].location != NSNotFound) || ! [self validMovie:djson]) {
+        NSLog(@"Movie not found %i",[mid intValue]);
+        NSLog(@"%@",json);
         
-        // oops
-        if (delegate && [delegate respondsToSelector:@selector(apiError:type:message:)]) {
-            [delegate apiError:mid type:typeMovie message:NSLocalizedString(@"Nothing found.", @"Nothing found.")];
+        // note
+        if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
+            APIError *apiError = [[[APIError alloc] initError:mid type:typeMovie message:NSLocalizedString(@"Movie not found.", @"Movie not found.")] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
         }
         
         // nothing
         return NULL;
     }
-    
-    // movie
-    NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
     
     
     // validate
@@ -992,15 +1003,21 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // save
     if (![managedObjectContext save:&error]) {
         
+        // error
+        if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
+            APIError *apiError = [[[APIError alloc] initError:mid type:typeMovie message:[error localizedDescription]] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
+        }
+        
         // handle the error
         NSLog(@"TMDb CoreData Error\n%@\n%@", error, [error userInfo]);
         [managedObjectContext rollback];
         
-        // notify
-        if (delegate && [delegate respondsToSelector:@selector(apiError:type:message:)]) {
-            [delegate apiError:mid type:typeMovie message:[error localizedDescription]];
-        }
+        // fluff
+        return NULL;
+        
     }
+    
     
     
     // return
@@ -1032,11 +1049,11 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // error
     if (error) {
         
-        // oops
-        if (delegate && [delegate respondsToSelector:@selector(apiError:type:message:)]) {
-            [delegate apiError:pid type:typePerson message:[error localizedDescription]];
+        // error
+        if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
+            APIError *apiError = [[[APIError alloc] initError:pid type:typePerson message:[error localizedDescription]] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
         }
-        
         
         // fluff back
         return NULL;
@@ -1059,20 +1076,22 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     
     
     // result
-    if (([json rangeOfString : @"Nothing found."].location != NSNotFound)) {
+    NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
+    if (([json rangeOfString : @"Nothing found."].location != NSNotFound) || ! [self validPerson:djson]) {
         
-        // oops
-        if (delegate && [delegate respondsToSelector:@selector(apiError:type:message:)]) {
-            [delegate apiError:pid type:typePerson message:NSLocalizedString(@"Nothing found.", @"Nothing found.")];
+        NSLog(@"Person not found %i",[pid intValue]);
+        NSLog(@"%@",json);
+        
+        // note
+        if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
+            APIError *apiError = [[[APIError alloc] initError:pid type:typePerson message:NSLocalizedString(@"Person not found.", @"Person not found.")] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
         }
         
         // nothing
         return NULL;
     }
-    
-    
-    // person
-    NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
+
     
     // validate
     if ([self validPerson:djson]) {
@@ -1133,7 +1152,6 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                     // defaults
                     movie.loaded = NO;
                 }
-                NSLog(@"movie = %@ id = %i",movie.name,[movie.mid intValue]);
                 
                 // Movie2Person
                 Movie2Person *m2p = [parsedMovie2Persons objectForKey:mid];
@@ -1290,17 +1308,21 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // save
     if (![managedObjectContext save:&error]) {
         
+        // error
+        if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
+            APIError *apiError = [[[APIError alloc] initError:pid type:typePerson message:[error localizedDescription]] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
+        }
+        
         // handle the error
         NSLog(@"TMDb CoreData Error\n%@\n%@", error, [error userInfo]);
         [managedObjectContext rollback];
         
-        // notify
-        if (delegate && [delegate respondsToSelector:@selector(apiError:type:message:)]) {
-            [delegate apiError:pid type:typePerson message:[error localizedDescription]];
-        }
+        // fluff
+        return NULL;
+        
     }
     
-
     
     // return
     return person;
@@ -1648,6 +1670,63 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     GLog();
     
     // super
+    [super dealloc];
+}
+
+
+@end
+
+
+
+/**
+ * APIError.
+ */
+@implementation APIError
+
+#pragma mark -
+#pragma mark Properties
+
+// accessors
+@synthesize dataId;
+@synthesize dataType;
+@synthesize message;
+
+
+#pragma mark -
+#pragma mark Object
+
+/**
+ * Init.
+ */
+- (id)initError:(NSNumber *)did type:(NSString *)dtype message:(NSString *)msg {
+    GLog();
+    
+    // self
+    if ((self = [super init])) {
+        self.dataId = did;
+        self.dataType = dtype;
+		self.message = msg;
+		return self;
+	}
+	return nil;
+}
+
+
+#pragma mark -
+#pragma mark Memory management
+
+/*
+ * Deallocates all used memory.
+ */
+- (void)dealloc {
+	GLog();
+	
+	// self
+    [dataId release];
+    [dataType release];
+	[message release];
+	
+	// super
     [super dealloc];
 }
 

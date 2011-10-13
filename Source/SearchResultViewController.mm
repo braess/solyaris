@@ -127,7 +127,7 @@
  * Cells.
  */
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    DLog();
+    GLog();
     
     // identifiers
     static NSString *CellSearchResultIdentifier = @"CellSearchResult";
