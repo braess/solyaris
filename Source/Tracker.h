@@ -23,7 +23,12 @@
 #import <Foundation/Foundation.h>
 
 // Categories
-#define TEventApp			@"App"	
+#define TEventApp			@"App"
+#define TEventSearch        @"Search"
+#define TEventLoadSearch	@"LoadSearch"	
+#define TEventLoadGraph     @"LoadGraph"	
+#define TEventLoadInfo      @"LoadInfo"	
+#define TEventAbout         @"About"
 
 
 /**

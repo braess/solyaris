@@ -11,7 +11,7 @@
 #import "SolyarisConstants.h"
 #import "BlockerView.h"
 #import "DataNode.h"
-
+#import "Tracker.h"
 
 /**
  * Section Stack.
@@ -388,7 +388,6 @@ static int informationGapInset = 15;
 	[super viewWillAppear:animated];
 	DLog();
 
-
 }
 
 
@@ -464,6 +463,7 @@ static int informationGapInset = 15;
 
     
     // swap listing
+    [self swapReset];
     [self swapListing];
     
 }
@@ -504,6 +504,7 @@ static int informationGapInset = 15;
     [_componentWikipedia reset:_referenceWikipedia];
     
     // swap listing
+    [self swapReset];
     [self swapListing];
     
 }
@@ -521,6 +522,9 @@ static int informationGapInset = 15;
     
     // change mode
     if (! mode_listing) {
+        
+        // track
+        [Tracker trackPageView:@"/information/listing"];
         
         // reset
         [self swapReset];
@@ -548,6 +552,9 @@ static int informationGapInset = 15;
     // change mode
     if (! mode_tmdb) {
         
+        // track
+        [Tracker trackPageView:@"/information/tmdb"];
+        
         // reset
         [self swapReset];
         
@@ -572,6 +579,9 @@ static int informationGapInset = 15;
     
     // change mode
     if (! mode_imdb) {
+        
+        // track
+        [Tracker trackPageView:@"/information/imdb"];
         
         // reset
         [self swapReset];
@@ -599,6 +609,9 @@ static int informationGapInset = 15;
     
     // change mode
     if (! mode_wikipedia) {
+        
+        // track
+        [Tracker trackPageView:@"/information/wikipedia"];
         
         // reset
         [self swapReset];
@@ -1012,7 +1025,7 @@ static int informationGapInset = 15;
 	CGContextFillRect(context, mrect);
     
     // textures
-    UIImage *texture = [UIImage imageNamed:@"texture_information.png"];
+    UIImage *texture = [UIImage imageNamed:@"bg_information.png"];
     CGRect tcRect;
     tcRect.size = texture.size; 
     

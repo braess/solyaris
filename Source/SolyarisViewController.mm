@@ -13,6 +13,7 @@
 #import "Solyaris.h"
 #import "SolyarisConstants.h"
 #import "SplashView.h"
+#import "Tracker.h"
 
 
 /**
@@ -129,7 +130,7 @@
     // background
     UIView *bgView = [[UIView alloc] initWithFrame:frame];
     bgView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    bgView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"texture_background.png"]];
+    bgView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_app.png"]];
     bgView.opaque = NO;
     [window addSubview:bgView];
     [window sendSubviewToBack:bgView];
@@ -638,6 +639,9 @@
     // active
     if (! (node->isActive() || node->isLoading())) {
         
+        // track
+        [Tracker trackEvent:TEventLoadSearch action:result.type label:result.data];
+        
         // load
         node->load();
             
@@ -680,6 +684,9 @@
     // active
     if (! (node->isActive() || node->isLoading())) {
         
+        // track
+        [Tracker trackEvent:TEventLoadInfo action:type label:[NSString stringWithCString:node->label.c_str() encoding:NSUTF8StringEncoding]];
+        
         // tap & load
         node->tapped();
         node->load();
@@ -703,6 +710,9 @@
  */
 - (void)informationDismiss {
     FLog();
+    
+    // track
+    [Tracker trackPageView:@"/graph"];
     
     // hide
     [self animationInformationHide];
@@ -756,7 +766,9 @@
         type = typePerson;
         srframe = _searchViewController.buttonPerson.frame;
     }
-
+    
+    // track
+    [Tracker trackEvent:TEventSearch action:type label:s];
     
     // api
     [tmdb search:s type:type];
@@ -788,6 +800,9 @@
  */
 - (void)settingsDismiss {
     FLog();
+    
+    // track
+    [Tracker trackPageView:@"/graph"];
     
     // hide
     [self animationSettingsHide];
@@ -861,6 +876,9 @@
         // node
         NSString *type = [NSString stringWithCString:node->type.c_str() encoding:[NSString defaultCStringEncoding]];
         NSNumber *dbid = [self toDBId:nid];
+        
+        // track
+        [Tracker trackEvent:TEventLoadGraph action:type label:[NSString stringWithCString:node->label.c_str() encoding:NSUTF8StringEncoding]];
         
         
         // delay

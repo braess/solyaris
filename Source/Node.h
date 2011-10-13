@@ -6,20 +6,28 @@
 //  Copyright 2011 Beat Raess. All rights reserved.
 //
 #pragma once
+#include "cinder/app/AppCocoaTouch.h"
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
+#include "cinder/ImageIo.h"
 #include "cinder/Vector.h"
 #include "cinder/Color.h"
 #include "cinder/Font.h"
+#include "cinder/Text.h"
+#include "cinder/Rand.h"
+#include "cinder/CinderMath.h"
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
 #include "GraphSettings.h"
 
 
+
+
 // namespace
 using namespace std;
 using namespace ci;
+using namespace ci::app;
 
 // declarations
 class Node;
@@ -103,13 +111,6 @@ class Node {
 	Vec2d velocity;
 
     
-    // protected
-    protected:
-    
-    // Color
-    Color cbg;
-    
-    
     // private
     private:
     
@@ -135,6 +136,11 @@ class Node {
     int nbchildren;
     int fcount;
     int minr,maxr;
+    
+    // Textures
+    gl::Texture textureNode;
+    gl::Texture textureCore;
+    gl::Texture textureGlow;
     
     
     // Color

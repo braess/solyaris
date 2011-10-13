@@ -7,9 +7,10 @@
 //
 
 #import "AboutViewController.h"
+#import "SolyarisAppDelegate.h"
 #import "SolyarisConstants.h"
 #import "ActionBar.h"
-
+#import "Tracker.h"
 
 
 /**
@@ -215,6 +216,9 @@ static int aboutFooterHeight = 60;
  */
 - (void)actionEmail:(id)sender {
 	DLog();
+    
+    // track
+    [Tracker trackEvent:TEventAbout action:@"Email" label:[NSString stringWithFormat:@"%@",[(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefault:udInformationAppVersion]]];
 
 	
 	// check mail support
@@ -258,6 +262,9 @@ static int aboutFooterHeight = 60;
 - (void)actionTwitter:(id)sender {
 	DLog();
     
+    // track
+    [Tracker trackEvent:TEventAbout action:@"Twitter" label:[NSString stringWithFormat:@"%@",[(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefault:udInformationAppVersion]]];
+    
 
     // check twitter support
     if(NSClassFromString(@"TWTweetComposeViewController") != nil) {
@@ -297,6 +304,9 @@ static int aboutFooterHeight = 60;
  */
 - (void)actionAppStore:(id)sender {
 	DLog();
+    
+    // track
+    [Tracker trackEvent:TEventAbout action:@"AppStore" label:[NSString stringWithFormat:@"%@",[(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefault:udInformationAppVersion]]];
 	
 	// show info
 	UIAlertView *alert = [[UIAlertView alloc]
@@ -317,6 +327,9 @@ static int aboutFooterHeight = 60;
  */
 - (void)actionFeedback:(id)sender {
 	DLog();
+    
+    // track
+    [Tracker trackEvent:TEventAbout action:@"Feedback" label:[NSString stringWithFormat:@"%@",[(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefault:udInformationAppVersion]]];
 	
 	// check mail support
 	if (! [MFMailComposeViewController canSendMail]) {

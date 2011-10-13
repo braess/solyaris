@@ -7,9 +7,6 @@
 //
 
 #include "Tooltip.h"
-#include "cinder/gl/gl.h"
-#include "cinder/Text.h"
-#include "cinder/CinderMath.h"
 
 
 #pragma mark -
@@ -86,7 +83,7 @@ void Tooltip::draw() {
     px += min(0.0,bounds.x-(px+size.x+border.x));
     py += min(0.0,bounds.y-(py+size.y+border.y));
     
-    // hide
+    // hide (fix for strange alpha blending bug thingy)
     if (! this->isVisible()) {
         px = -10000;
         py = -10000;

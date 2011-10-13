@@ -7,8 +7,6 @@
 //
 
 #include "Graph.h"
-#include "cinder/gl/gl.h"
-#include "cinder/Rand.h"
 
 
 #pragma mark -

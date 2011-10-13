@@ -53,7 +53,7 @@ static const NSInteger kGANDispatchPeriodSec = 20;
     NSString *version = [device systemVersion];
 	[[GANTracker sharedTracker] setCustomVariableAtIndex:TrackerVariableIOS+1 name:@"ios" value:version scope:kGANSessionScope withError:&error]
     #else
-    NSLog(@"Tracker start.");
+    NSLog(@"Tracker: start");
     #endif
 }
 + (void)stopTracker {
@@ -63,7 +63,7 @@ static const NSInteger kGANDispatchPeriodSec = 20;
     #ifndef DEBUG
 	[[GANTracker sharedTracker] stopTracker];
     #else
-    NSLog(@"Tracker stop.");
+    NSLog(@"Tracker: stop");
     #endif
 }
 
@@ -78,7 +78,7 @@ static const NSInteger kGANDispatchPeriodSec = 20;
     #ifndef DEBUG
 	[[GANTracker sharedTracker] dispatch];
     #else
-    NSLog(@"Tracker dispatch.");
+    NSLog(@"Tracker: dispatch");
     #endif
 
 }
@@ -93,7 +93,7 @@ static const NSInteger kGANDispatchPeriodSec = 20;
     #ifndef DEBUG
 	[[GANTracker sharedTracker] trackPageview:page withError:&error]
     #else
-    NSLog(@"Track Page: %@",page);
+    NSLog(@"Tracker: Page %@",page);
     #endif
 }
 
@@ -106,7 +106,7 @@ static const NSInteger kGANDispatchPeriodSec = 20;
     #ifndef DEBUG
 	[[GANTracker sharedTracker] trackEvent:category action:action label:label value:-1 withError:&error]
     #else
-    NSLog(@"Track Event: %@ %@ %@",category,action,label);
+    NSLog(@"Tracker: Event %@ %@ %@",category,action,label);
     #endif
 }
 

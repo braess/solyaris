@@ -6,10 +6,11 @@
 //  Copyright 2011 Beat Raess. All rights reserved.
 //
 #include "cinder/app/AppCocoaTouch.h"
+#include "cinder/app/TouchEvent.h"
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/ImageIo.h"
-#include "cinder/app/TouchEvent.h"
+#include "cinder/Rand.h"
 #include "Node.h"
 #include "Edge.h"
 #include "Tooltip.h"

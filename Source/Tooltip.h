@@ -10,6 +10,8 @@
 #include "cinder/gl/Texture.h"
 #include "cinder/Color.h"
 #include "cinder/Font.h"
+#include "cinder/Text.h"
+#include "cinder/CinderMath.h"
 
 
 // namespace

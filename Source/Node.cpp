@@ -6,9 +6,6 @@
 //  Copyright 2011 Beat Raess. All rights reserved.
 //
 #include "Node.h"
-#include "cinder/Text.h"
-#include "cinder/Rand.h"
-#include "cinder/CinderMath.h"
 
 
 #pragma mark -
@@ -65,7 +62,6 @@ Node::Node(string idn, double x, double y) {
     velocity.set(0,0);
     
     // color
-    cbg = Color(1,1,1);
     ctxt = Color(0.85,0.85,0.85);
     ctxts = Color(1,1,1);
     
@@ -74,6 +70,11 @@ Node::Node(string idn, double x, double y) {
     ascore = 1.0;
     aglow = 0.3;
     asglow = 0.45;
+    
+    // textures
+    textureNode = gl::Texture(1,1);
+    textureCore = gl::Texture(1,1);
+    textureGlow = gl::Texture(1,1);
 
     
     // font
@@ -204,28 +205,31 @@ void Node::draw() {
     // blend
     gl::enableAlphaBlending();
     
-
-    // glow
-    float ga = selected ? asglow : aglow;
-    if (loading && ! grow) {
-        ga *= (1.5+sin((fcount*1.5*M_PI)/180)); 
+    // node expanded
+    if (active || loading) {
+        
+        // glow
+        float ga = selected ? asglow : aglow;
+        if (loading && ! grow) {
+            ga *= (1.5+sin((fcount*1.5*M_PI)/180)); 
+        }
+        gl::color( ColorA(1.0f, 1.0f, 1.0f, ga) ); // alpha channel
+        gl::draw(textureGlow, Rectf(pos.x-radius,pos.y-radius,pos.x+radius,pos.y+radius));
+        
+        // core
+        float ca = selected ? asglow : aglow;
+        gl::color( ColorA(1.0f, 1.0f, 1.0f, ca) ); // alpha channel
+        gl::draw(textureGlow, Rectf(pos.x-core,pos.y-core,pos.x+core,pos.y+core));
+        
     }
-    glColor4f(cbg.r,cbg.g,cbg.b,ga);
-    gl::drawSolidCircle(pos, radius);
-    
-    // core
-    glColor4f(cbg.r,cbg.g,cbg.b,(selected ? ascore : acore));
-    
-    // movie / actor
-    if (type == nodeMovie || type == nodePerson || type == nodePersonActor) {
-        gl::drawSolidCircle(pos, core);
-    }
-    // director / crew
     else {
-        gl::drawStrokedCircle(pos, core);
-        gl::drawSolidCircle(pos, core-3);
+        
+        // node
+        float na = selected ? asglow : aglow;
+        gl::color( ColorA(1.0f, 1.0f, 1.0f, na) ); // alpha channel
+        gl::draw(textureNode, Rectf(pos.x-core,pos.y-core,pos.x+core,pos.y+core));
+        
     }
-
     
     // unblend
     gl::enableAlphaBlending(true);
@@ -233,6 +237,9 @@ void Node::draw() {
     // label
     selected ? gl::color(ctxts) : gl::color(ctxt);
 	gl::draw(textureLabel, Vec2d(pos.x+loff.x, pos.y+radius+loff.y));
+    
+    // reset
+    gl::disableAlphaBlending();
 
 }
 
@@ -556,23 +563,34 @@ void Node::renderLabel(string lbl) {
  */
 void Node::updateType(string t) {
     
+    // type
+    type = t;
+    
     // movie
     if (t == nodeMovie) {
         
-        // type
-        type = t;
+        // texture
+        textureNode = gl::Texture(loadImage(loadResource("node_movie.png")));
+        textureCore = gl::Texture(loadImage(loadResource("node_movie_core.png")));
+        textureGlow = gl::Texture(loadImage(loadResource("node_movie_glow.png")));
         
-        // color 
-        cbg = Color(92/255.0, 128/255.0, 153/255.0);
+    }
+    // director / crew
+    else if (t == nodePersonDirector || t == nodePersonCrew) {
+        
+        // texture
+        textureNode = gl::Texture(loadImage(loadResource("node_crew.png")));
+        textureCore = gl::Texture(loadImage(loadResource("node_crew_core.png")));
+        textureGlow = gl::Texture(loadImage(loadResource("node_crew_glow.png")));
+        
     }
     // person
     else {
         
-        // type
-        type = t;
-        
-        // color 
-        cbg = Color(148/255.0, 146/255.0, 135/255.0);
+        // texture
+        textureNode = gl::Texture(loadImage(loadResource("node_person.png")));
+        textureCore = gl::Texture(loadImage(loadResource("node_person_core.png")));
+        textureGlow = gl::Texture(loadImage(loadResource("node_person_glow.png")));
     }
 }
 

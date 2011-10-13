@@ -8,6 +8,9 @@
 #pragma once
 #include "Node.h"
 #include "GraphSettings.h"
+#include "cinder/gl/gl.h"
+#include "cinder/Text.h"
+#include "cinder/CinderMath.h"
 #include "cinder/Color.h"
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/shared_ptr.hpp>

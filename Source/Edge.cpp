@@ -6,9 +6,6 @@
 //  Copyright 2011 Beat Raess. All rights reserved.
 //
 #include "Edge.h"
-#include "cinder/gl/gl.h"
-#include "cinder/Text.h"
-#include "cinder/CinderMath.h"
 
 
 #pragma mark -
