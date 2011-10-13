@@ -2,7 +2,7 @@
 //  Movie2Person.m
 //  Solyaris
 //
-//  Created by CNPP on 8.9.2011.
+//  Created by Beat Raess on 13.10.2011.
 //  Copyright (c) 2011 Beat Raess. All rights reserved.
 //
 
@@ -12,17 +12,16 @@
 
 
 @implementation Movie2Person
+
 @dynamic mid;
 @dynamic order;
 @dynamic character;
 @dynamic year;
 @dynamic job;
 @dynamic department;
-@dynamic pid;
 @dynamic type;
+@dynamic pid;
 @dynamic person;
 @dynamic movie;
-
-
 
 @end

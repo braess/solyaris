@@ -145,9 +145,15 @@ static int tmdbGapInset = 15;
 - (void)resetMovie:(Movie *)movie {
 	FLog();
     
+    // sort
+	NSSortDescriptor *sorter = [[NSSortDescriptor alloc] initWithKey:@"sort" ascending:TRUE];
+	NSArray *assets = [[movie.assets allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sorter]];
+	[sorter release];
+    
+    
     // backdrops
     NSMutableArray *backdrops = [[NSMutableArray alloc] init];
-    for (Asset *a in movie.assets) {
+    for (Asset *a in assets) {
         
         // backdrop
         if ([a.type isEqualToString:assetBackdrop] && [a.size isEqualToString:assetSizeOriginal]) {
@@ -160,6 +166,7 @@ static int tmdbGapInset = 15;
             [backdrops addObject:civ];
         }
     }
+    
     
     // mode
     mode_slides = NO; 

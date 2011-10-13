@@ -17,6 +17,12 @@
 		184632791410F55200CC5B70 /* btn_navigator-forward.png in Resources */ = {isa = PBXBuildFile; fileRef = 184632761410F55200CC5B70 /* btn_navigator-forward.png */; };
 		184632821411100C00CC5B70 /* preload.gif in Resources */ = {isa = PBXBuildFile; fileRef = 184632811411100C00CC5B70 /* preload.gif */; };
 		1846328A1411234F00CC5B70 /* btn_reference.png in Resources */ = {isa = PBXBuildFile; fileRef = 184632891411234F00CC5B70 /* btn_reference.png */; };
+		185BEBCD144724ED0007BBCB /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 185BEBCC144724ED0007BBCB /* Search.m */; };
+		185BEBD0144724EE0007BBCB /* Movie.m in Sources */ = {isa = PBXBuildFile; fileRef = 185BEBCF144724EE0007BBCB /* Movie.m */; };
+		185BEBD3144724EE0007BBCB /* Asset.m in Sources */ = {isa = PBXBuildFile; fileRef = 185BEBD2144724EE0007BBCB /* Asset.m */; };
+		185BEBD6144724EE0007BBCB /* Movie2Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 185BEBD5144724EE0007BBCB /* Movie2Person.m */; };
+		185BEBD9144724EE0007BBCB /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 185BEBD8144724EE0007BBCB /* SearchResult.m */; };
+		185BEBDC144724EE0007BBCB /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 185BEBDB144724EE0007BBCB /* Person.m */; };
 		1866139213F3FF9A006DDFFB /* bg_information.png in Resources */ = {isa = PBXBuildFile; fileRef = 1866139113F3FF9A006DDFFB /* bg_information.png */; };
 		1866139613F44565006DDFFB /* icon_mini_actor.png in Resources */ = {isa = PBXBuildFile; fileRef = 1866139313F44565006DDFFB /* icon_mini_actor.png */; };
 		1866139713F44565006DDFFB /* icon_mini_director.png in Resources */ = {isa = PBXBuildFile; fileRef = 1866139413F44565006DDFFB /* icon_mini_director.png */; };
@@ -33,7 +39,6 @@
 		18A65CDB140EC58E009962D7 /* placeholder_search_person.png in Resources */ = {isa = PBXBuildFile; fileRef = 18A65CD7140EC58E009962D7 /* placeholder_search_person.png */; };
 		18AC0222143F2D1D0096259D /* AboutViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01C0143F2D1D0096259D /* AboutViewController.mm */; };
 		18AC0223143F2D1D0096259D /* ActionBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01C2143F2D1D0096259D /* ActionBar.m */; };
-		18AC0224143F2D1D0096259D /* Asset.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01C5143F2D1D0096259D /* Asset.m */; };
 		18AC0225143F2D1D0096259D /* BlockerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01C7143F2D1D0096259D /* BlockerView.m */; };
 		18AC0226143F2D1D0096259D /* CacheImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01C9143F2D1D0096259D /* CacheImageView.m */; };
 		18AC0227143F2D1D0096259D /* CellButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01CB143F2D1D0096259D /* CellButton.m */; };
@@ -50,10 +55,7 @@
 		18AC0232143F2D1D0096259D /* SolyarisViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01E2143F2D1D0096259D /* SolyarisViewController.mm */; };
 		18AC0233143F2D1D0096259D /* InformationViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01E4143F2D1D0096259D /* InformationViewController.mm */; };
 		18AC0234143F2D1D0096259D /* ListingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01E6143F2D1D0096259D /* ListingView.m */; };
-		18AC0235143F2D1D0096259D /* Movie.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01E8143F2D1D0096259D /* Movie.m */; };
-		18AC0236143F2D1D0096259D /* Movie2Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01EA143F2D1D0096259D /* Movie2Person.m */; };
 		18AC0237143F2D1D0096259D /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01EB143F2D1D0096259D /* Node.cpp */; };
-		18AC0238143F2D1D0096259D /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01EE143F2D1D0096259D /* Person.m */; };
 		18AC0239143F2D1D0096259D /* PreferencesViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01F0143F2D1D0096259D /* PreferencesViewController.mm */; };
 		18AC023A143F2D1D0096259D /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01F4143F2D1D0096259D /* NSObject+SBJson.m */; };
 		18AC023B143F2D1D0096259D /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC01F7143F2D1D0096259D /* SBJsonParser.m */; };
@@ -67,8 +69,6 @@
 		18AC0243143F2D1D0096259D /* SBJsonTokeniser.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC0207143F2D1D0096259D /* SBJsonTokeniser.m */; };
 		18AC0244143F2D1D0096259D /* SBJsonUTF8Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC0209143F2D1D0096259D /* SBJsonUTF8Stream.m */; };
 		18AC0245143F2D1D0096259D /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC020B143F2D1D0096259D /* SBJsonWriter.m */; };
-		18AC0246143F2D1D0096259D /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC020D143F2D1D0096259D /* Search.m */; };
-		18AC0247143F2D1D0096259D /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AC020F143F2D1D0096259D /* SearchResult.m */; };
 		18AC0248143F2D1D0096259D /* SearchResultViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 18AC0211143F2D1D0096259D /* SearchResultViewController.mm */; };
 		18AC0249143F2D1D0096259D /* SearchViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 18AC0213143F2D1D0096259D /* SearchViewController.mm */; };
 		18AC024A143F2D1D0096259D /* SettingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 18AC0215143F2D1D0096259D /* SettingsViewController.mm */; };
@@ -134,6 +134,18 @@
 		184632761410F55200CC5B70 /* btn_navigator-forward.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn_navigator-forward.png"; path = "Assets/btn_navigator-forward.png"; sourceTree = "<group>"; };
 		184632811411100C00CC5B70 /* preload.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = preload.gif; path = Assets/preload.gif; sourceTree = "<group>"; };
 		184632891411234F00CC5B70 /* btn_reference.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_reference.png; path = Assets/btn_reference.png; sourceTree = "<group>"; };
+		185BEBCB144724ED0007BBCB /* Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Search.h; path = Source/Search.h; sourceTree = "<group>"; };
+		185BEBCC144724ED0007BBCB /* Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Search.m; path = Source/Search.m; sourceTree = "<group>"; };
+		185BEBCE144724EE0007BBCB /* Movie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Movie.h; path = Source/Movie.h; sourceTree = "<group>"; };
+		185BEBCF144724EE0007BBCB /* Movie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Movie.m; path = Source/Movie.m; sourceTree = "<group>"; };
+		185BEBD1144724EE0007BBCB /* Asset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Asset.h; path = Source/Asset.h; sourceTree = "<group>"; };
+		185BEBD2144724EE0007BBCB /* Asset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Asset.m; path = Source/Asset.m; sourceTree = "<group>"; };
+		185BEBD4144724EE0007BBCB /* Movie2Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Movie2Person.h; path = Source/Movie2Person.h; sourceTree = "<group>"; };
+		185BEBD5144724EE0007BBCB /* Movie2Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Movie2Person.m; path = Source/Movie2Person.m; sourceTree = "<group>"; };
+		185BEBD7144724EE0007BBCB /* SearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchResult.h; path = Source/SearchResult.h; sourceTree = "<group>"; };
+		185BEBD8144724EE0007BBCB /* SearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchResult.m; path = Source/SearchResult.m; sourceTree = "<group>"; };
+		185BEBDA144724EE0007BBCB /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Person.h; path = Source/Person.h; sourceTree = "<group>"; };
+		185BEBDB144724EE0007BBCB /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Person.m; path = Source/Person.m; sourceTree = "<group>"; };
 		1866139113F3FF9A006DDFFB /* bg_information.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bg_information.png; path = Assets/bg_information.png; sourceTree = "<group>"; };
 		1866139313F44565006DDFFB /* icon_mini_actor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon_mini_actor.png; path = Assets/icon_mini_actor.png; sourceTree = "<group>"; };
 		1866139413F44565006DDFFB /* icon_mini_director.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon_mini_director.png; path = Assets/icon_mini_director.png; sourceTree = "<group>"; };
@@ -153,8 +165,6 @@
 		18AC01C1143F2D1D0096259D /* ActionBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ActionBar.h; path = Source/ActionBar.h; sourceTree = "<group>"; };
 		18AC01C2143F2D1D0096259D /* ActionBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ActionBar.m; path = Source/ActionBar.m; sourceTree = "<group>"; };
 		18AC01C3143F2D1D0096259D /* APIKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APIKeys.h; path = Source/APIKeys.h; sourceTree = "<group>"; };
-		18AC01C4143F2D1D0096259D /* Asset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Asset.h; path = Source/Asset.h; sourceTree = "<group>"; };
-		18AC01C5143F2D1D0096259D /* Asset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Asset.m; path = Source/Asset.m; sourceTree = "<group>"; };
 		18AC01C6143F2D1D0096259D /* BlockerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlockerView.h; path = Source/BlockerView.h; sourceTree = "<group>"; };
 		18AC01C7143F2D1D0096259D /* BlockerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlockerView.m; path = Source/BlockerView.m; sourceTree = "<group>"; };
 		18AC01C8143F2D1D0096259D /* CacheImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CacheImageView.h; path = Source/CacheImageView.h; sourceTree = "<group>"; };
@@ -188,14 +198,8 @@
 		18AC01E4143F2D1D0096259D /* InformationViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = InformationViewController.mm; path = Source/InformationViewController.mm; sourceTree = "<group>"; };
 		18AC01E5143F2D1D0096259D /* ListingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ListingView.h; path = Source/ListingView.h; sourceTree = "<group>"; };
 		18AC01E6143F2D1D0096259D /* ListingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ListingView.m; path = Source/ListingView.m; sourceTree = "<group>"; };
-		18AC01E7143F2D1D0096259D /* Movie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Movie.h; path = Source/Movie.h; sourceTree = "<group>"; };
-		18AC01E8143F2D1D0096259D /* Movie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Movie.m; path = Source/Movie.m; sourceTree = "<group>"; };
-		18AC01E9143F2D1D0096259D /* Movie2Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Movie2Person.h; path = Source/Movie2Person.h; sourceTree = "<group>"; };
-		18AC01EA143F2D1D0096259D /* Movie2Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Movie2Person.m; path = Source/Movie2Person.m; sourceTree = "<group>"; };
 		18AC01EB143F2D1D0096259D /* Node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Node.cpp; path = Source/Node.cpp; sourceTree = "<group>"; };
 		18AC01EC143F2D1D0096259D /* Node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Node.h; path = Source/Node.h; sourceTree = "<group>"; };
-		18AC01ED143F2D1D0096259D /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Person.h; path = Source/Person.h; sourceTree = "<group>"; };
-		18AC01EE143F2D1D0096259D /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Person.m; path = Source/Person.m; sourceTree = "<group>"; };
 		18AC01EF143F2D1D0096259D /* PreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PreferencesViewController.h; path = Source/PreferencesViewController.h; sourceTree = "<group>"; };
 		18AC01F0143F2D1D0096259D /* PreferencesViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = PreferencesViewController.mm; path = Source/PreferencesViewController.mm; sourceTree = "<group>"; };
 		18AC01F2143F2D1D0096259D /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
@@ -224,10 +228,6 @@
 		18AC0209143F2D1D0096259D /* SBJsonUTF8Stream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonUTF8Stream.m; sourceTree = "<group>"; };
 		18AC020A143F2D1D0096259D /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		18AC020B143F2D1D0096259D /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
-		18AC020C143F2D1D0096259D /* Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Search.h; path = Source/Search.h; sourceTree = "<group>"; };
-		18AC020D143F2D1D0096259D /* Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Search.m; path = Source/Search.m; sourceTree = "<group>"; };
-		18AC020E143F2D1D0096259D /* SearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchResult.h; path = Source/SearchResult.h; sourceTree = "<group>"; };
-		18AC020F143F2D1D0096259D /* SearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchResult.m; path = Source/SearchResult.m; sourceTree = "<group>"; };
 		18AC0210143F2D1D0096259D /* SearchResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchResultViewController.h; path = Source/SearchResultViewController.h; sourceTree = "<group>"; };
 		18AC0211143F2D1D0096259D /* SearchResultViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = SearchResultViewController.mm; path = Source/SearchResultViewController.mm; sourceTree = "<group>"; };
 		18AC0212143F2D1D0096259D /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchViewController.h; path = Source/SearchViewController.h; sourceTree = "<group>"; };
@@ -457,18 +457,18 @@
 		18AC0257143F2D680096259D /* model */ = {
 			isa = PBXGroup;
 			children = (
-				18AC01C4143F2D1D0096259D /* Asset.h */,
-				18AC01C5143F2D1D0096259D /* Asset.m */,
-				18AC01E7143F2D1D0096259D /* Movie.h */,
-				18AC01E8143F2D1D0096259D /* Movie.m */,
-				18AC01E9143F2D1D0096259D /* Movie2Person.h */,
-				18AC01EA143F2D1D0096259D /* Movie2Person.m */,
-				18AC01ED143F2D1D0096259D /* Person.h */,
-				18AC01EE143F2D1D0096259D /* Person.m */,
-				18AC020C143F2D1D0096259D /* Search.h */,
-				18AC020D143F2D1D0096259D /* Search.m */,
-				18AC020E143F2D1D0096259D /* SearchResult.h */,
-				18AC020F143F2D1D0096259D /* SearchResult.m */,
+				185BEBDA144724EE0007BBCB /* Person.h */,
+				185BEBDB144724EE0007BBCB /* Person.m */,
+				185BEBD7144724EE0007BBCB /* SearchResult.h */,
+				185BEBD8144724EE0007BBCB /* SearchResult.m */,
+				185BEBD4144724EE0007BBCB /* Movie2Person.h */,
+				185BEBD5144724EE0007BBCB /* Movie2Person.m */,
+				185BEBD1144724EE0007BBCB /* Asset.h */,
+				185BEBD2144724EE0007BBCB /* Asset.m */,
+				185BEBCE144724EE0007BBCB /* Movie.h */,
+				185BEBCF144724EE0007BBCB /* Movie.m */,
+				185BEBCB144724ED0007BBCB /* Search.h */,
+				185BEBCC144724ED0007BBCB /* Search.m */,
 			);
 			name = model;
 			sourceTree = "<group>";
@@ -862,7 +862,6 @@
 				18F849FE1408D52C00B97AE8 /* TMDb.xcdatamodeld in Sources */,
 				18AC0222143F2D1D0096259D /* AboutViewController.mm in Sources */,
 				18AC0223143F2D1D0096259D /* ActionBar.m in Sources */,
-				18AC0224143F2D1D0096259D /* Asset.m in Sources */,
 				18AC0225143F2D1D0096259D /* BlockerView.m in Sources */,
 				18AC0226143F2D1D0096259D /* CacheImageView.m in Sources */,
 				18AC0227143F2D1D0096259D /* CellButton.m in Sources */,
@@ -879,10 +878,7 @@
 				18AC0232143F2D1D0096259D /* SolyarisViewController.mm in Sources */,
 				18AC0233143F2D1D0096259D /* InformationViewController.mm in Sources */,
 				18AC0234143F2D1D0096259D /* ListingView.m in Sources */,
-				18AC0235143F2D1D0096259D /* Movie.m in Sources */,
-				18AC0236143F2D1D0096259D /* Movie2Person.m in Sources */,
 				18AC0237143F2D1D0096259D /* Node.cpp in Sources */,
-				18AC0238143F2D1D0096259D /* Person.m in Sources */,
 				18AC0239143F2D1D0096259D /* PreferencesViewController.mm in Sources */,
 				18AC023A143F2D1D0096259D /* NSObject+SBJson.m in Sources */,
 				18AC023B143F2D1D0096259D /* SBJsonParser.m in Sources */,
@@ -896,8 +892,6 @@
 				18AC0243143F2D1D0096259D /* SBJsonTokeniser.m in Sources */,
 				18AC0244143F2D1D0096259D /* SBJsonUTF8Stream.m in Sources */,
 				18AC0245143F2D1D0096259D /* SBJsonWriter.m in Sources */,
-				18AC0246143F2D1D0096259D /* Search.m in Sources */,
-				18AC0247143F2D1D0096259D /* SearchResult.m in Sources */,
 				18AC0248143F2D1D0096259D /* SearchResultViewController.mm in Sources */,
 				18AC0249143F2D1D0096259D /* SearchViewController.mm in Sources */,
 				18AC024A143F2D1D0096259D /* SettingsViewController.mm in Sources */,
@@ -909,6 +903,12 @@
 				18AC0250143F2D1D0096259D /* Tooltip.cpp in Sources */,
 				18AC0265143F31AF0096259D /* SolyarisAppDelegate.mm in Sources */,
 				18AC027E143F59F60096259D /* Tracker.m in Sources */,
+				185BEBCD144724ED0007BBCB /* Search.m in Sources */,
+				185BEBD0144724EE0007BBCB /* Movie.m in Sources */,
+				185BEBD3144724EE0007BBCB /* Asset.m in Sources */,
+				185BEBD6144724EE0007BBCB /* Movie2Person.m in Sources */,
+				185BEBD9144724EE0007BBCB /* SearchResult.m in Sources */,
+				185BEBDC144724EE0007BBCB /* Person.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

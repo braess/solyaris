@@ -8,6 +8,7 @@
 
 #import "SolyarisAppDelegate.h"
 #import "SolyarisConstants.h"
+#import "TMDb.h"
 #import "Tracker.h"
 
 /**
@@ -148,6 +149,11 @@
 	
 	// track
 	[Tracker trackEvent:TEventApp action:@"Update" label:appVersion];
+    
+    // reset cache
+    TMDb *tmdb = [[TMDb alloc] init];
+    [tmdb clearCache];
+    [tmdb release];
 	
 	// defaults
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];

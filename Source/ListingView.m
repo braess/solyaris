@@ -620,7 +620,7 @@ static int listingGapInset = 15;
 /* 
  * Sub stuff.
  */
-- (void) layoutSubviews {
+- (void)layoutSubviews {
     
     // offsets
     float oxinfo = 5;

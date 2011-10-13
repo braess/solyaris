@@ -2,7 +2,7 @@
 //  Search.h
 //  Solyaris
 //
-//  Created by CNPP on 8.9.2011.
+//  Created by Beat Raess on 13.10.2011.
 //  Copyright (c) 2011 Beat Raess. All rights reserved.
 //
 
@@ -11,12 +11,18 @@
 
 @class SearchResult;
 
-@interface Search : NSManagedObject {
-@private
-}
+@interface Search : NSManagedObject
+
 @property (nonatomic, retain) NSString * query;
 @property (nonatomic, retain) NSNumber * count;
 @property (nonatomic, retain) NSString * type;
-@property (nonatomic, retain) NSSet* results;
+@property (nonatomic, retain) NSSet *results;
+@end
 
+@interface Search (CoreDataGeneratedAccessors)
+
+- (void)addResultsObject:(SearchResult *)value;
+- (void)removeResultsObject:(SearchResult *)value;
+- (void)addResults:(NSSet *)values;
+- (void)removeResults:(NSSet *)values;
 @end

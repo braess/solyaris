@@ -2,7 +2,7 @@
 //  Asset.h
 //  Solyaris
 //
-//  Created by CNPP on 8.9.2011.
+//  Created by Beat Raess on 13.10.2011.
 //  Copyright (c) 2011 Beat Raess. All rights reserved.
 //
 
@@ -11,13 +11,13 @@
 
 @class Movie, Person;
 
-@interface Asset : NSManagedObject {
-@private
-}
+@interface Asset : NSManagedObject
+
 @property (nonatomic, retain) NSString * size;
 @property (nonatomic, retain) NSString * type;
 @property (nonatomic, retain) NSString * url;
-@property (nonatomic, retain) Movie * movie;
-@property (nonatomic, retain) Person * person;
+@property (nonatomic, retain) NSNumber * sort;
+@property (nonatomic, retain) Movie *movie;
+@property (nonatomic, retain) Person *person;
 
 @end

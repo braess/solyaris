@@ -66,10 +66,10 @@ Node::Node(string idn, double x, double y) {
     ctxts = Color(1,1,1);
     
     // alpha
-    acore = 0.6;
+    acore = 0.75;
     ascore = 1.0;
-    aglow = 0.3;
-    asglow = 0.45;
+    aglow = 0.45;
+    asglow = 0.6;
     
     // textures
     textureNode = gl::Texture(1,1);
@@ -219,7 +219,7 @@ void Node::draw() {
         // core
         float ca = selected ? asglow : aglow;
         gl::color( ColorA(1.0f, 1.0f, 1.0f, ca) ); // alpha channel
-        gl::draw(textureGlow, Rectf(pos.x-core,pos.y-core,pos.x+core,pos.y+core));
+        gl::draw(textureCore, Rectf(pos.x-core,pos.y-core,pos.x+core,pos.y+core));
         
     }
     else {

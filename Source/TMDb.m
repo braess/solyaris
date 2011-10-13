@@ -768,6 +768,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                     asset.type = assetProfile;
                     asset.size = assetSizeThumb;
                     asset.url = [self parseString:[dperson objectForKey:@"profile"]];
+                    asset.sort = [NSNumber numberWithInt:-1];
                     
                     // relation
                     asset.person = person;
@@ -847,6 +848,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 asset.type = assetPoster;
                 asset.size = assetSizeOriginal;
                 asset.url = [self parseString:[dimage objectForKey:@"url"]];
+                asset.sort = [NSNumber numberWithInt:-1];
                 
                 // relation
                 asset.movie = movie;
@@ -867,6 +869,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 asset.type = assetPoster;
                 asset.size = assetSizeMid;
                 asset.url = [self parseString:[dimage objectForKey:@"url"]];
+                asset.sort = [NSNumber numberWithInt:-1];
                 
                 // relation
                 asset.movie = movie;
@@ -887,6 +890,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 asset.type = assetPoster;
                 asset.size = assetSizeThumb;
                 asset.url = [self parseString:[dimage objectForKey:@"url"]];
+                asset.sort = [NSNumber numberWithInt:-1];
                 
                 // relation
                 asset.movie = movie;
@@ -900,6 +904,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         }
         
         // backdrops
+        int bdcount = 0;
         NSArray *backdrops = [djson objectForKey:@"backdrops"];
         for (NSDictionary *dbackdrop in backdrops)	{
             
@@ -918,6 +923,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 asset.type = assetBackdrop;
                 asset.size = assetSizeOriginal;
                 asset.url = [self parseString:[bimage objectForKey:@"url"]];
+                asset.sort = [NSNumber numberWithInt:bdcount++];
                 
                 // relation
                 asset.movie = movie;
@@ -1023,6 +1029,8 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // movies
         NSArray *movies = [djson objectForKey:@"filmography"];
+        NSMutableDictionary *parsedMovies = [[NSMutableDictionary alloc] init];
+         NSMutableDictionary *parsedMovie2Persons = [[NSMutableDictionary alloc] init];
         for (NSDictionary *dmovie in movies)	{
             
             // validate
@@ -1030,7 +1038,10 @@ static NSString* TMDbStore = @"TMDb.sqlite";
             
                 // Movie
                 NSNumber *mid = [self parseNumber:[dmovie objectForKey:@"id"]];
-                Movie *movie = [self cachedMovie:mid];
+                Movie *movie = [parsedMovies objectForKey:mid];
+                if (movie == NULL) {
+                    movie = [self cachedMovie:mid];
+                }
                 if (movie == NULL) {
                     
                     // object
@@ -1048,6 +1059,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                     asset.type = assetPoster;
                     asset.size = assetSizeThumb;
                     asset.url = [self parseString:[dmovie objectForKey:@"poster"]];
+                    asset.sort = [NSNumber numberWithInt:-1];
                     
                     // relation
                     asset.movie = movie;
@@ -1058,7 +1070,10 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 }
                 
                 // Movie2Person
-                Movie2Person *m2p = [self cachedMovie2Person:mid person:pid];
+                Movie2Person *m2p = [parsedMovie2Persons objectForKey:mid];
+                if (m2p == NULL) {
+                    m2p = [self cachedMovie2Person:mid person:pid];
+                }
                 if (m2p == NULL) {
                     
                     // create object
@@ -1083,33 +1098,44 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 
                 // count
                 if ([m2p.type isEqualToString:typePersonDirector]) {
+                    
                     // director
                     dcount++;
                 }
                 else if ([m2p.type isEqualToString:typePersonCrew]) {
+                    
                     // crew
                     ccount++;
                 }
                 else {
+                    
                     // actor
                     acount++;
                 }
                 
                 // add
                 [person addMoviesObject:m2p];
+                [parsedMovies setObject:movie forKey:mid];
+                [parsedMovie2Persons setObject:m2p forKey:mid];
             }
         }
         
-        // type crew/actor
+        // release
+        [parsedMovies release];
+        [parsedMovie2Persons release];
+        
+        // type crew
         if (ccount > acount) {
             person.type = typePersonCrew;
         }
+        
+        // type actor
         else {
             person.type = typePersonActor;
         }
         
         // director
-        if (dcount > acount || dcount > ccount || dcount >= 3) {
+        if (dcount > acount && dcount > ccount) {
             person.type = typePersonDirector;
         }
         
@@ -1137,6 +1163,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 asset.type = assetProfile;
                 asset.size = assetSizeOriginal;
                 asset.url = [self parseString:[dimage objectForKey:@"url"]];
+                asset.sort = [NSNumber numberWithInt:-1];
                 
                 // relation
                 asset.person = person;
@@ -1157,6 +1184,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 asset.type = assetProfile;
                 asset.size = assetSizeMid;
                 asset.url = [self parseString:[dimage objectForKey:@"url"]];
+                asset.sort = [NSNumber numberWithInt:-1];
                 
                 // relation
                 asset.person = person;
@@ -1177,6 +1205,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 asset.type = assetProfile;
                 asset.size = assetSizeThumb;
                 asset.url = [self parseString:[dimage objectForKey:@"url"]];
+                asset.sort = [NSNumber numberWithInt:-1];
                 
                 // relation
                 asset.person = person;
@@ -1352,13 +1381,13 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         if ([updated rangeOfString:@"Directing"].location != NSNotFound) {
             return typePersonDirector;
         }
-        // crew
-        else if ([updated rangeOfString:@"Actors"].location == NSNotFound) {
-            return typePersonCrew;
+        // actor
+        else if ([updated rangeOfString:@"Actors"].location != NSNotFound) {
+            return typePersonActor;
         }
         // actor
         else {
-            return typePersonActor;
+            return typePersonCrew;
         }
     }
 }

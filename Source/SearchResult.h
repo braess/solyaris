@@ -2,7 +2,7 @@
 //  SearchResult.h
 //  Solyaris
 //
-//  Created by CNPP on 8.9.2011.
+//  Created by Beat Raess on 13.10.2011.
 //  Copyright (c) 2011 Beat Raess. All rights reserved.
 //
 
@@ -11,13 +11,12 @@
 
 @class Search;
 
-@interface SearchResult : NSManagedObject {
-@private
-}
+@interface SearchResult : NSManagedObject
+
 @property (nonatomic, retain) NSString * data;
 @property (nonatomic, retain) NSString * thumb;
 @property (nonatomic, retain) NSString * type;
 @property (nonatomic, retain) NSNumber * ref;
-@property (nonatomic, retain) Search * search;
+@property (nonatomic, retain) Search *search;
 
 @end

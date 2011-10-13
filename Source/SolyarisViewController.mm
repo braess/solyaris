@@ -349,7 +349,7 @@
     NodePtr node = solyaris->getNode([nid UTF8String]);
     
     // check
-    if (node != NULL) {
+    if (movie != NULL && node != NULL) {
         
         // formatter
         static NSDateFormatter *yearFormatter;
@@ -377,7 +377,7 @@
         for (Movie2Person *m2p in persons) {
             
             // exclude crew
-            if (! crew_enabled && [m2p.person.type isEqualToString:typePersonCrew]) {
+            if (! crew_enabled && [m2p.type isEqualToString:typePersonCrew]) {
                 continue;
             }
             
@@ -391,7 +391,7 @@
                 // new child
                 child = solyaris->createNode([cid UTF8String],[typePerson UTF8String], node->pos.x, node->pos.y);
                 child->renderLabel([m2p.person.name UTF8String]);
-                child->updateType([m2p.person.type UTF8String]);
+                child->updateType([m2p.type UTF8String]);
             }
             
             // add to node
@@ -423,11 +423,10 @@
             
         }
         
-        
-        // loaded
-        node->loaded();
-        
     }
+    
+    // loaded
+    node->loaded();
 
 }
 
@@ -439,12 +438,13 @@
 - (void)loadedPerson:(Person*)person {
     DLog();
     
+    
     // node
     NSString *nid = [self makeNodeId:person.pid type:typePerson];
     NodePtr node = solyaris->getNode([nid UTF8String]);
     
-    // check
-    if (node != NULL) {
+    // check node
+    if (person != NULL && node != NULL) {
         
         // formatter
         static NSDateFormatter *yearFormatter;
@@ -673,12 +673,17 @@
 - (void)informationSelected:(NSNumber *)nid type:(NSString *)type {
     DLog();
     
+    // type
+    NSString *t = typePerson;
+    if ([type isEqualToString:typeMovie]) {
+        t = typeMovie;
+    }
     
     // node
-    NSString *iid = [self makeNodeId:nid type:type];
+    NSString *iid = [self makeNodeId:nid type:t];
     NodePtr node = solyaris->getNode([iid UTF8String]);
     if (node == NULL) {
-        node = solyaris->createNode([iid UTF8String],[type UTF8String], 0, 0);
+        node = solyaris->createNode([iid UTF8String],[t UTF8String], 0, 0);
     }
     
     // active
@@ -692,7 +697,7 @@
         node->load();
         
         // movie
-        if ([type isEqualToString:typeMovie]) {
+        if ([t isEqualToString:typeMovie]) {
             [tmdb movie:nid];
         }
         // person
