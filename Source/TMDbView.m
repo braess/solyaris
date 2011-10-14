@@ -160,7 +160,7 @@ static int tmdbGapInset = 15;
             
             // image
             CacheImageView *civ = [[[CacheImageView alloc] init] autorelease];
-            [civ lazyloadFromURL:a.url];
+            [civ lazyloadImage:a.url];
             
             // add 
             [backdrops addObject:civ];

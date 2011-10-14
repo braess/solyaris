@@ -20,19 +20,22 @@
     
     // loader
     UIImageView *_imageView;
-    UIImage *_placeholderImage;
     UIActivityIndicatorView *_activityIndicator;
+    UIImageView *_iconError;
     
     // private
     @private
-    NSString *_url;
+    NSString *_link;
     bool loaded;
+    bool placeholder;
 }
 
-// Business
-- (void)placeholderImage:(UIImage*)img;
-- (void)loadFromURL:(NSString*)link;
-- (void)lazyloadFromURL:(NSString*)link;
+
+// New Business
+- (void)placeholderImage:(UIImage *)img;
+- (void)loadImage:(NSString*)link;
+- (void)lazyloadImage:(NSString*)link;
 - (void)load;
++ (void)clearCache;
 
 @end

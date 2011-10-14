@@ -872,6 +872,9 @@
     // api
     [tmdb clearCache];
     
+    // images
+    [CacheImageView clearCache];
+    
     // reset 
     [self reset];
     

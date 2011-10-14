@@ -9,6 +9,7 @@
 #import "SolyarisAppDelegate.h"
 #import "SolyarisConstants.h"
 #import "TMDb.h"
+#import "CacheImageView.h"
 #import "Tracker.h"
 
 /**
@@ -149,10 +150,13 @@
 	// track
 	[Tracker trackEvent:TEventApp action:@"Update" label:appVersion];
     
-    // reset cache
+    // reset tmdb cache
     TMDb *tmdb = [[TMDb alloc] init];
     [tmdb clearCache];
     [tmdb release];
+    
+    // reset image cache
+    [CacheImageView clearCache];
 	
 	// defaults
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];

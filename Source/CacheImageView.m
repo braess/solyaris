@@ -9,6 +9,33 @@
 #import "CacheImageView.h"
 
 
+
+/**
+ * Cache Stack.
+ */
+@interface CacheImageView (CacheStack)
++ (NSString*)cacheDirectory;
+- (NSString*)cacheFilePath;
+- (BOOL)cacheImageExists;
+- (void)cacheImageLoad;
+@end
+
+/**
+ * Load Stack.
+ */
+@interface CacheImageView (URLStack)
+- (void)urlImageLoad;
+@end
+
+
+/**
+ * Animation Stack.
+ */
+@interface CacheImageView (AnimationStack)
+- (void)animationImageLoaded;
+@end
+
+
 /**
  * A simple cache image view.
  */
@@ -20,6 +47,7 @@
 
 // constants
 #define kAnimateTimeImageLoaded	0.18f
+#define kCacheImageFolder       @"cimages"
 
 
 
@@ -58,6 +86,20 @@
         _activityIndicator = [activityIndicator retain];
         [self addSubview:_activityIndicator];
         [activityIndicator release];
+        
+        // error
+		UIImageView *iconError = [[UIImageView alloc] initWithFrame:CGRectZero];
+        iconError.autoresizingMask = ( UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin );
+		iconError.image = [UIImage imageNamed:@"icon_image_error.png"];
+		iconError.backgroundColor = [UIColor clearColor];
+		iconError.contentMode = UIViewContentModeCenter;
+		iconError.hidden = YES;
+        _iconError = [iconError retain];
+        [self addSubview:_iconError];
+        [iconError release];
+        
+        // link
+        _link = @"a-cached-image.png";
  
     }
     return self;
@@ -74,13 +116,17 @@
     // activity
     _activityIndicator.center = CGPointMake(self.frame.size.width/2.0, self.frame.size.height/2.0);
     
+    // error
+    _iconError.frame = CGRectMake(self.frame.size.width/2.0 - 24, self.frame.size.height/2.0 - 24, 48, 48);
+    
     // sup
     [super layoutSubviews];
 }
 
 
+
 #pragma mark -
-#pragma mark Business
+#pragma mark New Business
 
 
 /**
@@ -90,76 +136,114 @@
     GLog();
     
     // set
-    _placeholderImage = [img retain];
-    _imageView.image = _placeholderImage;
+    _imageView.image = [img retain];
     [self setNeedsLayout];
+    
+    // placeholder
+    placeholder = YES;
+    
 }
 
 /**
  * Loads an image.
  */
-- (void)loadFromURL:(NSString*)link {
+- (void)loadImage:(NSString *)link {
     GLog();
     
-    // url
-    _url = [link copy];
+    // reference
+    _link = [link copy];
     
-    // loader
-    _imageView.image = _placeholderImage;
-    [self setNeedsLayout];
-	
-    // connection & data
-    if (_connection!=nil) { 
-        [_connection release]; 
-    } 
-	if (_receivedData!=nil) { 
-        [_receivedData release]; 
-    }
+    // load
+    [self load];
     
-    // url
-    NSURL *url = [NSURL URLWithString: link];
-	
-    // request
-	NSURLRequest* request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:20.0];
-	_connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
 }
-
 
 /**
  * Lazyloads an image.
  */
-- (void)lazyloadFromURL:(NSString *)link {
+- (void)lazyloadImage:(NSString *)link {
     GLog();
     
-    // url
-    _url = [link copy];
+    // reference
+    _link = [link copy];
+    
+
+    // activity
+    [_activityIndicator startAnimating];
+    _activityIndicator.hidden = NO;
+
 }
+
 
 /**
  * Loads the image.
  */
 - (void)load {
+    GLog();
     
     // check
     if (! loaded) {
         
-        // activity
-        _activityIndicator.hidden = NO;
-        
-        // load
-        [self loadFromURL:_url];
+        // cached
+        if ([self cacheImageExists]) {
+            [self cacheImageLoad];
+        }
+        // from url
+        else {
+            [self urlImageLoad];
+        }
     }
 }
 
 
+/**
+ * Clears the cache.
+ */
++ (void)clearCache {
+    FLog();
+    
+    // remove dir
+    NSError *error = nil;
+    [[NSFileManager defaultManager] removeItemAtPath:[CacheImageView cacheDirectory] error:nil];
+    if (error) {
+         NSLog(@"CacheImage Error: %@", [error userInfo]);
+    }
+
+    
+}
+
 
 #pragma mark -
-#pragma mark Delegate
+#pragma mark URL Connection
+
+
+/*
+ * Loads an image from the linkurl.
+ */
+- (void)urlImageLoad {
+    FLog();
+    
+    // connection & data
+    if (_connection!=nil) { 
+        [_connection release]; 
+    } 
+    if (_receivedData!=nil) { 
+        [_receivedData release]; 
+    }
+    
+    // url
+    NSURL *url = [NSURL URLWithString: _link];
+    
+    // request
+    NSURLRequest* request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:20.0];
+    _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self]; 
+}
 
 /*
  * Connection.
  */
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    
 	// every time we get an response it might be a forward, so we discard what data we have
 	[_receivedData release], _receivedData = nil;
     
@@ -172,12 +256,13 @@
 		}
 	}
     
+    // prepare data
 	_receivedData = [[NSMutableData alloc] init];
 }
-
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
 	[_receivedData appendData:data];
 }
+
 
 /*
  * Loaded.
@@ -187,16 +272,17 @@
     
     // hide activity
     _activityIndicator.hidden = YES;
+    [_activityIndicator stopAnimating];
 	
 	// make an image view for the image
     _imageView.image = [UIImage imageWithData:_receivedData];
     
-    // animate
-    _imageView.alpha = 0;
-	[UIView beginAnimations:@"cacheimage_loaded" context:nil];
-	[UIView setAnimationDuration:kAnimateTimeImageLoaded];
-    _imageView.alpha = 1.3f;
-	[UIView commitAnimations];
+    // cache it
+    NSError *error = nil;
+    [[NSFileManager defaultManager] createDirectoryAtPath:[CacheImageView cacheDirectory] withIntermediateDirectories:YES attributes:nil error:&error];
+    if (! error) {
+        [_receivedData writeToFile:[self cacheFilePath] atomically:YES];
+    }
     
     // release connection
 	[_connection release];
@@ -206,9 +292,113 @@
 	[_receivedData release]; 
 	_receivedData=nil;
     
+    
     // loaded
     loaded = YES;
+    
+    // show
+    [self animationImageLoaded];
 }
+
+/*
+ * Somethings fishy.
+ */
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    
+    // release connection
+	[_connection release];
+	_connection=nil;
+    
+    // release data
+	[_receivedData release]; 
+	_receivedData=nil;
+    
+    // hide activity
+    _activityIndicator.hidden = YES;
+    [_activityIndicator stopAnimating];
+    
+    
+    // error
+    if (! placeholder) {
+        _iconError.hidden = NO;
+    }
+  
+}
+
+
+
+#pragma mark -
+#pragma mark Cache
+
+
+/*
+ * Loads a cached image.
+ */
+- (void)cacheImageLoad {
+    FLog();
+    
+    // hide activity
+    _activityIndicator.hidden = YES;
+    [_activityIndicator stopAnimating];
+	
+	// make an image view for the image
+    _imageView.image = [UIImage imageWithContentsOfFile: [self cacheFilePath]];
+    
+    // loaded
+    loaded = YES;
+    
+    // show
+    [self animationImageLoaded];
+    
+}
+
+
+/*
+ * Path to the cache image.
+ */
+- (NSString*)cacheFilePath {
+    
+    // file
+    NSString *file = [_link stringByReplacingOccurrencesOfString:@"/" withString:@"$"];
+    
+    // path
+    return [[CacheImageView cacheDirectory] stringByAppendingPathComponent:file];
+    
+}
+
+/*
+ * Returns the path to the directory.
+ */
++ (NSString *)cacheDirectory {
+	return [NSString stringWithFormat:@"%@/%@",[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject],kCacheImageFolder];
+}
+
+/*
+ * Checks if cached.
+ */
+- (BOOL)cacheImageExists {
+    return [[NSFileManager defaultManager] fileExistsAtPath: [self cacheFilePath]];
+}
+
+
+
+#pragma mark -
+#pragma mark Animation Stack
+
+/*
+ * Animation loaded.
+ */
+- (void)animationImageLoaded {
+    GLog();
+    
+    // animate
+    _imageView.alpha = 0;
+	[UIView beginAnimations:@"cacheimage_loaded" context:nil];
+	[UIView setAnimationDuration:kAnimateTimeImageLoaded];
+    _imageView.alpha = 1.0f;
+	[UIView commitAnimations];
+}
+
 
 
 #pragma mark -
@@ -226,8 +416,10 @@
     
     // ui
     [_imageView release];
-    [_placeholderImage release];
     [_activityIndicator release];
+    if (_link != NULL) {
+        [_link release];
+    }
     
     // view
     [super dealloc];

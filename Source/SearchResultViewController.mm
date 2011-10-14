@@ -312,7 +312,7 @@
  * Loads the thumb.
  */
 - (void)loadThumb:(NSString *)thumb type:(NSString *)type {
-    DLog();
+    GLog();
     
     if ([type isEqualToString:typeMovie]) {
         [_thumbImageView placeholderImage:[UIImage imageNamed:@"placeholder_search_movie.png"]];
@@ -320,7 +320,7 @@
     else {
         [_thumbImageView placeholderImage:[UIImage imageNamed:@"placeholder_search_person.png"]];
     }
-    [_thumbImageView loadFromURL:thumb];
+    [_thumbImageView loadImage:thumb];
 }
 
 #pragma mark -

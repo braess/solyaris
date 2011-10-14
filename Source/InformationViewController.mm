@@ -1257,7 +1257,7 @@ static int informationGapInset = 15;
     
     
     // header
-    [_imagePoster loadFromURL:poster];
+    [_imagePoster loadImage:poster];
     [_labelName setText:movie.name];
     [_labelTagline setText:movie.tagline];
     [_labelReleased setText:(movie.released) ? [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:movie.released]] : @"-"];
@@ -1446,7 +1446,7 @@ static int informationGapInset = 15;
     
     
     // header
-    [_imageProfile loadFromURL:profile];
+    [_imageProfile loadImage:profile];
     [_labelName setText:person.name];
     [_labelBirthday setText:person.birthday ? [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:person.birthday]] : @"-" ];
     [_labelBirthplace setText: (person.birthplace && ! [person.birthplace isEqualToString:@""]) ? person.birthplace : @"-"];
