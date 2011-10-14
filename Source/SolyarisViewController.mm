@@ -781,10 +781,8 @@
  * Popover dismissed.
  */
 -(void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
-    FLog();
+    GLog();
     
-    // cancel
-    [tmdb cancel];
 }
 
 
@@ -925,15 +923,14 @@
         // node
         NSNumber *dbid = [self toDBId:nid];
         
-        
         // type
-        NSString *type = typePerson;
-        if ([type isEqualToString:typeMovie]) {
-            type = typeMovie;
+        NSString *type = [NSString stringWithCString:node->type.c_str() encoding:[NSString defaultCStringEncoding]];
+        if (! [type isEqualToString:typeMovie]) {
+            type = typePerson;
         }
         
         // track
-        [Tracker trackEvent:TEventLoadGraph action:type label:[NSString stringWithCString:node->label.c_str() encoding:NSUTF8StringEncoding]];
+        [Tracker trackEvent:TEventLoadGraph action:type label:type];
         
         
         // delay

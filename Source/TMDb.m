@@ -98,7 +98,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // fields
         queue = [[NSOperationQueue alloc] init];
-        [queue setMaxConcurrentOperationCount:10];
+        [queue setMaxConcurrentOperationCount:3];
         
         // context
         NSManagedObjectContext *context = [self managedObjectContext];
