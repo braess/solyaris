@@ -1,13 +1,44 @@
+-----------------------------------------------------------------
+Solyaris iPad App / A Visual Movie Browser
+-----------------------------------------------------------------
 
+Solyaris is an exploration into organic information design to 
+visualise movies, actors, directors and their relationship. 
+
+Search the entire Open Movie Database (TMDb) collection for 
+movies, actors or directors. Expand nodes to gather information 
+about their connections. Learn about the cast and filmography. 
+
+All information courtesy of TMDb, IMDb and Wikipedia. This product 
+uses the TMDb API but is not endorsed or certified by The Open 
+Movie Database or any other third party.
+
+Made with Cinder.
+
+
+Project URL:
+http://solyaris.cecinestpasparis.net
+
+App Store:
 
 
 
 -----------------------------------------------------------------
-COMPONENTS
+Frameworks & COMPONENTS
 -----------------------------------------------------------------
+
+
+Cinder
+-----------------------------------------------------------------
+- Author
+The Barbarian Group (Andrew Bell, Hai Nguyen) 
+
+- Project
+http://libcinder.org/
+
 
 SBJSON
-------
+-----------------------------------------------------------------
 - Author
 Stig Brautaset
 http://stig.brautaset.org

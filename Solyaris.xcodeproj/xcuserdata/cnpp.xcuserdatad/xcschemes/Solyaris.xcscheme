@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-               BuildableName = "Solyaris.app"
+               BuildableName = "solyaris.app"
                BlueprintName = "Solyaris"
                ReferencedContainer = "container:Solyaris.xcodeproj">
             </BuildableReference>
@@ -32,7 +32,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Solyaris.app"
+            BuildableName = "solyaris.app"
             BlueprintName = "Solyaris"
             ReferencedContainer = "container:Solyaris.xcodeproj">
          </BuildableReference>
@@ -53,7 +53,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Solyaris.app"
+            BuildableName = "solyaris.app"
             BlueprintName = "Solyaris"
             ReferencedContainer = "container:Solyaris.xcodeproj">
          </BuildableReference>
@@ -73,7 +73,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Solyaris.app"
+            BuildableName = "solyaris.app"
             BlueprintName = "Solyaris"
             ReferencedContainer = "container:Solyaris.xcodeproj">
          </BuildableReference>

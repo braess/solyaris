@@ -1,0 +1,19 @@
+-----------------------------------------------------------------
+Notes
+-----------------------------------------------------------------
+
+
+Cinder
+-----------------------------------------------------------------
+Build against GitHub source.
+
+- change compiler
+LLVM GCC 4.2
+
+- modify some build settings
+Symbols Hidden by Default	No
+
+- compile against ios5 for all targets
+
+- rename (dublicate) lib to avoid Apple Match-O Linker Error
+cinder/lib/libcinder-iphone_d.a -> cinder/lib/libcinder-iphone.a
