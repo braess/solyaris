@@ -726,9 +726,7 @@ static int informationGapInset = 15;
         [self resizeFull];
     }
     fullscreen = ! fullscreen;
-    
-    // track
-    [Tracker trackEvent:TEventInfo action:@"Resize" label:fullscreen ? @"fullscreen" : @"default"];
+
 }
 - (void)resizeFull {
     GLog();

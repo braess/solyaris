@@ -8,7 +8,7 @@
 
 #import "SlidesView.h"
 #import "CacheImageView.h"
-#import "Tracker.h"
+
 
 /**
  * SlidesView.
@@ -194,9 +194,7 @@
         // image
         CacheImageView *civ = [_slides objectAtIndex:currentSlide];
         [civ load];
-        
-        // track
-        [Tracker trackEvent:TEventInfo action:@"Slides" label:_title];
+
     }
 }
 

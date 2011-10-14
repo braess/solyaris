@@ -923,8 +923,14 @@
         node->load();
         
         // node
-        NSString *type = [NSString stringWithCString:node->type.c_str() encoding:[NSString defaultCStringEncoding]];
         NSNumber *dbid = [self toDBId:nid];
+        
+        
+        // type
+        NSString *type = typePerson;
+        if ([type isEqualToString:typeMovie]) {
+            type = typeMovie;
+        }
         
         // track
         [Tracker trackEvent:TEventLoadGraph action:type label:[NSString stringWithCString:node->label.c_str() encoding:NSUTF8StringEncoding]];

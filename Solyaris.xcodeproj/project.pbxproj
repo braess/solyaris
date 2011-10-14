@@ -995,7 +995,7 @@
 					"\"$(SRCROOT)/Source/GANTracker\"",
 				);
 				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
-					"\"$(CINDER_PATH)/lib/libcinder-iphone.a\"",
+					"\"$(CINDER_PATH)/lib/libcinder-iphone_d.a\"",
 					"-lz",
 				);
 				"OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]" = (
