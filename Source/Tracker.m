@@ -50,8 +50,8 @@ static const NSInteger kGANDispatchPeriodSec = 20;
                                                  delegate:nil];
 	
 	// ios variable
-    NSString *version = [device systemVersion];
-	[[GANTracker sharedTracker] setCustomVariableAtIndex:TrackerVariableIOS+1 name:@"ios" value:version scope:kGANSessionScope withError:&error]
+    NSString *version = [[UIDevice currentDevice] systemVersion];
+	[[GANTracker sharedTracker] setCustomVariableAtIndex:TrackerVariableIOS name:@"ios" value:version scope:kGANSessionScope withError:nil];
     #else
     NSLog(@"Tracker: start");
     #endif
@@ -91,7 +91,7 @@ static const NSInteger kGANDispatchPeriodSec = 20;
 	
     // track page view
     #ifndef DEBUG
-	[[GANTracker sharedTracker] trackPageview:page withError:&error]
+	[[GANTracker sharedTracker] trackPageview:page withError:nil];
     #else
     NSLog(@"Tracker: Page %@",page);
     #endif
@@ -104,7 +104,7 @@ static const NSInteger kGANDispatchPeriodSec = 20;
 	
     // track event
     #ifndef DEBUG
-	[[GANTracker sharedTracker] trackEvent:category action:action label:label value:-1 withError:&error]
+	[[GANTracker sharedTracker] trackEvent:category action:action label:label value:-1 withError:nil];
     #else
     NSLog(@"Tracker: Event %@ %@ %@",category,action,label);
     #endif

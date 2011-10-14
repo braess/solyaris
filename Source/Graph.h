@@ -71,7 +71,7 @@ class Graph {
     NodePtr getNode(string nid);
     EdgePtr createEdge(string eid, string type, NodePtr n1, NodePtr n2);
     EdgePtr getEdge(string nid1, string nid2);
-    void tooltip();
+    void tooltip(int tid);
     
     
     // private
@@ -100,8 +100,9 @@ class Graph {
     // touched nodes
     map<int, NodePtr> touched;
     
-    // tooltip
-    Tooltip ttip;
+    // tooltips
+    int nbttips;
+    map<int, Tooltip> tooltips;
     bool tooltip_disabled;
     
     // Settings

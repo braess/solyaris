@@ -66,9 +66,11 @@ Node::Node(string idn, double x, double y) {
     ctxts = Color(1,1,1);
     
     // alpha
-    acore = 0.85;
-    ascore = 1.0;
-    aglow = 0.3;
+    anode = 0.51;
+    asnode = 0.9;
+    acore = 0.6;
+    ascore = 0.9;
+    aglow = 0.18;
     asglow = 0.45;
     
     // textures
@@ -209,7 +211,7 @@ void Node::draw() {
     if (active || loading) {
         
         // core
-        float ca = selected ? asglow : aglow;
+        float ca = selected ? ascore : acore;
         gl::color( ColorA(1.0f, 1.0f, 1.0f, ca) ); // alpha channel
         gl::draw(textureCore, Rectf(pos.x-core,pos.y-core,pos.x+core,pos.y+core));
         
@@ -226,7 +228,7 @@ void Node::draw() {
     else {
         
         // node
-        float na = selected ? asglow : aglow;
+        float na = selected ? asnode : anode;
         gl::color( ColorA(1.0f, 1.0f, 1.0f, na) ); // alpha channel
         gl::draw(textureNode, Rectf(pos.x-core,pos.y-core,pos.x+core,pos.y+core));
         

@@ -22,6 +22,12 @@
 
 #import <Foundation/Foundation.h>
 
+//  Variables
+enum {
+    TrackerVariables,
+	TrackerVariableIOS
+};
+
 // Categories
 #define TEventApp			@"App"
 #define TEventSearch        @"Search"

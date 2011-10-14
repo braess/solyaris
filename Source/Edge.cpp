@@ -38,8 +38,8 @@ Edge::Edge(string ide, NodePtr n1, NodePtr n2) {
     
     // color
     cstroke = Color(0.3,0.3,0.3);
-    cstrokea = Color(0.54,0.54,0.54);
-    cstrokes = Color(0.9,0.9,0.9);
+    cstrokea = Color(0.45,0.45,0.45);
+    cstrokes = Color(0.6,0.6,0.6);
     
     ctxt = Color(0.85,0.85,0.85);
     ctxts = Color(1,1,1);
@@ -274,7 +274,7 @@ bool Edge::isVisible() {
     }
     return v;
 }
-bool Edge::isTouched() {
+bool Edge::isTouched(NodePtr n) {
     bool touched = false;
     
     // nodes
@@ -283,7 +283,7 @@ bool Edge::isTouched() {
     if (node1 && node2) {
         
         // selected
-        if (this->isVisible() && (node1->isSelected() || node2->isSelected())) {
+        if (this->isVisible() && (node1->isSelected() || node2->isSelected()) && (node1 == n || node2 == n)) {
             touched = true;
         }
     }

@@ -41,9 +41,11 @@
 - (NSNumber*)updateOrder:(NSNumber*)original updated:(NSNumber*)updated;
 - (NSString*)updateType:(NSString*)original updated:(NSString*)updated;
 - (BOOL)isEmpty:(id)thing;
-- (BOOL)validSearchResult:(NSDictionary*)dresult;
+- (BOOL)validSearch:(NSDictionary*)dresult;
 - (BOOL)validMovie:(NSDictionary*)dmovie;
 - (BOOL)validPerson:(NSDictionary*)dperson;
+- (BOOL)validResponse:(NSString*)response;
+- (BOOL)validResult:(NSString*)result;
 @end
 
 
@@ -141,7 +143,6 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     DLog();
     
     // queue
-    //[queue cancelAllOperations];
     [queue addOperationWithBlock:^{
         
         
@@ -557,7 +558,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
         
         // result
-        if (([json rangeOfString : @"Nothing found."].location == NSNotFound)) {
+        if ([self validResponse:json] && [self validResult:json]) {
             
             // parse
             NSArray *results = [parser objectWithString:json error:nil];
@@ -565,7 +566,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 SearchResult *searchResult = (SearchResult*)[NSEntityDescription insertNewObjectForEntityForName:@"SearchResult" inManagedObjectContext:managedObjectContext];
                 
                 // validate
-                if ([self validSearchResult:dresult]) {
+                if ([self validSearch:dresult]) {
                     
                     // dta
                     NSString *dta = [self parseString:[dresult objectForKey:@"name"]];
@@ -650,7 +651,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
         
         // result
-        if (([json rangeOfString : @"Nothing found."].location == NSNotFound)) {
+        if ([self validResponse:json] && [self validResult:json]) {
             
             // parse
             NSArray *results = [parser objectWithString:json error:nil];
@@ -658,7 +659,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 SearchResult *searchResult = (SearchResult*)[NSEntityDescription insertNewObjectForEntityForName:@"SearchResult" inManagedObjectContext:managedObjectContext];
                 
                 // validate
-                if ([self validSearchResult:dresult]) {
+                if ([self validSearch:dresult]) {
                 
                     // data
                     searchResult.ref = [self parseNumber:[dresult objectForKey:@"id"]];
@@ -763,9 +764,24 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     SBJsonParser *parser = [[SBJsonParser alloc] init];
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     
+    // response
+    if (! [self validResponse:json]) {
+        NSLog(@"Invalid response %i",[mid intValue]);
+        NSLog(@"%@",json);
+        
+        // note
+        if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
+            APIError *apiError = [[[APIError alloc] initError:mid type:typeMovie message:NSLocalizedString(@"Service currently unavailable.", @"Service currently unavailable.")] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
+        }
+        
+        // nothing
+        return NULL;
+    }
+    
     // result
     NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
-    if (([json rangeOfString : @"Nothing found."].location != NSNotFound) || ! [self validMovie:djson]) {
+    if (! [self validResult:json] || ! [self validMovie:djson]) {
         NSLog(@"Movie not found %i",[mid intValue]);
         NSLog(@"%@",json);
         
@@ -1075,10 +1091,25 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     //NSLog(@"%@",json);
     
     
+    // response
+    if (! [self validResponse:json]) {
+        NSLog(@"Invalid response %i",[pid intValue]);
+        NSLog(@"%@",json);
+        
+        // note
+        if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
+            APIError *apiError = [[[APIError alloc] initError:pid type:typePerson message:NSLocalizedString(@"Service currently unavailable.", @"Service currently unavailable.")] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
+        }
+        
+        // nothing
+        return NULL;
+    }
+    
+    
     // result
     NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
-    if (([json rangeOfString : @"Nothing found."].location != NSNotFound) || ! [self validPerson:djson]) {
-        
+    if (! [self validResult:json] || ! [self validPerson:djson]) {
         NSLog(@"Person not found %i",[pid intValue]);
         NSLog(@"%@",json);
         
@@ -1096,7 +1127,6 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // validate
     if ([self validPerson:djson]) {
             
-        
         // movie
         person.pid = [self parseNumber:[djson objectForKey:@"id"]];
         person.name = [self parseString:[djson objectForKey:@"name"]];
@@ -1506,7 +1536,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 /*
  * Validate SearchResult.
  */
-- (BOOL)validSearchResult:(NSDictionary *)dresult {
+- (BOOL)validSearch:(NSDictionary *)dresult {
     
     // exclude adult
     if ([[dresult objectForKey:@"adult"] boolValue]) {
@@ -1561,7 +1591,33 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     return YES;
 }
 
+/*
+ * Validate server response.
+ */
+- (BOOL)validResponse:(NSString *)response {
+    
+    // unavailable
+    if ([response rangeOfString : @"503 Service Unavailable"].location != NSNotFound) {
+        return NO;
+    }
+    
+    // suppose that's ok
+    return YES;
+}
 
+/*
+ * Validate result.
+ */
+- (BOOL)validResult:(NSString *)result {
+    
+    // nothing found
+    if ([result rangeOfString : @"Nothing found."].location != NSNotFound) {
+        return NO;
+    }
+    
+    // yup
+    return YES;
+}
 
 
 #pragma mark -

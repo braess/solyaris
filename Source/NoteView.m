@@ -57,11 +57,15 @@
 	// init self
     if (self != nil) {
         
-        
+        // self
+        self.opaque = YES;
+		self.backgroundColor = [UIColor clearColor];
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
 		
 		// transparent view
 		CGRect nframe = CGRectMake((frame.size.width/2.0)-nvs/2.0, (frame.size.height/2.0)-nvs/2.0, nvs, nvs);
 		UIView *note = [[UIView alloc] initWithFrame:nframe];
+        note.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
 		note.backgroundColor = [UIColor whiteColor];
 		note.alpha = kNoteOpacity;
 		note.layer.cornerRadius = 10;
@@ -149,8 +153,6 @@
 		_note.hidden = YES;
 		
 		// add
-		self.opaque = YES;
-		self.backgroundColor = [UIColor clearColor];
 		[self addSubview:_note];
 		
 		// hide

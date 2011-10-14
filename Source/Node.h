@@ -146,6 +146,7 @@ class Node {
     // Color
     Color ctxt;
     Color ctxts;
+    float anode,asnode;
     float acore,ascore;
     float aglow,asglow;
     

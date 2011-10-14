@@ -66,7 +66,7 @@ class Edge {
     void updateType(string t);
     bool isActive();
     bool isVisible();
-    bool isTouched();
+    bool isTouched(NodePtr n);
     string info();
     
     

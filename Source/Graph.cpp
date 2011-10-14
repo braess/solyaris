@@ -32,7 +32,10 @@ Graph::Graph(int w, int h, int o) {
     harea = 6;
     
     // tooltip
-    ttip = Tooltip(Vec2d(w,h));
+    nbttips = 10;
+    for (int t = 1; t <= nbttips; t++) {
+        tooltips[t] = Tooltip(Vec2d(w,h));
+    }
     tooltip_disabled = false;
     
     // layout
@@ -59,7 +62,9 @@ void Graph::resize(int w, int h, int o) {
     orientation = o;
     
     // tooltip
-    ttip.resize(w,h);
+    for (int t = 1; t <= nbttips; t++) {
+        tooltips[t].resize(w,h);
+    }
 }
 
 
@@ -187,7 +192,9 @@ void Graph::update() {
     }
     
     // tooltip
-    ttip.update();
+    for (int t = 1; t <= nbttips; t++) {
+        tooltips[t].update();
+    }
 
 }
 
@@ -221,7 +228,9 @@ void Graph::draw() {
     }
     
     // tooltip
-    ttip.draw();
+    for (int t = 1; t <= nbttips; t++) {
+        tooltips[t].draw();
+    }
 
 
 }
@@ -253,7 +262,6 @@ void Graph::reset() {
  */
 void Graph::touchBegan(Vec2d tpos, int tid) {
     GLog();
-    std::cout << tid << std::endl;
     
     // nodes
     for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
@@ -273,8 +281,8 @@ void Graph::touchBegan(Vec2d tpos, int tid) {
                 touched[tid]->touched();
                 
                 // set the tooltip
-                this->tooltip();
-                ttip.position(tpos);
+                this->tooltip(tid);
+                tooltips[tid].position(tpos);
                 
                 
                 // have a break
@@ -297,7 +305,7 @@ void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
         touched[tid]->moveTo(tpos);
         
         // position
-        ttip.position(tpos);
+        tooltips[tid].position(tpos);
 
     }
     // graph
@@ -319,7 +327,7 @@ void Graph::touchEnded(Vec2d tpos, int tid){
         touched[tid]->untouched();
         
         // hide tooltip
-        ttip.hide();
+        tooltips[tid].hide();
     }
     // graph
     else {
@@ -407,7 +415,6 @@ void Graph::repulse() {
  */
 NodePtr Graph::createNode(string nid, string type, double x, double y) {
     GLog();
-    
     
     // node map
     nmap.insert(make_pair(nid, nodes.size()));
@@ -509,7 +516,7 @@ EdgePtr Graph::getEdge(string nid1, string nid2) {
 /**
  * Sets the tooltip.
  */
-void Graph::tooltip() {
+void Graph::tooltip(int tid) {
     GLog();
     
     // enabled
@@ -521,7 +528,7 @@ void Graph::tooltip() {
         for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
             
             // touched
-            if ((*edge)->isTouched()) {
+            if ((*edge)->isTouched(touched[tid])) {
                 etouch = true;
                 txts.push_back((*edge)->info());
             }
@@ -529,8 +536,8 @@ void Graph::tooltip() {
         
         // touched
         if (etouch && txts.size() > 0) {
-            ttip.renderText(txts);
-            ttip.show();
+            tooltips[tid].renderText(txts);
+            tooltips[tid].show();
         }
         
     }

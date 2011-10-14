@@ -199,7 +199,7 @@
     _iconError.hidden = YES;
     
     // check
-    if (! loaded) {
+    if (! loaded && _link != NULL && ! [_link isEqualToString:@""]) {
         
         // cached
         if ([self cacheImageExists]) {
