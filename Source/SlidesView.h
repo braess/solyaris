@@ -42,6 +42,7 @@
     
 	// data
 	NSMutableArray *_slides;
+    NSMutableString *_title;
 	
 	// private
     @private
@@ -52,6 +53,7 @@
 
 // Business
 - (void)setSlides:(NSArray*)slides;
+- (void)setSlidesTitle:(NSString*)title;
 - (void)load;
 
 @end

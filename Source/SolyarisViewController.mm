@@ -126,6 +126,7 @@
     self.view = [[[UIView alloc] initWithFrame:frame] autorelease];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.view.opaque = NO;
+    self.view.multipleTouchEnabled = YES;
     [window addSubview:self.view];
     
     

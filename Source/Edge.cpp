@@ -38,7 +38,7 @@ Edge::Edge(string ide, NodePtr n1, NodePtr n2) {
     
     // color
     cstroke = Color(0.3,0.3,0.3);
-    cstrokea = Color(0.6,0.6,0.6);
+    cstrokea = Color(0.54,0.54,0.54);
     cstrokes = Color(0.9,0.9,0.9);
     
     ctxt = Color(0.85,0.85,0.85);
@@ -167,6 +167,9 @@ void Edge::draw() {
             // and pop it goes
             gl::popMatrices();
         }
+        
+        // reset
+        gl::disableAlphaBlending();
     }
     
 

@@ -10,7 +10,7 @@
 #import "SearchViewController.h"
 #import "SolyarisAppDelegate.h"
 #import "SolyarisConstants.h"
-
+#import "Tracker.h"
 
 /**
  * Helper Stack.
@@ -389,6 +389,9 @@
  */
 - (void)actionReset:(id)sender {
 	DLog();
+    
+    // track
+    [Tracker trackEvent:TEventSearch action:@"reset" label:@""];
 
     // reset
     if (delegate && [delegate respondsToSelector:@selector(reset)]) {

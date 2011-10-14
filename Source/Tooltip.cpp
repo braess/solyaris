@@ -103,6 +103,9 @@ void Tooltip::draw() {
     // draw
     gl::draw(textureText, Vec2d(px,py)+inset);
     
+    // reset
+    gl::disableAlphaBlending();
+    
     
 }
 

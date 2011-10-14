@@ -718,12 +718,17 @@ static int informationGapInset = 15;
     
     // toggle
     if (fullscreen) {
+        // resize
         [self resizeDefault];
     }
     else {
+        // resize
         [self resizeFull];
     }
     fullscreen = ! fullscreen;
+    
+    // track
+    [Tracker trackEvent:TEventInfo action:@"Resize" label:fullscreen ? @"fullscreen" : @"default"];
 }
 - (void)resizeFull {
     GLog();
@@ -821,6 +826,9 @@ static int informationGapInset = 15;
 - (void)referenceTMDb {
     FLog();
     
+    // track
+    [Tracker trackEvent:TEventInfo action:@"Reference" label:@"TMDb"];
+    
     // open
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:_referenceTMDb]];
 }
@@ -830,6 +838,9 @@ static int informationGapInset = 15;
  */
 - (void)referenceIMDb {
     FLog();
+    
+    // track
+    [Tracker trackEvent:TEventInfo action:@"Reference" label:@"IMDb"];
     
     // open
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:_referenceIMDb]];
@@ -841,6 +852,9 @@ static int informationGapInset = 15;
 - (void)referenceWikipedia {
     FLog();
     
+    // track
+    [Tracker trackEvent:TEventInfo action:@"Reference" label:@"Wikipedia"];
+    
     // open
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:_referenceWikipedia]];
 }
@@ -850,6 +864,9 @@ static int informationGapInset = 15;
  */
 - (void)referenceAmazon {
     FLog();
+    
+    // track
+    [Tracker trackEvent:TEventInfo action:@"Reference" label:@"Amazon"];
 
     // open
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:_referenceAmazon]];
@@ -860,6 +877,9 @@ static int informationGapInset = 15;
  */
 - (void)referenceITunes {
     FLog();
+    
+    // track
+    [Tracker trackEvent:TEventInfo action:@"Reference" label:@"iTunes"];
     
     // open
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:_referenceITunes]];

@@ -22,12 +22,12 @@
     UIImageView *_imageView;
     UIActivityIndicatorView *_activityIndicator;
     UIImageView *_iconError;
+    UIImage *_placeholderImage;
     
     // private
     @private
     NSString *_link;
     bool loaded;
-    bool placeholder;
 }
 
 

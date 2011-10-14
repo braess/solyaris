@@ -25,10 +25,12 @@
 // Categories
 #define TEventApp			@"App"
 #define TEventSearch        @"Search"
-#define TEventLoadSearch	@"LoadSearch"	
-#define TEventLoadGraph     @"LoadGraph"	
-#define TEventLoadInfo      @"LoadInfo"	
+#define TEventLoadSearch	@"Load Search"	
+#define TEventLoadGraph     @"Load Graph"	
+#define TEventLoadInfo      @"Load Info"	
 #define TEventAbout         @"About"
+#define TEventInfo          @"Info"
+#define TEventPreferences   @"Preferences"
 
 
 /**

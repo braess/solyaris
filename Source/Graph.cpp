@@ -198,6 +198,7 @@ void Graph::draw() {
     
     
     // background
+    gl::color( ColorA(1.0f, 1.0f, 1.0f, 1.0f) ); // alpha channel
     gl::draw(background);
     
 
@@ -252,6 +253,7 @@ void Graph::reset() {
  */
 void Graph::touchBegan(Vec2d tpos, int tid) {
     GLog();
+    std::cout << tid << std::endl;
     
     // nodes
     for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
@@ -337,7 +339,7 @@ void Graph::touchEnded(Vec2d tpos, int tid){
  * Tapped.
  */
 NodePtr Graph::doubleTap(Vec2d tpos, int tid) {
-    FLog();
+    GLog();
     
     // nodes
     for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {

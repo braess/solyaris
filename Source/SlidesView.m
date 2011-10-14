@@ -8,6 +8,7 @@
 
 #import "SlidesView.h"
 #import "CacheImageView.h"
+#import "Tracker.h"
 
 /**
  * SlidesView.
@@ -54,6 +55,7 @@
         
         // data
         _slides = [[NSMutableArray alloc] init];
+        _title = [[NSMutableString alloc] init];
         
     }
     return self;
@@ -135,6 +137,12 @@
     [self layoutSubviews];
 }
 
+/**
+ * Sets the slides title.
+ */
+- (void)setSlidesTitle:(NSString *)title {
+    [_title setString:title];
+}
 
 
 /**
@@ -182,8 +190,13 @@
     
     // load
     if (currentSlide < [_slides count]) {
+        
+        // image
         CacheImageView *civ = [_slides objectAtIndex:currentSlide];
         [civ load];
+        
+        // track
+        [Tracker trackEvent:TEventInfo action:@"Slides" label:_title];
     }
 }
 
@@ -222,6 +235,7 @@
     
     // data
     [_slides release];
+    [_title release];
     
     // view
     [super dealloc];

@@ -87,6 +87,9 @@
         [self addSubview:_activityIndicator];
         [activityIndicator release];
         
+        // placeholder
+        _placeholderImage = NULL;
+        
         // error
 		UIImageView *iconError = [[UIImageView alloc] initWithFrame:CGRectZero];
         iconError.autoresizingMask = ( UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin );
@@ -135,12 +138,12 @@
 - (void)placeholderImage:(UIImage *)img {
     GLog();
     
-    // set
-    _imageView.image = [img retain];
-    [self setNeedsLayout];
+    // reference
+    _placeholderImage = [img retain];
     
-    // placeholder
-    placeholder = YES;
+    // set
+    _imageView.image = _placeholderImage;
+    [self setNeedsLayout];
     
 }
 
@@ -153,7 +156,12 @@
     // reference
     _link = [link copy];
     
+    // placeholder
+    _imageView.image = _placeholderImage;
+    [self setNeedsLayout];
+    
     // load
+    loaded = NO;
     [self load];
     
 }
@@ -167,10 +175,16 @@
     // reference
     _link = [link copy];
     
-
+    // placeholder
+    _imageView.image = _placeholderImage;
+    [self setNeedsLayout];
+    
     // activity
     [_activityIndicator startAnimating];
     _activityIndicator.hidden = NO;
+    
+    // load
+    loaded = NO;
 
 }
 
@@ -180,6 +194,9 @@
  */
 - (void)load {
     GLog();
+    
+    // hide error
+    _iconError.hidden = YES;
     
     // check
     if (! loaded) {
@@ -318,10 +335,19 @@
     [_activityIndicator stopAnimating];
     
     
+    // placeholder
+    _imageView.image = _placeholderImage;
+    
     // error
-    if (! placeholder) {
+    if (_placeholderImage == NULL) {
         _iconError.hidden = NO;
     }
+    
+    // loaded
+    loaded = NO;
+    
+    // redraw
+    [self setNeedsLayout];
   
 }
 
@@ -419,6 +445,9 @@
     [_activityIndicator release];
     if (_link != NULL) {
         [_link release];
+    }
+    if (_placeholderImage != NULL) {
+        [_placeholderImage release];
     }
     
     // view

@@ -297,7 +297,7 @@
 		18FD223814482FB2008F6B19 /* icon_image_error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon_image_error.png; path = Assets/icon_image_error.png; sourceTree = "<group>"; };
 		18FE6EC513ED39B900C379BC /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		1D6058910D05DD3D006BFB54 /* imdg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = imdg.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* Solyaris.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Solyaris.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -711,7 +711,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* imdg.app */,
+				1D6058910D05DD3D006BFB54 /* Solyaris.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -790,7 +790,7 @@
 			);
 			name = Solyaris;
 			productName = IMDG;
-			productReference = 1D6058910D05DD3D006BFB54 /* imdg.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* Solyaris.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -968,7 +968,7 @@
 					"\"$(CINDER_PATH)/lib/libcinder-iphone-sim_d.a\"",
 					"-lz",
 				);
-				PRODUCT_NAME = imdg;
+				PRODUCT_NAME = Solyaris;
 			};
 			name = Debug;
 		};
@@ -997,7 +997,7 @@
 					"\"$(CINDER_PATH)/lib/libcinder-iphone-sim.a\"",
 					"-lz",
 				);
-				PRODUCT_NAME = imdg;
+				PRODUCT_NAME = Solyaris;
 			};
 			name = Release;
 		};
@@ -1014,7 +1014,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/boost\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PRODUCT_NAME = imdg;
+				PRODUCT_NAME = Solyaris;
 				PROVISIONING_PROFILE = "687DD4F9-E8F9-4277-A68B-A97D1B37503B";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
@@ -1034,8 +1034,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/boost\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PRODUCT_NAME = imdg;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "97B48560-4B6F-4EE3-8815-2E2E8C617851";
+				PRODUCT_NAME = Solyaris;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "F487A0BB-E9FA-414D-8F37-078233D97E9E";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" include";

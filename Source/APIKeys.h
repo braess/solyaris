@@ -7,7 +7,7 @@
 //
 
 // Google Analytics
-#define kGoogleAnalytics				@"UA-0000000-00"
+#define kGoogleAnalytics				@"UA-1005717-26"
 
 
 // TMDb

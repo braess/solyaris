@@ -8,6 +8,7 @@
 
 #import "PreferencesViewController.h"
 #import "SolyarisConstants.h"
+#import "Tracker.h"
 
 /*
  * Helper Stack.
@@ -41,8 +42,6 @@ static int preferencesHeaderGap = 10;
 
 // accessors
 @synthesize delegate;
-
-
 
 
 #pragma mark -
@@ -196,6 +195,8 @@ static int preferencesHeaderGap = 10;
             // preference
 			if (buttonIndex == 0) {
 				FLog("preference");
+                
+                // action
 				[self resetPreferences];
 			} 
             // cache
@@ -230,6 +231,9 @@ static int preferencesHeaderGap = 10;
  */
 - (void)resetPreferences {
 	FLog();
+    
+    // track
+    [Tracker trackEvent:TEventPreferences action:@"Reset Defaults" label:@""];
 	
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(preferencesResetDefaults)]) {
@@ -245,6 +249,9 @@ static int preferencesHeaderGap = 10;
  */
 - (void)clearCache {
     FLog();
+    
+    // track
+    [Tracker trackEvent:TEventPreferences action:@"Clear Cache" label:@""];
     
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(preferencesClearCache)]) {

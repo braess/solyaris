@@ -14,7 +14,7 @@
  * Helper Stack.
  */
 @interface TMDbView (HelperStack)
-- (void)reset:(NSString*)text slides:(NSArray*)slides;
+- (void)reset:(NSString*)title content:(NSString*)content slides:(NSArray*)slides;
 @end
 
 
@@ -118,11 +118,12 @@ static int tmdbGapInset = 15;
 /*
  * Resets the component.
  */
-- (void)reset:(NSString*)text slides:(NSArray*)slides {
+- (void)reset:(NSString*)title content:(NSString*)text slides:(NSArray*)slides {
 	FLog();
     
     // slides
     [_slidesView setSlides:slides];
+    [_slidesView setSlidesTitle:title];
     _slidesView.hidden = ! mode_slides;
 
     
@@ -176,7 +177,7 @@ static int tmdbGapInset = 15;
     }
     
     // reset
-    [self reset:movie.overview slides:backdrops];
+    [self reset:movie.name content:movie.overview slides:backdrops];
     [backdrops release];
     
 }
@@ -187,7 +188,7 @@ static int tmdbGapInset = 15;
     mode_slides = NO; 
     
     // reset
-    [self reset:person.biography slides:nil];
+    [self reset:person.name content:person.biography slides:nil];
 }
 
 /**
