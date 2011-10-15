@@ -9,7 +9,6 @@
 #import "SettingsViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "SolyarisAppDelegate.h"
-#import "Tracker.h"
 
 /**
  * SettingsViewController.
@@ -122,9 +121,6 @@
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	DLog();
-    
-    // track
-    [Tracker trackPageView:@"/settings"];
     
     // reload
     [_aboutViewController viewWillAppear:NO];

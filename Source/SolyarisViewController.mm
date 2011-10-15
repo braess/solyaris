@@ -229,6 +229,7 @@
 
 
 
+
 #pragma mark -
 #pragma mark Rotation support
 
@@ -681,7 +682,7 @@
     if (! (node->isActive() || node->isLoading())) {
         
         // track
-        [Tracker trackEvent:TEventLoadSearch action:result.type label:result.data];
+        [Tracker trackEvent:TEventLoad action:@"Search" label:result.type];
         
         // load
         node->load();
@@ -731,7 +732,7 @@
     if (! (node->isActive() || node->isLoading())) {
         
         // track
-        [Tracker trackEvent:TEventLoadInfo action:type label:[NSString stringWithCString:node->label.c_str() encoding:NSUTF8StringEncoding]];
+        [Tracker trackEvent:TEventLoad action:@"Info" label:type];
         
         // tap & load
         node->tapped();
@@ -894,9 +895,19 @@
 	
 	// animate
     if (! mode_settings) {
+        
+        // track
+        [Tracker trackPageView:@"/settings"];
+        
+        // show
         [self animationSettingsShow];
     }
     else {
+        
+        // track
+        [Tracker trackPageView:@"/graph"];
+        
+        // hide
         [self animationSettingsHide];
     }
 }
@@ -930,7 +941,7 @@
         }
         
         // track
-        [Tracker trackEvent:TEventLoadGraph action:type label:type];
+        [Tracker trackEvent:TEventLoad action:@"Graph" label:type];
         
         
         // delay
@@ -1030,6 +1041,11 @@
  */
 - (void)activate {
     FLog();
+    
+    // track
+    if (_informationViewController.view.hidden && _settingsViewController.view.hidden) {
+        [Tracker trackPageView:@"/graph"];
+    }
     
     // random tagline
     NSArray *movies = [tmdb dataMovies];

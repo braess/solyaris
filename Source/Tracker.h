@@ -31,9 +31,7 @@ enum {
 // Categories
 #define TEventApp			@"App"
 #define TEventSearch        @"Search"
-#define TEventLoadSearch	@"Load Search"	
-#define TEventLoadGraph     @"Load Graph"	
-#define TEventLoadInfo      @"Load Info"	
+#define TEventLoad          @"Load"		
 #define TEventAbout         @"About"
 #define TEventInfo          @"Info"
 #define TEventPreferences   @"Preferences"
