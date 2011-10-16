@@ -58,6 +58,7 @@
 #define kAnimateTimeInformationHide	0.45f
 #define kAnimateTimeSettingsShow	0.6f
 #define kAnimateTimeSettingsHide	0.3f
+#define kDelayTimeNodeLoad          1.8f
 #define kOffsetSettings 480
 
 
@@ -226,6 +227,64 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(activate) name: UIApplicationDidBecomeActiveNotification object:nil];
 
 }
+
+
+#pragma mark -
+#pragma mark Application
+
+/*
+ * Activates the controller.
+ */
+- (void)activate {
+    FLog();
+    
+    // track
+    if (_informationViewController.view.hidden && _settingsViewController.view.hidden) {
+        [Tracker trackPageView:@"/graph"];
+    }
+    
+    // reset api
+    [tmdb reset];
+    
+    // random tagline
+    NSArray *movies = [tmdb dataMovies];
+    NSMutableArray *taglines = [[NSMutableArray alloc] init];
+    for (Movie *m in movies) {
+        
+        // loaded
+        if (m.loaded) {
+            
+            // tagline
+            NSString *tagline = m.tagline;
+            if (tagline && [tagline length] > 1 && [tagline length] < 36) {
+                [taglines addObject:tagline];
+            }
+        }
+        
+    }
+    
+    // check
+    NSString *tagline = NSLocalizedString(@"A Visual Movie Browser", @"A Visual Movie Browser");
+    if ([taglines count] > 0) {
+        tagline = [taglines objectAtIndex:random() % ([taglines count])];
+    }
+    
+    // set
+    [_searchViewController claim:tagline];
+}
+
+
+/**
+ * Quit.
+ */
+- (void)quit {
+    NSLog(@"Aus die Maus.");
+    
+    // quit app
+    solyaris->quit();
+    abort();
+}
+
 
 
 
@@ -944,16 +1003,13 @@
         [Tracker trackEvent:TEventLoad action:@"Graph" label:type];
         
         
-        // delay
-        float dload = 1.8f;
-        
         // movie
         if ([type isEqualToString:typeMovie]) {
-            [tmdb performSelector:@selector(movie:) withObject:dbid afterDelay:dload];
+            [tmdb performSelector:@selector(movie:) withObject:dbid afterDelay:kDelayTimeNodeLoad];
         }
         // person
         else {
-            [tmdb performSelector:@selector(person:) withObject:dbid afterDelay:dload];
+            [tmdb performSelector:@selector(person:) withObject:dbid afterDelay:kDelayTimeNodeLoad];
         }
         
     }
@@ -1033,57 +1089,6 @@
         [self animationInformationShow];        
     }
     
-}
-
-
-/*
- * Activates the controller.
- */
-- (void)activate {
-    FLog();
-    
-    // track
-    if (_informationViewController.view.hidden && _settingsViewController.view.hidden) {
-        [Tracker trackPageView:@"/graph"];
-    }
-    
-    // random tagline
-    NSArray *movies = [tmdb dataMovies];
-    NSMutableArray *taglines = [[NSMutableArray alloc] init];
-    for (Movie *m in movies) {
-        
-        // loaded
-        if (m.loaded) {
-            
-            // tagline
-            NSString *tagline = m.tagline;
-            if (tagline && [tagline length] > 1 && [tagline length] < 36) {
-                [taglines addObject:tagline];
-            }
-        }
-        
-    }
-    
-    // check
-    NSString *tagline = NSLocalizedString(@"A Visual Movie Browser", @"A Visual Movie Browser");
-    if ([taglines count] > 0) {
-        tagline = [taglines objectAtIndex:random() % ([taglines count])];
-    }
-    
-    // set
-    [_searchViewController claim:tagline];
-}
-
-
-/**
- * Quit.
- */
-- (void)quit {
-    NSLog(@"Aus die Maus.");
-    
-    // quit app
-    solyaris->quit();
-    abort();
 }
 
 

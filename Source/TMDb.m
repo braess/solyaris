@@ -65,9 +65,9 @@
  * Query Stack.
  */
 @interface TMDb (QueryStack)
-- (Search*)querySearch:(NSString*)query type:(NSString*)type;
-- (Movie*)queryMovie:(NSNumber*)mid;
-- (Person*)queryPerson:(NSNumber*)pid;
+- (Search*)querySearch:(NSString*)query type:(NSString*)type retry:(BOOL)retry;
+- (Movie*)queryMovie:(NSNumber*)mid retry:(BOOL)retry;
+- (Person*)queryPerson:(NSNumber*)pid retry:(BOOL)retry;
 @end
 
 
@@ -82,6 +82,12 @@
 
 // constants
 static NSString* TMDbStore = @"TMDb.sqlite";
+
+// constants
+#define kTMDbTimeRetryBase      2.5f
+#define kTMDbTimeRetryRandom	2.5f
+#define kTMDbTimeQueueBase      0.5f
+#define kTMDbTimeQueueRandom	1.0f
 
 
 #pragma mark -
@@ -98,7 +104,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // fields
         queue = [[NSOperationQueue alloc] init];
-        [queue setMaxConcurrentOperationCount:3];
+        [queue setMaxConcurrentOperationCount:1];
         
         // context
         NSManagedObjectContext *context = [self managedObjectContext];
@@ -126,13 +132,16 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 
 
 /**
- * Cancel.
+ * Reset.
  */
-- (void)cancel {
+- (void)reset {
     DLog();
     
     // queue
     [queue cancelAllOperations];
+    
+    // unlock
+    [managedObjectContext unlock];
     
 }
 
@@ -151,7 +160,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         NSString *query = [q lowercaseString];
         Search *search = [self cachedSearch:query type:t];
         if (search == NULL) {
-            search = [self querySearch:query type:t];
+            search = [self querySearch:query type:t retry:YES];
         }
         [managedObjectContext unlock];
         
@@ -182,7 +191,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         [managedObjectContext lock];
         Movie *movie = [self cachedMovie:mid];
         if (movie == NULL || ! [movie.loaded boolValue]) {
-            movie = [self queryMovie:mid];
+            movie = [self queryMovie:mid retry:YES];
         }
         [managedObjectContext unlock];
         
@@ -209,7 +218,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     [managedObjectContext lock];
     Movie *movie = [self cachedMovie:mid];
     if (movie == NULL || ! [movie.loaded boolValue]) {
-        movie = [self queryMovie:mid];
+        movie = [self queryMovie:mid retry:YES];
     }
     [managedObjectContext unlock];
     
@@ -232,7 +241,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         [managedObjectContext lock];
         Person *person = [self cachedPerson:pid];
         if (person == NULL || ! [person.loaded boolValue]) {
-            person = [self queryPerson:pid];
+            person = [self queryPerson:pid retry:YES];
         }
         [managedObjectContext unlock];
         
@@ -259,7 +268,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     [managedObjectContext lock];
     Person *person = [self cachedPerson:pid];
     if (person == NULL || ! [person.loaded boolValue]) {
-        person = [self queryPerson:pid];
+        person = [self queryPerson:pid retry:YES];
     }
     [managedObjectContext unlock];
     
@@ -504,7 +513,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 /*
  * Query search.
  */
-- (Search*)querySearch:(NSString *)query type:(NSString *)type {
+- (Search*)querySearch:(NSString *)query type:(NSString *)type retry:(BOOL)retry {
     FLog();
     
     // search result
@@ -519,6 +528,9 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // movie
     if ([type isEqualToString:typeAll] || [type isEqualToString:typeMovie]) {
         
+        // queue time
+        [NSThread sleepForTimeInterval:kTMDbTimeQueueBase+((rand() / RAND_MAX) * kTMDbTimeQueueRandom)];
+        FLog("Send request...");
             
         // request
         NSString *equery = [query stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
@@ -533,9 +545,13 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // connection
         NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        FLog("received data.");
         
         // error
         if (error) {
+            
+            // roll back tha thing
+            [managedObjectContext rollback];
             
             // oops
             if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
@@ -545,20 +561,44 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
             }
             
-            // roll back tha thing
-            [managedObjectContext rollback];
-            
             // fluff search
             return NULL;
         }
         
         
-        // parse json
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        // json
         NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
         
-        // result
-        if ([self validResponse:json] && [self validResult:json]) {
+        // response
+        if (! [self validResponse:json]) {
+            NSLog(@"Invalid %@ search: %@ %@",typeMovie,type,query);
+            NSLog(@"%@",json);
+            
+            // back
+            [managedObjectContext rollback];
+            
+            // retry
+            if (retry) {
+                FLog("Wait...");
+                [NSThread sleepForTimeInterval:kTMDbTimeRetryBase+((rand() / RAND_MAX) * kTMDbTimeRetryRandom)];
+                FLog("... and try again.");
+                return [self querySearch:query type:type retry:NO];
+            }
+            
+            // note
+            if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
+                APIError *apiError = [[[APIError alloc] initError:[NSNumber numberWithInt:-1] type:typeMovie message:NSLocalizedString(@"TMDb Service currently unavailable. Could not search movie - please try again.", @"TMDb Service currently unavailable. Could not search movie - please try again.")] autorelease];
+                [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
+            }
+            
+            // damn it
+            return NULL;
+
+        }
+        
+        // parse result
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        if ([self validResult:json]) {
             
             // parse
             NSArray *results = [parser objectWithString:json error:nil];
@@ -608,11 +648,16 @@ static NSString* TMDbStore = @"TMDb.sqlite";
             }
             [parser release];
         }
+
     }
     
     
     // person
     if (! [type isEqualToString:typeMovie]) {
+        
+        // still waiting
+        [NSThread sleepForTimeInterval:kTMDbTimeQueueBase+((rand() / RAND_MAX) * kTMDbTimeQueueRandom)];
+        FLog("Send request...");
         
         // request
         NSString *equery = [query stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
@@ -628,9 +673,13 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // connection
         NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        FLog("received data.");
         
         // error
         if (error) {
+            
+            // roll back tha thing
+            [managedObjectContext rollback];
             
             // error
             if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
@@ -638,20 +687,43 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
             }
             
-            // roll back tha thing
-            [managedObjectContext rollback];
-            
             // fluff search
             return NULL;
         }
         
         
-        // parse json
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
-        NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
+        // json
+        NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]; 
         
-        // result
-        if ([self validResponse:json] && [self validResult:json]) {
+        // response
+        if (! [self validResponse:json]) {
+            NSLog(@"Invalid %@ search: %@ %@",typePerson,type,query);
+            NSLog(@"%@",json);
+            
+            // back
+            [managedObjectContext rollback];
+            
+            // retry
+            if (retry) {
+                FLog("Wait...");
+                [NSThread sleepForTimeInterval:kTMDbTimeRetryBase+((rand() / RAND_MAX) * kTMDbTimeRetryRandom)];
+                FLog("... and try again.");
+                return [self querySearch:query type:type retry:NO];
+            }
+            
+            // note
+            if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
+                APIError *apiError = [[[APIError alloc] initError:[NSNumber numberWithInt:-1] type:typePerson message:NSLocalizedString(@"TMDb Service currently unavailable. Could not search person - please try again.", @"TMDb Service currently unavailable. Could not search person - please try again.")] autorelease];
+                [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
+            }
+            
+            // null
+            return NULL;
+        }
+        
+        // parse result
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        if ([self validResult:json]) {
             
             // parse
             NSArray *results = [parser objectWithString:json error:nil];
@@ -696,9 +768,9 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         }
     }
     
-    
     // save
-    if (![managedObjectContext save:&error]) {
+    error = nil;
+    if (! [managedObjectContext save:&error]) {
         
         // error
         if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
@@ -715,15 +787,19 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 
     }
     
-    // return
+    // at last...
     return search;
 }
 
 /*
  * Query movie.
  */
-- (Movie*)queryMovie:(NSNumber*)mid {
+- (Movie*)queryMovie:(NSNumber*)mid retry:(BOOL)retry {
     FLog();
+    
+    // play nice with tmdb...
+    [NSThread sleepForTimeInterval:kTMDbTimeQueueBase+((rand() / RAND_MAX) * kTMDbTimeQueueRandom)];
+    FLog("Send request...");
 	
     // request
     NSString *url = [NSString stringWithFormat:@"%@/en/json/%@/%i",apiTMDbMovie,apiTMDbKey,[mid intValue]];
@@ -738,6 +814,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 	
     // connection
 	NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    FLog("received data.");
     
     // error
     if (error) {
@@ -753,15 +830,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     }
     
     
-    // movie
-    Movie *movie = [self cachedMovie:mid];
-    if (movie == NULL) {
-        movie = (Movie*)[NSEntityDescription insertNewObjectForEntityForName:@"Movie" inManagedObjectContext:managedObjectContext];
-    }
-    
-    
-    // parse json
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    // json
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     
     // response
@@ -769,9 +838,17 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         NSLog(@"Invalid response %i",[mid intValue]);
         NSLog(@"%@",json);
         
+        // retry
+        if (retry) {
+            FLog("Wait...");
+            [NSThread sleepForTimeInterval:kTMDbTimeRetryBase+((rand() / RAND_MAX) * kTMDbTimeRetryRandom)];
+            FLog("... and try again.");
+            return [self queryMovie:mid retry:NO];
+        }
+        
         // note
         if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
-            APIError *apiError = [[[APIError alloc] initError:mid type:typeMovie message:NSLocalizedString(@"Service currently unavailable.", @"Service currently unavailable.")] autorelease];
+            APIError *apiError = [[[APIError alloc] initError:mid type:typeMovie message:NSLocalizedString(@"TMDb Service currently unavailable.Could not load movie - please try again.", @"TMDb Service currently unavailable.Could not load movie - please try again.")] autorelease];
             [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
         }
         
@@ -779,7 +856,8 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         return NULL;
     }
     
-    // result
+    // parse result
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
     NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
     if (! [self validResult:json] || ! [self validMovie:djson]) {
         NSLog(@"Movie not found %i",[mid intValue]);
@@ -793,6 +871,13 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // nothing
         return NULL;
+    }
+    
+    
+    // movie
+    Movie *movie = [self cachedMovie:mid];
+    if (movie == NULL) {
+        movie = (Movie*)[NSEntityDescription insertNewObjectForEntityForName:@"Movie" inManagedObjectContext:managedObjectContext];
     }
     
     
@@ -1044,8 +1129,12 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 /*
  * Query person.
  */
-- (Person*)queryPerson:(NSNumber*)pid {
+- (Person*)queryPerson:(NSNumber*)pid retry:(BOOL)retry {
     FLog();
+    
+    // play nice with tmdb...
+    [NSThread sleepForTimeInterval:kTMDbTimeQueueBase+((rand() / RAND_MAX) * kTMDbTimeQueueRandom)];
+    FLog("Send request...");
     
 	
     // request
@@ -1061,6 +1150,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 	
     // connection
 	NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    FLog("received data.");
     
     // error
     if (error) {
@@ -1076,19 +1166,8 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     }
     
     
-    // Person
-    Person *person = [self cachedPerson:pid];
-    if (person == NULL) {
-        
-        // create object
-        person = (Person*)[NSEntityDescription insertNewObjectForEntityForName:@"Person" inManagedObjectContext:managedObjectContext];
-    }
-    
-    
-    // parse json
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    // json
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
-    //NSLog(@"%@",json);
     
     
     // response
@@ -1096,9 +1175,17 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         NSLog(@"Invalid response %i",[pid intValue]);
         NSLog(@"%@",json);
         
+        // retry
+        if (retry) {
+            FLog("Wait...");
+            [NSThread sleepForTimeInterval:kTMDbTimeRetryBase+((rand() / RAND_MAX) * kTMDbTimeRetryRandom)];
+            FLog("... and try again.");
+            return [self queryPerson:pid retry:NO];
+        }
+        
         // note
         if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
-            APIError *apiError = [[[APIError alloc] initError:pid type:typePerson message:NSLocalizedString(@"Service currently unavailable.", @"Service currently unavailable.")] autorelease];
+            APIError *apiError = [[[APIError alloc] initError:pid type:typePerson message:NSLocalizedString(@"TMDb Service currently unavailable.Could not load person - please try again.", @"TMDb Service currently unavailable.Could not load person - please try again.")] autorelease];
             [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
         }
         
@@ -1107,7 +1194,8 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     }
     
     
-    // result
+    // parse result
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
     NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
     if (! [self validResult:json] || ! [self validPerson:djson]) {
         NSLog(@"Person not found %i",[pid intValue]);
@@ -1121,6 +1209,15 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // nothing
         return NULL;
+    }
+    
+    
+    // Person
+    Person *person = [self cachedPerson:pid];
+    if (person == NULL) {
+        
+        // create object
+        person = (Person*)[NSEntityDescription insertNewObjectForEntityForName:@"Person" inManagedObjectContext:managedObjectContext];
     }
 
     

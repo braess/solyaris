@@ -58,16 +58,15 @@ enum {
 // Properties
 @property (assign) Solyaris *solyaris;
 
+// Application
+- (void)activate;
+- (void)quit;
+
 // Action Settings
 - (void)actionSettings:(id)sender;
-
 
 // Business Methods
 - (void)nodeInformation:(NSString*)nid;
 - (void)nodeLoad:(NSString*)nid;
-- (void)quit;
-- (void)activate;
-
-
 
 @end

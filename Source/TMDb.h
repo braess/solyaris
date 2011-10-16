@@ -66,7 +66,7 @@
 @property (nonatomic, assign) NSObject <APIDelegate> *delegate;
 
 // Business
-- (void)cancel;
+- (void)reset;
 - (void)search:(NSString*)q type:(NSString*)t;
 - (void)movie:(NSNumber*)mid;
 - (void)person:(NSNumber*)mid;
