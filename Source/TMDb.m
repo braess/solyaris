@@ -65,7 +65,8 @@
  * Query Stack.
  */
 @interface TMDb (QueryStack)
-- (Search*)querySearch:(NSString*)query type:(NSString*)type retry:(BOOL)retry;
+- (Search*)querySearchMovie:(NSString*)query retry:(BOOL)retry;
+- (Search*)querySearchPerson:(NSString*)query retry:(BOOL)retry;
 - (Movie*)queryMovie:(NSNumber*)mid retry:(BOOL)retry;
 - (Person*)queryPerson:(NSNumber*)pid retry:(BOOL)retry;
 @end
@@ -148,19 +149,18 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 /**
  * Search.
  */
-- (void)search:(NSString *)q type:(NSString *)t {
+- (void)searchMovie:(NSString*)q {
     DLog();
     
     // queue
     [queue addOperationWithBlock:^{
         
-        
         // cache
         [managedObjectContext lock];
         NSString *query = [q lowercaseString];
-        Search *search = [self cachedSearch:query type:t];
+        Search *search = [self cachedSearch:query type:typeMovie];
         if (search == NULL) {
-            search = [self querySearch:query type:t retry:YES];
+            search = [self querySearchMovie:query retry:YES];
         }
         [managedObjectContext unlock];
         
@@ -177,6 +177,35 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     }];
     
 }
+- (void)searchPerson:(NSString*)q {
+    DLog();
+    
+    // queue
+    [queue addOperationWithBlock:^{
+        
+        // cache
+        [managedObjectContext lock];
+        NSString *query = [q lowercaseString];
+        Search *search = [self cachedSearch:query type:typePerson];
+        if (search == NULL) {
+            search = [self querySearchPerson:query retry:YES];
+        }
+        [managedObjectContext unlock];
+        
+        // delegate
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            
+            // delegate
+            if (delegate != nil && [delegate respondsToSelector:@selector(loadedSearch:)]) {
+                [delegate loadedSearch:search];
+            }
+            
+        }];
+        
+    }];
+    
+}
+
 
 /**
  * Movie.
@@ -322,8 +351,9 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     if (!context) {
         
         // handle the error
-        if (delegate && [delegate respondsToSelector:@selector(apiFatal:)]) {
-            [delegate apiFatal:NSLocalizedString(@"Corrupted Data. Please try to reinstall the application. Sorry about this.", "Corrupted Data. Please try to reinstall the application. Sorry about this.")];
+        if (delegate && [delegate respondsToSelector:@selector(apiFatal:message:)]) {
+            [delegate apiFatal:NSLocalizedString(@"Data Error", "Data Error")
+                       message:NSLocalizedString(@"Corrupted Data. Please try to reinstall the application. Sorry about this.", "Corrupted Data. Please try to reinstall the application. Sorry about this.")];
         }
     }
 
@@ -513,268 +543,150 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 /*
  * Query search.
  */
-- (Search*)querySearch:(NSString *)query type:(NSString *)type retry:(BOOL)retry {
+- (Search*)querySearchMovie:(NSString*)query retry:(BOOL)retry {
     FLog();
+        
+    // queue time
+    [NSThread sleepForTimeInterval:kTMDbTimeQueueBase+((rand() / RAND_MAX) * kTMDbTimeQueueRandom)];
+    FLog("Send request...");
+    
+    // request
+    NSString *equery = [query stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+    NSString *url = [NSString stringWithFormat:@"%@/en/json/%@/%@",apiTMDbSearchMovie,apiTMDbKey,equery];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]
+                                             cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                         timeoutInterval:20.0];
+    
+    // response
+    NSError *error = nil;
+    NSURLResponse *response = nil;
+    
+    // connection
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    FLog("received data.");
+    
+    // connection error
+    if (error) {
+        
+        // roll back tha thing
+        [managedObjectContext rollback];
+        
+        // oops
+        if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
+            
+            // error
+            APIError *apiError = [[[APIError alloc] initError:typeMovie 
+                                                        title:NSLocalizedString(@"Connection Error", @"Connection Error") 
+                                                      message:[error localizedDescription]] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
+        }
+        
+        // fluff search
+        return NULL;
+    }
+    
+    // json
+    NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
+    
+    // invalid response 
+    if (! [self validResponse:json]) {
+        #ifdef DEBUG
+        NSLog(@"Invalid movie search: %@", query);
+        NSLog(@"%@",json);
+        #endif
+        
+        // back
+        [managedObjectContext rollback];
+        
+        // retry
+        if (retry) {
+            FLog("Wait...");
+            [NSThread sleepForTimeInterval:kTMDbTimeRetryBase+((rand() / RAND_MAX) * kTMDbTimeRetryRandom)];
+            FLog("... and try again.");
+            return [self querySearchMovie:query retry:NO];
+        }
+        
+        // note
+        if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
+            APIError *apiError = [[[APIError alloc] initError:typeMovie 
+                                                        title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable")
+                                                      message:NSLocalizedString(@"Could not search movie. \nPlease try again later.", @"Could not search movie. \nPlease try again later.")] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
+        }
+        
+        // damn it
+        return NULL;
+        
+    }
     
     // search result
     Search *search = (Search*)[NSEntityDescription insertNewObjectForEntityForName:@"Search" inManagedObjectContext:managedObjectContext];
-    search.type = type;
+    search.type = typeMovie;
     search.query = query;
     
-    // error
-    NSError *error = nil;
     
-    
-    // movie
-    if ([type isEqualToString:typeAll] || [type isEqualToString:typeMovie]) {
+    // parse result
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    if ([self validResult:json]) {
         
-        // queue time
-        [NSThread sleepForTimeInterval:kTMDbTimeQueueBase+((rand() / RAND_MAX) * kTMDbTimeQueueRandom)];
-        FLog("Send request...");
+        // parse
+        NSArray *results = [parser objectWithString:json error:nil];
+        for (NSDictionary *dresult in results)	{
+            SearchResult *searchResult = (SearchResult*)[NSEntityDescription insertNewObjectForEntityForName:@"SearchResult" inManagedObjectContext:managedObjectContext];
             
-        // request
-        NSString *equery = [query stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
-        NSString *url = [NSString stringWithFormat:@"%@/en/json/%@/%@",apiTMDbSearchMovie,apiTMDbKey,equery];
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]
-                                                 cachePolicy:NSURLRequestReloadIgnoringCacheData
-                                             timeoutInterval:20.0];
-        
-        // response
-        error = nil;
-        NSURLResponse *response = nil;
-        
-        // connection
-        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-        FLog("received data.");
-        
-        // error
-        if (error) {
-            
-            // roll back tha thing
-            [managedObjectContext rollback];
-            
-            // oops
-            if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
+            // validate
+            if ([self validSearch:dresult]) {
                 
-                // error
-                APIError *apiError = [[[APIError alloc] initError:[NSNumber numberWithInt:-1] type:typeMovie message:[error localizedDescription]] autorelease];
-                [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
-            }
-            
-            // fluff search
-            return NULL;
-        }
-        
-        
-        // json
-        NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
-        
-        // response
-        if (! [self validResponse:json]) {
-            NSLog(@"Invalid %@ search: %@ %@",typeMovie,type,query);
-            NSLog(@"%@",json);
-            
-            // back
-            [managedObjectContext rollback];
-            
-            // retry
-            if (retry) {
-                FLog("Wait...");
-                [NSThread sleepForTimeInterval:kTMDbTimeRetryBase+((rand() / RAND_MAX) * kTMDbTimeRetryRandom)];
-                FLog("... and try again.");
-                return [self querySearch:query type:type retry:NO];
-            }
-            
-            // note
-            if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
-                APIError *apiError = [[[APIError alloc] initError:[NSNumber numberWithInt:-1] type:typeMovie message:NSLocalizedString(@"TMDb Service currently unavailable. Could not search movie - please try again.", @"TMDb Service currently unavailable. Could not search movie - please try again.")] autorelease];
-                [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
-            }
-            
-            // damn it
-            return NULL;
-
-        }
-        
-        // parse result
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
-        if ([self validResult:json]) {
-            
-            // parse
-            NSArray *results = [parser objectWithString:json error:nil];
-            for (NSDictionary *dresult in results)	{
-                SearchResult *searchResult = (SearchResult*)[NSEntityDescription insertNewObjectForEntityForName:@"SearchResult" inManagedObjectContext:managedObjectContext];
-                
-                // validate
-                if ([self validSearch:dresult]) {
-                    
-                    // dta
-                    NSString *dta = [self parseString:[dresult objectForKey:@"name"]];
-                    if (! [self isEmpty:[dresult objectForKey:@"released"]]) {
-                        dta = [NSString stringWithFormat:@"%@ (%@)",dta,[self parseYear:[dresult objectForKey:@"released"]]];
-                    }
-                                     
-                    
-                    // data
-                    searchResult.ref = [self parseNumber:[dresult objectForKey:@"id"]];
-                    searchResult.data = dta;
-                    searchResult.type = typeMovie;
-                    
-                    // thumb
-                    BOOL thumb = NO;
-                    NSArray *posters = [dresult objectForKey:@"posters"];
-                    for (NSDictionary *dposter in posters)	{
-                        
-                        // first thumb
-                        if (! thumb) {
-                                
-                            // type
-                            NSDictionary *dimage = [dposter objectForKey:@"image"];
-                            NSString *ptype = [self parseString:[dimage objectForKey:@"type"]];
-                            NSString *psize = [self parseString:[dimage objectForKey:@"size"]];
-                            
-                            // compare
-                            if ([ptype isEqualToString:@"poster"] && [psize isEqualToString:@"thumb"]) {
-                                searchResult.thumb = [self parseString:[dimage objectForKey:@"url"]];
-                                thumb = YES;
-                            }
-                        }
-                        
-                    }
-                    
-                    // add
-                    [search addResultsObject:searchResult];
+                // dta
+                NSString *dta = [self parseString:[dresult objectForKey:@"name"]];
+                if (! [self isEmpty:[dresult objectForKey:@"released"]]) {
+                    dta = [NSString stringWithFormat:@"%@ (%@)",dta,[self parseYear:[dresult objectForKey:@"released"]]];
                 }
+                
+                
+                // data
+                searchResult.ref = [self parseNumber:[dresult objectForKey:@"id"]];
+                searchResult.data = dta;
+                searchResult.type = typeMovie;
+                
+                // thumb
+                BOOL thumb = NO;
+                NSArray *posters = [dresult objectForKey:@"posters"];
+                for (NSDictionary *dposter in posters)	{
+                    
+                    // first thumb
+                    if (! thumb) {
+                        
+                        // type
+                        NSDictionary *dimage = [dposter objectForKey:@"image"];
+                        NSString *ptype = [self parseString:[dimage objectForKey:@"type"]];
+                        NSString *psize = [self parseString:[dimage objectForKey:@"size"]];
+                        
+                        // compare
+                        if ([ptype isEqualToString:@"poster"] && [psize isEqualToString:@"thumb"]) {
+                            searchResult.thumb = [self parseString:[dimage objectForKey:@"url"]];
+                            thumb = YES;
+                        }
+                    }
+                    
+                }
+                
+                // add
+                [search addResultsObject:searchResult];
             }
-            [parser release];
         }
-
+        [parser release];
     }
     
-    
-    // person
-    if (! [type isEqualToString:typeMovie]) {
-        
-        // still waiting
-        [NSThread sleepForTimeInterval:kTMDbTimeQueueBase+((rand() / RAND_MAX) * kTMDbTimeQueueRandom)];
-        FLog("Send request...");
-        
-        // request
-        NSString *equery = [query stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
-        NSString *url = [NSString stringWithFormat:@"%@/en/json/%@/%@",apiTMDbSearchPerson,apiTMDbKey,equery];
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]
-                                                 cachePolicy:NSURLRequestReloadIgnoringCacheData
-                                             timeoutInterval:20.0];
-        
-        // response
-        error = nil;
-        NSURLResponse *response = nil;
-        
-        
-        // connection
-        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-        FLog("received data.");
-        
-        // error
-        if (error) {
-            
-            // roll back tha thing
-            [managedObjectContext rollback];
-            
-            // error
-            if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
-                APIError *apiError = [[[APIError alloc] initError:[NSNumber numberWithInt:-1] type:typePerson message:[error localizedDescription]] autorelease];
-                [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
-            }
-            
-            // fluff search
-            return NULL;
-        }
-        
-        
-        // json
-        NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]; 
-        
-        // response
-        if (! [self validResponse:json]) {
-            NSLog(@"Invalid %@ search: %@ %@",typePerson,type,query);
-            NSLog(@"%@",json);
-            
-            // back
-            [managedObjectContext rollback];
-            
-            // retry
-            if (retry) {
-                FLog("Wait...");
-                [NSThread sleepForTimeInterval:kTMDbTimeRetryBase+((rand() / RAND_MAX) * kTMDbTimeRetryRandom)];
-                FLog("... and try again.");
-                return [self querySearch:query type:type retry:NO];
-            }
-            
-            // note
-            if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
-                APIError *apiError = [[[APIError alloc] initError:[NSNumber numberWithInt:-1] type:typePerson message:NSLocalizedString(@"TMDb Service currently unavailable. Could not search person - please try again.", @"TMDb Service currently unavailable. Could not search person - please try again.")] autorelease];
-                [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
-            }
-            
-            // null
-            return NULL;
-        }
-        
-        // parse result
-        SBJsonParser *parser = [[SBJsonParser alloc] init];
-        if ([self validResult:json]) {
-            
-            // parse
-            NSArray *results = [parser objectWithString:json error:nil];
-            for (NSDictionary *dresult in results)	{
-                SearchResult *searchResult = (SearchResult*)[NSEntityDescription insertNewObjectForEntityForName:@"SearchResult" inManagedObjectContext:managedObjectContext];
-                
-                // validate
-                if ([self validSearch:dresult]) {
-                
-                    // data
-                    searchResult.ref = [self parseNumber:[dresult objectForKey:@"id"]];
-                    searchResult.data = [self parseString:[dresult objectForKey:@"name"]];
-                    searchResult.type = typePerson;
-                    
-                    // thumb
-                    BOOL thumb = NO;
-                    NSArray *profiles = [dresult objectForKey:@"profile"];
-                    for (NSDictionary *dprofile in profiles)	{
-                        
-                        // first thumb
-                        if (! thumb) {
-                            
-                            // type
-                            NSDictionary *dimage = [dprofile objectForKey:@"image"];
-                            NSString *ptype = [self parseString:[dimage objectForKey:@"type"]];
-                            NSString *psize = [self parseString:[dimage objectForKey:@"size"]];
-                            
-                            // compare
-                            if ([ptype isEqualToString:@"profile"] && [psize isEqualToString:@"thumb"]) {
-                                searchResult.thumb = [self parseString:[dimage objectForKey:@"url"]];
-                                thumb = YES;
-                            }
-                        }
-                        
-                    }
-                    
-                    // add
-                    [search addResultsObject:searchResult];
-                }
-            }
-            [parser release];
-        }
-    }
     
     // save
-    error = nil;
     if (! [managedObjectContext save:&error]) {
         
         // error
         if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
-            APIError *apiError = [[[APIError alloc] initError:[NSNumber numberWithInt:-1] type:typeSearch message:[error localizedDescription]] autorelease];
+            APIError *apiError = [[[APIError alloc] initError:typeMovie 
+                                                        title:NSLocalizedString(@"Data Error", @"TMDb Service Unavailable") 
+                                                      message:[error localizedDescription]] autorelease];
             [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
         }
         
@@ -784,12 +696,165 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // fluff
         return NULL;
-
+        
     }
     
     // at last...
     return search;
+    
 }
+
+- (Search*)querySearchPerson:(NSString*)query retry:(BOOL)retry {
+    FLog();
+        
+    // still waiting
+    [NSThread sleepForTimeInterval:kTMDbTimeQueueBase+((rand() / RAND_MAX) * kTMDbTimeQueueRandom)];
+    FLog("Send request...");
+    
+    // request
+    NSString *equery = [query stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+    NSString *url = [NSString stringWithFormat:@"%@/en/json/%@/%@",apiTMDbSearchPerson,apiTMDbKey,equery];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]
+                                             cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                         timeoutInterval:20.0];
+    
+    // response
+    NSError *error = nil;
+    NSURLResponse *response = nil;
+    
+    
+    // connection
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    FLog("received data.");
+    
+    // connection error
+    if (error) {
+        
+        // rolling
+        [managedObjectContext rollback];
+        
+        // error
+        if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
+            APIError *apiError = [[[APIError alloc] initError:typePerson 
+                                                        title:NSLocalizedString(@"Connection Error", @"Connection Error") 
+                                                      message:[error localizedDescription]] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
+        }
+        
+        // niet
+        return NULL;
+    }
+    
+    
+    // json
+    NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]; 
+    
+    // invalid response
+    if (! [self validResponse:json]) {
+        #ifdef DEBUG
+        NSLog(@"Invalid person search: %@",query);
+        NSLog(@"%@",json);
+        #endif
+        
+        // rollin back
+        [managedObjectContext rollback];
+        
+        // retry
+        if (retry) {
+            FLog("Wait...");
+            [NSThread sleepForTimeInterval:kTMDbTimeRetryBase+((rand() / RAND_MAX) * kTMDbTimeRetryRandom)];
+            FLog("... and try again.");
+            return [self querySearchPerson:query retry:NO];
+        }
+        
+        // note
+        if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
+            APIError *apiError = [[[APIError alloc] initError:typePerson 
+                                                        title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable")
+                                                      message:NSLocalizedString(@"Could not search person. \nPlease try again later.", @"Could not search person. \nPlease try again later.")] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
+        }
+        
+        // null
+        return NULL;
+    }
+    
+    // search result
+    Search *search = (Search*)[NSEntityDescription insertNewObjectForEntityForName:@"Search" inManagedObjectContext:managedObjectContext];
+    search.type = typePerson;
+    search.query = query;
+    
+    // parse result
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    if ([self validResult:json]) {
+        
+        // parse
+        NSArray *results = [parser objectWithString:json error:nil];
+        for (NSDictionary *dresult in results)	{
+            SearchResult *searchResult = (SearchResult*)[NSEntityDescription insertNewObjectForEntityForName:@"SearchResult" inManagedObjectContext:managedObjectContext];
+            
+            // validate
+            if ([self validSearch:dresult]) {
+                
+                // data
+                searchResult.ref = [self parseNumber:[dresult objectForKey:@"id"]];
+                searchResult.data = [self parseString:[dresult objectForKey:@"name"]];
+                searchResult.type = typePerson;
+                
+                // thumb
+                BOOL thumb = NO;
+                NSArray *profiles = [dresult objectForKey:@"profile"];
+                for (NSDictionary *dprofile in profiles)	{
+                    
+                    // first thumb
+                    if (! thumb) {
+                        
+                        // type
+                        NSDictionary *dimage = [dprofile objectForKey:@"image"];
+                        NSString *ptype = [self parseString:[dimage objectForKey:@"type"]];
+                        NSString *psize = [self parseString:[dimage objectForKey:@"size"]];
+                        
+                        // compare
+                        if ([ptype isEqualToString:@"profile"] && [psize isEqualToString:@"thumb"]) {
+                            searchResult.thumb = [self parseString:[dimage objectForKey:@"url"]];
+                            thumb = YES;
+                        }
+                    }
+                    
+                }
+                
+                // add
+                [search addResultsObject:searchResult];
+            }
+        }
+        [parser release];
+    }
+    
+    // save
+    if (! [managedObjectContext save:&error]) {
+        
+        // error
+        if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
+            APIError *apiError = [[[APIError alloc] initError:typePerson 
+                                                        title:NSLocalizedString(@"Data Error", @"Data Error") 
+                                                      message:[error localizedDescription]] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
+        }
+        
+        // handle the error
+        NSLog(@"TMDb CoreData Error\n%@\n%@", error, [error userInfo]);
+        [managedObjectContext rollback];
+        
+        // niet
+        return NULL;
+        
+    }
+    
+    // here it is
+    return search;
+}
+
+
 
 /*
  * Query movie.
@@ -816,12 +881,15 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 	NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     FLog("received data.");
     
-    // error
+    // connection error
     if (error) {
         
         // error
         if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
-            APIError *apiError = [[[APIError alloc] initError:mid type:typeMovie message:[error localizedDescription]] autorelease];
+            APIError *apiError = [[[APIError alloc] initError:typeMovie 
+                                                        title:NSLocalizedString(@"Connection Error", @"Connection Error")
+                                                      message:[error localizedDescription]] autorelease];
+            [apiError setDataId:mid];
             [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
         }
         
@@ -848,7 +916,10 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // note
         if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
-            APIError *apiError = [[[APIError alloc] initError:mid type:typeMovie message:NSLocalizedString(@"TMDb Service currently unavailable.Could not load movie - please try again.", @"TMDb Service currently unavailable.Could not load movie - please try again.")] autorelease];
+            APIError *apiError = [[[APIError alloc] initError:typeMovie 
+                                                        title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable") 
+                                                      message:NSLocalizedString(@"Could not load movie. \nPlease try again later.", @"Could not load movie. \nPlease try again later.")] autorelease];
+            [apiError setDataId:mid];
             [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
         }
         
@@ -865,7 +936,10 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // note
         if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
-            APIError *apiError = [[[APIError alloc] initError:mid type:typeMovie message:NSLocalizedString(@"Movie not found.", @"Movie not found.")] autorelease];
+            APIError *apiError = [[[APIError alloc] initError:typeMovie 
+                                                        title:NSLocalizedString(@"TMDb Service", @"TMDb Service") 
+                                                      message:NSLocalizedString(@"Movie not found.", @"Movie not found.")] autorelease];
+            [apiError setDataId:mid];
             [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
         }
         
@@ -1106,7 +1180,10 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // error
         if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
-            APIError *apiError = [[[APIError alloc] initError:mid type:typeMovie message:[error localizedDescription]] autorelease];
+            APIError *apiError = [[[APIError alloc] initError:typeMovie 
+                                                        title:NSLocalizedString(@"Data Error", @"Data Error") 
+                                                      message:[error localizedDescription]] autorelease];
+            [apiError setDataId:mid];
             [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
         }
         
@@ -1152,12 +1229,15 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 	NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     FLog("received data.");
     
-    // error
+    // connection error
     if (error) {
         
         // error
         if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
-            APIError *apiError = [[[APIError alloc] initError:pid type:typePerson message:[error localizedDescription]] autorelease];
+            APIError *apiError = [[[APIError alloc] initError:typePerson 
+                                                        title:NSLocalizedString(@"Connection Error", @"Connection Error") 
+                                                      message:[error localizedDescription]] autorelease];
+            [apiError setDataId:pid];
             [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
         }
         
@@ -1170,7 +1250,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
     
     
-    // response
+    // invalid response
     if (! [self validResponse:json]) {
         NSLog(@"Invalid response %i",[pid intValue]);
         NSLog(@"%@",json);
@@ -1185,7 +1265,10 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // note
         if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
-            APIError *apiError = [[[APIError alloc] initError:pid type:typePerson message:NSLocalizedString(@"TMDb Service currently unavailable.Could not load person - please try again.", @"TMDb Service currently unavailable.Could not load person - please try again.")] autorelease];
+            APIError *apiError = [[[APIError alloc] initError:typePerson 
+                                                        title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable") 
+                                                      message:NSLocalizedString(@"Could not load person. \nPlease try again later.", @"Could not load person. \nPlease try again later.")] autorelease];
+            [apiError setDataId:pid];
             [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
         }
         
@@ -1203,7 +1286,10 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // note
         if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
-            APIError *apiError = [[[APIError alloc] initError:pid type:typePerson message:NSLocalizedString(@"Person not found.", @"Person not found.")] autorelease];
+            APIError *apiError = [[[APIError alloc] initError:typePerson 
+                                                        title:NSLocalizedString(@"TMDb Service", @"TMDb Service") 
+                                                      message:NSLocalizedString(@"Person not found.", @"Person not found.")] autorelease];
+            [apiError setDataId:pid];
             [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
         }
         
@@ -1437,7 +1523,10 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         
         // error
         if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
-            APIError *apiError = [[[APIError alloc] initError:pid type:typePerson message:[error localizedDescription]] autorelease];
+            APIError *apiError = [[[APIError alloc] initError:typePerson 
+                                                        title:NSLocalizedString(@"Data Error", @"Data Error")
+                                                      message:[error localizedDescription]] autorelease];
+            [apiError setDataId:pid];
             [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
         }
         
@@ -1799,8 +1888,9 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 		NSLog(@"TMDb CoreData Error\n%@\n%@", error, [error userInfo]);
 		
 		// show info
-        if (delegate && [delegate respondsToSelector:@selector(apiFatal:)]) {
-            [delegate apiFatal:@"Corrupted Cache. Please try to clear the cache or reinstall the application... Sorry about this."];
+        if (delegate && [delegate respondsToSelector:@selector(apiFatal:message:)]) {
+            [delegate apiFatal:NSLocalizedString(@"Data Error", "Data Error")
+                       message:NSLocalizedString(@"Corrupted Cache. Please try to clear the cache or reinstall the application... Sorry about this.",@"Corrupted Cache. Please try to clear the cache or reinstall the application... Sorry about this.")];
         }
     
     }    
@@ -1842,7 +1932,8 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 // accessors
 @synthesize dataId;
 @synthesize dataType;
-@synthesize message;
+@synthesize errorTitle;
+@synthesize errorMessage;
 
 
 #pragma mark -
@@ -1851,14 +1942,15 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 /**
  * Init.
  */
-- (id)initError:(NSNumber *)did type:(NSString *)dtype message:(NSString *)msg {
+- (id)initError:(NSString*)type title:(NSString*)title message:(NSString*)message {
     GLog();
     
     // self
     if ((self = [super init])) {
-        self.dataId = did;
-        self.dataType = dtype;
-		self.message = msg;
+        self.dataId = [NSNumber numberWithInt:-1];
+        self.dataType = type;
+		self.errorTitle = title;
+        self.errorMessage = message;
 		return self;
 	}
 	return nil;
@@ -1877,7 +1969,8 @@ static NSString* TMDbStore = @"TMDb.sqlite";
 	// self
     [dataId release];
     [dataType release];
-	[message release];
+	[errorMessage release];
+    [errorTitle release];
 	
 	// super
     [super dealloc];

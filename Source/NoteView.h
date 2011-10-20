@@ -16,7 +16,8 @@
     
 	// ui
 	UIView *_note;
-	UITextView *_msgNote;
+    UILabel *_noteTitle;
+	UITextView *_noteMessage;
 	UIActivityIndicatorView *_activity;
 	UIImageView *_iconInfo;
 	UIImageView *_iconSuccess;
@@ -26,11 +27,11 @@
 }
 
 // Business Methods
-- (void)noteActivity:(NSString*)msg;
-- (void)noteInfo:(NSString*)msg;
-- (void)noteSuccess:(NSString*)msg;
-- (void)noteError:(NSString*)msg;
-- (void)noteNotification:(NSString*)msg;
+- (void)noteActivity:(NSString*)title message:(NSString*)msg;
+- (void)noteInfo:(NSString*)title message:(NSString*)msg;
+- (void)noteSuccess:(NSString*)title message:(NSString*)msg;
+- (void)noteError:(NSString*)title message:(NSString*)msg;
+- (void)noteNotification:(NSString*)title message:(NSString*)msg;
 - (void)showNote;
 - (void)showNoteAfterDelay:(float)delay;
 - (void)dismissNote;

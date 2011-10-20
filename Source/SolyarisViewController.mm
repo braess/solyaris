@@ -214,6 +214,7 @@
 	[noteView setAutoresizingMask: (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight) ];
 	_noteView = [noteView retain];
 	[self.view addSubview:_noteView];
+    [self.view bringSubviewToFront:_noteView];
 	[noteView release];
     
     // splash
@@ -609,8 +610,11 @@
     // dismiss popover
     [_searchResultsPopoverController dismissPopoverAnimated:YES];
     
+    // view
+    [self.view bringSubviewToFront:_noteView];
+    
     // note
-    [_noteView noteInfo:error.message]; 
+    [_noteView noteInfo:error.errorTitle message:error.errorMessage]; 
     [_noteView showNote];
     [_noteView dismissNote];
     
@@ -636,8 +640,11 @@
     // dismiss popover
     [_searchResultsPopoverController dismissPopoverAnimated:YES];
     
+    // view
+    [self.view bringSubviewToFront:_noteView];
+    
     // note
-    [_noteView noteError:error.message]; 
+    [_noteView noteError:error.errorTitle message:error.errorMessage]; 
     [_noteView showNote];
     
     // stop loader
@@ -656,12 +663,12 @@
 /*
  * API Quit.
  */
-- (void)apiFatal:(NSString *)msg {
+- (void)apiFatal:(NSString *)title message:(NSString *)msg {
     DLog();
     
     // alert
     UIAlertView *alert = [[UIAlertView alloc]
-                          initWithTitle:@"Fatal Error" 
+                          initWithTitle:title 
                           message:msg 
                           delegate:self 
                           cancelButtonTitle: @"Cancel"
@@ -856,31 +863,29 @@
 - (void)search:(NSString*)s type:(NSString*)t {
     DLog();
     
+    // track
+    [Tracker trackEvent:TEventSearch action:t label:s];
+    
     // reset
     [_searchResultViewController searchResultReset];
     
     // framed
-    CGRect srframe = _searchViewController.searchBar.frame;
-    NSString *type = typeAll;
-    if (t == typeMovie) {
-        type = typeMovie;
-        srframe = _searchViewController.buttonMovie.frame;
-    }
-    else if (t == typePerson) {
-        type = typePerson;
+    CGRect srframe = _searchViewController.buttonMovie.frame;
+    if (t == typePerson) {
         srframe = _searchViewController.buttonPerson.frame;
     }
     
-    // track
-    [Tracker trackEvent:TEventSearch action:type label:s];
+    // pop it
+    [_searchResultsPopoverController setPopoverContentSize:CGSizeMake(320, 125) animated:NO];
+	[_searchResultsPopoverController presentPopoverFromRect:srframe inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     
     // api
-    [tmdb search:s type:type];
-    
-    // pop it
-    [_searchResultsPopoverController setPopoverContentSize:CGSizeMake(_searchResultViewController.view.frame.size.width, 125) animated:NO];
-	[_searchResultsPopoverController presentPopoverFromRect:srframe inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-
+    if (t == typeMovie) {
+        [tmdb searchMovie:s];
+    }
+    else if (t == typePerson) {
+        [tmdb searchPerson:s];
+    }
     
 }
 
@@ -1133,6 +1138,7 @@
     
     // here you are
     [_informationViewController viewDidAppear:YES];
+    
 }
 
 
@@ -1173,6 +1179,7 @@
     CGPoint informationCenter = _informationViewController.contentView.center;
     informationCenter.y -= self.view.frame.size.height;
     _informationViewController.contentView.center = informationCenter;
+    
 }
 
 

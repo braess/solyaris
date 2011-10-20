@@ -26,10 +26,11 @@
 // Properties
 @property (nonatomic, retain) NSNumber *dataId;
 @property (nonatomic, retain) NSString *dataType;
-@property (nonatomic, retain) NSString *message;
+@property (nonatomic, retain) NSString *errorTitle;
+@property (nonatomic, retain) NSString *errorMessage;
 
 // Object
-- (id)initError:(NSNumber*)did type:(NSString*)dtype message:(NSString*)msg;
+- (id)initError:(NSString*)type title:(NSString*)title message:(NSString*)message;
 
 @end
 
@@ -43,7 +44,7 @@
 - (void)loadedPerson:(Person*)person;
 - (void)apiInfo:(APIError*)error;
 - (void)apiError:(APIError*)error;
-- (void)apiFatal:(NSString*)msg;
+- (void)apiFatal:(NSString*)title message:(NSString*)msg;
 @end
 
 /**
@@ -67,7 +68,8 @@
 
 // Business
 - (void)reset;
-- (void)search:(NSString*)q type:(NSString*)t;
+- (void)searchMovie:(NSString*)q;
+- (void)searchPerson:(NSString*)q;
 - (void)movie:(NSNumber*)mid;
 - (void)person:(NSNumber*)mid;
 - (void)clearCache;

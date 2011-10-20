@@ -220,7 +220,7 @@
         self.accessoryType = UITableViewCellAccessoryNone;
         
         // labels
-        UILabel *lblInfo = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
+        UILabel *lblInfo = [[UILabel alloc] initWithFrame:CGRectZero];
         lblInfo.backgroundColor = [UIColor clearColor];
         lblInfo.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
         lblInfo.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
@@ -235,7 +235,7 @@
         [lblInfo release];
         
         // thumb
-        CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:CGRectMake(-10, 0, 32, 44)];
+        CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:CGRectZero];
         
         _thumbImageView = [ciView retain];
         [self.contentView addSubview:_thumbImageView];
@@ -253,11 +253,17 @@
  */
 - (void)layoutSubviews {
     
+    // offset
+    float ox = 0;
+    if (iOS4) {
+        ox = -10;
+    }
+    
     // thumb
-    [_thumbImageView setFrame:CGRectMake(-10, 0, 32, 44)];
+    [_thumbImageView setFrame:CGRectMake(0+ox, 0, 32, 44)];
     
     // label
-    [_labelData setFrame:CGRectMake(30, 0, 270, 45)];
+    [_labelData setFrame:CGRectMake(40+ox, 0, 270, 45)];
 }
 
 

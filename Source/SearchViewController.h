@@ -47,7 +47,6 @@
 
 // Properties
 @property (assign) id<SearchDelegate> delegate;
-@property (nonatomic, retain) UISearchBar *searchBar;
 @property (nonatomic, retain) UIButton *buttonMovie;
 @property (nonatomic, retain) UIButton *buttonPerson;
 

@@ -52,7 +52,6 @@
 
 // accessors
 @synthesize delegate;
-@synthesize searchBar=_searchBar;
 @synthesize buttonMovie=_buttonMovie;
 @synthesize buttonPerson=_buttonPerson;
 
@@ -338,7 +337,7 @@
     
     // search
     if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
-        [delegate search:[_searchBar text] type:typeAll];
+        [delegate search:[_searchBar text] type:typeMovie];
     }
     
 }

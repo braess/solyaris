@@ -7,7 +7,6 @@
 //
 
 #import "NoteView.h"
-
 #import <QuartzCore/QuartzCore.h>
 
 
@@ -33,10 +32,10 @@
 #pragma mark Constants
 
 // constants
-#define kNoteOpacity                    0.8f
+#define kNoteOpacity                    0.9f
 #define kAnimateTimeNoteShow            0.21f
-#define kAnimateTimeNoteDismiss         0.3f
-#define kDelayTimeNoteDismiss           3.0f
+#define kAnimateTimeNoteDismiss         0.21f
+#define kDelayTimeNoteDismiss           4.5f
 
 
 #pragma mark -
@@ -48,7 +47,7 @@
 - (id)initWithFrame:(CGRect)frame {
     
 	// size
-	float nvs = 210;
+	float nvs = 240;
 	float inset = 10.0;
     
 	// init UIView
@@ -69,23 +68,42 @@
 		note.backgroundColor = [UIColor whiteColor];
 		note.alpha = kNoteOpacity;
 		note.layer.cornerRadius = 10;
+        
+        note.layer.shadowColor = [[UIColor blackColor] CGColor];
+        note.layer.shadowOpacity = 0.7;
+        note.layer.shadowRadius = 4.0;
+        note.layer.shadowOffset = CGSizeMake(5.0f, 5.0f);    
+        note.layer.shadowPath = [UIBezierPath bezierPathWithRect:note.bounds].CGPath;
+        
         _note = [note retain];
         [note release];
         
+        // title
+        UILabel *noteTitle = [[UILabel alloc] initWithFrame:CGRectMake(inset, nvs/2.0-nvs/8, nvs-2*inset, nvs/8)];
+        noteTitle.backgroundColor = [UIColor clearColor];
+        noteTitle.textAlignment = UITextAlignmentCenter;
+        noteTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
+        noteTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
+        noteTitle.opaque = YES;
+        noteTitle.numberOfLines = 1;
+        
+        _noteTitle = [noteTitle retain];
+        [noteTitle release];
+        
 		
 		// message
-		UITextView *msgNote = [[UITextView alloc] initWithFrame:CGRectMake(inset, nvs/2.0-nvs/8, nvs-2*inset, nvs/2)];
-		msgNote.contentInset = UIEdgeInsetsMake(0,-7,-20,-20);
-        msgNote.textAlignment = UITextAlignmentCenter;
-        msgNote.backgroundColor = [UIColor clearColor];
-        msgNote.font = [UIFont fontWithName:@"Helvetica" size:15.0];
-        msgNote.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
-        msgNote.opaque = YES;
-        msgNote.userInteractionEnabled = NO;
-        msgNote.editable = NO;
+		UITextView *noteMessage = [[UITextView alloc] initWithFrame:CGRectMake(inset, nvs/2.0, nvs-2*inset, nvs/2)];
+		noteMessage.contentInset = UIEdgeInsetsMake(0,-7,-20,-20);
+        noteMessage.textAlignment = UITextAlignmentCenter;
+        noteMessage.backgroundColor = [UIColor clearColor];
+        noteMessage.font = [UIFont fontWithName:@"Helvetica" size:15.0];
+        noteMessage.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
+        noteMessage.opaque = YES;
+        noteMessage.userInteractionEnabled = NO;
+        noteMessage.editable = NO;
         
-        _msgNote = [msgNote retain];
-        [msgNote release];
+        _noteMessage = [noteMessage retain];
+        [noteMessage release];
         
         
 		
@@ -149,7 +167,8 @@
 		[_note addSubview:_iconError];
 		[_note addSubview:_iconInfo];
         [_note addSubview:_iconNotification];
-		[_note addSubview:_msgNote];
+		[_note addSubview:_noteTitle];
+        [_note addSubview:_noteMessage];
 		_note.hidden = YES;
 		
 		// add
@@ -186,15 +205,15 @@
 /**
  * Notes an activity.
  */
-- (void)noteActivity:(NSString *)msg {
+- (void)noteActivity:(NSString*)title message:(NSString*)msg {
 	FLog();
 	
 	// reset
 	[self prepareNotes];
 	
 	// text
-	_msgNote.text = msg;
-    _msgNote.hidden = NO;
+	_noteTitle.text = title;
+    _noteMessage.text = msg;
 	
 	// activity
 	_activity.hidden = NO;
@@ -204,15 +223,15 @@
 /**
  * Notes a success.
  */
-- (void)noteSuccess:(NSString *)msg {
+- (void)noteSuccess:(NSString*)title message:(NSString *)msg {
 	FLog();
 	
     // reset
 	[self prepareNotes];
 	
 	// text
-	_msgNote.text = msg;
-	_msgNote.hidden = NO;
+	_noteTitle.text = title;
+    _noteMessage.text = msg;
 	
 	// success
 	_iconSuccess.hidden = NO;
@@ -221,15 +240,15 @@
 /**
  * Notes an error.
  */
-- (void)noteError:(NSString *)msg {
+- (void)noteError:(NSString*)title message:(NSString *)msg  {
 	FLog();
 	
     // reset
 	[self prepareNotes];
 	
 	// text
-	_msgNote.text = msg;
-	_msgNote.hidden = NO;
+	_noteTitle.text = title;
+    _noteMessage.text = msg;
 	
 	// error
 	_iconError.hidden = NO;
@@ -238,15 +257,15 @@
 /**
  * Notes an info.
  */
-- (void)noteInfo:(NSString *)msg {
+- (void)noteInfo:(NSString*)title message:(NSString *)msg {
 	FLog();
 	
     // reset
 	[self prepareNotes];
 	
 	// text
-	_msgNote.text = msg;
-	_msgNote.hidden = NO;
+	_noteTitle.text = title;
+    _noteMessage.text = msg;
 	
 	// info
 	_iconInfo.hidden = NO;
@@ -257,15 +276,15 @@
 /**
  * Notification.
  */
-- (void)noteNotification:(NSString *)msg {
+- (void)noteNotification:(NSString*)title message:(NSString *)msg {
 	FLog();
     
     // reset
 	[self prepareNotes];
 	
 	// text
-	_msgNote.text = msg;
-	_msgNote.hidden = NO;
+	_noteTitle.text = title;
+    _noteMessage.text = msg;
     
     // icons
     _iconNotification.hidden = NO;
@@ -345,7 +364,7 @@
 	[UIView setAnimationDuration:kAnimateTimeNoteDismiss];
 	[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
 	_note.alpha = 0.0f;
-	_note.transform = CGAffineTransformMakeScale(1.5,1.5);
+	_note.transform = CGAffineTransformMakeScale(1.2,1.2);
 	[UIView commitAnimations];
     
 	// clean it up
@@ -371,8 +390,9 @@
 - (void)prepareNotes {
     
 	// message
-	_msgNote.text = @"";
-	_msgNote.hidden = YES;
+	_noteTitle.text = @"";
+    _noteMessage.text = @"";
+
     
 	// activity
 	[_activity stopAnimating];
@@ -409,7 +429,8 @@
 	GLog();
 	
 	// release
-	[_msgNote release];
+	[_noteTitle release];
+    [_noteMessage release];
 	[_activity release];
 	[_iconSuccess release];
 	[_iconError release];

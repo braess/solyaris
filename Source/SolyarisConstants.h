@@ -13,7 +13,6 @@
 #define typePersonActor                 @"person_actor"	
 #define typePersonDirector              @"person_director"	
 #define typePersonCrew                  @"person_crew"	
-#define typeAll                         @"all"
 #define typeSearch                      @"search"
 
 
