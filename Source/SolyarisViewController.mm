@@ -602,9 +602,9 @@
 
 
 /*
- * API Info.
+ * API Glitch.
  */
-- (void)apiInfo:(APIError *)error {
+- (void)apiGlitch:(APIError *)error {
     DLog();
     
     // dismiss popover
@@ -625,8 +625,8 @@
     // check
     if (node != NULL) {
         
-        // loaded
-        node->loaded();
+        // unload
+        node->unload();
     }
 }
 
@@ -654,8 +654,8 @@
     // check
     if (node != NULL) {
         
-        // loaded
-        node->loaded();
+        // unload
+        node->unload();
     }
 }
 

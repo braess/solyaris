@@ -42,7 +42,7 @@
 - (void)loadedSearch:(Search*)result;
 - (void)loadedMovie:(Movie*)movie;
 - (void)loadedPerson:(Person*)person;
-- (void)apiInfo:(APIError*)error;
+- (void)apiGlitch:(APIError*)error;
 - (void)apiError:(APIError*)error;
 - (void)apiFatal:(NSString*)title message:(NSString*)msg;
 @end

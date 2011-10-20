@@ -607,11 +607,11 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         }
         
         // note
-        if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
+        if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typeMovie 
                                                         title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable")
                                                       message:NSLocalizedString(@"Could not search movie. \nPlease try again later.", @"Could not search movie. \nPlease try again later.")] autorelease];
-            [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
+            [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
         }
         
         // damn it
@@ -768,11 +768,11 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         }
         
         // note
-        if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
+        if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typePerson 
                                                         title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable")
                                                       message:NSLocalizedString(@"Could not search person. \nPlease try again later.", @"Could not search person. \nPlease try again later.")] autorelease];
-            [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
+            [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
         }
         
         // null
@@ -901,10 +901,12 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // json
     NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     
-    // response
+    // invalid response
     if (! [self validResponse:json]) {
+        #ifdef DEBUG
         NSLog(@"Invalid response %i",[mid intValue]);
         NSLog(@"%@",json);
+        #endif
         
         // retry
         if (retry) {
@@ -915,12 +917,12 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         }
         
         // note
-        if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
+        if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typeMovie 
                                                         title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable") 
                                                       message:NSLocalizedString(@"Could not load movie. \nPlease try again later.", @"Could not load movie. \nPlease try again later.")] autorelease];
             [apiError setDataId:mid];
-            [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
+            [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
         }
         
         // nothing
@@ -931,16 +933,18 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     SBJsonParser *parser = [[SBJsonParser alloc] init];
     NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
     if (! [self validResult:json] || ! [self validMovie:djson]) {
+        #ifdef DEBUG
         NSLog(@"Movie not found %i",[mid intValue]);
         NSLog(@"%@",json);
+        #endif
         
         // note
-        if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
+        if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typeMovie 
                                                         title:NSLocalizedString(@"TMDb Service", @"TMDb Service") 
                                                       message:NSLocalizedString(@"Movie not found.", @"Movie not found.")] autorelease];
             [apiError setDataId:mid];
-            [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
+            [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
         }
         
         // nothing
@@ -1252,8 +1256,10 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     
     // invalid response
     if (! [self validResponse:json]) {
+        #ifdef DEBUG
         NSLog(@"Invalid response %i",[pid intValue]);
         NSLog(@"%@",json);
+        #endif
         
         // retry
         if (retry) {
@@ -1264,12 +1270,12 @@ static NSString* TMDbStore = @"TMDb.sqlite";
         }
         
         // note
-        if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
+        if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typePerson 
                                                         title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable") 
                                                       message:NSLocalizedString(@"Could not load person. \nPlease try again later.", @"Could not load person. \nPlease try again later.")] autorelease];
             [apiError setDataId:pid];
-            [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
+            [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
         }
         
         // nothing
@@ -1281,16 +1287,18 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     SBJsonParser *parser = [[SBJsonParser alloc] init];
     NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
     if (! [self validResult:json] || ! [self validPerson:djson]) {
+        #ifdef DEBUG
         NSLog(@"Person not found %i",[pid intValue]);
         NSLog(@"%@",json);
+        #endif
         
         // note
-        if (delegate && [delegate respondsToSelector:@selector(apiInfo:)]) {
+        if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typePerson 
                                                         title:NSLocalizedString(@"TMDb Service", @"TMDb Service") 
                                                       message:NSLocalizedString(@"Person not found.", @"Person not found.")] autorelease];
             [apiError setDataId:pid];
-            [delegate performSelectorOnMainThread:@selector(apiInfo:) withObject:apiError waitUntilDone:NO];
+            [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
         }
         
         // nothing

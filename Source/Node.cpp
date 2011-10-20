@@ -394,8 +394,8 @@ void Node::load() {
     loading = true;
     
     // radius
-    radius = 30;
     core = 15;
+    radius = 30;
     
     // color
     ctxt = Color(0.9,0.9,0.9);
@@ -405,6 +405,36 @@ void Node::load() {
     loff.y = 6;
     this->renderLabel(label);
 
+    
+}
+void Node::unload() {
+    FLog();
+    
+    // state
+    visible = true;
+    loading = false;
+    
+    // radius
+    core = 9;
+    radius = 9;
+    
+    // color
+    ctxt = Color(0.85,0.85,0.85);
+    
+    // font
+    font = Font("Helvetica",12);
+    loff.y = 5;
+    this->renderLabel(label);
+    
+    // parent
+    NodePtr pp = this->parent.lock();
+    if (pp) {
+        
+        // radius & position
+        Vec2d back = pp->pos + ((this->pos - pp->pos) / 2.0);
+        this->moveTo(back);
+    }
+    
     
 }
 void Node::loaded() {
@@ -433,10 +463,10 @@ void Node::show(bool animate) {
             // radius & position
             float dmin = 0.2;
             float dmax = 1.2;
-            float rx = Rand::randFloat(pp->radius * dmin,pp->radius * dmax);
-            rx *= (Rand::randFloat(1) > 0.5) ? 1 : -1;
-            float ry = Rand::randFloat(pp->radius * dmin,pp->radius * dmax);
-            ry *= (Rand::randFloat(1) > 0.5) ? 1 : -1;
+            float rx = Rand::randFloat(pp->radius * dmin,pp->radius * dmax) + 0.1;
+            rx *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
+            float ry = Rand::randFloat(pp->radius * dmin,pp->radius * dmax) + 0.1;
+            ry *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
             Vec2d p = Vec2d(pp->pos.x+rx,pp->pos.y+ry);
    
  

@@ -46,7 +46,7 @@
 #pragma mark Constants
 
 // constants
-#define kAnimateTimeImageLoaded	0.30f
+#define kAnimateTimeImageLoaded	0.45f
 #define kCacheImageFolder       @"cimages"
 
 

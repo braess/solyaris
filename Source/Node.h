@@ -78,6 +78,7 @@ class Node {
     void addChild(NodePtr child);
     void grown();
     void load();
+    void unload();
     void loaded();
     void hide();
     void unfold();
