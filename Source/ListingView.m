@@ -26,9 +26,9 @@
  */
 @implementation ListingView
 
+
 #pragma mark -
 #pragma mark Constants
-
 
 // local vars
 static int listingCellHeight = 36;
@@ -165,9 +165,9 @@ static int listingGapInset = 15;
 - (void)scrollTop:(bool)animated {
     FLog();
     
-    // scrolling 
+    // scrolling
     [_tableView reloadData];
-    [_tableView setContentOffset:CGPointMake(0, 0) animated:animated];
+    [_tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
 
 }
 
@@ -559,29 +559,13 @@ static int listingGapInset = 15;
         _iconMovie.hidden = YES;
         [self.contentView addSubview: _iconMovie];
         
-        _iconActor = [[UIImageView alloc] initWithFrame:iframe];
-		_iconActor.image = [UIImage imageNamed:@"icon_mini_actor.png"];
-		_iconActor.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-		_iconActor.backgroundColor = [UIColor clearColor];
-		_iconActor.contentMode = UIViewContentModeCenter;
-        _iconActor.hidden = YES;
-        [self.contentView addSubview: _iconActor];
-        
-        _iconDirector = [[UIImageView alloc] initWithFrame:iframe];
-		_iconDirector.image = [UIImage imageNamed:@"icon_mini_director.png"];
-		_iconDirector.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-		_iconDirector.backgroundColor = [UIColor clearColor];
-		_iconDirector.contentMode = UIViewContentModeCenter;
-        _iconDirector.hidden = YES;
-        [self.contentView addSubview: _iconDirector];
-        
-        _iconCrew = [[UIImageView alloc] initWithFrame:iframe];
-		_iconCrew.image = [UIImage imageNamed:@"icon_mini_crew.png"];
-		_iconCrew.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-		_iconCrew.backgroundColor = [UIColor clearColor];
-		_iconCrew.contentMode = UIViewContentModeCenter;
-        _iconCrew.hidden = YES;
-        [self.contentView addSubview: _iconCrew];
+        _iconPerson = [[UIImageView alloc] initWithFrame:iframe];
+		_iconPerson.image = [UIImage imageNamed:@"icon_mini_person.png"];
+		_iconPerson.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+		_iconPerson.backgroundColor = [UIColor clearColor];
+		_iconPerson.contentMode = UIViewContentModeCenter;
+        _iconPerson.hidden = YES;
+        [self.contentView addSubview: _iconPerson];
         
         
     }
@@ -647,11 +631,9 @@ static int listingGapInset = 15;
     [_labelMeta setFrame: fmeta];
     
     // disclosure
-    CGRect fdisc = CGRectMake(self.frame.size.width-listingCellInset+oxdisc, 9, 16, 16);
+    CGRect fdisc = CGRectMake(self.frame.size.width-listingCellInset+oxdisc, 10, 16, 16);
     _iconMovie.hidden = YES;
-    _iconActor.hidden = YES;
-    _iconDirector.hidden = YES;
-    _iconCrew.hidden = YES;
+    _iconPerson.hidden = YES;
     if (loaded) {
         
         // movie
@@ -659,22 +641,11 @@ static int listingGapInset = 15;
             _iconMovie.frame = fdisc;
             _iconMovie.hidden = NO;
         }
-        // actor
-        else if ([_type isEqualToString:typePersonActor]) {
-            _iconActor.frame = fdisc;
-            _iconActor.hidden = NO;
+        // person
+        else  {
+            _iconPerson.frame = fdisc;
+            _iconPerson.hidden = NO;
         }
-        // crew
-        else if ([_type isEqualToString:typePersonDirector]) {
-            _iconDirector.frame = fdisc;
-            _iconDirector.hidden = NO;
-        }
-        // crew
-        else if ([_type isEqualToString:typePersonCrew]) {
-            _iconCrew.frame = fdisc;
-            _iconCrew.hidden = NO;
-        }
-        
         
     }
     

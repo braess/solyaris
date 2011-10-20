@@ -13,6 +13,7 @@
 #import "Solyaris.h"
 #import "SolyarisConstants.h"
 #import "SplashView.h"
+#import "HelpView.h"
 #import "Tracker.h"
 
 
@@ -23,6 +24,7 @@
 - (NSString*)makeNodeId:(NSNumber*)nid type:(NSString*)type;
 - (NSString*)makeEdgeId:(NSString*)pid to:(NSString*)cid;
 - (NSNumber*)toDBId:(NSString*)nid;
+- (void)randomTagline;
 @end
 
 
@@ -59,7 +61,8 @@
 #define kAnimateTimeSettingsShow	0.6f
 #define kAnimateTimeSettingsHide	0.3f
 #define kDelayTimeNodeLoad          1.8f
-#define kOffsetSettings 480
+#define kDelayTimeStartup           4.8f
+#define kOffsetSettings             480
 
 
 #pragma mark -
@@ -109,14 +112,14 @@
 	[super loadView];
 	FLog();
     
-    // orientation
-    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-    
     // window
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
     
     // frames
     CGRect frame = CGRectMake(0, 0, 768, 1024);
+    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+        frame = CGRectMake(0, 0, 1024, 768);
+    }
     CGRect frameSearch = CGRectMake(0, 0, frame.size.width, 40);
     CGRect frameSearchResult = CGRectMake(0, 0, 320, 480);
     CGRect frameInformation = CGRectMake(0, 0, 580, 625);
@@ -128,6 +131,7 @@
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.view.opaque = NO;
     self.view.multipleTouchEnabled = YES;
+    self.view.backgroundColor = [UIColor clearColor];
     [window addSubview:self.view];
     
     
@@ -227,7 +231,9 @@
     // notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(activate) name: UIApplicationDidBecomeActiveNotification object:nil];
 
+
 }
+
 
 
 #pragma mark -
@@ -247,31 +253,24 @@
     // reset api
     [tmdb reset];
     
-    // random tagline
-    NSArray *movies = [tmdb dataMovies];
-    NSMutableArray *taglines = [[NSMutableArray alloc] init];
-    for (Movie *m in movies) {
-        
-        // loaded
-        if (m.loaded) {
-            
-            // tagline
-            NSString *tagline = m.tagline;
-            if (tagline && [tagline length] > 1 && [tagline length] < 36) {
-                [taglines addObject:tagline];
-            }
-        }
-        
-    }
+    // tagline
+    [self randomTagline];
     
-    // check
-    NSString *tagline = NSLocalizedString(@"A Visual Movie Browser", @"A Visual Movie Browser");
-    if ([taglines count] > 0) {
-        tagline = [taglines objectAtIndex:random() % ([taglines count])];
-    }
+    // delegate
+    SolyarisAppDelegate *appDelegate = (SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate];
     
-    // set
-    [_searchViewController claim:tagline];
+    // messages
+    NSString *msgInstall = (NSString*) [appDelegate getUserDefault:msgAppInstall];
+    if (msgInstall) {
+        [self install:msgInstall];
+        [appDelegate removeUserDefault:msgAppInstall];
+    }
+    NSString *msgUpdate = (NSString*) [appDelegate getUserDefault:msgAppUpdate];
+    if (msgUpdate) {
+        [self update:msgUpdate];
+        [appDelegate removeUserDefault:msgAppUpdate];
+    }
+
 }
 
 
@@ -286,6 +285,44 @@
     abort();
 }
 
+/**
+ * Shows the help.
+ */
+- (void)help {
+    DLog();
+    
+    // view
+    HelpView *helpView = [[[HelpView alloc] init] autorelease];
+    [self.view addSubview:helpView];
+    [self.view bringSubviewToFront:helpView];
+    for (UIView *subview in self.view.subviews) {
+        if ([subview isKindOfClass:NSClassFromString(@"SplashView")]) {
+            [self.view bringSubviewToFront:subview];
+            break;
+        }
+    }
+    
+    // show
+    [helpView showHelp];
+}
+
+/**
+ * Install stuff.
+ */
+- (void)install:(NSString*)version {
+    DLog();
+    
+    // help
+    [self performSelector:@selector(help) withObject:nil afterDelay:kDelayTimeStartup];
+}
+
+
+/**
+ * Update stuff.
+ */
+- (void)update:(NSString*)version {
+    DLog();
+}
 
 
 
@@ -614,7 +651,7 @@
     [self.view bringSubviewToFront:_noteView];
     
     // note
-    [_noteView noteInfo:error.errorTitle message:error.errorMessage]; 
+    [_noteView noteGlitch:error.errorTitle message:error.errorMessage]; 
     [_noteView showNote];
     [_noteView dismissNote];
     
@@ -731,10 +768,15 @@
     [_searchResultsPopoverController dismissPopoverAnimated:YES];
     
     // random position
-    CGSize s = [UIScreen mainScreen].applicationFrame.size;
-    int b = 300;
-    int nx = ((s.width/2.0)-b + arc4random() % (2*b));
-    int ny = ((s.height/2.0)-b + arc4random() % (2*b));
+    int b = 240;
+    float w = 768;
+    float h = 1024;
+    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+        w = 1024;
+        h = 768;
+    }
+    int nx = ((w/2.0)-b + arc4random() % (2*b));
+    int ny = ((h/2.0)-b + arc4random() % (2*b));
     
     
     // node
@@ -944,6 +986,20 @@
     
 }
 
+/*
+ * Help, I need somebody, help.
+ */
+- (void)settingsHelp {
+    FLog();
+    
+    // dismiss
+    [self settingsDismiss];
+    
+    // help
+    [self performSelector:@selector(help) withObject:nil afterDelay:kAnimateTimeSettingsHide*2];
+    
+}
+
 
 
 
@@ -1095,6 +1151,7 @@
     }
     
 }
+
 
 
 
@@ -1360,7 +1417,38 @@
     return dbid;
 }
 
-
+/*
+ * Generates a random tagline.
+ */
+- (void)randomTagline {
+    FLog();
+    
+    // random tagline
+    NSArray *movies = [tmdb dataMovies];
+    NSMutableArray *taglines = [[NSMutableArray alloc] init];
+    for (Movie *m in movies) {
+        
+        // loaded
+        if (m.loaded) {
+            
+            // tagline
+            NSString *tagline = m.tagline;
+            if (tagline && [tagline length] > 1 && [tagline length] < 36) {
+                [taglines addObject:tagline];
+            }
+        }
+        
+    }
+    
+    // check
+    NSString *tagline = NSLocalizedString(@"A Visual Movie Browser", @"A Visual Movie Browser");
+    if ([taglines count] > 0) {
+        tagline = [taglines objectAtIndex:random() % ([taglines count])];
+    }
+    
+    // set
+    [_searchViewController claim:tagline];
+}
 
 
 #pragma mark -

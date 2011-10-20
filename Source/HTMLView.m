@@ -166,7 +166,7 @@
     // scroll view
     for (UIView *subview in _webView.subviews) {
         if ([subview isKindOfClass:[UIScrollView class]]) {
-            [(UIScrollView*)subview setContentOffset:CGPointZero animated:animated];
+            [(UIScrollView*)subview setContentOffset:CGPointZero animated:NO];
         }
     }
 }

@@ -98,9 +98,8 @@
     [aboutViewController release];
     
     // Preferences
-    PreferencesViewController *preferencesViewController = [[PreferencesViewController alloc] initWithStyle:UITableViewStylePlain];
+    PreferencesViewController *preferencesViewController = [[PreferencesViewController alloc] initWithFrame:pframe];
     preferencesViewController.delegate = self;
-    [preferencesViewController.view setFrame:pframe];
     _preferencesViewController = [preferencesViewController retain];
     [ctView addSubview:_preferencesViewController.view];
     [preferencesViewController release];
@@ -189,6 +188,14 @@
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(settingsClearCache)]) {
         [delegate settingsClearCache];
+    }
+}
+- (void)preferencesHelp {
+    GLog();
+    
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(settingsHelp)]) {
+        [delegate settingsHelp];
     }
 }
 

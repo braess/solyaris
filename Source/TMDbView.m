@@ -209,7 +209,7 @@ static int tmdbGapInset = 15;
     FLog();
     
     // scroll to top
-    [self setContentOffset:CGPointMake(0, 0) animated:animated];
+    [self setContentOffset:CGPointMake(0, 0) animated:NO];
 }
 
 /*

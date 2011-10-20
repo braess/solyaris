@@ -27,6 +27,7 @@
 - (void)setUserDefault:(NSString*)key value:(NSObject*)value;
 - (void)setUserDefaultBool:(NSString*)key value:(BOOL)b;
 - (NSObject*)getUserDefault:(NSString*)key;
+- (void)removeUserDefault:(NSString*)key;
 - (BOOL)getUserDefaultBool:(NSString*)key;
 
 @end

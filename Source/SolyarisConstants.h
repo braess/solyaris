@@ -51,6 +51,10 @@
 // Values
 #define vAppEmail                       @"solyaris@cecinestpasparis.net"	
 
+// Messages
+#define msgAppInstall                        @"message_app_install"
+#define msgAppUpdate                         @"message_app_update"
+
 
 // System Version
 #define iOS4    ([[[UIDevice currentDevice] systemVersion] compare:@"5.0" options:NSNumericSearch] == NSOrderedAscending)

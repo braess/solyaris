@@ -67,9 +67,7 @@ enum {
     UILabel *_labelMeta;
     NSString *_type;
     UIImageView *_iconMovie;
-    UIImageView *_iconActor;
-    UIImageView *_iconDirector;
-    UIImageView *_iconCrew;
+    UIImageView *_iconPerson;
     
     // state
     bool loaded;

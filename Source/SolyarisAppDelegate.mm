@@ -136,6 +136,9 @@
     // init search term
     [userDefaults setObject:@"Kill Bill" forKey:udSearchTerm];
     
+    // message
+    [userDefaults setObject:appVersion forKey:msgAppInstall];
+    
     // synchronize
     [userDefaults synchronize];
 
@@ -163,6 +166,11 @@
     
 	// set version
 	[userDefaults setObject:appVersion forKey:udInformationAppVersion];
+    
+    // message
+    [userDefaults setObject:appVersion forKey:msgAppUpdate];
+    
+    // sync
 	[userDefaults synchronize];
 
 }
@@ -244,6 +252,20 @@
 	
 	// return
 	return [userDefaults boolForKey:key]; 
+}
+
+/**
+ * Removes a user default.
+ */
+- (void)removeUserDefault:(NSString *)key {
+    FLog();
+    
+    // user defaults
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+	
+	// set
+	[userDefaults removeObjectForKey:key];
+	[userDefaults synchronize];
 }
 
 

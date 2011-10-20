@@ -88,9 +88,8 @@
     // self
     if ((self = [super initWithFrame:CGRectMake(0, 0, 60, 44)])) {
         
-        
         // background
-        self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.024];
+        self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.045];
         self.layer.cornerRadius = 3;
         
         
@@ -127,7 +126,7 @@
  * Selected.
  */
 - (void)setSelected:(BOOL)s {
-    self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.024];
+    self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.045];
     [self setTitleColor:[UIColor colorWithRed:180.0/255.0 green:180.0/255.0 blue:180.0/255.0 alpha:1.0] forState:UIControlStateNormal];
     if (s) {
         self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.15];

@@ -21,6 +21,7 @@
 	UIActivityIndicatorView *_activity;
 	UIImageView *_iconInfo;
 	UIImageView *_iconSuccess;
+    UIImageView *_iconGlitch;
 	UIImageView *_iconError;
     UIImageView *_iconNotification;
     
@@ -30,6 +31,7 @@
 - (void)noteActivity:(NSString*)title message:(NSString*)msg;
 - (void)noteInfo:(NSString*)title message:(NSString*)msg;
 - (void)noteSuccess:(NSString*)title message:(NSString*)msg;
+- (void)noteGlitch:(NSString*)title message:(NSString*)msg;
 - (void)noteError:(NSString*)title message:(NSString*)msg;
 - (void)noteNotification:(NSString*)title message:(NSString*)msg;
 - (void)showNote;

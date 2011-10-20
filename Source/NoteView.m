@@ -137,6 +137,16 @@
 		iconInfo.hidden = YES;
         _iconInfo = [iconInfo retain];
         [iconInfo release];
+        
+        // error
+		UIImageView *iconGlitch = [[UIImageView alloc] initWithFrame:iconFrame];
+		iconGlitch.image = [UIImage imageNamed:@"icon_note_glitch.png"];
+		iconGlitch.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+		iconGlitch.backgroundColor = [UIColor clearColor];
+		iconGlitch.contentMode = UIViewContentModeCenter;
+		iconGlitch.hidden = YES;
+        _iconGlitch = [iconGlitch retain];
+        [iconGlitch release];
 		
 		
 		// error
@@ -164,6 +174,7 @@
 		// add
 		[_note addSubview:_activity];
 		[_note addSubview:_iconSuccess];
+        [_note addSubview:_iconGlitch];
 		[_note addSubview:_iconError];
 		[_note addSubview:_iconInfo];
         [_note addSubview:_iconNotification];
@@ -235,6 +246,23 @@
 	
 	// success
 	_iconSuccess.hidden = NO;
+}
+
+/**
+ * Notes a glitch.
+ */
+- (void)noteGlitch:(NSString*)title message:(NSString *)msg  {
+	FLog();
+	
+    // reset
+	[self prepareNotes];
+	
+	// text
+	_noteTitle.text = title;
+    _noteMessage.text = msg;
+	
+	// glitch
+	_iconGlitch.hidden = NO;
 }
 
 /**
@@ -400,6 +428,9 @@
 	
 	// success
 	_iconSuccess.hidden = YES;
+    
+    // error
+	_iconGlitch.hidden = YES;
 	
 	// error
 	_iconError.hidden = YES;

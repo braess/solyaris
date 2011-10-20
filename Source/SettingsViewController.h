@@ -18,6 +18,7 @@
 - (void)settingsDismiss;
 - (void)settingsApply;
 - (void)settingsClearCache;
+- (void)settingsHelp;
 @end
 
 

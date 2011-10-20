@@ -66,12 +66,12 @@ Node::Node(string idn, double x, double y) {
     ctxts = Color(1,1,1);
     
     // alpha
-    anode = 0.51;
-    asnode = 0.9;
-    acore = 0.6;
-    ascore = 0.9;
-    aglow = 0.18;
-    asglow = 0.45;
+    anode = 0.45;
+    asnode = 0.81;
+    acore = 0.45;
+    ascore = 0.81;
+    aglow = 0.12;
+    asglow = 0.24;
     
     // textures
     textureNode = gl::Texture(1,1);

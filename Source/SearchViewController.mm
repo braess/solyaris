@@ -41,8 +41,8 @@
 // constants
 #define kAlphaSearch 0.75f
 #define kAlphaSearchActive 0.96f
-#define kAlphaBtn 0.8f
-#define kAlphaBtnActive 0.5f
+#define kAlphaBtn 0.54f
+#define kAlphaBtnActive 0.3f
 #define kAlphaTxt 0.75f
 
 

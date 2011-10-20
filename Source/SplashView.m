@@ -27,7 +27,7 @@
 
 // constants
 #define kDelayTimeSplashDismiss             3.0f
-#define kAnimateTimeSplashDismiss           0.9f
+#define kAnimateTimeSplashDismiss           1.5f
 
 
 #pragma mark -
@@ -49,7 +49,7 @@
 		_splash = [[UIImageView alloc] initWithFrame:frame];
 		_splash.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		_splash.backgroundColor = [UIColor clearColor];
-		_splash.contentMode = UIViewContentModeRedraw;
+		_splash.contentMode = UIViewContentModeTopLeft;
         
 		
 		// add
@@ -73,12 +73,24 @@
     // frame
     CGRect frame = CGRectMake(0, 0, 768, 1024);
     _splash.image = [UIImage imageNamed:@"Default-Portrait.png"];
-    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+        NSLog(@"landscape");
         frame = CGRectMake(0, 0, 1024, 768);
         _splash.image = [UIImage imageNamed:@"Default-Landscape.png"];
     }
     self.frame = frame;
     
+}
+
+
+#pragma mark -
+#pragma mark Rotation
+
+/*
+ * Rotate is the new black.
+ */
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return YES;
 }
 
 

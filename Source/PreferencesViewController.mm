@@ -8,6 +8,7 @@
 
 #import "PreferencesViewController.h"
 #import "SolyarisConstants.h"
+#import "ActionBar.h"
 #import "Tracker.h"
 
 /*
@@ -34,7 +35,8 @@
 
 // local vars
 static int preferencesHeaderHeight = 45;
-static int preferencesHeaderGap = 10;
+static int preferencesHeaderGap = 15;
+static int preferencesFooterHeight = 60;
 
 
 #pragma mark -
@@ -43,6 +45,27 @@ static int preferencesHeaderGap = 10;
 // accessors
 @synthesize delegate;
 
+
+#pragma mark -
+#pragma mark Object Methods
+
+/*
+ * Init.
+ */
+-(id)init {
+	return [self initWithFrame:CGRectMake(0, 0, 320, 480)];
+}
+-(id)initWithFrame:(CGRect)frame {
+	GLog();
+	// self
+	if ((self = [super initWithStyle:UITableViewStylePlain])) {
+        
+		// view
+		vframe = frame;
+        
+	}
+	return self;
+}
 
 #pragma mark -
 #pragma mark View lifecycle
@@ -54,6 +77,9 @@ static int preferencesHeaderGap = 10;
 	[super loadView];
 	DLog();
     
+    // self
+    self.view.frame = vframe;
+    
 	
 	// remove background for iPhone
     self.tableView.scrollEnabled = NO;
@@ -63,12 +89,13 @@ static int preferencesHeaderGap = 10;
     self.tableView.separatorColor = [UIColor clearColor];
     
     // background view
-    self.tableView.backgroundView = [[PreferencesBackgroundView alloc] initWithFrame:self.view.frame];
+    self.tableView.backgroundView = [[PreferencesBackgroundView alloc] initWithFrame:vframe];
     
     
     // header
-    CGRect hframe = CGRectMake(0, 0, self.view.frame.size.width, preferencesHeaderHeight+preferencesHeaderGap);
-    CGRect tframe = CGRectMake(0, 18, self.view.frame.size.width, 18);
+    CGRect hframe = CGRectMake(0, 0, vframe.size.width, preferencesHeaderHeight+preferencesHeaderGap);
+    CGRect tframe = CGRectMake(0, 18, vframe.size.width, 18);
+    CGRect abframe = CGRectMake(0, vframe.size.height-preferencesFooterHeight+5, vframe.size.width, 45);
     
     // header view
     UIView *hView = [[UIView alloc] initWithFrame:hframe];
@@ -89,6 +116,51 @@ static int preferencesHeaderGap = 10;
     // set
     self.tableView.tableHeaderView = hView;
     
+    
+    // actions
+    ActionBar *actionBar = [[ActionBar alloc] initWithFrame:abframe];
+    
+    
+    // flex
+	UIBarButtonItem *itemFlex = [[UIBarButtonItem alloc] 
+                                 initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
+                                 target:nil 
+                                 action:nil];
+    
+    // negative space (weird 12px offset...)
+    UIBarButtonItem *nspace = [[UIBarButtonItem alloc] 
+                               initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace 
+                               target:nil 
+                               action:nil];
+    nspace.width = -12;
+    
+    
+    // action help
+    ActionBarButtonItem *actionHelp = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_help.png"] 
+                                                                               title:NSLocalizedString(@"Help", @"Help") 
+                                                                              target:self 
+                                                                              action:@selector(actionHelp:)];
+    [actionHelp modeDarkie];
+    
+    
+    // actions
+    NSMutableArray *actions = [[NSMutableArray alloc] init];
+    [actions addObject:nspace];
+    [actions addObject:actionHelp];
+    [actions addObject:itemFlex];
+    [actions addObject:nspace];
+    
+    
+    // add & release actions
+    [actionBar setItems:actions];
+    [actionHelp release];
+    [itemFlex release];
+    [nspace release];
+    [actions release];
+    
+    // add action bar
+    [self.view addSubview:actionBar];
+    
 }
 
 
@@ -103,6 +175,23 @@ static int preferencesHeaderGap = 10;
     [self.tableView reloadData];
     
 }
+
+#pragma mark -
+#pragma mark Actions
+
+
+/*
+ * Action Help.
+ */
+- (void)actionHelp:(id)sender {
+	DLog();
+    
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(preferencesHelp)]) {
+        [delegate preferencesHelp];
+    }
+}
+
 
 
 #pragma mark -
@@ -615,6 +704,17 @@ static int preferencesHeaderGap = 10;
     CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.5].CGColor);
 	CGContextMoveToPoint(context, 0, preferencesHeaderHeight);
 	CGContextAddLineToPoint(context, w, preferencesHeaderHeight);
+	CGContextStrokePath(context);
+    
+    // footer lines
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.42 alpha:1].CGColor);
+	CGContextMoveToPoint(context, 0, h-preferencesFooterHeight);
+	CGContextAddLineToPoint(context, w, h-preferencesFooterHeight);
+	CGContextStrokePath(context);
+    
+    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.5].CGColor);
+	CGContextMoveToPoint(context, 0, h-preferencesFooterHeight+1);
+	CGContextAddLineToPoint(context, w, h-preferencesFooterHeight+1);
 	CGContextStrokePath(context);
     
     

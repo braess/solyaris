@@ -21,6 +21,7 @@
 - (NSObject*)getPreference:(NSString*)key;
 - (void)preferencesResetDefaults;
 - (void)preferencesClearCache;
+- (void)preferencesHelp;
 @end
 
 
@@ -48,10 +49,19 @@ enum {
     // delegate
 	id<PreferencesDelegate> delegate;
     
+    // private
+    @private
+    CGRect vframe;
 }
+
+// Object Methods
+- (id)initWithFrame:(CGRect)frame;
 
 // Properties
 @property (assign) id<PreferencesDelegate> delegate;
+
+// Action Methods
+- (void)actionHelp:(id)sender;
 
 @end
 

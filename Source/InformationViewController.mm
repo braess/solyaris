@@ -72,6 +72,7 @@
 // constants
 #define kAnimateTimeResizeFull      0.3f
 #define kAnimateTimeResizeDefault	0.3f
+#define kAlphaModal                 0.45f
 
 
 // local vars
@@ -168,7 +169,7 @@ static int informationGapInset = 15;
     mView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     mView.backgroundColor = [UIColor blackColor];
     mView.opaque = NO;
-    mView.alpha = 0.3;
+    mView.alpha = kAlphaModal;
     self.modalView = [mView retain];
     [self.view addSubview:_modalView];
     [mView release];
@@ -1291,7 +1292,13 @@ static int informationGapInset = 15;
  * Deallocates all used memory.
  */
 - (void)dealloc {
-
+    
+    // release
+    [_labelName release];
+    [_labelTagline release];
+    [_labelRuntime release];
+    [_labelReleased release];
+    [_imagePoster release];
     
     // sup
     [super dealloc];

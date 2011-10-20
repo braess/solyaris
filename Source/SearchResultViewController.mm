@@ -22,6 +22,14 @@
 
 
 #pragma mark -
+#pragma mark Constants
+
+// cell
+static int searchCellHeight = 45;
+
+
+
+#pragma mark -
 #pragma mark Properties
 
 // accessors
@@ -120,6 +128,13 @@
  */
 - (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section {
     return [_data count];
+}
+
+/*
+ * Customize the cell height.
+ */
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return searchCellHeight;
 }
 
 
@@ -263,7 +278,7 @@
     [_thumbImageView setFrame:CGRectMake(0+ox, 0, 32, 44)];
     
     // label
-    [_labelData setFrame:CGRectMake(40+ox, 0, 270, 45)];
+    [_labelData setFrame:CGRectMake(40+ox, 0, 270, searchCellHeight)];
 }
 
 
@@ -286,8 +301,8 @@
     
     // lines
     CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
-	CGContextMoveToPoint(ctx, rect.origin.x, 0);
-	CGContextAddLineToPoint(ctx, rect.origin.x+rect.size.width, 0);
+	CGContextMoveToPoint(ctx, rect.origin.x, searchCellHeight);
+	CGContextAddLineToPoint(ctx, rect.origin.x+rect.size.width, searchCellHeight);
 	CGContextStrokePath(ctx);
     
 }

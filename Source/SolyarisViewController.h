@@ -61,6 +61,9 @@ enum {
 // Application
 - (void)activate;
 - (void)quit;
+- (void)help;
+- (void)install:(NSString*)version;
+- (void)update:(NSString*)version;
 
 // Action Settings
 - (void)actionSettings:(id)sender;

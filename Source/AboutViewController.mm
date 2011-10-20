@@ -109,7 +109,7 @@ static int aboutFooterHeight = 60;
 	txtAbout.opaque = YES;
     txtAbout.userInteractionEnabled = YES;
     txtAbout.editable = NO;
-	[txtAbout setText:NSLocalizedString(@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This product uses the TMDb API but is not endorsed or certified by The Open Movie Database or any other third party.\n\nMade with Cinder.",@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This product uses the TMDb API but is not endorsed or certified by The Open Movie Database or any other third party.\n\nMade with Cinder.")];
+	[txtAbout setText:NSLocalizedString(@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This product uses the TMDb API and is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.",@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This product uses the TMDb API and is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.")];
     [self.view addSubview:txtAbout];
 	[txtAbout release];
     
@@ -181,6 +181,8 @@ static int aboutFooterHeight = 60;
     [actionEmail release];
     [actionTwitter release];
     [actionAppStore release];
+    [itemFlex release];
+    [nspace release];
     [actions release];
     
     // add action bar
