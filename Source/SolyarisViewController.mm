@@ -63,6 +63,7 @@
 #define kDelayTimeNodeLoad          1.8f
 #define kDelayTimeStartup           4.8f
 #define kOffsetSettings             480
+#define kAlphaInfoModal             0.42f
 
 
 #pragma mark -
@@ -1183,7 +1184,7 @@
 	// animate
 	[UIView beginAnimations:@"information_show" context:nil];
 	[UIView setAnimationDuration:kAnimateTimeInformationShow];
-    _informationViewController.modalView.alpha = 0.3f;
+    _informationViewController.modalView.alpha = kAlphaInfoModal;
     _informationViewController.contentView.center = informationCenter;
 	[UIView commitAnimations];
     

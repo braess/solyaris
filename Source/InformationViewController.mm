@@ -72,7 +72,6 @@
 // constants
 #define kAnimateTimeResizeFull      0.3f
 #define kAnimateTimeResizeDefault	0.3f
-#define kAlphaModal                 0.45f
 
 
 // local vars
@@ -169,7 +168,7 @@ static int informationGapInset = 15;
     mView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     mView.backgroundColor = [UIColor blackColor];
     mView.opaque = NO;
-    mView.alpha = kAlphaModal;
+    mView.alpha = 0.3;
     self.modalView = [mView retain];
     [self.view addSubview:_modalView];
     [mView release];
