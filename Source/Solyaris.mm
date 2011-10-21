@@ -191,11 +191,14 @@ void Solyaris::touchesBegan( TouchEvent event ) {
                 NSString *nid = [NSString stringWithCString:node->nid.c_str() encoding:[NSString defaultCStringEncoding]];
                 
                 // load
-                if (! node->isActive()) {
+                if (! node->isActive() && ! node->isLoading()) {
+                    
+                    // data
                     [solyarisViewController nodeLoad:nid];
                 }
                 // information
                 else {
+                    // data
                     [solyarisViewController nodeInformation:nid];
                 }
             }
@@ -269,6 +272,16 @@ EdgePtr Solyaris::getEdge(string nid1, string nid2) {
     
     // graph
     return graph.getEdge(nid1,nid2);
+}
+
+/**
+ * Prepares solyaris for loading.
+ */
+void Solyaris::load(NodePtr n) {
+    GLog();
+    
+    // graph
+    graph.load(n);
 }
 
 

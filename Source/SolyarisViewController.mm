@@ -847,6 +847,9 @@
         node->tapped();
         node->load();
         
+        // solyaris
+        solyaris->load(node);
+        
         // movie
         if ([t isEqualToString:typeMovie]) {
             [tmdb movie:nid];
@@ -1047,10 +1050,13 @@
     
     // node
     NodePtr node = solyaris->getNode([nid UTF8String]);
-    if (! node->isLoading()) {
+    if (node && ! node->isLoading()) {
         
         // flag
         node->load();
+        
+        // solyaris
+        solyaris->load(node);
         
         // node
         NSNumber *dbid = [self toDBId:nid];

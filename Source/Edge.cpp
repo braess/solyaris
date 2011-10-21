@@ -37,7 +37,7 @@ Edge::Edge(string ide, NodePtr n1, NodePtr n2) {
     pos.set(0,0);
     
     // color
-    cstroke = Color(0.39,0.39,0.39);
+    cstroke = Color(0.33,0.33,0.33);
     cstrokea = Color(0.45,0.45,0.45);
     cstrokes = Color(0.6,0.6,0.6);
     
@@ -311,12 +311,12 @@ string Edge::info() {
         
         // movie
         if (this->type == edgeMovie) {
-            nfo = person + " plays " + this->label + " in " + movie;
+            nfo = person + " is " + this->label + " in " + movie;
         }
         
         // actor
         else if (this->type == edgePersonActor) {
-            nfo = person + " plays " + this->label + " in " + movie;
+            nfo = person + " is " + this->label + " in " + movie;
         }
         
         // director / crew

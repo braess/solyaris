@@ -24,9 +24,14 @@ Graph::Graph(int w, int h, int o) {
     height = h;
     orientation = o;
     
+    // virtual position
+    vpos.set(0,0);
+    vppos.set(0,0);
+    vmpos.set(0,0);
+    mbound = 90.0;
+    
     // movement
-    friction = 0.75;
-    movement.set(0,0);
+    friction = 0.3;
     
     // hitarea
     harea = 6;
@@ -138,7 +143,12 @@ void Graph::update() {
         this->repulse();
         
     }
-
+    
+    // virtual movement
+    Vec2d dm = vmpos - vpos;
+    vppos = vpos;
+    vpos += dm*friction;
+    
     
     // nodes
     for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
@@ -147,7 +157,7 @@ void Graph::update() {
         if ((*node)->isActive() || (*node)->isLoading()) {
             
             // global movement
-            (*node)->move(movement.x,movement.y);
+            (*node)->move(vpos - vppos);
             
             // update
             (*node)->update();
@@ -311,8 +321,8 @@ void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
     // graph
     else {
         
-        // movement
-        movement.set((tpos-ppos)*friction);
+        // move
+        this->move(tpos-ppos);
     }
     
 }
@@ -328,10 +338,6 @@ void Graph::touchEnded(Vec2d tpos, int tid){
         
         // hide tooltip
         tooltips[tid].hide();
-    }
-    // graph
-    else {
-        movement.set(0,0);
     }
     
     // reset
@@ -407,6 +413,14 @@ void Graph::repulse() {
         }
     }
     
+}
+
+
+/**
+ * Move.
+ */
+void Graph::move(Vec2d d) {
+    vmpos += d;
 }
 
 
@@ -510,6 +524,31 @@ EdgePtr Graph::getEdge(string nid1, string nid2) {
     
     // nop
     return EdgePtr();
+}
+
+/**
+ * Prepares the graph for loading.
+ */
+void Graph::load(NodePtr n) {
+    FLog();
+    
+    // bounds
+    Vec2d d = Vec2d(0,0);
+    if (n->mpos.x < mbound) {
+        d.x = mbound - n->mpos.x;
+    }
+    else if (n->mpos.x > width - mbound) {
+        d.x = - (n->mpos.x - (width-mbound));
+    }
+    if (n->mpos.y < mbound) {
+        d.y = mbound - n->mpos.y;
+    }
+    else if (n->mpos.y > height - mbound) {
+        d.y = - (n->mpos.y - (height-mbound));
+    }
+    
+    // move it
+    this->move(d);
 }
 
 

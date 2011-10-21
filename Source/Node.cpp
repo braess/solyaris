@@ -70,7 +70,7 @@ Node::Node(string idn, double x, double y) {
     asnode = 0.81;
     acore = 0.45;
     ascore = 0.81;
-    aglow = 0.12;
+    aglow = 0.18;
     asglow = 0.24;
     
     // textures
