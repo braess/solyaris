@@ -32,7 +32,7 @@ Graph::Graph(int w, int h, int o) {
     
     // movement
     speed = 45;
-    friction = 0.75;
+    friction = 0.54;
     
     // hitarea
     harea = 6;
