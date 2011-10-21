@@ -31,7 +31,8 @@ Graph::Graph(int w, int h, int o) {
     mbound = 90.0;
     
     // movement
-    friction = 0.3;
+    speed = 45;
+    friction = 0.75;
     
     // hitarea
     harea = 6;
@@ -147,7 +148,7 @@ void Graph::update() {
     // virtual movement
     Vec2d dm = vmpos - vpos;
     vppos = vpos;
-    vpos += dm*friction;
+    vpos += dm/speed;
     
     
     // nodes
@@ -322,7 +323,7 @@ void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
     else {
         
         // move
-        this->move(tpos-ppos);
+        this->move(friction*(tpos-ppos));
     }
     
 }

@@ -83,6 +83,7 @@ class Graph {
     int width;
     int height;
     int orientation;
+    float speed;
     float friction;
     float harea;
     bool layout_none,layout_force;

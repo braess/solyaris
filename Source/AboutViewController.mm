@@ -275,7 +275,11 @@ static int aboutFooterHeight = 60;
         TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
         
         // initial tweet text
-        [tweetViewController setInitialText:NSLocalizedString(@"Solyaris iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net",@"Solyaris iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net")];
+        [tweetViewController setInitialText:NSLocalizedString(@"Solyaris iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net #ipad\n",@"Solyaris iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net #ipad\n")];
+        
+        // promo image
+        UIImage *pimg = [UIImage imageNamed:@"promo_solyaris.png"];
+        [tweetViewController addImage:pimg];
         
         // completion handler
         [tweetViewController setCompletionHandler:^(TWTweetComposeViewControllerResult result) {

@@ -45,7 +45,7 @@
 #define urlTMDbMovie                    @"http://www.themoviedb.org/movie/"
 #define urlTMDbPerson                   @"http://www.themoviedb.org/person/"
 #define urlAmazonSearch                 @"http://www.amazon.com/s/field-keywords="
-#define urlITunesSearch                 @"http://www.amazon.com/s/field-keywords="
+#define urlITunesSearch                 @"itms://ax.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?term="
 
 
 // Values
