@@ -1127,7 +1127,7 @@
             bool loaded = ( (*child)->isActive() || (*child)->isLoading() );
             
             // data
-            DataEdge *dtaEdge = [[DataEdge alloc] initData:eid type:etype label:elabel];
+            DataEdge *dtaEdge = [[[DataEdge alloc] initData:eid type:etype label:elabel] autorelease];
             DataNode *dtaNode = [[[DataNode alloc] initData:nid type:type label:label meta:meta edge:dtaEdge visible:visible loaded:loaded] autorelease];
             [nodes addObject:dtaNode];
             
@@ -1452,6 +1452,9 @@
     if ([taglines count] > 0) {
         tagline = [taglines objectAtIndex:random() % ([taglines count])];
     }
+    
+    // release
+    [taglines release];
     
     // set
     [_searchViewController claim:tagline];

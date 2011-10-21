@@ -441,7 +441,7 @@ void Node::loaded() {
     FLog();
 
     // field
-    growr = min(minr+(int)children.size(),maxr);
+    growr = ((int)children.size()) > 1 ? min(minr+(int)children.size(),maxr) : minr * 0.75;
     grow = true;
   
 }

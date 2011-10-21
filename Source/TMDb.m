@@ -626,11 +626,12 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     
     
     // parse result
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
     if ([self validResult:json]) {
         
         // parse
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
         NSArray *results = [parser objectWithString:json error:nil];
+        [parser release];
         for (NSDictionary *dresult in results)	{
             SearchResult *searchResult = (SearchResult*)[NSEntityDescription insertNewObjectForEntityForName:@"SearchResult" inManagedObjectContext:managedObjectContext];
             
@@ -675,7 +676,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 [search addResultsObject:searchResult];
             }
         }
-        [parser release];
+  
     }
     
     
@@ -785,11 +786,12 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     search.query = query;
     
     // parse result
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
     if ([self validResult:json]) {
         
         // parse
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
         NSArray *results = [parser objectWithString:json error:nil];
+        [parser release];
         for (NSDictionary *dresult in results)	{
             SearchResult *searchResult = (SearchResult*)[NSEntityDescription insertNewObjectForEntityForName:@"SearchResult" inManagedObjectContext:managedObjectContext];
             
@@ -827,7 +829,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
                 [search addResultsObject:searchResult];
             }
         }
-        [parser release];
+
     }
     
     // save
@@ -932,6 +934,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // parse result
     SBJsonParser *parser = [[SBJsonParser alloc] init];
     NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
+    [parser release];
     if (! [self validResult:json] || ! [self validMovie:djson]) {
         #ifdef DEBUG
         NSLog(@"Movie not found %i",[mid intValue]);
@@ -1286,6 +1289,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     // parse result
     SBJsonParser *parser = [[SBJsonParser alloc] init];
     NSDictionary *djson = [[parser objectWithString:json error:nil] objectAtIndex:0];
+    [parser release];
     if (! [self validResult:json] || ! [self validPerson:djson]) {
         #ifdef DEBUG
         NSLog(@"Person not found %i",[pid intValue]);
