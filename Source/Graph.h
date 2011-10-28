@@ -68,6 +68,7 @@ class Graph {
     void attract();
     void repulse();
     void move(Vec2d d);
+    void drag(Vec2d d);
     NodePtr createNode(string nid, string type, double x, double y);
     NodePtr getNode(string nid);
     EdgePtr createEdge(string eid, string type, NodePtr n1, NodePtr n2);
@@ -101,6 +102,7 @@ class Graph {
     Vec2d vpos;
     Vec2d vppos;
     Vec2d vmpos;
+    Vec2d vdrag;
     float mbound;
     
     // touched nodes

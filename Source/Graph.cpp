@@ -28,11 +28,12 @@ Graph::Graph(int w, int h, int o) {
     vpos.set(0,0);
     vppos.set(0,0);
     vmpos.set(0,0);
+    vdrag.set(0,0);
     mbound = 90.0;
     
     // movement
     speed = 45;
-    friction = 0.54;
+    friction = 0.9;
     
     // hitarea
     harea = 6;
@@ -149,6 +150,7 @@ void Graph::update() {
     Vec2d dm = vmpos - vpos;
     vppos = vpos;
     vpos += dm/speed;
+    Vec2d vmove = (vpos - vppos) + vdrag;
     
     
     // nodes
@@ -158,7 +160,7 @@ void Graph::update() {
         if ((*node)->isActive() || (*node)->isLoading()) {
             
             // global movement
-            (*node)->move(vpos - vppos);
+            (*node)->move(vmove);
             
             // update
             (*node)->update();
@@ -322,8 +324,8 @@ void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
     // graph
     else {
         
-        // move
-        this->move(friction*(tpos-ppos));
+        // drag
+        this->drag(tpos-ppos);
     }
     
 }
@@ -339,6 +341,12 @@ void Graph::touchEnded(Vec2d tpos, int tid){
         
         // hide tooltip
         tooltips[tid].hide();
+    }
+    // graph
+    else {
+        
+        // undrag
+        this->drag(Vec2d(0,0));
     }
     
     // reset
@@ -422,6 +430,21 @@ void Graph::repulse() {
  */
 void Graph::move(Vec2d d) {
     vmpos += d;
+}
+
+/**
+ * Drag.
+ */
+void Graph::drag(Vec2d d) {
+    
+    // set
+    vdrag = d*friction;
+    
+    // threshold
+    float thresh = 1.0;
+    if (abs(vdrag.x) < thresh && abs(vdrag.y) < thresh) {
+        vdrag.set(0,0);
+    }
 }
 
 
