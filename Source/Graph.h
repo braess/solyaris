@@ -14,6 +14,7 @@
 #include "Node.h"
 #include "Edge.h"
 #include "Tooltip.h"
+#include "Action.h"
 #include "GraphSettings.h"
 #include <vector>
 #include <map>
@@ -75,6 +76,7 @@ class Graph {
     EdgePtr getEdge(string nid1, string nid2);
     void load(NodePtr n);
     void tooltip(int tid);
+    void action(int tid);
     
     
     // private
@@ -106,12 +108,15 @@ class Graph {
     float mbound;
     
     // touched nodes
+    int nbtouch;
     map<int, NodePtr> touched;
     
     // tooltips
-    int nbttips;
     map<int, Tooltip> tooltips;
     bool tooltip_disabled;
+    
+    // actions
+    map<int, Action> actions;
     
     // Settings
     GraphSettings gsettings;

@@ -38,10 +38,11 @@ Graph::Graph(int w, int h, int o) {
     // hitarea
     harea = 6;
     
-    // tooltip
-    nbttips = 10;
-    for (int t = 1; t <= nbttips; t++) {
+    // tooltip / action
+    nbtouch = 10;
+    for (int t = 1; t <= nbtouch; t++) {
         tooltips[t] = Tooltip(Vec2d(w,h));
+        actions[t] = Action();
     }
     tooltip_disabled = false;
     
@@ -69,7 +70,7 @@ void Graph::resize(int w, int h, int o) {
     orientation = o;
     
     // tooltip
-    for (int t = 1; t <= nbttips; t++) {
+    for (int t = 1; t <= nbtouch; t++) {
         tooltips[t].resize(w,h);
     }
 }
@@ -204,9 +205,10 @@ void Graph::update() {
         }
     }
     
-    // tooltip
-    for (int t = 1; t <= nbttips; t++) {
+    // tooltip / actions
+    for (int t = 1; t <= nbtouch; t++) {
         tooltips[t].update();
+        actions[t].update();
     }
 
 }
@@ -240,8 +242,9 @@ void Graph::draw() {
         }
     }
     
-    // tooltip
-    for (int t = 1; t <= nbttips; t++) {
+    // tooltip / actions
+    for (int t = 1; t <= nbtouch; t++) {
+        actions[t].draw();
         tooltips[t].draw();
     }
 
@@ -276,8 +279,16 @@ void Graph::reset() {
 void Graph::touchBegan(Vec2d tpos, int tid) {
     GLog();
     
+    // actions
+    bool action = false;
+    for (int t = 1; t <= nbtouch; t++) {
+        if (actions[t].isActive()) {
+            action = actions[t].action(tpos);
+        }
+    }
+    
     // nodes
-    for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
+    for (NodeIt node = nodes.begin(); ! action && node != nodes.end(); ++node) {
         
         // visible
         if ((*node)->isVisible()) {
@@ -296,6 +307,9 @@ void Graph::touchBegan(Vec2d tpos, int tid) {
                 // set the tooltip
                 this->tooltip(tid);
                 tooltips[tid].position(tpos);
+                
+                // set the action
+                this->action(tid);
                 
                 
                 // have a break
@@ -317,8 +331,9 @@ void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
         // move
         touched[tid]->moveTo(tpos);
         
-        // position
+        // tooltip
         tooltips[tid].position(tpos);
+
 
     }
     // graph
@@ -341,6 +356,9 @@ void Graph::touchEnded(Vec2d tpos, int tid){
         
         // hide tooltip
         tooltips[tid].hide();
+        
+        // hide action
+        actions[tid].hide();
     }
     // graph
     else {
@@ -400,7 +418,7 @@ void Graph::attract() {
         
         // attract others
         for (NodeIt n2 = nodes.begin(); n2 != nodes.end(); ++n2) {
-            if ((*n1)->isActive() && (*n2)->isActive() && (*n1) != (*n2)) {
+            if ((*n1)->isActive() && (*n2)->isActive() && ! (*n1)->isClosed() && ! (*n2)->isClosed() && (*n1) != (*n2)) {
                 (*n1)->attract(*n2);
             }
         }
@@ -583,7 +601,7 @@ void Graph::tooltip(int tid) {
     GLog();
     
     // enabled
-    if (! tooltip_disabled) {
+    if (! tooltip_disabled && ! touched[tid]->isActive()) {
         
         // selected edges
         bool etouch;
@@ -603,6 +621,20 @@ void Graph::tooltip(int tid) {
             tooltips[tid].show();
         }
         
+    }
+    
+}
+
+/**
+ * Sets the action.
+ */
+void Graph::action(int tid) {
+    GLog();
+    
+    // showtime
+    if (touched[tid]->isActive() && ! touched[tid]->isClosed()) {
+        actions[tid].assignNode(touched[tid]);
+        actions[tid].show();
     }
     
 }

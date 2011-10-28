@@ -19,6 +19,9 @@ using namespace std;
 using namespace ci;
 
 
+// constants
+const int tooltipTimeout = 12;
+
 /**
  * Graph Tooltip.
  */
@@ -42,7 +45,7 @@ class Tooltip {
     // Business
     void hide();
     void show();
-    bool isVisible();
+    void activate();
     void position(Vec2d p);
     void renderText(vector<string> txts);
     
@@ -53,13 +56,13 @@ class Tooltip {
     private:
     
     // States
-    bool visible;
-    float alpha;
+    bool active;
     int timeout;
 
     
     // position
     Vec2d pos;
+    Vec2d dpos;
     Vec2d border;
     Vec2d bounds;
     

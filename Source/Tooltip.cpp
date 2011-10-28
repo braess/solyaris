@@ -20,7 +20,7 @@ Tooltip::Tooltip() {
 Tooltip::Tooltip(Vec2d b) {
     
     // state
-    visible = false;
+    active = false;
     
     // position
     pos.set(0,0);
@@ -39,6 +39,9 @@ Tooltip::Tooltip(Vec2d b) {
     offset.set(0,-60);
     inset.set(6,6);
     textureText = gl::Texture(0,0);
+    
+    // hide
+    this->hide();
 }
 
 
@@ -67,6 +70,23 @@ void Tooltip::update() {
     if (timeout > 0) {
         timeout--;
     }
+    else if (timeout == 0) {
+        this->activate();
+    }
+    
+    // position
+    if (active) {
+        
+        // bound
+        float px = max(border.x,(pos.x-size.x/2.0+offset.x));
+        float py = max(border.y,(pos.y-size.y+offset.y));
+        px += min(0.0,bounds.x-(px+size.x+border.x));
+        py += min(0.0,bounds.y-(py+size.y+border.y));
+        
+        // set
+        dpos.set(px, py);
+        
+    }
     
     
 }
@@ -77,23 +97,11 @@ void Tooltip::update() {
 void Tooltip::draw() {
     
     
-    // position
-    float px = max(border.x,(pos.x-size.x/2.0+offset.x));
-    float py = max(border.y,(pos.y-size.y+offset.y));
-    px += min(0.0,bounds.x-(px+size.x+border.x));
-    py += min(0.0,bounds.y-(py+size.y+border.y));
-    
-    // hide (fix for strange alpha blending bug thingy)
-    if (! this->isVisible()) {
-        px = -10000;
-        py = -10000;
-    }
-    
     // blend
     gl::enableAlphaBlending();
     
     // background
-    Rectf rect = Rectf(px,py,px+size.x,py+size.y);
+    Rectf rect = Rectf(dpos.x,dpos.y,dpos.x+size.x,dpos.y+size.y);
     glColor4f(cbg.r,cbg.g,cbg.b,cbg.a);
     gl::drawSolidRect(rect, false);
         
@@ -101,7 +109,7 @@ void Tooltip::draw() {
     gl::enableAlphaBlending(true);
         
     // draw
-    gl::draw(textureText, Vec2d(px,py)+inset);
+    gl::draw(textureText, Vec2d(dpos.x,dpos.y)+inset);
     
     // reset
     gl::disableAlphaBlending();
@@ -112,15 +120,6 @@ void Tooltip::draw() {
 
 #pragma mark -
 #pragma mark Business
-
-
-
-/**
- * States.
- */
-bool Tooltip::isVisible() {
-    return visible && timeout <= 0;
-}
 
 
 
@@ -160,16 +159,32 @@ void Tooltip::renderText(vector<string> txts) {
 void Tooltip::show() {
     
     // props
-    visible = true;
-    alpha = 0;
-    timeout = 12;
+    timeout = tooltipTimeout;
     
 }
 void Tooltip::hide() {
-    visible = false;
-    alpha = 0;
+    
+    // state
+    active = false;
+    
+    // nirvana it is
+    timeout = -1;
+    dpos.set(-100000,-100000);
+
 }
 
+
+/**
+ * Activate.
+ */
+void Tooltip::activate() {
+    
+    // state
+    active = true;
+    
+    // reset timeout
+    timeout = -1;
+}
 
 /**
  * Position.

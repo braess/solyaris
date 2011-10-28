@@ -77,19 +77,28 @@ class Node {
     void translate(Vec2d d);
     void addChild(NodePtr child);
     void grown();
+    void shrinked();
     void load();
     void unload();
     void loaded();
+    void close();
+    void open();
     void hide();
+    void fold();
     void unfold();
+    void born();
+    bool isChild(NodePtr p);
     void show(bool animate);
     void touched();
     void untouched();
     void tapped();
     void renderLabel(string lbl);
+    void renderNode();
     void updateType(string t);
     void updateMeta(string m);
     bool isActive();
+    bool isClosed();
+    bool isInactive();
     bool isVisible();
     bool isSelected();
     bool isLoading();
@@ -107,7 +116,7 @@ class Node {
     Vec2d ppos;
     Vec2d mpos;
     float core;
-    float radius,growr;
+    float radius,growr,shrinkr;
     float mass;
 	Vec2d velocity;
 
@@ -118,8 +127,9 @@ class Node {
     // States
     bool selected;
     bool active;
+    bool closed;
     bool visible;
-    bool grow;
+    bool grow,shrink;
     bool loading;
     
     // Helpers

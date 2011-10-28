@@ -196,6 +196,10 @@ void Solyaris::touchesBegan( TouchEvent event ) {
                     // data
                     [solyarisViewController nodeLoad:nid];
                 }
+                // open
+                if (node->isClosed()) {
+                    node->open();
+                }
                 // information
                 else {
                     // data

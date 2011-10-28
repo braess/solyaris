@@ -256,10 +256,20 @@ void Edge::hide() {
  * States.
  */
 bool Edge::isActive() {
-    return active;
+    bool a = false;
+    
+    // nodes
+    NodePtr node1 = wnode1.lock();
+    NodePtr node2 = wnode2.lock();
+    if (node1 && node2) {
+        
+        // active?
+        a = active && ! ( (node1->isClosed() || node2->isClosed()) ); 
+    }
+    return a;
 }
 bool Edge::isVisible() {
-    bool v;
+    bool v = false;
     
     // nodes
     NodePtr node1 = wnode1.lock();

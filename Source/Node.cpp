@@ -48,6 +48,7 @@ Node::Node(string idn, double x, double y) {
     selected = false;
     active = false;
     grow = false;
+    shrink = false;
     loading = false;
     visible = false;
     
@@ -188,6 +189,22 @@ void Node::update() {
             this->grown();
         }
         
+    }
+    
+    // shrink
+    if (shrink) {
+        
+        // radius
+        radius -= 1;
+        
+        // mass
+        mass = calcmass();
+        
+        // shrunk
+        if (radius <= shrinkr) {
+            this->shrinked();
+        }
+        
         
     }
 
@@ -233,12 +250,17 @@ void Node::draw() {
         
     }
     
-    // unblend
-    gl::enableAlphaBlending(true);
     
     // label
-    selected ? gl::color(ctxts) : gl::color(ctxt);
-	gl::draw(textureLabel, Vec2d(pos.x+loff.x, pos.y+radius+loff.y));
+    if (active || ! closed) {
+        
+        // unblend
+        gl::enableAlphaBlending(true);
+        
+        // drawy thingy
+        selected ? gl::color(ctxts) : gl::color(ctxt);
+        gl::draw(textureLabel, Vec2d(pos.x+loff.x, pos.y+radius+loff.y));
+    }
     
     // reset
     gl::disableAlphaBlending();
@@ -321,23 +343,51 @@ void Node::grown() {
     // state
     loading = false;
     grow = false;
-    
 
     // mass
     mass = calcmass();
     
     // state
-    active = true;
-    
-    // unfold
-    this->unfold();
+    if (! active) {
+        
+        // born
+        this->born();
+    }
+    else {
+        
+        // unfold
+        this->unfold();
+    }
+
       
 }
 
 /**
- * Unfold.
+ * Node is shrinked.
  */
-void Node::unfold() {
+void Node::shrinked() {
+    FLog();
+    
+    // state
+    shrink = false;
+    
+    // mass
+    mass = calcmass();
+    
+    // fold
+    this->fold();
+    
+}
+
+
+/**
+ * Born.
+ */
+void Node::born() {
+    
+    // state
+    active = true;
+    closed = false;
     
     // children
     int nb = nbchildren;
@@ -372,14 +422,75 @@ void Node::unfold() {
                     nb--;
                 }
                 else if (! (*child)->isActive()) {
-                   (*child)->hide(); 
+                    (*child)->hide(); 
                 }
             }
-
+            
             
         }
         
     }
+    
+}
+
+/**
+ * Unfold.
+ */
+void Node::unfold() {
+    
+    // children
+    Rand::randomize();
+    for (NodeIt child = children.begin(); child != children.end(); ++child) {
+        
+        // open child
+        if (! ((*child)->isActive() || (*child)->isLoading()) && this->isChild(*child)) {
+            
+            // radius & position
+            float dmin = 0.2;
+            float dmax = 1.2;
+            float rx = Rand::randFloat(radius * dmin,radius * dmax) + 0.1;
+            rx *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
+            float ry = Rand::randFloat(radius * dmin,radius * dmax) + 0.1;
+            ry *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
+            Vec2d p = Vec2d(pos.x+rx,pos.y+ry);
+            
+            // move & open
+            (*child)->moveTo(p);
+            (*child)->open();
+        }
+        
+    }
+}
+
+/**
+ * Fold.
+ */
+void Node::fold() {
+    
+    // children
+    Rand::randomize();
+    for (NodeIt child = children.begin(); child != children.end(); ++child) {
+        
+        // move it
+        if (! ((*child)->isActive() || (*child)->isLoading()) && this->isChild(*child)) {
+            
+            // radius & position
+            float dmin = 0.2;
+            float dmax = 0.9;
+            float rx = Rand::randFloat(radius * dmin,radius * dmax) + 0.1;
+            rx *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
+            float ry = Rand::randFloat(radius * dmin,radius * dmax) + 0.1;
+            ry *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
+            Vec2d p = Vec2d(pos.x+rx,pos.y+ry);
+            
+            // you gotta
+            (*child)->moveTo(p);
+            
+        }
+
+        
+    }
+
 }
 
 /**
@@ -403,7 +514,7 @@ void Node::load() {
     font = Font("Helvetica-Bold",15);
     loff.y = 6;
     this->renderLabel(label);
-
+    this->renderNode();
     
 }
 void Node::unload() {
@@ -439,10 +550,60 @@ void Node::unload() {
 void Node::loaded() {
     FLog();
 
-    // field
+    // state
     growr = ((int)children.size()) > 1 ? min(minr+(int)children.size(),maxr) : minr * 0.75;
     grow = true;
   
+}
+
+/**
+ * Close / open node.
+ */
+void Node::close() {
+    FLog();
+    
+    // state
+    closed = true;
+    
+    // active
+    if (active) {
+        
+        // shrink
+        shrinkr = minr * 0.5;
+        shrink = true;
+        
+        // children
+        for (NodeIt child = children.begin(); child != children.end(); ++child) {
+            
+            // close child
+            if (! (*child)->isActive() && this->isChild(*child)) {
+                (*child)->close();
+            }
+            
+        }
+    }
+    
+}
+
+
+/**
+ * Reactivate node.
+ */
+void Node::open() {
+    FLog();
+    
+    // state
+    closed = false;
+    
+    // active
+    if (active) {
+        
+        // state
+        growr = ((int)children.size()) > 1 ? min(minr+(int)children.size(),maxr) : minr * 0.75;
+        grow = true;
+        
+    }
+    
 }
 
 
@@ -495,6 +656,14 @@ void Node::hide() {
     
 }
 
+
+/**
+ * Child.
+ */
+bool Node::isChild(NodePtr n) {
+    NodePtr cp = n->parent.lock();
+    return cp->nid == this->nid;
+}
 
 
 /**
@@ -555,6 +724,9 @@ void Node::tapped() {
 bool Node::isActive() {
     return active;
 }
+bool Node::isClosed() {
+    return closed;
+}
 bool Node::isVisible() {
     return visible;
 }
@@ -590,6 +762,45 @@ void Node::renderLabel(string lbl) {
 
 }
 
+/*
+ * Renders the node.
+ */
+void Node::renderNode() {
+    
+    // movie
+    if (type == nodeMovie) {
+        
+        // texture
+        textureNode = gl::Texture(loadImage(loadResource("node_movie.png")));
+        if (active || loading) {
+            textureCore = gl::Texture(loadImage(loadResource("node_movie_core.png")));
+            textureGlow = gl::Texture(loadImage(loadResource("node_movie_glow.png")));
+        }
+        
+    }
+    // director / crew
+    else if (type == nodePersonDirector || type == nodePersonCrew) {
+        
+        // texture
+        textureNode = gl::Texture(loadImage(loadResource("node_crew.png")));
+        if  (active || loading) {
+            textureCore = gl::Texture(loadImage(loadResource("node_crew_core.png")));
+            textureGlow = gl::Texture(loadImage(loadResource("node_crew_glow.png")));
+        }
+        
+    }
+    // person
+    else {
+        
+        // texture
+        textureNode = gl::Texture(loadImage(loadResource("node_person.png")));
+        if (active || loading) {
+            textureCore = gl::Texture(loadImage(loadResource("node_person_core.png")));
+            textureGlow = gl::Texture(loadImage(loadResource("node_person_glow.png")));
+        }
+    }
+}
+
 /**
  * Updates the type.
  */
@@ -598,32 +809,8 @@ void Node::updateType(string t) {
     // type
     type = t;
     
-    // movie
-    if (t == nodeMovie) {
-        
-        // texture
-        textureNode = gl::Texture(loadImage(loadResource("node_movie.png")));
-        textureCore = gl::Texture(loadImage(loadResource("node_movie_core.png")));
-        textureGlow = gl::Texture(loadImage(loadResource("node_movie_glow.png")));
-        
-    }
-    // director / crew
-    else if (t == nodePersonDirector || t == nodePersonCrew) {
-        
-        // texture
-        textureNode = gl::Texture(loadImage(loadResource("node_crew.png")));
-        textureCore = gl::Texture(loadImage(loadResource("node_crew_core.png")));
-        textureGlow = gl::Texture(loadImage(loadResource("node_crew_glow.png")));
-        
-    }
-    // person
-    else {
-        
-        // texture
-        textureNode = gl::Texture(loadImage(loadResource("node_person.png")));
-        textureCore = gl::Texture(loadImage(loadResource("node_person_core.png")));
-        textureGlow = gl::Texture(loadImage(loadResource("node_person_glow.png")));
-    }
+    // render
+    this->renderNode();
 }
 
 
@@ -640,6 +827,7 @@ void Node::updateMeta(string m) {
 float Node::calcmass() {
     return radius * radius * 0.0001f + 0.01f;
 }
+
 
 
 

@@ -507,8 +507,8 @@
                  
                 // new child
                 child = solyaris->createNode([cid UTF8String],[typePerson UTF8String], node->pos.x, node->pos.y);
-                child->renderLabel([m2p.person.name UTF8String]);
                 child->updateType([m2p.type UTF8String]);
+                child->renderLabel([m2p.person.name UTF8String]);
             }
             
             // add to node
@@ -654,7 +654,7 @@
     // note
     [_noteView noteGlitch:error.errorTitle message:error.errorMessage]; 
     [_noteView showNote];
-    [_noteView dismissNote];
+    //[_noteView dismissNote];
     
     // stop loader
     NSString *nid = [self makeNodeId:error.dataId type:error.dataType];

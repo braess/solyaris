@@ -609,10 +609,6 @@ static int preferencesFooterHeight = 60;
         
     }
     
-
-	
-	// configure
-    cell.imageView.image = [UIImage imageNamed:@"icon_preference.png"];
 	
 	// return
     return cell;
