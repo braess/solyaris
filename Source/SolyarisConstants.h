@@ -27,11 +27,12 @@
 
 
 // User Default Keys
-#define udInformationAppVersion			@"information_app_version"	
+#define udInformationAppVersion			@"information_app_version"
+#define udGraphSoundDisabled            @"graph_sound_disabled"
+#define udGraphTooltipDisabled          @"graph_tooltip_disabled"
 #define udGraphLayout                   @"graph_layout"
 #define udGraphLayoutNone               @"graph_layout_none"
-#define udGraphLayoutForce              @"graph_layout_force"
-#define udGraphTooltipDisabled          @"graph_tooltip_disabled"	
+#define udGraphLayoutForce              @"graph_layout_force"	
 #define udGraphNodeCrewEnabled          @"graph_node_crew_enabled"	
 #define udGraphNodeChildren             @"graph_node_children"	
 #define udGraphEdgeLength               @"graph_edge_length"	
@@ -52,8 +53,8 @@
 #define vAppEmail                       @"solyaris@cecinestpasparis.net"	
 
 // Messages
-#define msgAppInstall                        @"message_app_install"
-#define msgAppUpdate                         @"message_app_update"
+#define msgAppInstall                   @"message_app_install"
+#define msgAppUpdate                    @"message_app_update"
 
 
 // System Version

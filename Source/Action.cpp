@@ -151,6 +151,9 @@ bool Action::isActive() {
 void Action::show() {
     GLog();
     
+    // state
+    active = false;
+    
     // props
     timeout = actionTimeout;
     reminder = -1;
@@ -169,13 +172,6 @@ void Action::activate() {
     
     // state
     active = true;
-    
-    // offset
-    NodePtr n = this->node.lock();
-    if (n) {
-        offset.set(n->radius*0.6,0);
-        size.y = n->radius * 2;
-    }
     
     
     // reset
@@ -206,7 +202,15 @@ void Action::deactivate() {
  * Assign node.
  */
 void Action::assignNode(NodePtr n) {
+    
+    // ref
     node = n;
+    
+    // offset
+    if (n) {
+        offset.set(n->radius*0.6,0);
+        size.y = n->radius * 2;
+    }
 }
 
 

@@ -28,6 +28,7 @@
 //  Fields
 enum {
     PreferenceGraphLayout,
+    PreferenceGraphSoundDisabled,
     PreferenceGraphTooltipDisabled,
     PreferenceGraphNodeCrewEnabled,
     PreferenceGraphNodeChildren,

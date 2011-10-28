@@ -560,7 +560,7 @@ void Node::loaded() {
  * Close / open node.
  */
 void Node::close() {
-    FLog();
+    GLog();
     
     // state
     closed = true;
@@ -590,7 +590,7 @@ void Node::close() {
  * Reactivate node.
  */
 void Node::open() {
-    FLog();
+    GLog();
     
     // state
     closed = false;

@@ -11,16 +11,16 @@
 #include "cinder/gl/Texture.h"
 #include "cinder/ImageIo.h"
 #include "cinder/Rand.h"
+#include "cinder/audio/Output.h"
+#include "cinder/audio/Io.h"
 #include "Node.h"
 #include "Edge.h"
 #include "Tooltip.h"
 #include "Action.h"
 #include "GraphSettings.h"
+#include "Resources.h"
 #include <vector>
 #include <map>
-
-
-
 
 
 
@@ -77,6 +77,7 @@ class Graph {
     void load(NodePtr n);
     void tooltip(int tid);
     void action(int tid);
+    void sample(int s);
     
     
     // private
@@ -118,8 +119,12 @@ class Graph {
     // actions
     map<int, Action> actions;
     
-    // Settings
+    // settings
     GraphSettings gsettings;
+    
+    // samples
+    audio::SourceRef audioSampleClick;
+    bool sound_disabled;
     
     
 };

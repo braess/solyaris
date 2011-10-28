@@ -52,6 +52,10 @@ Graph::Graph(int w, int h, int o) {
     
     // background
     background = gl::Texture(loadImage(loadResource("bg_graph.png")));
+    
+    // sample
+    audioSampleClick = audio::load(loadResource(SAMPLE_CLICK));
+    sound_disabled = false;
 
 }
 
@@ -109,6 +113,13 @@ void Graph::setting(GraphSettings s) {
     Default graphTooltipDisabled = s.getDefault("graph_tooltip_disabled");
     if (graphTooltipDisabled.isSet()) {
         tooltip_disabled = graphTooltipDisabled.boolVal();
+    }
+    
+    // sound 
+    sound_disabled = false;
+    Default graphSoundDisabled = s.getDefault("graph_sound_disabled");
+    if (graphSoundDisabled.isSet()) {
+        sound_disabled = graphSoundDisabled.boolVal();
     }
     
     // apply to nodes
@@ -311,6 +322,8 @@ void Graph::touchBegan(Vec2d tpos, int tid) {
                 // set the action
                 this->action(tid);
                 
+                // sample
+                this->sample(sampleClick);
                 
                 // have a break
                 break;
@@ -390,6 +403,9 @@ NodePtr Graph::doubleTap(Vec2d tpos, int tid) {
             
             // tapped
             (*node)->tapped();
+            
+            // sample
+            this->sample(sampleClick);
           
             // return
             return (*node);
@@ -601,7 +617,7 @@ void Graph::tooltip(int tid) {
     GLog();
     
     // enabled
-    if (! tooltip_disabled && ! touched[tid]->isActive()) {
+    if (! tooltip_disabled) {
         
         // selected edges
         bool etouch;
@@ -639,5 +655,24 @@ void Graph::action(int tid) {
     
 }
 
+
+/**
+ * Sample player.
+ */
+void Graph::sample(int s) {
+    
+    // play it again sam
+    if (! sound_disabled) {
+        switch(s) {
+            // click
+            case sampleClick:
+                audio::Output::play(audioSampleClick);
+                break;
+            default:
+                break;
+        }
+    }
+
+}
 
 

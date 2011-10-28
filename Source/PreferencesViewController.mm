@@ -395,7 +395,7 @@ static int preferencesFooterHeight = 60;
  * Customize the number of rows in the table view.
  */
 - (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section {
-    return 6;
+    return 7;
 }
 
 
@@ -461,6 +461,35 @@ static int preferencesFooterHeight = 60;
         
         // set cell
         cell = csegment;
+        
+    }
+    
+    // sound
+    if ([indexPath row] == PreferenceGraphSoundDisabled) {
+        
+        // create cell
+        CellSwitch *cswitch = (CellSwitch*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesSwitchIdentifier];
+        if (cswitch == nil) {
+            cswitch = [[[CellSwitch alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellPreferencesSwitchIdentifier] autorelease];
+        }	
+        
+        // prepare cell
+        cswitch.delegate = self;
+        cswitch.key = udGraphSoundDisabled;
+        cswitch.help =  NSLocalizedString(@"Enable playback",@"Enable playback");
+        cswitch.textLabel.text = NSLocalizedString(@"Sound",@"Sound");
+        cswitch.switchAccessory.on = YES;
+        cswitch.disabler = YES;
+        
+        // enabled
+        NSString *graphSoundDisabled = [self retrievePreference:udGraphSoundDisabled];
+        if (graphSoundDisabled && [graphSoundDisabled isEqualToString:@"1"]) {
+            cswitch.switchAccessory.on = NO;
+        }
+        [cswitch update:YES];
+        
+        // set cell
+        cell = cswitch;
         
     }
     
