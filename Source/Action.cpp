@@ -90,15 +90,19 @@ void Action::draw() {
     //glColor4f(1,0,0,0.9);
     //gl::drawSolidRect(rect, false);
     
-    // unblend
-    gl::enableAlphaBlending(true);
-    
-    // draw textures
-    gl::color( ColorA(1.0f, 1.0f, 1.0f, 1.0f) ); // alpha channel
-    gl::draw(textureActionClose, pos);
-    
-    // reset
-    gl::disableAlphaBlending();
+    // active
+    if (active) {
+        
+        // unblend
+        gl::enableAlphaBlending(true);
+        
+        // draw textures
+        gl::color( ColorA(1.0f, 1.0f, 1.0f, 1.0f) ); // alpha channel
+        gl::draw(textureActionClose, pos);
+        
+        // reset
+        gl::disableAlphaBlending();
+    }
     
 }
 
@@ -203,12 +207,13 @@ void Action::deactivate() {
  */
 void Action::assignNode(NodePtr n) {
     
+    
     // ref
     node = n;
     
     // offset
     if (n) {
-        offset.set(n->radius*0.6,0);
+        offset.set(n->radius*0.66,0);
         size.y = n->radius * 2;
     }
 }

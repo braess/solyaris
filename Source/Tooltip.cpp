@@ -36,7 +36,7 @@ Tooltip::Tooltip(Vec2d b) {
     font = Font("Helvetica",12);
     sfont = Font("Helvetica",3);
     size.set(0,0);
-    offset.set(0,-75);
+    off.set(0,-75);
     inset.set(6,6);
     textureText = gl::Texture(0,0);
     
@@ -78,8 +78,8 @@ void Tooltip::update() {
     if (active) {
         
         // bound
-        float px = max(border.x,(pos.x-size.x/2.0+offset.x));
-        float py = max(border.y,(pos.y-size.y+offset.y));
+        float px = max(border.x,(pos.x-size.x/2.0+off.x));
+        float py = max(border.y,(pos.y-size.y+off.y));
         px += min(0.0,bounds.x-(px+size.x+border.x));
         py += min(0.0,bounds.y-(py+size.y+border.y));
         
@@ -147,7 +147,7 @@ void Tooltip::renderText(vector<string> txts) {
 	Surface8u rendered = tlText.render(true, true);
 	textureText = gl::Texture(rendered);
     
-    // offset
+    // off
     size.x = textureText.getWidth() + 2*abs(inset.x);
     size.y = textureText.getHeight()+ 2*abs(inset.y);
     
@@ -191,6 +191,13 @@ void Tooltip::activate() {
  */
 void Tooltip::position(Vec2d p) {
     pos = p;
+}
+
+/**
+ * Offset.
+ */
+void Tooltip::offset(double o) {
+    off.set(0,- max(o,60.0));
 }
 
 

@@ -20,7 +20,7 @@ using namespace ci;
 
 
 // constants
-const int actionTimeout = 90;
+const int actionTimeout = 12;
 const int actionReminder = 90;
 
 /**

@@ -47,6 +47,7 @@ class Tooltip {
     void show();
     void activate();
     void position(Vec2d p);
+    void offset(double o);
     void renderText(vector<string> txts);
     
     // Public Fields
@@ -74,7 +75,7 @@ class Tooltip {
     // Font
     Font font;
     Font sfont;
-    Vec2d offset;
+    Vec2d off;
     Vec2d inset;
     Vec2d size;
     gl::Texture	textureText;

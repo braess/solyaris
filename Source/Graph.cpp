@@ -634,6 +634,7 @@ void Graph::tooltip(int tid) {
         // touched
         if (etouch && txts.size() > 0) {
             tooltips[tid].renderText(txts);
+            tooltips[tid].offset(touched[tid]->radius+12.0);
             tooltips[tid].show();
         }
         
@@ -666,7 +667,12 @@ void Graph::sample(int s) {
         switch(s) {
             // click
             case sampleClick:
-                audio::Output::play(audioSampleClick);
+                try {
+                    audio::Output::play(audioSampleClick);
+                }
+                catch (...) {
+                    // ignore
+                }
                 break;
             default:
                 break;
