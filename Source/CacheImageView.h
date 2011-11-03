@@ -36,6 +36,7 @@
 - (void)loadImage:(NSString*)link;
 - (void)lazyloadImage:(NSString*)link;
 - (void)load;
+- (void)cancel;
 + (void)clearCache;
 
 @end

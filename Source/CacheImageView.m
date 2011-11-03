@@ -212,6 +212,42 @@
     }
 }
 
+/**
+ * Cancels loading.
+ */
+- (void)cancel {
+    
+    // cancel connection
+    [_connection cancel];
+    
+    // release connection
+	[_connection release];
+	_connection=nil;
+    
+    // release data
+	[_receivedData release]; 
+	_receivedData=nil;
+    
+    // hide activity
+    _activityIndicator.hidden = YES;
+    [_activityIndicator stopAnimating];
+    
+    
+    // placeholder
+    _imageView.image = _placeholderImage;
+    
+    // error
+    if (_placeholderImage == NULL) {
+        _iconError.hidden = NO;
+    }
+    
+    // loaded
+    loaded = NO;
+    
+    // redraw
+    [self setNeedsLayout];
+}
+
 
 /**
  * Clears the cache.
@@ -264,17 +300,14 @@
 	// every time we get an response it might be a forward, so we discard what data we have
 	[_receivedData release], _receivedData = nil;
     
-	// does not fire for local file URLs
-	if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-		NSHTTPURLResponse *httpResponse = (id)response;
-        
-		if (![[httpResponse MIMEType] hasPrefix:@"image"]) {
-			//[self cancelLoading];
-		}
-	}
-    
     // prepare data
 	_receivedData = [[NSMutableData alloc] init];
+    [_receivedData setLength:0];
+
+    // only images
+    if (! [[response MIMEType] hasPrefix:@"image"]) {
+        [self cancel];
+    }
 }
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
 	[_receivedData appendData:data];
@@ -297,7 +330,7 @@
     // cache it
     NSError *error = nil;
     [[NSFileManager defaultManager] createDirectoryAtPath:[CacheImageView cacheDirectory] withIntermediateDirectories:YES attributes:nil error:&error];
-    if (! error) {
+    if (! error && [_receivedData length] > 0) {
         [_receivedData writeToFile:[self cacheFilePath] atomically:YES];
     }
     
@@ -322,32 +355,8 @@
  */
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     
-    // release connection
-	[_connection release];
-	_connection=nil;
-    
-    // release data
-	[_receivedData release]; 
-	_receivedData=nil;
-    
-    // hide activity
-    _activityIndicator.hidden = YES;
-    [_activityIndicator stopAnimating];
-    
-    
-    // placeholder
-    _imageView.image = _placeholderImage;
-    
-    // error
-    if (_placeholderImage == NULL) {
-        _iconError.hidden = NO;
-    }
-    
-    // loaded
-    loaded = NO;
-    
-    // redraw
-    [self setNeedsLayout];
+    // cancel
+    [self cancel];
   
 }
 
