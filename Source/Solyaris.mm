@@ -278,7 +278,7 @@ EdgePtr Solyaris::getEdge(string nid1, string nid2) {
     return graph.getEdge(nid1,nid2);
 }
 
-/**
+/*
  * Prepares solyaris for loading.
  */
 void Solyaris::load(NodePtr n) {
@@ -286,6 +286,16 @@ void Solyaris::load(NodePtr n) {
     
     // graph
     graph.load(n);
+}
+
+/**
+ * Unloads a node.
+ */
+void Solyaris::unload(NodePtr n) {
+    GLog();
+    
+    // graph
+    graph.unload(n);
 }
 
 

@@ -585,6 +585,33 @@ EdgePtr Graph::getEdge(string nid1, string nid2) {
 }
 
 /**
+ * Removes a node.
+ */
+void Graph::removeNode(string nid) {
+    FLog();
+    
+    // erase from nodes
+    int eraser = -1;
+    int index = 0;
+    for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
+        if ((*node)->nid == nid) {
+            eraser = index;
+        }
+        index++;
+    }
+    if (eraser >= 0) {
+        nodes.erase(nodes.begin()+eraser); 
+    }
+    
+    // erase from map
+    map<string,int>::iterator it = nmap.find(nid);
+    if(it != nmap.end()) {
+        nmap.erase(it);
+    }
+}
+
+
+/**
  * Prepares the graph for loading.
  */
 void Graph::load(NodePtr n) {
@@ -607,6 +634,25 @@ void Graph::load(NodePtr n) {
     
     // move it
     this->move(d);
+}
+
+/**
+ * Unloads a node.
+ */
+void Graph::unload(NodePtr n) {
+    FLog();
+    
+    // parent
+    NodePtr pp = n->parent.lock();
+    if (pp) {
+        
+        // unload
+        n->unload();
+    }
+    else {
+        this->removeNode(n->nid);
+    }
+
 }
 
 

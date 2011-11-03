@@ -75,9 +75,11 @@ class Graph {
     EdgePtr createEdge(string eid, string type, NodePtr n1, NodePtr n2);
     EdgePtr getEdge(string nid1, string nid2);
     void load(NodePtr n);
+    void unload(NodePtr n);
     void tooltip(int tid);
     void action(int tid);
     void sample(int s);
+    void removeNode(string nid);
     
     
     // private

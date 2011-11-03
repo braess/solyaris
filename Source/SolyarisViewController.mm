@@ -664,7 +664,7 @@
     if (node != NULL) {
         
         // unload
-        node->unload();
+        solyaris->unload(node);
     }
 }
 
@@ -693,7 +693,7 @@
     if (node != NULL) {
         
         // unload
-        node->unload();
+        solyaris->unload(node);
     }
 }
 
