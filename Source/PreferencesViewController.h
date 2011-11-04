@@ -13,6 +13,13 @@
 #import "CellSegment.h"
 
 
+// Constants
+#define kPreferencesHeaderHeight    45.0f
+#define kPreferencesHeaderGap       15.0f
+#define kPreferencesFooterHeight    60.0f
+
+
+
 /*
  * PreferencesDelegate.
  */
@@ -41,6 +48,7 @@ enum {
 enum {
     ActionPreferenceReset
 };
+
 
 /**
  * Preferences Controller.

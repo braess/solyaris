@@ -25,9 +25,6 @@
 #import "GANTracker.h"
 
 
-// Dispatch period in seconds
-static const NSInteger kGANDispatchPeriodSec = 20;
-
 
 /**
  * Tracker.
@@ -46,7 +43,7 @@ static const NSInteger kGANDispatchPeriodSec = 20;
     #ifndef DEBUG
 	// shared tracker
 	[[GANTracker sharedTracker] startTrackerWithAccountID:kGoogleAnalytics
-                                           dispatchPeriod:kGANDispatchPeriodSec
+                                           dispatchPeriod:30
                                                  delegate:nil];
 	
 	// ios variable

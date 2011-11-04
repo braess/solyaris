@@ -17,6 +17,12 @@
 #import "Asset.h"
 
 
+// Constants
+#define kInformationHeaderHeight        110.0f
+#define kInformationFooterHeight        60.0f
+#define kInformationGapOffset           10.0f
+#define kInformationGapInset            15.0f
+
 
 //  Tags
 enum {
@@ -116,9 +122,11 @@ enum {
     @private
     CGRect vframe;
     
+    // types
     bool type_movie;
     bool type_person;
     
+    // modes
     bool mode_listing;
     bool mode_tmdb;
     bool mode_imdb;
@@ -126,6 +134,7 @@ enum {
     
     bool fullscreen;
     
+    // references
     NSMutableString *_referenceTMDb;
     NSMutableString *_referenceIMDb;
     NSMutableString *_referenceWikipedia;
@@ -160,6 +169,7 @@ enum {
  * InformationBackgroundView.
  */
 @interface InformationBackgroundView : UIView {
+
 }
 @end
 

@@ -33,11 +33,6 @@
 // constants
 #define kKeyReset	@"key_reset"
 
-// local vars
-static int preferencesHeaderHeight = 45;
-static int preferencesHeaderGap = 15;
-static int preferencesFooterHeight = 60;
-
 
 #pragma mark -
 #pragma mark Properties
@@ -93,9 +88,9 @@ static int preferencesFooterHeight = 60;
     
     
     // header
-    CGRect hframe = CGRectMake(0, 0, vframe.size.width, preferencesHeaderHeight+preferencesHeaderGap);
+    CGRect hframe = CGRectMake(0, 0, vframe.size.width, kPreferencesHeaderHeight+kPreferencesHeaderGap);
     CGRect tframe = CGRectMake(0, 18, vframe.size.width, 18);
-    CGRect abframe = CGRectMake(0, vframe.size.height-preferencesFooterHeight+5, vframe.size.width, 45);
+    CGRect abframe = CGRectMake(0, vframe.size.height-kPreferencesFooterHeight+5, vframe.size.width, 45);
     
     // header view
     UIView *hView = [[UIView alloc] initWithFrame:hframe];
@@ -722,24 +717,24 @@ static int preferencesFooterHeight = 60;
 	
 	// header lines
 	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.42 alpha:1].CGColor);
-	CGContextMoveToPoint(context, 0, preferencesHeaderHeight-1);
-	CGContextAddLineToPoint(context, w, preferencesHeaderHeight-1);
+	CGContextMoveToPoint(context, 0, kPreferencesHeaderHeight-1);
+	CGContextAddLineToPoint(context, w, kPreferencesHeaderHeight-1);
 	CGContextStrokePath(context);
     
     CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.5].CGColor);
-	CGContextMoveToPoint(context, 0, preferencesHeaderHeight);
-	CGContextAddLineToPoint(context, w, preferencesHeaderHeight);
+	CGContextMoveToPoint(context, 0, kPreferencesHeaderHeight);
+	CGContextAddLineToPoint(context, w, kPreferencesHeaderHeight);
 	CGContextStrokePath(context);
     
     // footer lines
 	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.42 alpha:1].CGColor);
-	CGContextMoveToPoint(context, 0, h-preferencesFooterHeight);
-	CGContextAddLineToPoint(context, w, h-preferencesFooterHeight);
+	CGContextMoveToPoint(context, 0, h-kPreferencesFooterHeight);
+	CGContextAddLineToPoint(context, w, h-kPreferencesFooterHeight);
 	CGContextStrokePath(context);
     
     CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.5].CGColor);
-	CGContextMoveToPoint(context, 0, h-preferencesFooterHeight+1);
-	CGContextAddLineToPoint(context, w, h-preferencesFooterHeight+1);
+	CGContextMoveToPoint(context, 0, h-kPreferencesFooterHeight+1);
+	CGContextAddLineToPoint(context, w, h-kPreferencesFooterHeight+1);
 	CGContextStrokePath(context);
     
     

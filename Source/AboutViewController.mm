@@ -18,13 +18,6 @@
 @implementation AboutViewController
 
 
-#pragma mark -
-#pragma mark Constants
-
-// local vars
-static int aboutHeaderHeight = 45;
-static int aboutFooterHeight = 60;
-
 
 #pragma mark -
 #pragma mark Object Methods
@@ -68,8 +61,8 @@ static int aboutFooterHeight = 60;
     // frames
     CGRect tframe = CGRectMake(0, 0, vframe.size.width, 18);
     CGRect cframe = CGRectMake(0, 18, vframe.size.width, 18);
-    CGRect aframe = CGRectMake(0, aboutHeaderHeight+5, vframe.size.width+20, vframe.size.height-aboutFooterHeight-aboutHeaderHeight);
-    CGRect abframe = CGRectMake(0, vframe.size.height-aboutFooterHeight+5, vframe.size.width, 45);
+    CGRect aframe = CGRectMake(0, kAboutHeaderHeight+5, vframe.size.width+20, vframe.size.height-kAboutFooterHeight-kAboutHeaderHeight);
+    CGRect abframe = CGRectMake(0, vframe.size.height-kAboutFooterHeight+5, vframe.size.width, 45);
     
     // title
 	UILabel *lblTitle = [[UILabel alloc] initWithFrame:tframe];
@@ -555,24 +548,24 @@ static int aboutFooterHeight = 60;
 	
 	// header lines
 	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.42 alpha:1].CGColor);
-	CGContextMoveToPoint(context, 0, aboutHeaderHeight-1);
-	CGContextAddLineToPoint(context, w, aboutHeaderHeight-1);
+	CGContextMoveToPoint(context, 0, kAboutHeaderHeight-1);
+	CGContextAddLineToPoint(context, w, kAboutHeaderHeight-1);
 	CGContextStrokePath(context);
     
     CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.5].CGColor);
-	CGContextMoveToPoint(context, 0, aboutHeaderHeight);
-	CGContextAddLineToPoint(context, w, aboutHeaderHeight);
+	CGContextMoveToPoint(context, 0, kAboutHeaderHeight);
+	CGContextAddLineToPoint(context, w, kAboutHeaderHeight);
 	CGContextStrokePath(context);
     
     // footer lines
 	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.42 alpha:1].CGColor);
-	CGContextMoveToPoint(context, 0, h-aboutFooterHeight);
-	CGContextAddLineToPoint(context, w, h-aboutFooterHeight);
+	CGContextMoveToPoint(context, 0, h-kAboutFooterHeight);
+	CGContextAddLineToPoint(context, w, h-kAboutFooterHeight);
 	CGContextStrokePath(context);
     
     CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.5].CGColor);
-	CGContextMoveToPoint(context, 0, h-aboutFooterHeight+1);
-	CGContextAddLineToPoint(context, w, h-aboutFooterHeight+1);
+	CGContextMoveToPoint(context, 0, h-kAboutFooterHeight+1);
+	CGContextAddLineToPoint(context, w, h-kAboutFooterHeight+1);
 	CGContextStrokePath(context);
     
     

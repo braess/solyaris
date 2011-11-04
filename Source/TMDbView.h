@@ -11,6 +11,12 @@
 #import "Asset.h"
 #import "SlidesView.h"
 
+
+// Constants
+#define kTMDbGapOffset     10.0f
+#define kTMDbGapInset      15.0f
+
+
 /**
  * TMDbView.
  */

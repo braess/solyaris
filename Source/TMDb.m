@@ -81,10 +81,9 @@
 #pragma mark -
 #pragma mark Constants
 
-// constants
-static NSString* TMDbStore = @"TMDb.sqlite";
 
 // constants
+#define kTMDbStore              @"TMDb.sqlite"
 #define kTMDbTimeRetryBase      2.5f
 #define kTMDbTimeRetryRandom	2.5f
 #define kTMDbTimeQueueBase      0.5f
@@ -329,7 +328,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     
     // path
 	NSFileManager *fileManager = [NSFileManager defaultManager];
-	NSString *storePath = [[self applicationCachesDirectory] stringByAppendingPathComponent:TMDbStore];
+	NSString *storePath = [[self applicationCachesDirectory] stringByAppendingPathComponent:kTMDbStore];
 	
 	// remove existing db
 	if ([fileManager fileExistsAtPath:storePath]) {
@@ -1881,7 +1880,7 @@ static NSString* TMDbStore = @"TMDb.sqlite";
     }
 	
 	// store path
-	NSString *storePath = [[self applicationCachesDirectory] stringByAppendingPathComponent:TMDbStore];
+	NSString *storePath = [[self applicationCachesDirectory] stringByAppendingPathComponent:kTMDbStore];
 	
 	// store url
     NSURL *storeUrl = [NSURL fileURLWithPath:storePath];

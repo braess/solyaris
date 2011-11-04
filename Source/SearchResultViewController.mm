@@ -21,12 +21,6 @@
 @implementation SearchResultViewController
 
 
-#pragma mark -
-#pragma mark Constants
-
-// cell
-static int searchCellHeight = 45;
-
 
 
 #pragma mark -
@@ -134,7 +128,7 @@ static int searchCellHeight = 45;
  * Customize the cell height.
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return searchCellHeight;
+    return kSearchCellHeight;
 }
 
 
@@ -278,7 +272,7 @@ static int searchCellHeight = 45;
     [_thumbImageView setFrame:CGRectMake(0+ox, 0, 32, 44)];
     
     // label
-    [_labelData setFrame:CGRectMake(40+ox, 0, 270, searchCellHeight)];
+    [_labelData setFrame:CGRectMake(40+ox, 0, 270, kSearchCellHeight)];
 }
 
 
@@ -301,8 +295,8 @@ static int searchCellHeight = 45;
     
     // lines
     CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
-	CGContextMoveToPoint(ctx, rect.origin.x, searchCellHeight);
-	CGContextAddLineToPoint(ctx, rect.origin.x+rect.size.width, searchCellHeight);
+	CGContextMoveToPoint(ctx, rect.origin.x, kSearchCellHeight);
+	CGContextAddLineToPoint(ctx, rect.origin.x+rect.size.width, kSearchCellHeight);
 	CGContextStrokePath(ctx);
     
 }

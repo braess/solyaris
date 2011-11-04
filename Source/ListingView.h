@@ -8,13 +8,22 @@
 #import <UIKit/UIKit.h>
 
 
-//  Sections
+// Constants
+#define kListingCellHeight  36.0f
+#define kListingCellInset   15.0f
+#define kListingGapHeight   39.0f
+#define kListingGapOffset   10.0f
+#define kListingGapInset    15.0f
+
+
+// Sections
 enum {
     SectionListingDirectors,
     SectionListingCrew,
 	SectionListingActors,
 	SectionListingMovies
 };
+
 
 /*
  * Listing Delegate.

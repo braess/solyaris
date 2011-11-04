@@ -12,6 +12,10 @@
 #import "CacheImageView.h"
 
 
+// Constants
+#define kSearchCellHeight  45.0f
+
+
 /*
  * Delegate.
  */

@@ -27,16 +27,6 @@
 @implementation ListingView
 
 
-#pragma mark -
-#pragma mark Constants
-
-// local vars
-static int listingCellHeight = 36;
-static int listingCellInset = 15;
-static int listingGapHeight = 39;
-static int listingGapOffset = 10;
-static int listingGapInset = 15;
-
 
 #pragma mark -
 #pragma mark Properties
@@ -232,7 +222,7 @@ static int listingGapInset = 15;
     if ([self tableView:tableView numberOfRowsInSection:section]==0) {
         return 0.0000000000000000000000000001; // null is ignored...
     }
-    return listingGapHeight;
+    return kListingGapHeight;
 }
 
 /*
@@ -240,7 +230,7 @@ static int listingGapInset = 15;
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (section == SectionListingMovies) {
-        return listingGapInset;
+        return kListingGapInset;
     }
     else if ([self tableView:tableView numberOfRowsInSection:section]==0) {
         return 0.0000000000000000000000000001; // null is ignored...
@@ -252,7 +242,7 @@ static int listingGapInset = 15;
  * Customize the cell height.
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return listingCellHeight;
+    return kListingCellHeight;
 }
 
 /*
@@ -272,10 +262,10 @@ static int listingGapInset = 15;
 - (UIView *)sectionHeader:(NSString*)label {
     
     // view
-    UIView *shView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, listingGapHeight)];
+    UIView *shView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, kListingGapHeight)];
     
     // label
-    UILabel *lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(listingGapInset, listingGapOffset, shView.frame.size.width-2*listingGapInset, listingGapHeight-listingGapOffset)];
+    UILabel *lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(kListingGapInset, kListingGapOffset, shView.frame.size.width-2*kListingGapInset, kListingGapHeight-kListingGapOffset)];
 	lblHeader.backgroundColor = [UIColor clearColor];
 	lblHeader.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
 	lblHeader.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
@@ -315,7 +305,7 @@ static int listingGapInset = 15;
     UIView *sfView = [[UIView alloc] initWithFrame:self.frame];
     
     // view
-    UIView *sfLine = [[UIView alloc] initWithFrame:CGRectMake(listingGapInset, -1, self.frame.size.width-2*listingGapInset, 1)];
+    UIView *sfLine = [[UIView alloc] initWithFrame:CGRectMake(kListingGapInset, -1, self.frame.size.width-2*kListingGapInset, 1)];
     sfLine.backgroundColor = [UIColor colorWithWhite:0.82 alpha:0.6];
     
     // add & release
@@ -515,7 +505,7 @@ static int listingGapInset = 15;
         self.opaque = NO;
         
         // intendation
-        self.indentationWidth = listingGapInset;
+        self.indentationWidth = kListingGapInset;
         self.indentationLevel = 0;
         
         
@@ -587,7 +577,7 @@ static int listingGapInset = 15;
     //CGContextSetShouldAntialias(ctx, NO);
     
     // background
-    CGRect bg = CGRectMake(listingCellInset, 0, self.frame.size.width-2*listingCellInset, listingCellHeight+1);
+    CGRect bg = CGRectMake(kListingCellInset, 0, self.frame.size.width-2*kListingCellInset, kListingCellHeight+1);
     UIColor *bgc = self.highlighted ? [UIColor colorWithWhite:0 alpha:0.06] : [UIColor colorWithWhite:0 alpha:0.03];
     CGContextSetFillColorWithColor(ctx, bgc.CGColor);
 	CGContextFillRect(ctx, bg);
@@ -620,7 +610,7 @@ static int listingGapInset = 15;
     
     // position
     CGRect finfo = _labelInfo.frame;
-    finfo.origin.x = CGRectGetMinX (self.contentView.bounds) + listingCellInset + oxinfo;
+    finfo.origin.x = CGRectGetMinX (self.contentView.bounds) + kListingCellInset + oxinfo;
     finfo.origin.y = CGRectGetMinY (self.contentView.bounds) + 9;
     [_labelInfo setFrame: finfo];
     
@@ -631,7 +621,7 @@ static int listingGapInset = 15;
     [_labelMeta setFrame: fmeta];
     
     // disclosure
-    CGRect fdisc = CGRectMake(self.frame.size.width-listingCellInset+oxdisc, 10, 16, 16);
+    CGRect fdisc = CGRectMake(self.frame.size.width-kListingCellInset+oxdisc, 10, 16, 16);
     _iconMovie.hidden = YES;
     _iconPerson.hidden = YES;
     if (loaded) {

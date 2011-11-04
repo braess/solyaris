@@ -74,13 +74,6 @@
 #define kAnimateTimeResizeDefault	0.3f
 
 
-// local vars
-static float informationHeaderHeight = 110;
-static float informationFooterHeight = 60;
-
-static int informationGapOffset = 10;
-static int informationGapInset = 15;
-
 
 
 #pragma mark -
@@ -130,6 +123,7 @@ static int informationGapInset = 15;
         _referenceAmazon = [[NSMutableString alloc] init];
         _referenceITunes = [[NSMutableString alloc] init];
 
+
 	}
 	return self;
 }
@@ -153,9 +147,9 @@ static int informationGapInset = 15;
     // frames
     CGRect windowFrame = window.frame;
     CGRect contentFrame = CGRectMake(windowFrame.size.width/2.0-vframe.size.width/2.0, windowFrame.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
-    CGRect headerFrame = CGRectMake(0, 0, contentFrame.size.width, informationHeaderHeight);
-    CGRect footerFrame = CGRectMake(0, contentFrame.size.height-informationFooterHeight, contentFrame.size.width, informationFooterHeight);
-    CGRect componentFrame = CGRectMake(0, informationHeaderHeight, contentFrame.size.width, contentFrame.size.height-informationHeaderHeight-informationFooterHeight);
+    CGRect headerFrame = CGRectMake(0, 0, contentFrame.size.width, kInformationHeaderHeight);
+    CGRect footerFrame = CGRectMake(0, contentFrame.size.height-kInformationFooterHeight, contentFrame.size.width, kInformationFooterHeight);
+    CGRect componentFrame = CGRectMake(0, kInformationHeaderHeight, contentFrame.size.width, contentFrame.size.height-kInformationHeaderHeight-kInformationFooterHeight);
     
     
     // view
@@ -265,7 +259,7 @@ static int informationGapInset = 15;
 	footerView.opaque = YES;
     
     // actions
-    ActionBar *abar = [[ActionBar alloc] initWithFrame:CGRectMake(informationGapInset, informationGapOffset, footerFrame.size.width-2*informationGapInset, footerFrame.size.height-2*informationGapOffset)];
+    ActionBar *abar = [[ActionBar alloc] initWithFrame:CGRectMake(kInformationGapInset, kInformationGapOffset, footerFrame.size.width-2*kInformationGapInset, footerFrame.size.height-2*kInformationGapOffset)];
     
     // flex
 	UIBarButtonItem *itemFlex = [[UIBarButtonItem alloc] 
@@ -320,7 +314,7 @@ static int informationGapInset = 15;
     
     
     // navigator
-    HTMLNavigatorView *htmlNavigator = [[HTMLNavigatorView alloc] initWithFrame:CGRectMake(informationGapInset, 10, 80, 40)];
+    HTMLNavigatorView *htmlNavigator = [[HTMLNavigatorView alloc] initWithFrame:CGRectMake(kInformationGapInset, 10, 80, 40)];
     htmlNavigator.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin);
     htmlNavigator.delegate = self;
     
@@ -331,7 +325,7 @@ static int informationGapInset = 15;
     
     
     // tools
-    UIView *toolsView = [[UIView alloc] initWithFrame:CGRectMake(footerFrame.size.width-informationGapInset-80, 10, 80, 40)];
+    UIView *toolsView = [[UIView alloc] initWithFrame:CGRectMake(footerFrame.size.width-kInformationGapInset-80, 10, 80, 40)];
     toolsView.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin);
     toolsView.backgroundColor = [UIColor clearColor];
     
@@ -389,6 +383,7 @@ static int informationGapInset = 15;
 	DLog();
 
 }
+
 
 
 
@@ -809,7 +804,7 @@ static int informationGapInset = 15;
     
     // show
     [referenceActions setTag:ActionInformationToolsReference];
-    [referenceActions showFromRect:CGRectMake(_contentView.frame.origin.x + _contentView.frame.size.width-informationGapInset-32, _contentView.frame.origin.y + _contentView.frame.size.height-informationGapOffset-(informationFooterHeight/2.0), 32, 32) inView:self.view animated:YES];
+    [referenceActions showFromRect:CGRectMake(_contentView.frame.origin.x + _contentView.frame.size.width-kInformationGapInset-32, _contentView.frame.origin.y + _contentView.frame.size.height-kInformationGapOffset-(kInformationFooterHeight/2.0), 32, 32) inView:self.view animated:YES];
     [referenceActions release];
     
 }
@@ -1051,27 +1046,29 @@ static int informationGapInset = 15;
     CGContextClipToRect(context, mrect);
     CGContextDrawTiledImage(context,tcRect,texture.CGImage);
 	
+    
 	// header lines
 	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
-	CGContextMoveToPoint(context, 0, informationHeaderHeight-1);
-	CGContextAddLineToPoint(context, w, informationHeaderHeight-1);
+	CGContextMoveToPoint(context, 0, 110-1);
+	CGContextAddLineToPoint(context, w, kInformationHeaderHeight-1);
 	CGContextStrokePath(context);
     
     CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:1].CGColor);
-	CGContextMoveToPoint(context, 0, informationHeaderHeight);
-	CGContextAddLineToPoint(context, w, informationHeaderHeight);
+	CGContextMoveToPoint(context, 0, kInformationHeaderHeight);
+	CGContextAddLineToPoint(context, w, kInformationHeaderHeight);
 	CGContextStrokePath(context);
     
     // footer lines
 	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
-	CGContextMoveToPoint(context, 0, h-informationFooterHeight);
-	CGContextAddLineToPoint(context, w, h-informationFooterHeight);
+	CGContextMoveToPoint(context, 0, h-kInformationFooterHeight);
+	CGContextAddLineToPoint(context, w, h-kInformationFooterHeight);
 	CGContextStrokePath(context);
     
     CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:1].CGColor);
-	CGContextMoveToPoint(context, 0, h-informationFooterHeight+1);
-	CGContextAddLineToPoint(context, w, h-informationFooterHeight+1);
+	CGContextMoveToPoint(context, 0, h-kInformationFooterHeight+1);
+	CGContextAddLineToPoint(context, w, h-kInformationFooterHeight+1);
 	CGContextStrokePath(context);
+     
     
     
 }
@@ -1090,7 +1087,7 @@ static int informationGapInset = 15;
     CGPoint tPoint = [[touches anyObject] locationInView:self];
     
     // header
-    if (tPoint.y < informationHeaderHeight) {
+    if (tPoint.y < kInformationHeaderHeight) {
         
         // listing
         ListingView *cListing = (ListingView*) [self viewWithTag:TagInformationComponentListing];
@@ -1153,9 +1150,13 @@ static int informationGapInset = 15;
         self.backgroundColor = [UIColor clearColor];
         self.opaque = YES;
         
+        // vars
+        float gapInset = 15;
+        float gapOffset = 10;
+        
         // frames
-        CGRect iframe = CGRectMake(informationGapInset, informationGapOffset, 60, 90);
-        CGRect mframe = CGRectMake(2*informationGapInset+60, informationGapOffset, frame.size.width-(2*informationGapInset+90), frame.size.height-2*informationGapOffset);
+        CGRect iframe = CGRectMake(gapInset, gapOffset, 60, 90);
+        CGRect mframe = CGRectMake(2*gapInset+60, gapOffset, frame.size.width-(2*gapInset+90), frame.size.height-2*gapInset);
         
         // poster
         CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:iframe];
@@ -1338,9 +1339,13 @@ static int informationGapInset = 15;
         self.backgroundColor = [UIColor clearColor];
         self.opaque = YES;
         
+        // vars
+        float gapInset = 15;
+        float gapOffset = 10;
+        
         // frames
-        CGRect iframe = CGRectMake(informationGapInset, informationGapOffset, 60, 90);
-        CGRect mframe = CGRectMake(2*informationGapInset+60, informationGapOffset, frame.size.width-(2*informationGapInset+90), frame.size.height-2*informationGapOffset);
+        CGRect iframe = CGRectMake(gapInset, gapOffset, 60, 90);
+        CGRect mframe = CGRectMake(2*gapInset+60, gapOffset, frame.size.width-(2*gapInset+90), frame.size.height-2*gapOffset);
         
         // poster
         CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:iframe];

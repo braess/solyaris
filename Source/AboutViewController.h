@@ -15,11 +15,15 @@
 #import "LinkButton.h"
 
 
+// Constants
+#define kAboutHeaderHeight      45.0f
+#define kAboutFooterHeight      60.0
+
+
 // Alerts
 enum {
     AlertAboutAppStore
 };
-
 
 
 /**
