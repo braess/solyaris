@@ -9,7 +9,6 @@
 #import "AboutViewController.h"
 #import "SolyarisAppDelegate.h"
 #import "SolyarisConstants.h"
-#import "ActionBar.h"
 #import "Tracker.h"
 
 
@@ -107,11 +106,36 @@ static int aboutFooterHeight = 60;
 	txtAbout.font = [UIFont fontWithName:@"Helvetica" size:15.0];
 	txtAbout.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
 	txtAbout.opaque = YES;
-    txtAbout.userInteractionEnabled = YES;
+    txtAbout.userInteractionEnabled = NO;
     txtAbout.editable = NO;
 	[txtAbout setText:NSLocalizedString(@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This product uses the TMDb API and is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.",@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This product uses the TMDb API and is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.")];
     [self.view addSubview:txtAbout];
 	[txtAbout release];
+    
+    // link buttons
+    LinkButton *lbTMDb = [[LinkButton alloc] initWithFrame:CGRectMake(176, 247, 45, 20)];
+    lbTMDb.delegate = self;
+    lbTMDb.link = @"http://www.themoviedb.org";
+    [self.view addSubview:lbTMDb];
+    [lbTMDb release];
+    
+    LinkButton *lbIMDb = [[LinkButton alloc] initWithFrame:CGRectMake(225, 247, 40, 20)];
+    lbIMDb.delegate = self;
+    lbIMDb.link = @"http://www.imdb.com";
+    [self.view addSubview:lbIMDb];
+    [lbIMDb release];
+    
+    LinkButton *lbWikipedia = [[LinkButton alloc] initWithFrame:CGRectMake(0, 267, 69, 20)];
+    lbWikipedia.delegate = self;
+    lbWikipedia.link = @"http://www.wikipedia.org";
+    [self.view addSubview:lbWikipedia];
+    [lbWikipedia release];
+    
+    LinkButton *lbCinder = [[LinkButton alloc] initWithFrame:CGRectMake(72, 343, 48, 20)];
+    lbCinder.delegate = self;
+    lbCinder.link = @"http://libcinder.org";
+    [self.view addSubview:lbCinder];
+    [lbCinder release];
     
     
     // actions
@@ -364,6 +388,21 @@ static int aboutFooterHeight = 60;
 		
 	}
 }
+
+
+#pragma mark -
+#pragma mark LinkButton Delegate
+
+/*
+ * LinkButton.
+ */
+- (void)linkButtonTouched:(LinkButton *)lb {
+	FLog();
+    
+    // open
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:lb.link]];
+}
+
 
 
 

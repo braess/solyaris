@@ -1169,7 +1169,7 @@
  * Shows the information.
  */
 - (void)animationInformationShow {
-	FLog();
+	GLog();
 	
 	
 	// prepare controllers
@@ -1210,7 +1210,7 @@
  * Hides the information.
  */
 - (void)animationInformationHide {
-	FLog();
+	GLog();
 	
 	// prepare controllers
 	[_informationViewController viewWillDisappear:YES];
@@ -1251,7 +1251,7 @@
  * Shows the settings.
  */
 - (void)animationSettingsShow {
-	FLog();
+	GLog();
     
     // state
     mode_settings = YES;
@@ -1317,7 +1317,7 @@
  * Hides the information.
  */
 - (void)animationSettingsHide {
-	FLog();
+	GLog();
     
     // state
     mode_settings = NO;

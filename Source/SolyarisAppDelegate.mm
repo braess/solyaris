@@ -203,7 +203,7 @@
  * Sets a user default.
  */
 - (void)setUserDefault:(NSString*)key value:(NSObject*)value {
-	FLog();
+	GLog();
     
 	// user defaults
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -221,7 +221,7 @@
     
 }
 - (void)setUserDefaultBool:(NSString*)key value:(BOOL)b {
-	FLog();
+	GLog();
     
 	// user defaults
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -236,7 +236,7 @@
  * Gets a user default.
  */
 - (NSObject*)getUserDefault:(NSString*)key {
-	FLog();
+	GLog();
     
 	// user defaults
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -245,7 +245,7 @@
 	return [userDefaults objectForKey:key];
 }
 - (BOOL)getUserDefaultBool:(NSString*)key {
-	FLog();
+	GLog();
     
 	// user defaults
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];

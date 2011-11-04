@@ -85,7 +85,7 @@
  * Layout.
  */
 - (void)layoutSubviews {
-    FLog();
+    GLog();
     
     // frame
     CGRect frame = CGRectMake(0, 0, 768, 1024);

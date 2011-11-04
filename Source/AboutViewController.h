@@ -11,6 +11,8 @@
 #import <MessageUI/MFMailComposeViewController.h>
 #import <Accounts/Accounts.h>
 #import <Twitter/Twitter.h>
+#import "ActionBar.h"
+#import "LinkButton.h"
 
 
 // Alerts
@@ -23,7 +25,7 @@ enum {
 /**
  * AboutViewController.
  */
-@interface AboutViewController : UITableViewController <UIAlertViewDelegate, MFMailComposeViewControllerDelegate> {
+@interface AboutViewController : UITableViewController <UIAlertViewDelegate, MFMailComposeViewControllerDelegate, LinkButtonDelegate> {
     
     // private
     @private
