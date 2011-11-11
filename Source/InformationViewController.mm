@@ -724,7 +724,7 @@
 
 }
 - (void)resizeFull {
-    GLog();
+    DLog();
     
     // window
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
@@ -739,7 +739,7 @@
     CGRect rframe = wframe;
     
     // animate
-	[UIView beginAnimations:@"resize_default" context:nil];
+	[UIView beginAnimations:@"resize_full" context:nil];
     [UIView setAnimationDuration:kAnimateTimeResizeFull];
 	_contentView.frame = rframe;
 	[UIView commitAnimations];

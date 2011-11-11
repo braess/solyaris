@@ -501,6 +501,7 @@ void Node::fold() {
 
 }
 
+
 /**
  * Offset.
  */
@@ -518,7 +519,7 @@ void Node::offset() {
         
         // iterate
         for (NodeIt child = children.begin(); child != children.end(); ++child) {
-            if ( (*child)->isVisible() ) {
+            if ( ! ((*child)->isActive() || (*child)->isLoading())  && (*child)->isVisible() ) {
                 for (cposi = cpos.begin(); cposi != cpos.end(); ++cposi) {
                     
                     // vertical diff

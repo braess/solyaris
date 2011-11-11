@@ -76,6 +76,9 @@
     // track
 	[Tracker trackPageView:@"/"];
     
+    // cinder
+    [super applicationDidBecomeActive:application];
+    
 }
 
 
