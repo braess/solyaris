@@ -47,6 +47,7 @@ Node::Node(string idn, double x, double y) {
     // state
     selected = false;
     active = false;
+    closed = false;
     grow = false;
     shrink = false;
     loading = false;
@@ -261,6 +262,7 @@ void Node::draw() {
         selected ? gl::color(ctxts) : gl::color(ctxt);
         gl::draw(textureLabel, Vec2d(pos.x+loff.x, pos.y+radius+loff.y));
     }
+
     
     // reset
     gl::disableAlphaBlending();
@@ -693,6 +695,11 @@ void Node::tapped() {
     
     // state
     selected = false;
+    
+    // show
+    if (! visible) {
+        this->show(false);
+    }
     
     // reposition
     if (! active && ! loading) {

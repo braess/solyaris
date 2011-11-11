@@ -586,7 +586,6 @@
         // create nodes
         for (Movie2Person *m2p in movies) {
             
-            
             // child
             NSString *cid = [self makeNodeId:m2p.movie.mid type:typeMovie];
             NodePtr child = solyaris->getNode([cid UTF8String]);
@@ -654,7 +653,6 @@
     // note
     [_noteView noteGlitch:error.errorTitle message:error.errorMessage]; 
     [_noteView showNote];
-    //[_noteView dismissNote];
     
     // stop loader
     NSString *nid = [self makeNodeId:error.dataId type:error.dataType];
