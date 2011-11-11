@@ -943,6 +943,18 @@
     solyaris->reset();
 }
 
+/*
+ * Logo stuff.
+ */
+- (void)logo {
+    DLog();
+    
+    // random tagline
+    [self randomTagline];
+
+}
+
+
 
 
 #pragma mark -

@@ -180,12 +180,13 @@ void Graph::update() {
             // node movement
             Vec2d ndist = (*node)->mpos - (*node)->pos;
             float nmov = (ndist.length() > 1) ? ndist.length() * 0.0045 : 0;
-            
+
             // children
             for (NodeIt child = (*node)->children.begin(); child != (*node)->children.end(); ++child) {
                 
                 // parent
                 NodePtr pp = (*child)->parent.lock();
+                
 
                 // move visible children
                 if (! (*child)->isActive() && ! (*child)->isLoading() && (*child)->isVisible() && pp == (*node)) {
@@ -198,7 +199,6 @@ void Graph::update() {
                     
                     // update
                     (*child)->update();
-                    
                 }
                 
             }

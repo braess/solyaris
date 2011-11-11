@@ -87,6 +87,7 @@ class Node {
     void fold();
     void unfold();
     void born();
+    void offset();
     bool isChild(NodePtr p);
     void show(bool animate);
     void touched();

@@ -433,6 +433,9 @@ void Node::born() {
         
     }
     
+    // offset
+    this->offset();
+    
 }
 
 /**
@@ -462,6 +465,9 @@ void Node::unfold() {
         }
         
     }
+    
+    // offset
+    this->offset();
 }
 
 /**
@@ -493,6 +499,42 @@ void Node::fold() {
         
     }
 
+}
+
+/**
+ * Offset.
+ */
+void Node::offset() {
+    
+    // positions
+    vector<float> cpos;
+    vector<float>::iterator cposi;
+    
+    // offset children to minimize vertical collision
+    for (int pass = 0; pass < 2 ; pass++) {
+        
+        // clear
+        cpos.clear();
+        
+        // iterate
+        for (NodeIt child = children.begin(); child != children.end(); ++child) {
+            if ( (*child)->isVisible() ) {
+                for (cposi = cpos.begin(); cposi != cpos.end(); ++cposi) {
+                    
+                    // vertical diff
+                    if ( abs((*child)->mpos.y - (*cposi)) < 15 ) {
+                        
+                        // up it goes
+                        (*child)->move(0,-15);
+                    }
+                }
+                cpos.push_back((*child)->mpos.y);
+            }
+            
+        }
+    }
+
+    
 }
 
 /**

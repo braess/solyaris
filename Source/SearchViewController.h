@@ -15,6 +15,7 @@
 @protocol SearchDelegate <NSObject>
 - (void)search:(NSString*)q type:(NSString*)type;
 - (void)reset;
+- (void)logo;
 @end
 
 
@@ -36,7 +37,7 @@
     @private
     CGRect vframe;
     UIView *_background;
-    UIImageView *_logo;
+    UIButton *_buttonLogo;
     UILabel *_labelTitle;
     UILabel *_labelClaim;
     
@@ -52,6 +53,7 @@
 
 
 // Action Methods
+- (void)actionLogo:(id)sender;
 - (void)actionMovie:(id)sender;
 - (void)actionPerson:(id)sender;
 - (void)actionReset:(id)sender;

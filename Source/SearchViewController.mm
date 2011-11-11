@@ -140,14 +140,14 @@
     [background release];
     
     // logo
-    UIImageView *logo = [[UIImageView alloc] initWithFrame:lframe];
-    logo.image = [UIImage imageNamed:@"logo_solyaris.png"];
-    logo.autoresizingMask = UIViewAutoresizingNone;
-    logo.backgroundColor = [UIColor clearColor];
-    logo.contentMode = UIViewContentModeCenter;
-    _logo = [logo retain];
-    [self.view addSubview:_logo];
-    [logo release];
+    UIButton *btnLogo = [UIButton buttonWithType:UIButtonTypeCustom]; 
+    btnLogo.autoresizingMask = UIViewAutoresizingNone;
+	btnLogo.frame = lframe;
+	[btnLogo setImage:[UIImage imageNamed:@"logo_solyaris.png"] forState:UIControlStateNormal];
+	[btnLogo addTarget:self action:@selector(actionLogo:) forControlEvents:UIControlEventTouchUpInside];
+    _buttonLogo = [btnLogo retain];
+    [self.view addSubview:_buttonLogo];
+    [btnLogo release];
    
     
     // title
@@ -347,6 +347,20 @@
 #pragma mark Actions
 
 /*
+ * Action Logo.
+ */
+- (void)actionLogo:(id)sender {
+	DLog();
+    
+    // logo
+    if (delegate && [delegate respondsToSelector:@selector(logo)]) {
+        [delegate logo];
+    }
+    
+}
+
+
+/*
  * Action Movie.
  */
 - (void)actionMovie:(id)sender {
@@ -449,6 +463,9 @@
     [_buttonMovie release];
     [_buttonPerson release];
     [_buttonReset release];
+    [_buttonLogo release];
+    [_labelClaim release];
+    [_labelTitle release];
 	
 	// release global
     [super dealloc];
