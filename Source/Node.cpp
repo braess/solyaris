@@ -196,7 +196,7 @@ void Node::update() {
     if (shrink) {
         
         // radius
-        radius -= 1.3;
+        radius -= 1.39;
         
         // mass
         mass = calcmass();

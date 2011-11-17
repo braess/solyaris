@@ -156,7 +156,6 @@
     [searchViewController release];
     
     
-    
     // search result
     SearchResultViewController *searchResultViewController = [[SearchResultViewController alloc] initWithStyle:UITableViewStylePlain];
     searchResultViewController.delegate = self;

@@ -101,7 +101,7 @@
 	txtAbout.opaque = YES;
     txtAbout.userInteractionEnabled = NO;
     txtAbout.editable = NO;
-	[txtAbout setText:NSLocalizedString(@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This product uses the TMDb API and is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.",@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This product uses the TMDb API and is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.")];
+	[txtAbout setText:NSLocalizedString(@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This application uses the TMDb API and is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.",@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This application uses the TMDb API and is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.")];
     [self.view addSubview:txtAbout];
 	[txtAbout release];
     
@@ -292,7 +292,7 @@
         TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
         
         // initial tweet text
-        [tweetViewController setInitialText:NSLocalizedString(@"Solyaris iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net #ipad\n",@"Solyaris iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net #ipad\n")];
+        [tweetViewController setInitialText:NSLocalizedString(@"Solyaris iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net\n",@"Solyaris iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net\n")];
         
         // promo image
         UIImage *pimg = [UIImage imageNamed:@"promo_solyaris.png"];
