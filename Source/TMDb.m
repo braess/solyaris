@@ -1923,6 +1923,9 @@
 - (void)dealloc {
     GLog();
     
+    // queue
+    [queue release];
+    
     // super
     [super dealloc];
 }

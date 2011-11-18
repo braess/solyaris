@@ -397,19 +397,23 @@ NodePtr Graph::doubleTap(Vec2d tpos, int tid) {
     
     // nodes
     for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
-        // distance
-        float d = (*node)->pos.distance(tpos);
-        if (d < (*node)->core+harea) {
+        
+        // visible
+        if ((*node)->isVisible()) {
             
-            // tapped
-            (*node)->tapped();
-            
-            // sample
-            this->sample(sampleClick);
-          
-            // return
-            return (*node);
-                            
+            // distance
+            float d = (*node)->pos.distance(tpos);
+            if (d < (*node)->core+harea) {
+                
+                // tapped
+                (*node)->tapped();
+                
+                // sample
+                this->sample(sampleClick);
+              
+                // return
+                return (*node);
+            }
         }
     }
     

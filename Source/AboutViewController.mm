@@ -413,16 +413,16 @@
             
         // App Store
 		case AlertAboutAppStore: {
+            
 			// cancel
 			if (buttonIndex == 0) {
 			}
 			// visit app store
 			else {
-				[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com"]];
+				[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/app/id481963410"]];
 			}
 			break;
 		}
-            
             
         // default
 		default: {
