@@ -236,7 +236,7 @@ void Node::draw() {
         float ga = selected ? asglow : aglow;
         if (loading && ! grow) {
             ga *= (1.15+sin((fcount*1.15*M_PI)/180));
-            ga = fmin(1.0,ga);
+            ga = fmin(0.79,ga);
         }
         gl::color( ColorA(1.0f, 1.0f, 1.0f, ga) ); // alpha channel
         gl::draw(textureGlow, Rectf(pos.x-radius,pos.y-radius,pos.x+radius,pos.y+radius));
@@ -448,7 +448,7 @@ void Node::unfold() {
     for (NodeIt child = children.begin(); child != children.end(); ++child) {
         
         // open child
-        if (! ((*child)->isActive() || (*child)->isLoading()) && this->isChild(*child)) {
+        if (this->isNodeChild(*child)) {
             
             // radius & position
             float dmin = 0.2;
@@ -480,7 +480,7 @@ void Node::fold() {
     for (NodeIt child = children.begin(); child != children.end(); ++child) {
         
         // move it
-        if (! ((*child)->isActive() || (*child)->isLoading()) && this->isChild(*child)) {
+        if (this->isNodeChild(*child)) {
             
             // radius & position
             float dmin = 0.2;
@@ -519,7 +519,7 @@ void Node::offset() {
         
         // iterate
         for (NodeIt child = children.begin(); child != children.end(); ++child) {
-            if ( ! ((*child)->isActive() || (*child)->isLoading())  && (*child)->isVisible() ) {
+            if (this->isNodeChild(*child)) {
                 for (cposi = cpos.begin(); cposi != cpos.end(); ++cposi) {
                     
                     // vertical diff
@@ -550,7 +550,7 @@ void Node::load() {
     
     // radius
     core = 15;
-    radius = 30;
+    radius = 36;
     
     // color
     ctxt = Color(0.9,0.9,0.9);
@@ -621,7 +621,7 @@ void Node::close() {
         for (NodeIt child = children.begin(); child != children.end(); ++child) {
             
             // close child
-            if (! (*child)->isActive() && this->isChild(*child)) {
+            if (this->isNodeChild(*child)) {
                 (*child)->close();
             }
             
@@ -705,9 +705,14 @@ void Node::hide() {
 /**
  * Child.
  */
-bool Node::isChild(NodePtr n) {
+bool Node::isNodeChild(NodePtr n) {
+    
+    // parent
     NodePtr cp = n->parent.lock();
-    return cp->nid == this->nid;
+    
+    // active
+    bool available = ! (n->isActive() || n->isLoading()) && n->isVisible();
+    return available && cp->nid == this->nid;
 }
 
 

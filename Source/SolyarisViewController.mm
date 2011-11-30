@@ -493,8 +493,9 @@
         for (Movie2Person *m2p in persons) {
             
             // exclude crew
+            bool exclude_crew = NO;
             if (! crew_enabled && [m2p.type isEqualToString:typePersonCrew]) {
-                continue;
+                exclude_crew = YES;
             }
             
             // child
@@ -505,13 +506,17 @@
                 existing = false;
                  
                 // new child
-                child = solyaris->createNode([cid UTF8String],[typePerson UTF8String], node->pos.x, node->pos.y);
-                child->updateType([m2p.type UTF8String]);
-                child->renderLabel([m2p.person.name UTF8String]);
+                if (! exclude_crew) {
+                    child = solyaris->createNode([cid UTF8String],[typePerson UTF8String], node->pos.x, node->pos.y);
+                    child->updateType([m2p.type UTF8String]);
+                    child->renderLabel([m2p.person.name UTF8String]);
+                }
             }
             
             // add to node
-            node->addChild(child);
+            if (! exclude_crew) {
+                node->addChild(child);
+            }
             
             // create edge
             EdgePtr edge = solyaris->getEdge([nid UTF8String], [cid UTF8String]);

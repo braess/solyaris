@@ -88,7 +88,7 @@ class Node {
     void unfold();
     void born();
     void offset();
-    bool isChild(NodePtr p);
+    bool isNodeChild(NodePtr p);
     void show(bool animate);
     void touched();
     void untouched();
