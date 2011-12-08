@@ -16,13 +16,12 @@ cinder/include/cinder/app/CinderAppDelegateIPhone.h
 - change compiler
 LLVM GCC 4.2
 
-- modify some build settings
+- modify some build settings which I can't remember now...
 Symbols Hidden by Default	No
 
 Other Linker Flags (Release)
 "$(CINDER_PATH)/lib/libcinder-iphone_d.a"
 
 - compile against ios5 for all targets
-
 - avoid Apple Match-O Linker Error
 cinder/lib/libcinder-iphone_d.a -> cinder/lib/libcinder-iphone.a

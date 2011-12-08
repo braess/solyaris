@@ -1,9 +1,9 @@
 //
-//  SplashView.h
+//  APIKeys_template.h
 //  Solyaris
 //
-//  Created by CNPP on 30.9.2011.
-//  Copyright 2011 Beat Raess. All rights reserved.
+//  Created by Beat Raess on 8.12.2011.
+//  Copyright (c) 2011 Beat Raess. All rights reserved.
 //
 //  This file is part of Solyaris.
 //  
@@ -20,17 +20,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
-#import <UIKit/UIKit.h>
 
+//
+// API Keys: rename this file to APIKeys.h and add your keys.
+//
 
-/**
- * SplashView.
- */
-@interface SplashView : UIView {
-    UIImageView *_splash;
-}
+// Google Analytics
+#define kGoogleAnalytics		@"big-brother-tracking-key"
 
-// Business
-- (void)dismissSplash;
-
-@end
+// TMDb
+#define apiTMDbKey              @"super-secret-tmdb-api-key"
+#define apiTMDbSearchMovie      @"http://api.themoviedb.org/2.1/Movie.search"
+#define apiTMDbSearchPerson     @"http://api.themoviedb.org/2.1/Person.search"
+#define apiTMDbMovie            @"http://api.themoviedb.org/2.1/Movie.getInfo"
+#define apiTMDbPerson           @"http://api.themoviedb.org/2.1/Person.getInfo"
