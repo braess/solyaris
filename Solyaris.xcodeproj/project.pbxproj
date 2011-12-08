@@ -289,7 +289,7 @@
 		18AC0286143F5BD90096259D /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		18B696FB1448C12B003235CA /* notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notes.txt; sourceTree = "<group>"; };
 		18BEF5EA1433B6B6003314FE /* logo_solyaris.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo_solyaris.png; path = Assets/logo_solyaris.png; sourceTree = "<group>"; };
-		18C42BF41491159900DA48B3 /* APIKeys_template.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APIKeys_template.h; sourceTree = "<group>"; };
+		18C42BF61491173E00DA48B3 /* APIKeys_template.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APIKeys_template.h; path = Source/APIKeys_template.h; sourceTree = "<group>"; };
 		18ED29051446CE4D005E7BDA /* node_movie_core.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = node_movie_core.png; path = Assets/node_movie_core.png; sourceTree = "<group>"; };
 		18ED29061446CE4D005E7BDA /* node_movie_glow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = node_movie_glow.png; path = Assets/node_movie_glow.png; sourceTree = "<group>"; };
 		18ED29071446CE4D005E7BDA /* node_person_core.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = node_person_core.png; path = Assets/node_person_core.png; sourceTree = "<group>"; };
@@ -532,7 +532,7 @@
 			children = (
 				18AC01E0143F2D1D0096259D /* SolyarisConstants.h */,
 				18AC01C3143F2D1D0096259D /* APIKeys.h */,
-				18C42BF41491159900DA48B3 /* APIKeys_template.h */,
+				18C42BF61491173E00DA48B3 /* APIKeys_template.h */,
 			);
 			name = constants;
 			sourceTree = "<group>";
