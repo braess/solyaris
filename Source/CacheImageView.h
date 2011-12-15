@@ -51,6 +51,8 @@
 - (void)lazyloadImage:(NSString*)link;
 - (void)load;
 - (void)cancel;
+- (BOOL)loaded;
+- (UIImage*)cachedImage;
 + (void)clearCache;
 
 @end

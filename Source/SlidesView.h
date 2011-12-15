@@ -23,6 +23,19 @@
 #import <UIKit/UIKit.h>
 
 
+// Constants
+#define kSlidesFooterHeight      30.0
+
+// Actions
+enum {
+    ActionSlidesExport
+};
+
+// alerts
+enum {
+	SlidesAlertExportError
+};
+
 
 /**
  * Color page control.
@@ -48,11 +61,12 @@
 /**
  * SlidesView.
  */
-@interface SlidesView : UIView <UIScrollViewDelegate> {
+@interface SlidesView : UIView <UIScrollViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate> {
     
     // ui
 	UIScrollView *_scrollView;
 	ColorPageControl *_pageControl;
+    UIButton *_btnSave;
     
 	// data
 	NSMutableArray *_slides;
@@ -65,9 +79,15 @@
     
 }
 
+// Object
+- (void)resize:(CGRect)rframe;
+
 // Business
 - (void)setSlides:(NSArray*)slides;
 - (void)setSlidesTitle:(NSString*)title;
 - (void)load;
+
+// Actions
+- (void)actionSave:(id)sender;
 
 @end

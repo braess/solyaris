@@ -90,6 +90,8 @@
         [self addSubview:_textView];
         [textView release];
         
+        // reorder
+        [self bringSubviewToFront:_slidesView];
         
         
     }
@@ -103,10 +105,12 @@
     [super layoutSubviews];
     
     // slides
-    _slidesView.frame = CGRectMake(kTMDbGapInset, kTMDbGapInset, self.frame.size.width-2*kTMDbGapInset, (self.frame.size.width-2*kTMDbGapInset)*sprop);
+    float sw = self.frame.size.width-2*kTMDbGapInset;
+    float sh = (self.frame.size.width-2*kTMDbGapInset)*sprop;
+    [_slidesView resize:CGRectMake(kTMDbGapInset, kTMDbGapInset, sw, sh)];
     
     // text
-    float hslides = mode_slides ? (_slidesView.frame.size.height+2*kTMDbGapOffset) : 0;
+    float hslides = mode_slides ? (sh+2*kTMDbGapOffset) : 0;
     float htext = _textView.contentSize.height;
     _textView.frame = CGRectMake(kTMDbGapOffset, hslides+8, self.frame.size.width-30, htext);
     

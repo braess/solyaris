@@ -10,6 +10,7 @@
 		00CFDF6B1138442D0091E310 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00CFDF6A1138442D0091E310 /* CoreGraphics.framework */; };
 		1804E60213FCECE800B38FEF /* bg_app.png in Resources */ = {isa = PBXBuildFile; fileRef = 1804E60113FCECE800B38FEF /* bg_app.png */; };
 		180C2602145AF5ED00867C5E /* node_close.png in Resources */ = {isa = PBXBuildFile; fileRef = 180C2601145AF5ED00867C5E /* node_close.png */; };
+		181319951499F9520087AEFE /* btn_save.png in Resources */ = {isa = PBXBuildFile; fileRef = 181319941499F9520087AEFE /* btn_save.png */; };
 		18141BCD143E4A4100D8CCE0 /* promo_solyaris.png in Resources */ = {isa = PBXBuildFile; fileRef = 18141BCC143E4A4100D8CCE0 /* promo_solyaris.png */; };
 		1819227413C72CEB00C89C74 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1819227313C72CEB00C89C74 /* CoreData.framework */; };
 		181A9F06145ACF8000ECADF3 /* Action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 181A9F05145ACF8000ECADF3 /* Action.cpp */; };
@@ -140,6 +141,7 @@
 		00CFDF6A1138442D0091E310 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		1804E60113FCECE800B38FEF /* bg_app.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bg_app.png; path = Assets/bg_app.png; sourceTree = "<group>"; };
 		180C2601145AF5ED00867C5E /* node_close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = node_close.png; path = Assets/node_close.png; sourceTree = "<group>"; };
+		181319941499F9520087AEFE /* btn_save.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_save.png; path = Assets/btn_save.png; sourceTree = "<group>"; };
 		18141BCC143E4A4100D8CCE0 /* promo_solyaris.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = promo_solyaris.png; path = Assets/promo_solyaris.png; sourceTree = "<group>"; };
 		1819227313C72CEB00C89C74 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		181A9F05145ACF8000ECADF3 /* Action.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Action.cpp; path = Source/Action.cpp; sourceTree = "<group>"; };
@@ -395,6 +397,7 @@
 		1804C6E313AA277B00417D32 /* buttons */ = {
 			isa = PBXGroup;
 			children = (
+				181319941499F9520087AEFE /* btn_save.png */,
 				184632891411234F00CC5B70 /* btn_reference.png */,
 				184632751410F55200CC5B70 /* btn_navigator-back.png */,
 				184632761410F55200CC5B70 /* btn_navigator-forward.png */,
@@ -917,6 +920,7 @@
 				189EFE73145B4DA3009715B1 /* sample_click.wav in Resources */,
 				1833278C146461410046DACB /* Default-Landscape.png in Resources */,
 				1833278D146461410046DACB /* Default-Portrait.png in Resources */,
+				181319951499F9520087AEFE /* btn_save.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

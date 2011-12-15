@@ -22,6 +22,15 @@
 
 #import "SlidesView.h"
 #import "CacheImageView.h"
+#import "Tracker.h"
+
+
+/*
+ * Helper Stack.
+ */
+@interface SlidesView (Helpers)
+- (void)exportSave;
+@end
 
 
 /**
@@ -38,7 +47,7 @@
 - (id)initWithFrame:(CGRect)frame {
     
     // self
-    if ((self = [super initWithFrame:frame])) {
+    if ((self = [super initWithFrame:CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height+kSlidesFooterHeight)])) {
         
         // view
         self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
@@ -67,11 +76,25 @@
         [self addSubview:_pageControl];
         [pControl release];
         
+        // button save 
+        UIButton *btnSave = [UIButton buttonWithType:UIButtonTypeCustom]; 
+        btnSave.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleTopMargin;
+        
+        [btnSave setImage:[UIImage imageNamed:@"btn_save.png"] forState:UIControlStateNormal];
+        [btnSave addTarget:self action:@selector(actionSave:) forControlEvents:UIControlEventTouchUpInside];
+        
+        _btnSave = [btnSave retain];
+        [self addSubview:_btnSave];
+        [btnSave release];
+        
+        
         // data
         _slides = [[NSMutableArray alloc] init];
         _title = [[NSMutableString alloc] init];
         
     }
+    
+    // back
     return self;
     
 }
@@ -87,29 +110,40 @@
     float h = self.frame.size.height;
     
     // self
-    _scrollView.frame = CGRectMake(0, 0, w, h);
+    _scrollView.frame = CGRectMake(0, 0, w, h-kSlidesFooterHeight);
     
     // scroll view
-    [_scrollView setContentSize:CGSizeMake([_slides count] * w, h)];
+    [_scrollView setContentSize:CGSizeMake([_slides count] * w, h-kSlidesFooterHeight)];
     for (int i = 0; i < [_slides count]; i++) {
         
         // image
         CacheImageView *civ = [_slides objectAtIndex:i];
-        civ.frame = CGRectMake(i*w, 0, w, h);
+        civ.frame = CGRectMake(i*w, 0, w, h-kSlidesFooterHeight);
 
     }
     
     // page control
-    _pageControl.frame = CGRectMake(0, self.frame.size.height, self.frame.size.width, 30);
+    _pageControl.frame = CGRectMake(0, h-kSlidesFooterHeight-2, w, kSlidesFooterHeight);
     [self bringSubviewToFront:_pageControl];
     [_pageControl setNeedsDisplay];
     
     
     // adjust scroll position
     if (! ([_scrollView isDragging] || [_scrollView isDecelerating])) {
-        [_scrollView setContentOffset:CGPointMake(currentSlide*self.frame.size.width, 0) animated:NO];
+        [_scrollView setContentOffset:CGPointMake(currentSlide*w, 0) animated:NO];
     }
+    
+    // button
+    _btnSave.frame = CGRectMake(w-44, h-44, 44, 44);
+    [self bringSubviewToFront:_btnSave];
 
+}
+
+/**
+ * Resizes the slides.
+ */
+- (void)resize:(CGRect)rframe {
+    self.frame = CGRectMake(rframe.origin.x, rframe.origin.y, rframe.size.width, rframe.size.height+kSlidesFooterHeight);
 }
 
 
@@ -234,6 +268,118 @@
 
 
 #pragma mark -
+#pragma mark Actions
+
+
+/*
+ * Action Save.
+ */
+- (void)actionSave:(id)sender {
+	DLog();
+    
+    // check
+    CacheImageView *civ = [_slides objectAtIndex:currentSlide];
+    if ([civ loaded]) {
+        
+        // action
+        UIActionSheet *saveActions = [[UIActionSheet alloc]
+                                      initWithTitle:nil
+                                      delegate:self
+                                      cancelButtonTitle:nil
+                                      destructiveButtonTitle:nil
+                                      otherButtonTitles:NSLocalizedString(@"Save to Photos", @"Save to Photos"),nil];
+        
+        // offset
+        float ox = -1;
+        float oy = 20;
+        if (self.frame.size.width >= 700) {
+            ox = 10;
+            oy = 5;
+        }
+        
+        // show
+        [saveActions setTag:ActionSlidesExport];
+        [saveActions showFromRect:CGRectMake(_btnSave.frame.origin.x+ox,_btnSave.frame.origin.y+oy,_btnSave.frame.size.width,_btnSave.frame.size.height) inView:self animated:YES];
+        [saveActions release];
+    }
+    
+}
+
+
+
+#pragma mark -
+#pragma mark Export Actions
+
+/*
+ * Save.
+ */
+- (void)exportSave {
+	DLog();
+	
+	// track
+    [Tracker trackEvent:TEventSlides action:@"Export" label:@"save"];
+	
+	// image
+    CacheImageView *civ = [_slides objectAtIndex:currentSlide];
+    UIImage *cimg = [civ cachedImage];
+	
+	// save image
+	UIImageWriteToSavedPhotosAlbum(cimg, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+}
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
+	GLog();
+    
+	// red alert 
+	if (error) {
+		UIAlertView *alert;
+		alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"Error")
+                                           message:NSLocalizedString(@"Unable to save image to Photo Album.",@"Unable to save image to Photo Album.")
+                                          delegate:self cancelButtonTitle:NSLocalizedString(@"Ok",@"Ok") 
+                                 otherButtonTitles:nil];
+        [alert setTag:SlidesAlertExportError];
+		[alert show];
+		[alert release];
+	}
+	
+}
+
+
+#pragma mark -
+#pragma mark UIActionSheet Delegate
+
+/*
+ * Action selected.
+ */
+- (void)actionSheet:(UIActionSheet*)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+	DLog();
+	
+	// tag
+	switch ([actionSheet tag]) {
+            
+        // export
+		case ActionSlidesExport: {
+            
+            // save
+			if (buttonIndex == 0) {
+				[self exportSave];
+			} 
+            
+            // break it
+			break;
+		}
+            
+            
+        // default
+		default: {
+			break;
+		}
+	}
+	
+	
+}
+
+
+#pragma mark -
 #pragma mark Memory management
 
 /*
@@ -244,6 +390,7 @@
     // ui
     [_scrollView release];
     [_pageControl release];
+    [_btnSave release];
     
     // data
     [_slides release];
@@ -348,6 +495,8 @@
  * Dealloc.
  */
 - (void)dealloc {
+    
+    // sup
     [super dealloc];
 }
 

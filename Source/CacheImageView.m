@@ -143,6 +143,26 @@
 
 
 #pragma mark -
+#pragma mark Class
+
+/**
+ * Clears the cache.
+ */
++ (void)clearCache {
+    FLog();
+    
+    // remove dir
+    NSError *error = nil;
+    [[NSFileManager defaultManager] removeItemAtPath:[CacheImageView cacheDirectory] error:nil];
+    if (error) {
+        NSLog(@"CacheImage Error: %@", [error userInfo]);
+    }
+    
+    
+}
+
+
+#pragma mark -
 #pragma mark New Business
 
 
@@ -264,20 +284,21 @@
 
 
 /**
- * Clears the cache.
+ * Indicates if loaded.
  */
-+ (void)clearCache {
-    FLog();
-    
-    // remove dir
-    NSError *error = nil;
-    [[NSFileManager defaultManager] removeItemAtPath:[CacheImageView cacheDirectory] error:nil];
-    if (error) {
-         NSLog(@"CacheImage Error: %@", [error userInfo]);
-    }
-
-    
+- (BOOL)loaded {
+    return loaded;
 }
+
+
+/**
+ * Returns the loaded image.
+ */
+- (UIImage*)cachedImage {
+    FLog();
+    return _imageView.image;
+}
+
 
 
 #pragma mark -

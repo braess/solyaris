@@ -466,7 +466,7 @@ void Node::unfold() {
         if (this->isNodeChild(*child)) {
             
             // radius & position
-            float dmin = 0.2;
+            float dmin = 0.3;
             float dmax = 1.2;
             float rx = Rand::randFloat(radius * dmin,radius * dmax) + 0.1;
             rx *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
@@ -681,7 +681,7 @@ void Node::show(bool animate) {
         if (pp) {
             
             // radius & position
-            float dmin = 0.2;
+            float dmin = 0.3;
             float dmax = 1.2;
             float rx = Rand::randFloat(pp->radius * dmin,pp->radius * dmax) + 0.1;
             rx *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
