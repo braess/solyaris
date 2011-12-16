@@ -25,6 +25,7 @@
 #import "CellSwitch.h"
 #import "CellSlider.h"
 #import "CellSegment.h"
+#import "LocalizationViewController.h"
 
 
 // Constants
@@ -49,11 +50,11 @@
 //  Fields
 enum {
     PreferenceGraphLayout,
-    PreferenceGraphSoundDisabled,
     PreferenceGraphTooltipDisabled,
     PreferenceGraphNodeCrewEnabled,
     PreferenceGraphNodeChildren,
     PreferenceGraphEdgeLength,
+    PreferenceLocalization,
 	PreferenceReset
 };
 
@@ -67,10 +68,13 @@ enum {
 /**
  * Preferences Controller.
  */
-@interface PreferencesViewController : UITableViewController <UIActionSheetDelegate, CellButtonDelegate, CellSwitchDelegate, CellSliderDelegate, CellSegmentDelegate> {
+@interface PreferencesViewController : UITableViewController <UIActionSheetDelegate, CellButtonDelegate, CellSwitchDelegate, CellSliderDelegate, CellSegmentDelegate, LocalizationDelegate> {
     
     // delegate
 	id<PreferencesDelegate> delegate;
+    
+    // ui
+	UIPopoverController *_localizationPopoverController;
     
     // private
     @private

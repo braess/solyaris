@@ -53,13 +53,15 @@
 #define udSearchTerm                    @"search_term"	
 
 
+// Localization
+#define udLocalizationIMDb              @"localization_imdb"
+#define udLocalizationWikipedia         @"localization_wikipedia"
+#define udLocalizationAmazon            @"localization_amazon"
+
+
 // URLs
-#define urlIMDbMovie                    @"http://www.imdb.com/title/"
-#define urlIMDbSearch                   @"http://www.imdb.com/find?q="
-#define urlWikipediaSearch              @"http://en.wikipedia.org/w/index.php?search="
 #define urlTMDbMovie                    @"http://www.themoviedb.org/movie/"
 #define urlTMDbPerson                   @"http://www.themoviedb.org/person/"
-#define urlAmazonSearch                 @"http://www.amazon.com/s/field-keywords="
 #define urlITunesSearch                 @"itms://ax.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?term="
 
 

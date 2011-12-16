@@ -101,6 +101,10 @@
 		18AC0287143F5BDB0096259D /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18AC0286143F5BD90096259D /* libsqlite3.0.dylib */; };
 		18B696FC1448C12B003235CA /* notes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 18B696FB1448C12B003235CA /* notes.txt */; };
 		18BEF5EB1433B6B6003314FE /* logo_solyaris.png in Resources */ = {isa = PBXBuildFile; fileRef = 18BEF5EA1433B6B6003314FE /* logo_solyaris.png */; };
+		18EAA550149B3F740079F030 /* SolyarisLocalization.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EAA54F149B3F730079F030 /* SolyarisLocalization.m */; };
+		18EAA554149B420B0079F030 /* LocalizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EAA553149B420B0079F030 /* LocalizationViewController.m */; };
+		18EAA55E149B48510079F030 /* CellPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EAA55B149B48510079F030 /* CellPicker.m */; };
+		18EAA55F149B48510079F030 /* CellPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18EAA55D149B48510079F030 /* CellPickerViewController.m */; };
 		18ED29091446CE4D005E7BDA /* node_movie_core.png in Resources */ = {isa = PBXBuildFile; fileRef = 18ED29051446CE4D005E7BDA /* node_movie_core.png */; };
 		18ED290A1446CE4D005E7BDA /* node_movie_glow.png in Resources */ = {isa = PBXBuildFile; fileRef = 18ED29061446CE4D005E7BDA /* node_movie_glow.png */; };
 		18ED290B1446CE4D005E7BDA /* node_person_core.png in Resources */ = {isa = PBXBuildFile; fileRef = 18ED29071446CE4D005E7BDA /* node_person_core.png */; };
@@ -292,6 +296,14 @@
 		18B696FB1448C12B003235CA /* notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notes.txt; sourceTree = "<group>"; };
 		18BEF5EA1433B6B6003314FE /* logo_solyaris.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo_solyaris.png; path = Assets/logo_solyaris.png; sourceTree = "<group>"; };
 		18C42BF61491173E00DA48B3 /* APIKeys_template.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APIKeys_template.h; path = Source/APIKeys_template.h; sourceTree = "<group>"; };
+		18EAA54E149B3F730079F030 /* SolyarisLocalization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SolyarisLocalization.h; path = Source/SolyarisLocalization.h; sourceTree = "<group>"; };
+		18EAA54F149B3F730079F030 /* SolyarisLocalization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SolyarisLocalization.m; path = Source/SolyarisLocalization.m; sourceTree = "<group>"; };
+		18EAA552149B420B0079F030 /* LocalizationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocalizationViewController.h; path = Source/LocalizationViewController.h; sourceTree = "<group>"; };
+		18EAA553149B420B0079F030 /* LocalizationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocalizationViewController.m; path = Source/LocalizationViewController.m; sourceTree = "<group>"; };
+		18EAA55A149B48510079F030 /* CellPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CellPicker.h; path = Source/CellPicker.h; sourceTree = "<group>"; };
+		18EAA55B149B48510079F030 /* CellPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellPicker.m; path = Source/CellPicker.m; sourceTree = "<group>"; };
+		18EAA55C149B48510079F030 /* CellPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CellPickerViewController.h; path = Source/CellPickerViewController.h; sourceTree = "<group>"; };
+		18EAA55D149B48510079F030 /* CellPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CellPickerViewController.m; path = Source/CellPickerViewController.m; sourceTree = "<group>"; };
 		18ED29051446CE4D005E7BDA /* node_movie_core.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = node_movie_core.png; path = Assets/node_movie_core.png; sourceTree = "<group>"; };
 		18ED29061446CE4D005E7BDA /* node_movie_glow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = node_movie_glow.png; path = Assets/node_movie_glow.png; sourceTree = "<group>"; };
 		18ED29071446CE4D005E7BDA /* node_person_core.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = node_person_core.png; path = Assets/node_person_core.png; sourceTree = "<group>"; };
@@ -534,6 +546,8 @@
 			isa = PBXGroup;
 			children = (
 				18AC01E0143F2D1D0096259D /* SolyarisConstants.h */,
+				18EAA54E149B3F730079F030 /* SolyarisLocalization.h */,
+				18EAA54F149B3F730079F030 /* SolyarisLocalization.m */,
 				18AC01C3143F2D1D0096259D /* APIKeys.h */,
 				18C42BF61491173E00DA48B3 /* APIKeys_template.h */,
 			);
@@ -545,6 +559,10 @@
 			children = (
 				18AC01CC143F2D1D0096259D /* CellInput.h */,
 				18AC01CD143F2D1D0096259D /* CellInput.m */,
+				18EAA55A149B48510079F030 /* CellPicker.h */,
+				18EAA55B149B48510079F030 /* CellPicker.m */,
+				18EAA55C149B48510079F030 /* CellPickerViewController.h */,
+				18EAA55D149B48510079F030 /* CellPickerViewController.m */,
 				18AC01CA143F2D1D0096259D /* CellButton.h */,
 				18AC01CB143F2D1D0096259D /* CellButton.m */,
 				18AC01CE143F2D1D0096259D /* CellSegment.h */,
@@ -643,6 +661,8 @@
 				18AC01C0143F2D1D0096259D /* AboutViewController.mm */,
 				18AC01EF143F2D1D0096259D /* PreferencesViewController.h */,
 				18AC01F0143F2D1D0096259D /* PreferencesViewController.mm */,
+				18EAA552149B420B0079F030 /* LocalizationViewController.h */,
+				18EAA553149B420B0079F030 /* LocalizationViewController.m */,
 			);
 			name = app;
 			sourceTree = "<group>";
@@ -985,6 +1005,10 @@
 				181B1E6714503DFD000D3882 /* HelpView.m in Sources */,
 				181A9F06145ACF8000ECADF3 /* Action.cpp in Sources */,
 				181CA6891463D75C00531536 /* LinkButton.m in Sources */,
+				18EAA550149B3F740079F030 /* SolyarisLocalization.m in Sources */,
+				18EAA554149B420B0079F030 /* LocalizationViewController.m in Sources */,
+				18EAA55E149B48510079F030 /* CellPicker.m in Sources */,
+				18EAA55F149B48510079F030 /* CellPickerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1049,7 +1073,7 @@
 					"-lz",
 				);
 				PRODUCT_NAME = solyaris;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5BF997D1-D8DA-481D-A95E-93F4945EC490";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "F35D8BF6-6FC7-4C9A-8FAF-F073CD38FDBC";
 			};
 			name = Release;
 		};
@@ -1087,7 +1111,7 @@
 				HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/boost\"";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = solyaris;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5BF997D1-D8DA-481D-A95E-93F4945EC490";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "F35D8BF6-6FC7-4C9A-8FAF-F073CD38FDBC";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" include";

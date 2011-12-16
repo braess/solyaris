@@ -45,7 +45,8 @@
 #pragma mark Constants
 
 // constants
-#define kKeyReset	@"key_reset"
+#define kKeyReset           @"key_reset"
+#define kKeyLocalization	@"key_localization"
 
 
 #pragma mark -
@@ -124,6 +125,22 @@
     
     // set
     self.tableView.tableHeaderView = hView;
+    
+    
+    // localization
+    LocalizationViewController *locViewController = [[LocalizationViewController alloc] initWithFrame:CGRectMake(0, 0, 320, 190)];
+    locViewController.delegate = self;
+    UINavigationController *locNavigationController = [[UINavigationController alloc] initWithRootViewController:locViewController];
+    
+    // popover
+    UIPopoverController *locPopoverController = [[UIPopoverController alloc] initWithContentViewController:locNavigationController];
+    [locPopoverController setPopoverContentSize:CGSizeMake(locViewController.view.frame.size.width, locViewController.view.frame.size.height)];
+    locPopoverController.contentViewController.view.alpha = 0.9f;
+    
+    _localizationPopoverController = [locPopoverController retain];
+    [locPopoverController release];
+    
+    
     
     
     // actions
@@ -211,6 +228,24 @@
  */
 - (void)cellButtonTouched:(CellButton *)c {
 	GLog();
+    
+    // localization
+	if ([c.key isEqualToString:kKeyLocalization]) {
+        FLog();
+        
+        
+        // dismiss
+        if ([_localizationPopoverController isPopoverVisible]) {
+            [_localizationPopoverController dismissPopoverAnimated:YES];
+        } 
+        
+        // show girl
+        else {
+            [_localizationPopoverController.contentViewController.navigationController popToRootViewControllerAnimated:NO]; 
+            [_localizationPopoverController presentPopoverFromRect:c.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES]; 
+        }
+
+    }
 	
 	// reset
 	if ([c.key isEqualToString:kKeyReset]) {
@@ -273,6 +308,22 @@
     // update segment
     [c update:NO];
 
+}
+
+
+#pragma mark -
+#pragma mark Localization Delegate
+
+/*
+ * Get/Set localization.
+ */
+- (void)setLocalization:(NSString *)key value:(NSObject *)value {
+    GLog();
+    [self updatePreference:key value:value];
+}
+- (NSObject*)getLocalization:(NSString *)key {
+    GLog();
+    return [self retrievePreference:key];
 }
 
 
@@ -473,34 +524,6 @@
         
     }
     
-    // sound
-    if ([indexPath row] == PreferenceGraphSoundDisabled) {
-        
-        // create cell
-        CellSwitch *cswitch = (CellSwitch*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesSwitchIdentifier];
-        if (cswitch == nil) {
-            cswitch = [[[CellSwitch alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellPreferencesSwitchIdentifier] autorelease];
-        }	
-        
-        // prepare cell
-        cswitch.delegate = self;
-        cswitch.key = udGraphSoundDisabled;
-        cswitch.help =  NSLocalizedString(@"Enable playback",@"Enable playback");
-        cswitch.textLabel.text = NSLocalizedString(@"Sound",@"Sound");
-        cswitch.switchAccessory.on = YES;
-        cswitch.disabler = YES;
-        
-        // enabled
-        NSString *graphSoundDisabled = [self retrievePreference:udGraphSoundDisabled];
-        if (graphSoundDisabled && [graphSoundDisabled isEqualToString:@"1"]) {
-            cswitch.switchAccessory.on = NO;
-        }
-        [cswitch update:YES];
-        
-        // set cell
-        cell = cswitch;
-        
-    }
     
     
     // tooltip
@@ -623,6 +646,27 @@
         
     }
     
+    // localication
+    if ([indexPath row] == PreferenceLocalization) {
+        
+        // create cell
+        CellButton *cbutton = (CellButton*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesButtonIdentifier];
+        if (cbutton == nil) {
+            cbutton = [[[CellButton alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellPreferencesButtonIdentifier] autorelease];
+        }		
+        
+        // prepare cell
+        cbutton.delegate = self;
+        cbutton.key = kKeyLocalization;
+        cbutton.help = NSLocalizedString(@"IMDb, Wikipedia, Amazon",@"IMDb, Wikipedia, Amazon");
+        cbutton.textLabel.text = NSLocalizedString(@"Localization",@"Localization");
+        [cbutton.buttonAccessory setTitle:NSLocalizedString(@"Change",@"Change") forState:UIControlStateNormal];
+        [cbutton update:YES];
+        
+        // set cell
+        cell = cbutton;
+        
+    }
     
     
     // reset user defaults
@@ -663,6 +707,9 @@
  */
 - (void)dealloc {
 	GLog();
+    
+    // self
+	[_localizationPopoverController release];
 	
 	// duper
     [super dealloc];

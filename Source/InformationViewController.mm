@@ -130,6 +130,9 @@
         // screen
         fullscreen = NO;
         
+        // localization
+        _sloc = [[SolyarisLocalization alloc] init];
+        
         // fields
         _referenceTMDb = [[NSMutableString alloc] init];
         _referenceIMDb = [[NSMutableString alloc] init];
@@ -442,13 +445,13 @@
     // references
     [_referenceTMDb setString:[NSString stringWithFormat:@"%@%i",urlTMDbMovie,[movie.mid intValue]]];
     if (([movie.imdb_id length] > 0)) {
-        [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",urlIMDbMovie,movie.imdb_id]];
+        [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",[_sloc urlIMDbMovie],movie.imdb_id]];
     }
     else {
-        [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",urlIMDbSearch,[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+        [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",[_sloc urlIMDbSearch],[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     }
-    [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",urlWikipediaSearch,[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-    [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",urlAmazonSearch,[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",[_sloc urlWikipediaSearch],[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",[_sloc urlAmazonSearch],[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceITunes setString:[NSString stringWithFormat:@"%@%@",urlITunesSearch,[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 
     // header
@@ -489,9 +492,9 @@
     
     // references
     [_referenceTMDb setString:[NSString stringWithFormat:@"%@%i",urlTMDbPerson,[person.pid intValue]]];
-    [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",urlIMDbSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-    [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",urlWikipediaSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-    [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",urlAmazonSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",[_sloc urlIMDbSearch],[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",[_sloc urlWikipediaSearch],[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",[_sloc urlAmazonSearch],[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceITunes setString:[NSString stringWithFormat:@"%@%@",urlITunesSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     
     // header
@@ -970,6 +973,9 @@
     [_componentIMDb release];
     [_componentWikipedia release];
     
+    // localization
+    [_sloc release];
+    
     // reference
     [_referenceTMDb release]; 
     [_referenceIMDb release]; 
@@ -1274,7 +1280,7 @@
     static NSDateFormatter *dateFormatter;
     if (dateFormatter == nil) {
         dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"dd.MM.yyyy"];
+        [dateFormatter setDateFormat:@"yyyy"];
     }
     
     // poset

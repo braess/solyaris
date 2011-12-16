@@ -29,6 +29,7 @@
 #import "Movie.h"
 #import "Person.h"
 #import "Asset.h"
+#import "SolyarisLocalization.h"
 
 
 // Constants
@@ -147,6 +148,9 @@ enum {
     bool mode_wikipedia;
     
     bool fullscreen;
+    
+    // localization
+    SolyarisLocalization *_sloc;
     
     // references
     NSMutableString *_referenceTMDb;

@@ -1,9 +1,9 @@
 //
-//  CellInput.h
-//  Solyaris
+//  CellPickerViewController.h
+//  P5P
 //
-//  Created by CNPP on 6.8.2011.
-//  Copyright 2011 Beat Raess. All rights reserved.
+//  Created by CNPP on 3.3.2011.
+//  Copyright Beat Raess 2011. All rights reserved.
 //
 //  This file is part of Solyaris.
 //  
@@ -24,24 +24,34 @@
 
 
 /**
-* Abstract CellInput.
-*/
-@interface CellInput : UITableViewCell {
+ * CellPickerDelegate Protocol.
+ */
+@class CellPicker;
+@protocol CellPickerViewDelegate <NSObject>
+	- (NSString*)controllerTitle;
+	- (NSInteger)pickerIndex;
+	- (NSMutableArray*)pickerValues;
+	- (NSString*)pickerLabel:(NSInteger)index;
+	- (NSString*)pickerLabel;
+	- (void)pickedIndex:(NSInteger)index;
+@end
 
-	// data
-	NSString *key;
-    NSString *help;
-    BOOL clear;
-    
+
+/**
+* CellPickerViewController.
+*/
+@interface CellPickerViewController : UIViewController  <UIPickerViewDataSource, UIPickerViewDelegate> {
+
+	// ui
+	UIPickerView *picker;
+
 
 }
 
 // Properties
-@property (nonatomic, retain) NSString *key;
-@property (nonatomic, retain) NSString *help;
-@property BOOL clear;
+@property (assign) id<CellPickerViewDelegate> delegate;
+@property (nonatomic, assign) UIPickerView *picker;
 
-// Business
-- (void)update:(BOOL)reset;
+
 
 @end
