@@ -36,6 +36,7 @@ enum {
 #define TEventInfo          @"Info"
 #define TEventPreferences   @"Preferences"
 #define TEventSlides        @"Slides"
+#define TEventAPI           @"API"
 
 
 /**

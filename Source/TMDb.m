@@ -24,6 +24,7 @@
 #import "APIKeys.h"
 #import "SBJson.h"
 #import "SolyarisConstants.h"
+#import "Tracker.h"
 
 
 /**
@@ -1807,8 +1808,23 @@
  */
 - (BOOL)validResponse:(NSString *)response {
     
-    // unavailable
+    // service down
+    if ([response length] <= 0) {
+        
+        // track
+        [Tracker trackEvent:TEventAPI action:@"Error" label:@"down"];
+        
+        // shit
+        return NO;
+    }
+    
+    // service unavailable
     if ([response rangeOfString : @"503 Service Unavailable"].location != NSNotFound) {
+        
+        // track
+        [Tracker trackEvent:TEventAPI action:@"Error" label:@"unavailable"];
+        
+        // not again...
         return NO;
     }
     
