@@ -45,6 +45,7 @@
 - (void)swapTMDb;
 - (void)swapIMDb;
 - (void)swapWikipedia;
+- (void)swapTrailer;
 - (void)swapReset;
 @end
 
@@ -53,7 +54,6 @@
  * Action Stack.
  */
 @interface InformationViewController (ActionStack)
-- (void)actionResize:(id)sender;
 - (void)resizeFull;
 - (void)resizeDefault;
 - (void)resizeDone;
@@ -126,6 +126,7 @@
         mode_tmdb = NO;
         mode_imdb = NO;
         mode_wikipedia = NO;
+        mode_trailer = NO;
         
         // screen
         fullscreen = NO;
@@ -137,6 +138,7 @@
         _referenceTMDb = [[NSMutableString alloc] init];
         _referenceIMDb = [[NSMutableString alloc] init];
         _referenceWikipedia = [[NSMutableString alloc] init];
+        _referenceTrailer = [[NSMutableString alloc] init];
         _referenceAmazon = [[NSMutableString alloc] init];
         _referenceITunes = [[NSMutableString alloc] init];
 
@@ -167,6 +169,7 @@
     CGRect headerFrame = CGRectMake(0, 0, contentFrame.size.width, kInformationHeaderHeight);
     CGRect footerFrame = CGRectMake(0, contentFrame.size.height-kInformationFooterHeight, contentFrame.size.width, kInformationFooterHeight);
     CGRect componentFrame = CGRectMake(0, kInformationHeaderHeight, contentFrame.size.width, contentFrame.size.height-kInformationHeaderHeight-kInformationFooterHeight);
+    CGRect trailerFrame = CGRectMake(kInformationGapInset, kInformationHeaderHeight+kInformationGapInset, contentFrame.size.width-2*kInformationGapInset, contentFrame.size.height-kInformationHeaderHeight-kInformationFooterHeight-2*kInformationGapInset);
     
     
     // view
@@ -223,6 +226,16 @@
     _buttonResize = [btnResize retain];
 	[ctView  addSubview:_buttonResize];
     [btnResize release];
+    
+    // button trailer
+    UIButton *btnTrailer = [UIButton buttonWithType:UIButtonTypeCustom]; 
+    btnTrailer.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+    btnTrailer.frame = CGRectMake(headerFrame.size.width-44-kInformationGapInset+6, headerFrame.size.height-44-kInformationGapOffset+1, 44, 44);
+    [btnTrailer setImage:[UIImage imageNamed:@"btn_trailer.png"] forState:UIControlStateNormal];
+    [btnTrailer addTarget:self action:@selector(actionTrailer:) forControlEvents:UIControlEventTouchUpInside];
+    _buttonTrailer = [btnTrailer retain];
+    [ctView addSubview:_buttonTrailer];
+    [btnTrailer release];
 
     
     // component listing
@@ -265,6 +278,17 @@
     _componentWikipedia = [componentWikipedia retain];
     [ctView addSubview:_componentWikipedia];
     [componentWikipedia release];
+    
+    
+    // component trailer
+    VideoView *componentTrailer = [[VideoView alloc] initWithFrame:trailerFrame];
+    componentTrailer.tag = TagInformationComponentTrailer;
+    componentTrailer.hidden = YES;
+    
+    // add trailer to content
+    _componentTrailer = [componentTrailer retain];
+    [ctView addSubview:_componentTrailer];
+    [componentTrailer release];
 
     
     
@@ -369,6 +393,7 @@
     [self.view bringSubviewToFront:_contentView];
     [ctView release];
     
+    
 	    
 }
 
@@ -389,6 +414,7 @@
     [_componentTMDb resize];
     [_componentIMDb resize];
     [_componentWikipedia resize];
+    [_componentTrailer resize];
 }
 
 
@@ -399,6 +425,15 @@
 	[super viewWillAppear:animated];
 	DLog();
 
+}
+
+/*
+ * Leaves the view.
+ */
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    // reset
+    [self swapReset];
 }
 
 
@@ -451,6 +486,7 @@
         [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",[_sloc urlIMDbSearch],[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     }
     [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",[_sloc urlWikipediaSearch],[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceTrailer setString:movie.trailer];
     [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",[_sloc urlAmazonSearch],[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceITunes setString:[NSString stringWithFormat:@"%@%@",urlITunesSearch,[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 
@@ -459,6 +495,11 @@
     _informationPersonView.hidden = YES;
     _informationMovieView.hidden = NO;
     
+    // trailer
+    _buttonTrailer.hidden = YES;
+    if ([_referenceTrailer length] > 0) {
+        _buttonTrailer.hidden = NO;
+    }
     
     // component listing
     [_componentListing reset:nodes];
@@ -472,7 +513,9 @@
     
     // component wikipedia
     [_componentWikipedia reset:_referenceWikipedia];
-
+    
+    // reset
+    [_componentTrailer reset:_referenceTrailer];
     
     // swap listing
     [self swapReset];
@@ -494,6 +537,7 @@
     [_referenceTMDb setString:[NSString stringWithFormat:@"%@%i",urlTMDbPerson,[person.pid intValue]]];
     [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",[_sloc urlIMDbSearch],[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",[_sloc urlWikipediaSearch],[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceTrailer setString:@""];
     [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",[_sloc urlAmazonSearch],[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceITunes setString:[NSString stringWithFormat:@"%@%@",urlITunesSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     
@@ -501,6 +545,9 @@
     [_informationPersonView reset:person];
     _informationMovieView.hidden = YES;
     _informationPersonView.hidden = NO;
+    
+    // trailer
+    _buttonTrailer.hidden = YES;
     
     // component listing
     [_componentListing reset:nodes];
@@ -514,6 +561,9 @@
     
     // component wikipedia
     [_componentWikipedia reset:_referenceWikipedia];
+    
+    // component trailer
+    [_componentTrailer reset:_referenceTrailer];
     
     // swap listing
     [self swapReset];
@@ -614,7 +664,7 @@
 }
 
 /*
- * Swap listing.
+ * Swap Wikipedia.
  */
 - (void)swapWikipedia {
     FLog();
@@ -643,6 +693,37 @@
     }
 }
 
+
+/*
+ * Swap Trailer.
+ */
+- (void)swapTrailer {
+    FLog();
+    
+    // change mode
+    if (! mode_trailer) {
+        
+        // track
+        [Tracker trackPageView:@"/information/trailer"];
+        
+        // reset
+        [self swapReset];
+        
+        // mode
+        mode_trailer = YES;
+        
+        // button
+        [_buttonTrailer setSelected:YES];
+        
+        // component
+        [_componentTrailer load];
+        [_componentTrailer scrollTop:NO];
+        [_componentTrailer setHidden:NO];
+        
+    }
+}
+
+
 /*
  * Swap reset.
  */
@@ -654,6 +735,7 @@
     mode_tmdb = NO;
     mode_imdb = NO;
     mode_wikipedia = NO;
+    mode_trailer = NO;
     
     // actions
     [_actionListing setSelected:NO];
@@ -661,11 +743,16 @@
     [_actionIMDb setSelected:NO];
     [_actionWikipedia setSelected:NO];
     
+    // button
+    [_buttonTrailer setSelected:NO];
+    
     // hide views
     _componentListing.hidden = YES;
     _componentTMDb.hidden = YES;
     _componentIMDb.hidden = YES;
     _componentWikipedia.hidden = YES;
+    _componentTrailer.hidden = YES;
+    [_componentTrailer unload];
     _htmlNavigator.hidden = YES;
     
 }
@@ -802,6 +889,17 @@
     [_componentTMDb resize];
     [_componentIMDb resize];
     [_componentWikipedia resize];
+    [_componentTrailer resize];
+}
+
+/*
+ * Action Trailer.
+ */
+- (void)actionTrailer:(id)sender {
+	DLog();
+    
+    // swap
+    [self swapTrailer];
 }
 
 
@@ -967,11 +1065,16 @@
     [_actionIMDb release];
     [_actionWikipedia release];
     
+    // buttons
+    [_buttonResize release];
+    [_buttonTrailer release];
+    
     // components
     [_componentListing release];
     [_componentTMDb release];
     [_componentIMDb release];
     [_componentWikipedia release];
+    [_componentTrailer release];
     
     // localization
     [_sloc release];
@@ -980,6 +1083,7 @@
     [_referenceTMDb release]; 
     [_referenceIMDb release]; 
     [_referenceWikipedia release]; 
+    [_referenceTrailer release]; 
     [_referenceAmazon release]; 
     [_referenceITunes release]; 
 	
@@ -1263,6 +1367,7 @@
         [lblRuntime release];
         
         
+        
     }
     return self;
 }
@@ -1303,6 +1408,8 @@
     [_labelRuntime setText:([movie.runtime intValue] > 0) ? [NSString stringWithFormat:@"%im",[movie.runtime intValue]] : @"-"];
     
 }
+
+
 
 
 #pragma mark -

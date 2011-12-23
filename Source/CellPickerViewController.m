@@ -153,12 +153,7 @@
 */
 - (void)pickerView:(UIPickerView *)thePickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
 	FLog();
-	
-	// delegate
-	if (delegate != nil && [delegate respondsToSelector:@selector(pickedIndex:)]) {
-		[delegate pickedIndex:row];
-	}
-
+	// bugged (not called)
 }
 
 

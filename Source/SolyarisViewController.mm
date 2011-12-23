@@ -1476,7 +1476,7 @@
     }
     
     // check
-    NSString *tagline = NSLocalizedString(@"A Visual Movie Browser", @"A Visual Movie Browser");
+    NSString *tagline = NSLocalizedString(@"Visual Movie Browser", @"Visual Movie Browser");
     if ([taglines count] > 0) {
         tagline = [taglines objectAtIndex:random() % ([taglines count])];
     }

@@ -681,7 +681,7 @@
         // prepare cell
         cbutton.delegate = self;
         cbutton.key = kKeyReset;
-        cbutton.help = NSLocalizedString(@"Settings/Cache",@"Settings/Cache");
+        cbutton.help = NSLocalizedString(@"Settings, Cache",@"Settings, Cache");
         cbutton.textLabel.text = NSLocalizedString(@"Reset",@"Reset");
         [cbutton.buttonAccessory setTitle:NSLocalizedString(@"Reset",@"Reset") forState:UIControlStateNormal];
         [cbutton update:YES];

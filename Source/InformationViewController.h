@@ -26,6 +26,7 @@
 #import "ListingView.h"
 #import "HTMLView.h"
 #import "TMDbView.h"
+#import "VideoView.h"
 #import "Movie.h"
 #import "Person.h"
 #import "Asset.h"
@@ -47,6 +48,7 @@ enum {
     TagInformationComponentTMDb,
     TagInformationComponentIMDb,
     TagInformationComponentWikipedia,
+    TagInformationComponentTrailer,
 	TagInformationFooter
 };
 
@@ -123,6 +125,7 @@ enum {
     HTMLView *_componentIMDb;
     HTMLView *_componentWikipedia;
     HTMLNavigatorView *_htmlNavigator;
+    VideoView *_componentTrailer;
     
     // switch
     ActionBarButtonItem *_actionListing;
@@ -132,6 +135,7 @@ enum {
     
     // buttons
     UIButton *_buttonResize;
+    UIButton *_buttonTrailer;
     
     // private
     @private
@@ -146,6 +150,7 @@ enum {
     bool mode_tmdb;
     bool mode_imdb;
     bool mode_wikipedia;
+    bool mode_trailer;
     
     bool fullscreen;
     
@@ -156,6 +161,7 @@ enum {
     NSMutableString *_referenceTMDb;
     NSMutableString *_referenceIMDb;
     NSMutableString *_referenceWikipedia;
+    NSMutableString *_referenceTrailer;
     NSMutableString *_referenceAmazon;
     NSMutableString *_referenceITunes;
     
@@ -171,6 +177,10 @@ enum {
 
 // Object Methods
 - (id)initWithFrame:(CGRect)frame;
+
+// Actions
+- (void)actionResize:(id)sender;
+- (void)actionTrailer:(id)sender;
 
 // Business Methods
 - (void)resize;

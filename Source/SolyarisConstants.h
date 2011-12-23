@@ -67,6 +67,7 @@
 
 // Values
 #define vAppEmail                       @"solyaris@cecinestpasparis.net"	
+#define vAppStoreLink                   @"itms-apps://itunes.apple.com/app/id481963410"
 
 // Messages
 #define msgAppInstall                   @"message_app_install"

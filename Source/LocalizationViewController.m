@@ -216,7 +216,7 @@
 		cpicker.delegate = self;
         cpicker.clear = NO;
 		cpicker.key = udLocalizationIMDb;
-		cpicker.label = NSLocalizedString(@"Select IMDb", @"Select IMDb");
+		cpicker.label = NSLocalizedString(@"IMDb Site", @"IMDb Site");
 		cpicker.values = pdata;
         cpicker.textLabel.text = NSLocalizedString(@"IMDb", @"IMDb");
 		[cpicker update:YES];
@@ -269,7 +269,7 @@
 		cpicker.delegate = self;
         cpicker.clear = NO;
 		cpicker.key = udLocalizationWikipedia;
-		cpicker.label = NSLocalizedString(@"Select Wikipedia", @"Select Wikipedia");
+		cpicker.label = NSLocalizedString(@"Wikipedia Site", @"Wikipedia Site");
 		cpicker.values = pdata;
         cpicker.textLabel.text = NSLocalizedString(@"Wikipedia", @"Wikipedia");
 		[cpicker update:YES];
@@ -322,7 +322,7 @@
 		cpicker.delegate = self;
         cpicker.clear = NO;
 		cpicker.key = udLocalizationAmazon;
-		cpicker.label = NSLocalizedString(@"Select Amazon", @"Select Amazon");
+		cpicker.label = NSLocalizedString(@"Amazon Site", @"Amazon Site");
 		cpicker.values = pdata;
         cpicker.textLabel.text = NSLocalizedString(@"Amazon", @"Amazon");
 		[cpicker update:YES];

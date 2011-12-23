@@ -181,7 +181,7 @@
     lblClaim.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     lblClaim.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt];
     lblClaim.numberOfLines = 1;
-    lblClaim.text = NSLocalizedString(@"A Visual Movie Browser",@"A Visual Movie Browser");
+    lblClaim.text = NSLocalizedString(@"Visual Movie Browser",@"Visual Movie Browser");
     _labelClaim = [lblClaim retain];
     [self.view addSubview:_labelClaim];
     [lblClaim release];

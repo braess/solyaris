@@ -100,7 +100,7 @@
 	lblClaim.shadowOffset = CGSizeMake(1,1);
 	lblClaim.opaque = YES;
 	lblClaim.numberOfLines = 1;
-	[lblClaim setText:NSLocalizedString(@"A Visual Movie Browser",@"A Visual Movie Browser")];
+	[lblClaim setText:NSLocalizedString(@"Visual Movie Browser",@"Visual Movie Browser")];
 	[self.view addSubview:lblClaim];
 	[lblClaim release];
     
@@ -115,24 +115,31 @@
 	txtAbout.opaque = YES;
     txtAbout.userInteractionEnabled = NO;
     txtAbout.editable = NO;
-	[txtAbout setText:NSLocalizedString(@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This application uses the TMDb API and is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.",@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography. \n\nAll information courtesy of TMDb, IMDb and Wikipedia. This application uses the TMDb API and is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.")];
+	[txtAbout setText:NSLocalizedString(@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or persons. Expand nodes to gather information about their relationships. Learn about the cast and filmography. \n\nThis app uses the TMDb API but is not endorsed or certified by TMDb. All information provided by TMDb, IMDb, YouTube and Wikipedia. Solyaris is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.",@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or persons. Expand nodes to gather information about their relationships. Learn about the cast and filmography. \n\nThis app uses the TMDb API but is not endorsed or certified by TMDb. All information provided by TMDb, IMDb, YouTube and Wikipedia. Solyaris is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.")];
     [self.view addSubview:txtAbout];
 	[txtAbout release];
     
+    
     // link buttons
-    LinkButton *lbTMDb = [[LinkButton alloc] initWithFrame:CGRectMake(176, 247, 45, 20)];
+    LinkButton *lbTMDb = [[LinkButton alloc] initWithFrame:CGRectMake(0, 267, 45, 20)];
     lbTMDb.delegate = self;
     lbTMDb.link = @"http://www.themoviedb.org";
     [self.view addSubview:lbTMDb];
     [lbTMDb release];
     
-    LinkButton *lbIMDb = [[LinkButton alloc] initWithFrame:CGRectMake(225, 247, 40, 20)];
+    LinkButton *lbIMDb = [[LinkButton alloc] initWithFrame:CGRectMake(49, 267, 40, 20)];
     lbIMDb.delegate = self;
     lbIMDb.link = @"http://www.imdb.com";
     [self.view addSubview:lbIMDb];
     [lbIMDb release];
     
-    LinkButton *lbWikipedia = [[LinkButton alloc] initWithFrame:CGRectMake(0, 267, 69, 20)];
+    LinkButton *lbYouTube = [[LinkButton alloc] initWithFrame:CGRectMake(92, 267, 65, 20)];
+    lbYouTube.delegate = self;
+    lbYouTube.link = @"http://www.youtube.com";
+    [self.view addSubview:lbYouTube];
+    [lbYouTube release];
+    
+    LinkButton *lbWikipedia = [[LinkButton alloc] initWithFrame:CGRectMake(186, 267, 72, 20)];
     lbWikipedia.delegate = self;
     lbWikipedia.link = @"http://www.wikipedia.org";
     [self.view addSubview:lbWikipedia];
@@ -267,7 +274,7 @@
 		[composer setSubject:[NSString stringWithFormat:@"Solyaris iPad App"]];
         
 		// message
-		NSString *message = NSLocalizedString(@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography.\n\n\n--- Solyaris\nA Visual Movie Browser\nhttp://solyaris.cecinestpasparis.net",@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography.\n\n\n--- Solyaris\nA Visual Movie Browser\nhttp://solyaris.cecinestpasparis.net");
+		NSString *message = NSLocalizedString(@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or persons. Expand nodes to gather information about their relationships. Learn about the cast and filmography.\n\n\n--- Solyaris\nVisual Movie Browser\nhttp://solyaris.cecinestpasparis.net",@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or persons. Expand nodes to gather information about their relationships. Learn about the cast and filmography.\n\n\n--- Solyaris\nVisual Movie Browser\nhttp://solyaris.cecinestpasparis.net");
 		[composer setMessageBody:message isHTML:NO];
 		
 		// promo image
@@ -433,7 +440,7 @@
 			}
 			// visit app store
 			else {
-				[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/app/id481963410"]];
+				[[UIApplication sharedApplication] openURL:[NSURL URLWithString:vAppStoreLink]];
 			}
 			break;
 		}

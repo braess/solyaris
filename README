@@ -1,17 +1,18 @@
 -----------------------------------------------------------------
-Solyaris - A Visual Movie Browser
+Solyaris - Visual Movie Browser
 -----------------------------------------------------------------
 
-Solyaris is an exploration into organic information design to 
-visualise movies, actors, directors and their relationship. 
+Solyaris is a visual movie browser to find and discover films, 
+actors or directors and explore their connections. 
 
-Search the entire Open Movie Database (TMDb) collection for 
-movies, actors or directors. Expand nodes to gather information 
-about their connections. Learn about the cast and filmography. 
+Search the entire Open Movie Database (TMDb) collection for movies 
+or persons. Expand nodes to gather information about their 
+relationships. Learn about the cast and filmography. 
 
-All information courtesy of TMDb, IMDb and Wikipedia. This product 
-uses the TMDb API but is not endorsed or certified by The Open 
-Movie Database or any other third party.
+This product uses the TMDb API but is not endorsed or certified by 
+TMDb. All information provided by TMDb, IMDb, YouTube and Wikipedia. 
+Solyaris is not responsible for the content, nor the availability 
+or performance of these services.
 
 Made with Cinder.
 
@@ -20,7 +21,8 @@ Project URL:
 http://solyaris.cecinestpasparis.net
 
 App Store:
-http://itunes.apple.com/app/solyaris-a-visual-movie-browser/id481963410?mt=8
+http://itunes.apple.com/app/solyaris-visual-movie-browser/id481963410?mt=8
+
 
 
 
@@ -38,6 +40,7 @@ The Barbarian Group (Andrew Bell, Hai Nguyen)
 http://libcinder.org/
 
 
+
 SBJSON
 -----------------------------------------------------------------
 - Author
@@ -46,3 +49,13 @@ http://stig.brautaset.org
 
 - Project
 http://stig.github.com/json-framework
+
+
+
+DDURLParser
+-----------------------------------------------------------------
+- Author
+Dimitri Doukas
+
+- Project
+http://dev.doukasd.com/2011/03/
