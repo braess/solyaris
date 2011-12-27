@@ -293,22 +293,7 @@
     [self updatePreference:c.key value:[NSString stringWithFormat:@"%f", [c.sliderAccessory value]]];
 }
 
-/*
- * CellSegment.
- */
-- (void)cellSegmentChanged:(CellSegment *)c {
-	FLog();
-    
-    NSString *layout = udGraphLayoutForce;
-    if (c.segmentAccessory.selectedSegmentIndex == 0) {
-        layout = udGraphLayoutNone;
-    }
-    [self updatePreference:c.key value:layout];
-    
-    // update segment
-    [c update:NO];
 
-}
 
 
 #pragma mark -
@@ -482,7 +467,6 @@
 	static NSString *CellPreferencesButtonIdentifier = @"CellPreferencesButton";
 	static NSString *CellPreferencesSwitchIdentifier = @"CellPreferencesSwitch";
     static NSString *CellPreferencesSliderIndentifier = @"CellPreferencesSlider";
-	static NSString *CellPreferencesSegmentIndentifier = @"CellPreferencesSegment";
 	
 	// cell
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellPreferencesIdentifier];
@@ -491,43 +475,8 @@
 		cell.accessoryType = UITableViewCellAccessoryNone;
 	}
     
-    // reset user defaults
-    if ([indexPath row] == PreferenceGraphLayout) {
-        
-        // create cell
-        CellSegment *csegment = (CellSegment*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesSegmentIndentifier];
-        if (csegment == nil) {
-            csegment = [[[CellSegment alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellPreferencesSegmentIndentifier] autorelease];
-        }		
-        
-        // prepare cell
-        csegment.delegate = self;
-        csegment.key = udGraphLayout;
-        csegment.help =  NSLocalizedString(@"Graph algorithm",@"Graph algorithm");
-        csegment.textLabel.text = NSLocalizedString(@"Layout",@"Layout");
-        [csegment removeSegments];
-        [csegment addSegment:NSLocalizedString(@"None", @"None")];
-        [csegment addSegment:NSLocalizedString(@"Force", @"Force")];
-        
-        // set
-        NSString *graphLayout = [self retrievePreference:udGraphLayout];
-        if (graphLayout && [graphLayout isEqualToString:udGraphLayoutNone]) {
-            [csegment selectSegment:0];
-        }
-        else {
-            [csegment selectSegment:1];
-        }
-        [csegment update:YES];
-        
-        // set cell
-        cell = csegment;
-        
-    }
-    
-    
-    
-    // tooltip
-    if ([indexPath row] == PreferenceGraphTooltipDisabled) {
+    // layout nodes
+    if ([indexPath row] == PreferenceGraphLayoutNodes) {
         
         // create cell
         CellSwitch *cswitch = (CellSwitch*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesSwitchIdentifier];
@@ -537,15 +486,15 @@
         
         // prepare cell
         cswitch.delegate = self;
-        cswitch.key = udGraphTooltipDisabled;
-        cswitch.help =  NSLocalizedString(@"Enable information",@"Enable information");
-        cswitch.textLabel.text = NSLocalizedString(@"Tooltip",@"Tooltip");
+        cswitch.key = udGraphLayoutNodesDisabled;
+        cswitch.textLabel.text = NSLocalizedString(@"Graph Layout",@"Graph Layout");
+        cswitch.help =  NSLocalizedString(@"Arrange nodes",@"Arrange nodes");
         cswitch.switchAccessory.on = YES;
         cswitch.disabler = YES;
         
         // enabled
-        NSString *graphTooltipDisabled = [self retrievePreference:udGraphTooltipDisabled];
-        if (graphTooltipDisabled && [graphTooltipDisabled isEqualToString:@"1"]) {
+        NSString *graphLayoutNodesDisabled = [self retrievePreference:udGraphLayoutNodesDisabled];
+        if (graphLayoutNodesDisabled && [graphLayoutNodesDisabled isEqualToString:@"1"]) {
             cswitch.switchAccessory.on = NO;
         }
         [cswitch update:YES];
@@ -555,8 +504,8 @@
         
     }
     
-    // crew
-    if ([indexPath row] == PreferenceGraphNodeCrewEnabled) {
+    // layout subnodes
+    if ([indexPath row] == PreferenceGraphLayoutSubnodes) {
         
         // create cell
         CellSwitch *cswitch = (CellSwitch*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesSwitchIdentifier];
@@ -566,15 +515,45 @@
         
         // prepare cell
         cswitch.delegate = self;
-        cswitch.key = udGraphNodeCrewEnabled;
-        cswitch.help =  NSLocalizedString(@"Include Staff",@"Include Staff");
+        cswitch.key = udGraphLayoutSubnodesDisabled;
+        cswitch.textLabel.text = NSLocalizedString(@"Node Layout",@"Node Layout");
+        cswitch.help =  NSLocalizedString(@"Arrange children",@"Arrange children");
+        cswitch.switchAccessory.on = YES;
+        cswitch.disabler = YES;
+        
+        // enabled
+        NSString *graphLayoutSubnodesDisabled = [self retrievePreference:udGraphLayoutSubnodesDisabled];
+        if (graphLayoutSubnodesDisabled && [graphLayoutSubnodesDisabled isEqualToString:@"1"]) {
+            cswitch.switchAccessory.on = NO;
+        }
+        [cswitch update:YES];
+        
+        // set cell
+        cell = cswitch;
+        
+    }
+    
+    
+    // crew
+    if ([indexPath row] == PreferenceGraphCrewEnabled) {
+        
+        // create cell
+        CellSwitch *cswitch = (CellSwitch*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesSwitchIdentifier];
+        if (cswitch == nil) {
+            cswitch = [[[CellSwitch alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellPreferencesSwitchIdentifier] autorelease];
+        }	
+        
+        // prepare cell
+        cswitch.delegate = self;
+        cswitch.key = udGraphCrewEnabled;
         cswitch.textLabel.text = NSLocalizedString(@"Crew",@"Crew");
+        cswitch.help =  NSLocalizedString(@"Include Staff",@"Include Staff");
         cswitch.switchAccessory.on = NO;
         cswitch.disabler = NO;
         
         // enabled
-        NSString *graphNodeCrewEnabled = [self retrievePreference:udGraphNodeCrewEnabled];
-        if (graphNodeCrewEnabled && [graphNodeCrewEnabled isEqualToString:@"1"]) {
+        NSString *graphCrewEnabled = [self retrievePreference:udGraphCrewEnabled];
+        if (graphCrewEnabled && [graphCrewEnabled isEqualToString:@"1"]) {
             cswitch.switchAccessory.on = YES;
         }
         [cswitch update:YES];
@@ -585,7 +564,7 @@
     }
     
     // graph children
-    if ([indexPath row] == PreferenceGraphNodeChildren) {
+    if ([indexPath row] == PreferenceGraphNodeInitial) {
         
         // create cell
         CellSlider *cslider = (CellSlider*) [tableView dequeueReusableCellWithIdentifier:CellPreferencesSliderIndentifier];
@@ -595,17 +574,17 @@
         
         // prepare cell
         cslider.delegate = self;
-        cslider.key = udGraphNodeChildren;
-        cslider.help =  NSLocalizedString(@"Initial",@"Initial");
+        cslider.key = udGraphNodeInitial;
         cslider.textLabel.text = NSLocalizedString(@"Node",@"Node");
+        cslider.help =  NSLocalizedString(@"Initial",@"Initial");
         cslider.sliderAccessory.minimumValue = 0;
         cslider.sliderAccessory.maximumValue = 30;
         cslider.sliderAccessory.value = 12;
         
         // preference
-        NSString *graphNodeChildren = [self retrievePreference:udGraphNodeChildren];
-        if (graphNodeChildren) {
-            cslider.sliderAccessory.value = [graphNodeChildren floatValue];
+        NSString *graphNodeInitial = [self retrievePreference:udGraphNodeInitial];
+        if (graphNodeInitial) {
+            cslider.sliderAccessory.value = [graphNodeInitial floatValue];
         }
         [cslider update:YES];
         
@@ -627,11 +606,11 @@
         // prepare cell
         cslider.delegate = self;
         cslider.key = udGraphEdgeLength;
-        cslider.help =  NSLocalizedString(@"Length",@"Length");
         cslider.textLabel.text = NSLocalizedString(@"Edge",@"Edge");
-        cslider.sliderAccessory.minimumValue = 200;
+        cslider.help =  NSLocalizedString(@"Length",@"Length");
+        cslider.sliderAccessory.minimumValue = 300;
         cslider.sliderAccessory.maximumValue = 600;
-        cslider.sliderAccessory.value = 400;
+        cslider.sliderAccessory.value = 450;
         
         
         // preference
@@ -658,8 +637,8 @@
         // prepare cell
         cbutton.delegate = self;
         cbutton.key = kKeyLocalization;
-        cbutton.help = NSLocalizedString(@"IMDb, Wikipedia, Amazon",@"IMDb, Wikipedia, Amazon");
         cbutton.textLabel.text = NSLocalizedString(@"Localization",@"Localization");
+        cbutton.help = NSLocalizedString(@"IMDb, Wikipedia, Amazon",@"IMDb, Wikipedia, Amazon");
         [cbutton.buttonAccessory setTitle:NSLocalizedString(@"Change",@"Change") forState:UIControlStateNormal];
         [cbutton update:YES];
         

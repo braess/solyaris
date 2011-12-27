@@ -106,7 +106,7 @@ void Edge::setting(GraphSettings s) {
     
     // length
     length = 400;
-    Default graphEdgeLength = s.getDefault("graph_edge_length");
+    Default graphEdgeLength = s.getDefault(sGraphEdgeLength);
     if (graphEdgeLength.isSet()) {
         length = graphEdgeLength.doubleVal();
     }

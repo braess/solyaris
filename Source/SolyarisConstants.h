@@ -42,13 +42,10 @@
 
 // User Default Keys
 #define udInformationAppVersion			@"information_app_version"
-#define udGraphSoundDisabled            @"graph_sound_disabled"
-#define udGraphTooltipDisabled          @"graph_tooltip_disabled"
-#define udGraphLayout                   @"graph_layout"
-#define udGraphLayoutNone               @"graph_layout_none"
-#define udGraphLayoutForce              @"graph_layout_force"	
-#define udGraphNodeCrewEnabled          @"graph_node_crew_enabled"	
-#define udGraphNodeChildren             @"graph_node_children"	
+#define udGraphLayoutNodesDisabled      @"graph_layout_nodes_disabled"
+#define udGraphLayoutSubnodesDisabled   @"graph_layout_subnodes_disabled"
+#define udGraphCrewEnabled              @"graph_crew_enabled"	
+#define udGraphNodeInitial              @"graph_node_initial"	
 #define udGraphEdgeLength               @"graph_edge_length"	
 #define udSearchTerm                    @"search_term"	
 

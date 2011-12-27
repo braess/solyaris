@@ -45,11 +45,6 @@ using namespace ci::app;
 using namespace std;
 
 
-// constants
-const string graphLayoutNone = "graph_layout_none";
-const string graphLayoutForce = "graph_layout_force";
-
-
 /**
  * Graph.
  */
@@ -83,6 +78,7 @@ class Graph {
     // Business
     void attract();
     void repulse();
+    void subnodes();
     void move(Vec2d d);
     void drag(Vec2d d);
     NodePtr createNode(string nid, string type, double x, double y);
@@ -91,6 +87,7 @@ class Graph {
     EdgePtr getEdge(string nid1, string nid2);
     void load(NodePtr n);
     void unload(NodePtr n);
+    bool onStage(NodePtr n);
     void tooltip(int tid);
     void action(int tid);
     void sample(int s);
@@ -107,7 +104,7 @@ class Graph {
     float speed;
     float friction;
     float harea;
-    bool layout_none,layout_force;
+    bool layout_nodes, layout_subnodes;
     gl::Texture background;
     
     // data
@@ -131,7 +128,6 @@ class Graph {
     
     // tooltips
     map<int, Tooltip> tooltips;
-    bool tooltip_disabled;
     
     // actions
     map<int, Action> actions;
@@ -141,7 +137,6 @@ class Graph {
     
     // samples
     audio::SourceRef audioSampleClick;
-    bool sound_disabled;
     
     
 };

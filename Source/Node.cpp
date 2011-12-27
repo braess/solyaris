@@ -44,15 +44,19 @@ Node::Node(string idn, double x, double y) {
     
     
     // fields
-    perimeter = 390;
-    dist = 420;
+    perimeter = 420;
+    zone = perimeter / 9.0;
+    dist = 480;
     damping = 0.5;
     strength = -1;
-    ramp = 1.0;
+    stiffness = 0.05;
+    distraction = 0.15;
+    ramp = 1.2;
     mvelocity = 10;
-    speed = 45;
-    nbchildren = 12;
+    speed = 30;
+    initial = 12;
     fcount = 0;
+    
     
     // position
     pos.set(x,y);
@@ -137,23 +141,22 @@ void Node::setting(GraphSettings s) {
     
     
     // children
-    nbchildren = 12;
-    Default graphNodeChildren = s.getDefault("graph_node_children");
-    if (graphNodeChildren.isSet()) {
-        nbchildren = (int) graphNodeChildren.doubleVal();
+    initial = 12;
+    Default graphNodeInitial = s.getDefault(sGraphNodeInitial);
+    if (graphNodeInitial.isSet()) {
+        initial = (int) graphNodeInitial.doubleVal();
     }
     
     
     // distance
-    dist = 420;
-    perimeter = 390;
-    double length = 400;
-    Default graphEdgeLength = s.getDefault("graph_edge_length");
+    double length = 450;
+    Default graphEdgeLength = s.getDefault(sGraphEdgeLength);
     if (graphEdgeLength.isSet()) {
         length = graphEdgeLength.doubleVal();
-        dist = length * 1.05;
-        perimeter = 0.9 * dist;
     }
+    dist = length * 1.05;
+    perimeter = 0.9 * dist;
+    zone = perimeter / 9.0;
 
 }
 
@@ -181,7 +184,8 @@ void Node::update() {
     }
 
     // damping
-    velocity *= (1 - damping);
+    float damp = active ? damping : (damping * 1.75);
+    velocity *= (1 - damp);
     
     // add vel to moving position
     mpos += velocity;
@@ -195,7 +199,7 @@ void Node::update() {
     if (grow) {
         
         // radius
-        radius += 1;
+        radius += 2.1;
         
         // mass
         mass = calcmass();
@@ -211,7 +215,7 @@ void Node::update() {
     if (shrink) {
         
         // radius
-        radius -= 1.39;
+        radius -= 2.4;
         
         // mass
         mass = calcmass();
@@ -275,7 +279,7 @@ void Node::draw() {
         
         // drawy thingy
         selected ? gl::color(ctxts) : gl::color(ctxt);
-        gl::draw(textureLabel, Vec2d(pos.x+loff.x, pos.y+radius+loff.y));
+        gl::draw(textureLabel, Vec2d(pos.x+loff.x, pos.y+core+loff.y));
     }
 
     
@@ -291,18 +295,17 @@ void Node::draw() {
 #pragma mark Business
 
 /**
-* Node repulsion.
+* Node attraction.
 */
 void Node::attract(NodePtr node) {
     
 
     // distance
     double d = pos.distance((*node).pos);
-    double p = active ? perimeter : radius*1.25;
-    if (d > 0 && d < p) {
+    if (d > 0 && d < perimeter) {
         
         // force
-        double s = pow(d / p, 1 / ramp);
+        double s = pow(d / perimeter, 1 / ramp);
         double m = selected ? mass*2 : mass;
         double force = s * 9 * strength * (1 / (s + 1) + ((s - 3) / 4)) / d;
         Vec2d df = (pos - (*node).pos) * (force/m);
@@ -311,6 +314,50 @@ void Node::attract(NodePtr node) {
         (*node).velocity += df;
     }
 
+}
+
+/**
+ * Node distraction.
+ */
+void Node::distract(NodePtr node) {
+    
+    
+    // distance
+    double d = pos.distance((*node).pos);
+    if (d > 0 && d < zone) {
+        
+        // force
+        double s = pow(d / zone, 1 / ramp);
+        double force = s * 9 * strength * (1 / (s + 1) + ((s - 3) / 4)) / d;
+        Vec2d df = (pos - (*node).pos) * (force/mass) * distraction;
+        
+        // velocity
+        (*node).velocity += df;
+    }
+    
+}
+
+/**
+ * Node repulsion.
+ */
+void Node::repulse(Vec2d p, float dist, float dir) {
+    
+    // distance vector
+    Vec2d diff = p - this->pos;
+    
+    // normalize / length
+    diff.safeNormalize();
+    diff *= dist;
+    
+    // target
+    Vec2d target = p + diff;
+    
+    // force
+    Vec2d force = this->pos - target;
+    force *= stiffness;
+
+    // update velocity
+    this->velocity += force*dir;
 }
 
 
@@ -401,55 +448,64 @@ void Node::shrinked() {
  * Born.
  */
 void Node::born() {
+    FLog();
     
     // state
     active = true;
     closed = false;
     
     // children
-    int nb = nbchildren;
-    Rand::randomize();
+    int nb = initial;
+    NodeVectorPtr cnodes;
     for (NodeIt child = children.begin(); child != children.end(); ++child) {
         
-        // parent
-        if ((*child)->parent.lock()) {
+        // filter existing
+        if (! (*child)->isActive()) {
             
-            // unhide
-            (*child)->show(false);
+            // parent
+            if ((*child)->parent.lock()) {
+                
+                // unhide
+                (*child)->show(true);
+                
+            }
+            
+            // adopt child
+            else  {
+                
+                // adopt child
+                (*child)->parent = sref;
+                
+                // director
+                if ((*child)->type == nodePersonDirector) {
+                    (*child)->show(false);
+                    cnodes.push_back(*child);
+                }
+                
+                // actor / movie
+                if (((*child)->type == nodePersonActor || (*child)->type == nodeMovie)) {
+                    
+                    // show
+                    if (nb > 0) {
+                        (*child)->show(false);
+                        cnodes.push_back(*child);
+                        nb--;
+                    }
+                    else if (! (*child)->isActive()) {
+                        (*child)->hide(); 
+                    }
+                }
+                
+                
+            }
             
         }
         
-        // adopt child
-        else {
-            
-            // adopt child
-            (*child)->parent = sref;
-            
-            // director
-            if ((*child)->type == nodePersonDirector) {
-                (*child)->show(true);
-            }
-            
-            // actor / movie
-            if (((*child)->type == nodePersonActor || (*child)->type == nodeMovie)) {
-                
-                // show
-                if (nb > 0) {
-                    (*child)->show(true);
-                    nb--;
-                }
-                else if (! (*child)->isActive()) {
-                    (*child)->hide(); 
-                }
-            }
-            
-            
-        }
         
     }
     
-    // offset
-    this->offset();
+    // position children
+    this->cposition(cnodes);
     
 }
 
@@ -457,101 +513,59 @@ void Node::born() {
  * Unfold.
  */
 void Node::unfold() {
+    FLog();
     
     // children
-    Rand::randomize();
+    NodeVectorPtr cnodes;
     for (NodeIt child = children.begin(); child != children.end(); ++child) {
         
         // open child
         if (this->isNodeChild(*child)) {
             
             // radius & position
-            float dmin = 0.3;
-            float dmax = 1.2;
-            float rx = Rand::randFloat(radius * dmin,radius * dmax) + 0.1;
+            float rx = Rand::randFloat(radius * nodeUnfoldMin,radius * nodeUnfoldMax) + 0.1;
             rx *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
-            float ry = Rand::randFloat(radius * dmin,radius * dmax) + 0.1;
+            float ry = Rand::randFloat(radius * nodeUnfoldMin,radius * nodeUnfoldMax) + 0.1;
             ry *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
             Vec2d p = Vec2d(pos.x+rx,pos.y+ry);
             
-            // move & open
-            (*child)->moveTo(p);
+            // open & push
             (*child)->open();
+            cnodes.push_back(*child);
         }
         
     }
     
-    // offset
-    this->offset();
+    // position children
+    this->cposition(cnodes);
+    
 }
 
 /**
  * Fold.
  */
 void Node::fold() {
+    FLog();
     
     // children
-    Rand::randomize();
+    NodeVectorPtr cnodes;
     for (NodeIt child = children.begin(); child != children.end(); ++child) {
         
         // move it
         if (this->isNodeChild(*child)) {
             
-            // radius & position
-            float dmin = 0.2;
-            float dmax = 0.9;
-            float rx = Rand::randFloat(radius * dmin,radius * dmax) + 0.1;
-            rx *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
-            float ry = Rand::randFloat(radius * dmin,radius * dmax) + 0.1;
-            ry *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
-            Vec2d p = Vec2d(pos.x+rx,pos.y+ry);
-            
-            // you gotta
-            (*child)->moveTo(p);
+            // push
+            cnodes.push_back(*child);
             
         }
-
-        
     }
+    
+    // position children
+    this->cposition(cnodes);
 
 }
 
 
-/**
- * Offset.
- */
-void Node::offset() {
-    
-    // positions
-    vector<float> cpos;
-    vector<float>::iterator cposi;
-    
-    // offset children to minimize vertical collision
-    for (int pass = 0; pass < 2 ; pass++) {
-        
-        // clear
-        cpos.clear();
-        
-        // iterate
-        for (NodeIt child = children.begin(); child != children.end(); ++child) {
-            if (this->isNodeChild(*child)) {
-                for (cposi = cpos.begin(); cposi != cpos.end(); ++cposi) {
-                    
-                    // vertical diff
-                    if ( abs((*child)->mpos.y - (*cposi)) < 15 ) {
-                        
-                        // up it goes
-                        (*child)->move(0,-15);
-                    }
-                }
-                cpos.push_back((*child)->mpos.y);
-            }
-            
-        }
-    }
-
-    
-}
 
 /**
  * Load noad.
@@ -670,7 +684,7 @@ void Node::open() {
 /**
  * Shows/Hides the node.
  */
-void Node::show(bool animate) {
+void Node::show(bool position) {
     GLog();
     
     // show it
@@ -680,26 +694,26 @@ void Node::show(bool animate) {
         NodePtr pp = this->parent.lock();
         if (pp) {
             
-            // radius & position
-            float dmin = 0.3;
-            float dmax = 1.2;
-            float rx = Rand::randFloat(pp->radius * dmin,pp->radius * dmax) + 0.1;
-            rx *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
-            float ry = Rand::randFloat(pp->radius * dmin,pp->radius * dmax) + 0.1;
-            ry *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
-            Vec2d p = Vec2d(pp->pos.x+rx,pp->pos.y+ry);
-   
- 
-            // animate
-            if (animate) {
-                this->pos.set(pp->pos);
-                this->moveTo(p);
-            }
-            // set position
-            else {
+            // base position
+            this->pos.set(pp->pos);
+            this->mpos.set(pp->pos);
+            
+            // position
+            if (position) {
+                
+                // radius & position
+                float rx = Rand::randFloat(pp->radius * nodeUnfoldMin,pp->radius * nodeUnfoldMax) + 0.1;
+                rx *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
+                float ry = Rand::randFloat(pp->radius * nodeUnfoldMin,pp->radius * nodeUnfoldMax) + 0.1;
+                ry *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
+                Vec2d p = Vec2d(pp->pos.x+rx,pp->pos.y+ry);
+                
+                // set
                 this->pos.set(p);
                 this->mpos.set(p);
             }
+            
+
         }
         
     }
@@ -713,6 +727,46 @@ void Node::hide() {
     
     // state
     visible = false;
+    
+}
+
+
+/**
+ * Positions the children.
+ */
+void Node::cposition(NodeVectorPtr cnodes) {
+    GLog();
+    
+    // randomize
+    Rand::randomize();
+    
+    // number
+    float cnb = cnodes.size();
+    
+    // radius
+    float rmin = closed ? radius * 0.25 : radius * nodeUnfoldMin * 0.75;
+    float rmax = radius * nodeUnfoldMax * 0.75;
+    
+    // angle
+    float a = 360.0/cnb; 
+    float ca = Rand::randFloat(-130.0,-110.0);
+    
+    // child nodes
+    for (NodeIt cnode = cnodes.begin(); cnode != cnodes.end(); ++cnode) {
+        
+        // randomize radius / angle
+        float rr = Rand::randFloat(rmin,rmax) + 0.1;
+        float ra = Rand::randFloat(ca-a/2.0,ca+a/2.0);
+        
+        // position
+        Vec2d p = Vec2d(pos.x+(rr * cos(ra * M_PI / 180.0)),pos.y+(rr * sin(ra * M_PI / 180.0)));
+        
+        // move
+        (*cnode)->moveTo(p);
+        
+        // angle
+        ca += a;
+    }
     
 }
 
@@ -761,7 +815,7 @@ void Node::tapped() {
     
     // show
     if (! visible) {
-        this->show(false);
+        this->show(true);
     }
     
     // reposition

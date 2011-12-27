@@ -61,6 +61,12 @@ const string nodePersonActor = "person_actor";
 const string nodePersonDirector = "person_director";
 const string nodePersonCrew = "person_crew";
 
+// lengths
+const float nodeUnfoldMin = 0.9f;
+const float nodeUnfoldMax = 1.5f;
+const float nodeFoldMin = 0.3f;
+const float nodeFoldMax = 0.9f;
+
 
 /**
  * Graph Node.
@@ -85,6 +91,8 @@ class Node {
     
     // Business
     void attract(NodePtr node);
+    void distract(NodePtr node);
+    void repulse(Vec2d p, float dist, float dir);
     void moveTo(double x, double y);
     void moveTo(Vec2d p);
     void move(double dx, double dy);
@@ -102,9 +110,9 @@ class Node {
     void fold();
     void unfold();
     void born();
-    void offset();
     bool isNodeChild(NodePtr p);
     void show(bool animate);
+    void cposition(NodeVectorPtr cnodes);
     void touched();
     void untouched();
     void tapped();
@@ -154,13 +162,16 @@ class Node {
     
     // Parameters
     double perimeter;
+    double zone;
     double dist;
     double damping;
     double strength;
+    float stiffness;
+    float distraction;
     double ramp;
     double mvelocity;
     double speed;
-    int nbchildren;
+    int initial;
     int fcount;
     int minr,maxr;
     

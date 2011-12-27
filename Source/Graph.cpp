@@ -47,10 +47,10 @@ Graph::Graph(int w, int h, int o) {
     
     // movement
     speed = 45;
-    friction = 0.9;
+    friction = 0.8;
     
     // hitarea
-    harea = 6;
+    harea = 15;
     
     // tooltip / action
     nbtouch = 10;
@@ -58,18 +58,16 @@ Graph::Graph(int w, int h, int o) {
         tooltips[t] = Tooltip(Vec2d(w,h));
         actions[t] = Action();
     }
-    tooltip_disabled = false;
     
     // layout
-    layout_none = false;
-    layout_force = true;
+    layout_nodes = true;
+    layout_subnodes = true;
     
     // background
     background = gl::Texture(loadImage(loadResource("bg_graph.png")));
     
     // sample
     audioSampleClick = audio::load(loadResource(SAMPLE_CLICK));
-    sound_disabled = false;
 
 }
 
@@ -102,39 +100,20 @@ void Graph::setting(GraphSettings s) {
     // reference
     gsettings = s;
     
-    
-    // layout 
-    layout_none = false;
-    layout_force = true;
-    Default graphLayout = s.getDefault("graph_layout");
-    if (graphLayout.isSet()) {
-        
-        // none
-        if (graphLayout.stringVal() == graphLayoutNone) {
-            layout_none = true;
-            layout_force = false;
-        }
-        
-        // force
-        if (graphLayout.stringVal() == graphLayoutForce) {
-            layout_none = false;
-            layout_force = true;
-        }
+    // layout nodes
+    layout_nodes = true;
+    Default graphLayoutNodes = s.getDefault(sGraphLayoutNodesDisabled);
+    if (graphLayoutNodes.isSet()) {
+        layout_nodes = ! graphLayoutNodes.boolVal();
     }
     
-    // tooltip 
-    tooltip_disabled = false;
-    Default graphTooltipDisabled = s.getDefault("graph_tooltip_disabled");
-    if (graphTooltipDisabled.isSet()) {
-        tooltip_disabled = graphTooltipDisabled.boolVal();
+    // layout subnodes
+    layout_subnodes = true;
+    Default graphLayoutSubnodes = s.getDefault(sGraphLayoutSubnodesDisabled);
+    if (graphLayoutSubnodes.isSet()) {
+        layout_subnodes = ! graphLayoutSubnodes.boolVal();
     }
     
-    // sound 
-    sound_disabled = false;
-    Default graphSoundDisabled = s.getDefault("graph_sound_disabled");
-    if (graphSoundDisabled.isSet()) {
-        sound_disabled = graphSoundDisabled.boolVal();
-    }
     
     // apply to nodes
     for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
@@ -161,8 +140,8 @@ void Graph::update() {
     // randomize
     Rand::randomize();
     
-    // layout force
-    if (layout_force) {
+    // layout nodes
+    if (layout_nodes) {
         
         // attract
         this->attract();
@@ -170,6 +149,11 @@ void Graph::update() {
         // repulse
         this->repulse();
         
+    }
+    
+    // layout subnodes
+    if (layout_subnodes && ci::app::getElapsedFrames() % 4 == 0) {
+        this->subnodes();
     }
     
     // virtual movement
@@ -197,13 +181,9 @@ void Graph::update() {
 
             // children
             for (NodeIt child = (*node)->children.begin(); child != (*node)->children.end(); ++child) {
-                
-                // parent
-                NodePtr pp = (*child)->parent.lock();
-                
 
-                // move visible children
-                if (! (*child)->isActive() && ! (*child)->isLoading() && (*child)->isVisible() && pp == (*node)) {
+                // move children
+                if ((*node)->isNodeChild(*child)) {
                     
                     // follow
                     (*child)->translate((*node)->pos - (*node)->ppos);
@@ -262,7 +242,7 @@ void Graph::draw() {
     for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
         
         // draw if visible and on stage
-        if ((*node)->isVisible() && (*node)->pos.x > -300 && (*node)->pos.x < 1500 && (*node)->pos.y > -300 && (*node)->pos.y < 1500) {
+        if ((*node)->isVisible() && this->onStage(*node)) {
             (*node)->draw();
         }
     }
@@ -478,6 +458,55 @@ void Graph::repulse() {
 
 
 /**
+ * Subnodes.
+ */
+void Graph::subnodes() {
+    
+    // nodes
+    for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
+        
+        // active node on stage
+        if ((*node)->isActive() && ! (*node)->isClosed() && ! (*node)->isLoading() && this->onStage(*node)) {
+            
+            // sphere
+            float smin = (*node)->radius * nodeUnfoldMin;
+            float smax = (*node)->radius * nodeUnfoldMax;
+            
+            // children
+            for (NodeIt c1 = (*node)->children.begin(); c1 != (*node)->children.end(); ++c1) {
+                
+                // child
+                if ((*node)->isNodeChild(*c1) && ! (*c1)->isSelected()) {
+                    
+                    // distract siblings
+                    for (NodeIt c2 = (*node)->children.begin(); c2 != (*node)->children.end(); ++c2) {
+                        if ((*node)->isNodeChild(*c2) && ! (*c2)->isSelected() && (*c1) != (*c2)) {
+                            (*c1)->distract(*c2);
+                        }
+                    }
+                    
+                    // sphere repulsion
+                    float dist = (*node)->pos.distance((*c1)->pos);
+                    if (dist < smin) {
+                        (*c1)->repulse((*node)->pos, smin, 1);
+                    }
+                    else if (dist > smax) {
+                        (*c1)->repulse((*node)->pos, smax, -1);
+                    }
+
+                }
+                
+            }
+            
+        }
+        
+
+    }
+    
+}
+
+
+/**
  * Move.
  */
 void Graph::move(Vec2d d) {
@@ -673,6 +702,13 @@ void Graph::unload(NodePtr n) {
 
 }
 
+/**
+ * Indicates if a node is on stage.
+ */
+bool Graph::onStage(NodePtr n) {
+    return (n)->pos.x > -300 && (n)->pos.x < 1500 && (n)->pos.y > -300 && (n)->pos.y < 1500;
+}
+
 
 /**
  * Sets the tooltip.
@@ -680,28 +716,23 @@ void Graph::unload(NodePtr n) {
 void Graph::tooltip(int tid) {
     GLog();
     
-    // enabled
-    if (! tooltip_disabled) {
-        
-        // selected edges
-        bool etouch;
-        vector<string> txts = vector<string>();
-        for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
-            
-            // touched
-            if ((*edge)->isTouched(touched[tid])) {
-                etouch = true;
-                txts.push_back((*edge)->info());
-            }
-        }
+    // selected edges
+    bool etouch;
+    vector<string> txts = vector<string>();
+    for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
         
         // touched
-        if (etouch && txts.size() > 0) {
-            tooltips[tid].renderText(txts);
-            tooltips[tid].offset(touched[tid]->radius+12.0);
-            tooltips[tid].show();
+        if ((*edge)->isTouched(touched[tid])) {
+            etouch = true;
+            txts.push_back((*edge)->info());
         }
-        
+    }
+    
+    // touched
+    if (etouch && txts.size() > 0) {
+        tooltips[tid].renderText(txts);
+        tooltips[tid].offset(touched[tid]->radius+12.0);
+        tooltips[tid].show();
     }
     
 }
@@ -727,20 +758,18 @@ void Graph::action(int tid) {
 void Graph::sample(int s) {
     
     // play it again sam
-    if (! sound_disabled) {
-        switch(s) {
+    switch(s) {
             // click
-            case sampleClick:
-                try {
-                    audio::Output::play(audioSampleClick);
-                }
-                catch (...) {
-                    // ignore
-                }
-                break;
-            default:
-                break;
-        }
+        case sampleClick:
+            try {
+                audio::Output::play(audioSampleClick);
+            }
+            catch (...) {
+                // ignore
+            }
+            break;
+        default:
+            break;
     }
 
 }

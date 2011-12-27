@@ -74,7 +74,7 @@
 #define kAnimateTimeInformationHide	0.45f
 #define kAnimateTimeSettingsShow	0.6f
 #define kAnimateTimeSettingsHide	0.3f
-#define kDelayTimeNodeLoad          1.8f
+#define kDelayTimeNodeLoad          1.3f
 #define kDelayTimeStartup           4.8f
 #define kOffsetSettings             480
 #define kAlphaInfoModal             0.42f
@@ -501,7 +501,7 @@
         [psorter release];
         
         // enablers
-        bool crew_enabled = [(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefaultBool:udGraphNodeCrewEnabled];
+        bool crew_enabled = [(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefaultBool:udGraphCrewEnabled];
         
         // create nodes
         for (Movie2Person *m2p in persons) {

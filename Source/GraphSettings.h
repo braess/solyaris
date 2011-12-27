@@ -33,6 +33,15 @@ using namespace std;
 class Default;
 
 
+// constants
+const string  sGraphLayoutNodesDisabled        = "graph_layout_nodes_disabled";
+const string  sGraphLayoutSubnodesDisabled     = "graph_layout_subnodes_disabled";
+const string  sGraphCrewEnabled                = "graph_crew_enabled";	
+const string  sGraphNodeInitial                = "graph_node_initial";	
+const string  sGraphEdgeLength                 = "graph_edge_length";
+
+
+
 /**
  * Graph Settings.
  */
