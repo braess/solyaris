@@ -63,6 +63,9 @@
         
         // localization
         _sloc = [[SolyarisLocalization alloc] init];
+        
+        // disable scroll
+        self.tableView.scrollEnabled = NO;
 	}
 	return self;
 }

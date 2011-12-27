@@ -128,7 +128,7 @@
     
     
     // localization
-    LocalizationViewController *locViewController = [[LocalizationViewController alloc] initWithFrame:CGRectMake(0, 0, 320, 190)];
+    LocalizationViewController *locViewController = [[LocalizationViewController alloc] initWithFrame:CGRectMake(0, 0, 320, 180)];
     locViewController.delegate = self;
     UINavigationController *locNavigationController = [[UINavigationController alloc] initWithRootViewController:locViewController];
     
