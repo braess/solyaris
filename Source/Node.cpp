@@ -199,7 +199,7 @@ void Node::update() {
     if (grow) {
         
         // radius
-        radius += 2.1;
+        radius += 1.5;
         
         // mass
         mass = calcmass();
@@ -215,7 +215,7 @@ void Node::update() {
     if (shrink) {
         
         // radius
-        radius -= 2.4;
+        radius -= 1.8;
         
         // mass
         mass = calcmass();
