@@ -62,6 +62,10 @@ class Solyaris : public AppCocoaTouch {
 	void touchesMoved( TouchEvent event );
 	void touchesEnded( TouchEvent event );
     
+    // Gestures
+    void pinched(UIPinchGestureRecognizer* recognizer); 
+    
+    
     // Business
     NodePtr createNode(string nid, string type, double x, double y);
     NodePtr getNode(string nid);
@@ -76,6 +80,8 @@ class Solyaris : public AppCocoaTouch {
     
     // app
     int orientation;
+    double pscale;
+    CGPoint ppinch;
 
     // view controllers
 	SolyarisViewController *solyarisViewController;
@@ -85,6 +91,5 @@ class Solyaris : public AppCocoaTouch {
     
     // color
     Color bg;
-    
     
 };

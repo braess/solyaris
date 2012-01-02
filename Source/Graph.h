@@ -75,6 +75,10 @@ class Graph {
     // Tap
     NodePtr doubleTap(Vec2d tpos, int tid);
     
+    // Pinch
+    void pinched(Vec2d p, Vec2d pp, float s, float ps);
+    
+    
     // Business
     void attract();
     void repulse();
@@ -107,6 +111,7 @@ class Graph {
     bool layout_nodes, layout_subnodes;
     gl::Texture background;
     
+    
     // data
     NodeVectorPtr nodes;
     EdgeVectorPtr edges;
@@ -121,6 +126,10 @@ class Graph {
     Vec2d vmpos;
     Vec2d vdrag;
     float mbound;
+    
+    // zoom
+    Vec2d translate;
+    double scale;
     
     // touched nodes
     int nbtouch;

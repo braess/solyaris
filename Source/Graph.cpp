@@ -47,7 +47,7 @@ Graph::Graph(int w, int h, int o) {
     
     // movement
     speed = 45;
-    friction = 0.8;
+    friction = 0.85;
     
     // hitarea
     harea = 15;
@@ -63,12 +63,15 @@ Graph::Graph(int w, int h, int o) {
     layout_nodes = true;
     layout_subnodes = true;
     
+    // zoom
+    scale = 1.0;
+    translate.set(0,0);
+    
     // background
     background = gl::Texture(loadImage(loadResource("bg_graph.png")));
     
     // sample
     audioSampleClick = audio::load(loadResource(SAMPLE_CLICK));
-
 }
 
 
@@ -136,6 +139,7 @@ void Graph::setting(GraphSettings s) {
  * Updates the graph.
  */
 void Graph::update() {
+    
 
     // randomize
     Rand::randomize();
@@ -228,6 +232,11 @@ void Graph::draw() {
     gl::color( ColorA(1.0f, 1.0f, 1.0f, 1.0f) ); // alpha channel
     gl::draw(background);
     
+    
+    // push it
+    gl::pushMatrices();
+    gl::translate(translate);
+    gl::scale(Vec2d(scale,scale));
 
     // edges
     for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
@@ -252,7 +261,9 @@ void Graph::draw() {
         actions[t].draw();
         tooltips[t].draw();
     }
-
+    
+    // pop
+    gl::popMatrices();
 
 }
 
@@ -271,6 +282,10 @@ void Graph::reset() {
     nmap.clear();
     emap.clear();
     
+    // zoom
+    scale = 1.0;
+    translate.set(0,0);
+    
 }
 
 
@@ -283,6 +298,10 @@ void Graph::reset() {
  */
 void Graph::touchBegan(Vec2d tpos, int tid) {
     GLog();
+    
+    // zoom
+    tpos -= translate;
+    tpos *= (1.0/scale);
     
     // actions
     bool action = false;
@@ -330,6 +349,12 @@ void Graph::touchBegan(Vec2d tpos, int tid) {
 }
 void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
     GLog();
+    
+    // scale
+    tpos -= translate;
+    tpos *= (1.0/scale);
+    ppos -= translate;
+    ppos *= (1.0/scale);
 
     // node
     if (touched[tid]) {
@@ -389,6 +414,10 @@ void Graph::touchEnded(Vec2d tpos, int tid){
 NodePtr Graph::doubleTap(Vec2d tpos, int tid) {
     GLog();
     
+    // scale
+    tpos -= translate;
+    tpos *= (1.0/scale);
+    
     // nodes
     for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
         
@@ -415,6 +444,35 @@ NodePtr Graph::doubleTap(Vec2d tpos, int tid) {
     return NodePtr();
     
 }
+
+
+#pragma mark -
+#pragma mark Gestures
+
+/**
+ * Tapped.
+ */
+void Graph::pinched(Vec2d p, Vec2d pp, float s, float ps) {
+    GLog();
+    
+    // value
+    float cs = s - ps;
+    Vec2d cp = p - pp;
+    //std::cout << "pinched: " << cscale << std::endl;
+    
+    // scale
+    scale += (cs*0.5);
+    scale = min(scale, 1.2); 
+    scale = max(scale, 0.1);
+    //std::cout << "zoom: " << zoom << std::endl;
+    
+    // translate
+    Vec2d c = Vec2d(width,height) - Vec2d(scale*width,scale*height);
+    translate = c/2.0;
+
+    
+}
+
 
 
 
@@ -519,7 +577,7 @@ void Graph::move(Vec2d d) {
 void Graph::drag(Vec2d d) {
     
     // set
-    vdrag = d*friction;
+    vdrag = d * friction;
     
     // threshold
     float thresh = 1.0;
@@ -664,19 +722,23 @@ void Graph::removeNode(string nid) {
 void Graph::load(NodePtr n) {
     FLog();
     
+    // scale
+    float sf = (1.0/scale);
+    Vec2d p = (n)->mpos + (translate * sf);
+    
     // bounds
     Vec2d d = Vec2d(0,0);
-    if (n->mpos.x < mbound) {
-        d.x = mbound - n->mpos.x;
+    if (p.x < mbound*sf) {
+        d.x = mbound*sf - p.x;
     }
-    else if (n->mpos.x > width - mbound) {
-        d.x = - (n->mpos.x - (width-mbound));
+    else if (p.x > (width-mbound)*sf) {
+        d.x = - (p.x - (width-mbound)*sf);
     }
-    if (n->mpos.y < mbound) {
-        d.y = mbound - n->mpos.y;
+    if (p.y < mbound*sf) {
+        d.y = mbound*sf - p.y;
     }
-    else if (n->mpos.y > height - mbound) {
-        d.y = - (n->mpos.y - (height-mbound));
+    else if (p.y > (height-mbound)*sf) {
+        d.y = - (p.y - (height-mbound)*sf);
     }
     
     // move it
@@ -706,7 +768,15 @@ void Graph::unload(NodePtr n) {
  * Indicates if a node is on stage.
  */
 bool Graph::onStage(NodePtr n) {
-    return (n)->pos.x > -300 && (n)->pos.x < 1500 && (n)->pos.y > -300 && (n)->pos.y < 1500;
+    
+    // scale
+    float sf = (1.0/scale);
+    Vec2d p = (n)->pos + (translate * sf);
+    
+    // borderline
+    float b = 300;
+    return p.x > -b*sf && p.x < (width+b)*sf && p.y > -b*sf && p.y < (height+b)*sf;
+    
 }
 
 

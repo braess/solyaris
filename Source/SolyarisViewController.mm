@@ -58,6 +58,14 @@
 @end
 
 
+/**
+ * Gesture Stack.
+ */
+@interface SolyarisViewController (GestureHelpers)
+- (void)pinched:(UIPinchGestureRecognizer*)recognizer; 
+@end
+
+
 
 
 /**
@@ -78,6 +86,7 @@
 #define kDelayTimeStartup           4.8f
 #define kOffsetSettings             480
 #define kAlphaInfoModal             0.42f
+
 
 
 #pragma mark -
@@ -225,6 +234,10 @@
             break;
         }
     }
+    
+    // pinch gesture recognizer
+    UIPinchGestureRecognizer *pinch = [[[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinched:)] autorelease];
+    [self.view addGestureRecognizer:pinch];
     
     
     // note
@@ -446,6 +459,21 @@
     
     // forward to cinder
     [_cinderView touchesCancelled:touches withEvent:event]; 
+}
+
+
+
+#pragma mark -
+#pragma mark Gestures
+
+/*
+ * Pinched.
+ */
+- (void)pinched:(UIPinchGestureRecognizer *)recognizer {
+    GLog();
+    
+    // forward to cinder
+    solyaris->pinched(recognizer); 
 }
 
 
