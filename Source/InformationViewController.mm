@@ -27,14 +27,6 @@
 #import "DataNode.h"
 #import "Tracker.h"
 
-/**
- * Section Stack.
- */
-@interface InformationViewController (SectionStack)
-- (UIView *)sectionHeader:(NSString*)label;
-- (UIView *)sectionFooter;
-@end
-
 
 
 /**

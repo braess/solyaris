@@ -85,6 +85,7 @@ class Graph {
     void subnodes();
     void move(Vec2d d);
     void drag(Vec2d d);
+    NodePtr createNode(string nid, string type);
     NodePtr createNode(string nid, string type, double x, double y);
     NodePtr getNode(string nid);
     EdgePtr createEdge(string eid, string type, NodePtr n1, NodePtr n2);
@@ -120,15 +121,15 @@ class Graph {
     map<string,int>nmap;
     map<string,int>emap;
     
+    // virtual offset
+    Vec2d voff;
+    Vec2d vpoff;
+    Vec2d vmoff;
+    
     // virtual position
     Vec2d vpos;
     Vec2d vppos;
     Vec2d vmpos;
-    
-    // virtual drag
-    Vec2d vdrag;
-    Vec2d vpdrag;
-    Vec2d vmdrag;
     
     // bound
     float mbound;

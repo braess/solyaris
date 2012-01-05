@@ -610,7 +610,7 @@
         cslider.help =  NSLocalizedString(@"Length",@"Length");
         cslider.sliderAccessory.minimumValue = 300;
         cslider.sliderAccessory.maximumValue = 600;
-        cslider.sliderAccessory.value = 450;
+        cslider.sliderAccessory.value = 480;
         
         
         // preference

@@ -38,19 +38,19 @@ Graph::Graph(int w, int h, int o) {
     height = h;
     orientation = o;
     
+    // virtual offset
+    voff.set(0,0);
+    vpoff.set(0,0);
+    vmoff.set(0,0);
+    mbound = 90.0;
+    
     // virtual position
     vpos.set(0,0);
     vppos.set(0,0);
-    vmpos.set(0,0);
-    mbound = 90.0;
-    
-    // virtual drag
-    vdrag.set(0,0);
-    vpdrag.set(0,0);
     
     // movement
     speed = 45;
-    friction = 10.0;
+    friction = 5.1;
     
     // hitarea
     harea = 15;
@@ -86,15 +86,19 @@ Graph::Graph(int w, int h, int o) {
  */
 void Graph::resize(int w, int h, int o) {
     
-    // fields
+    // size
     width = w;
     height = h;
+    
+    // orientation
     orientation = o;
+    
     
     // tooltip
     for (int t = 1; t <= nbtouch; t++) {
         tooltips[t].resize(w,h);
     }
+    
 }
 
 
@@ -159,22 +163,22 @@ void Graph::update() {
     }
     
     // layout subnodes
-    if (layout_subnodes && ci::app::getElapsedFrames() % 4 == 0) {
+    if (layout_subnodes && ci::app::getElapsedFrames() % 6 == 0) {
         this->subnodes();
     }
     
-    // drag translate
-    Vec2d dd = vmdrag - vdrag;
-    vpdrag = vdrag;
-    vdrag += dd / friction;
-    translate += (vdrag - vpdrag);
-    
-    
-    // virtual movement
-    Vec2d dm = vmpos - vpos;
+    // virtual position
+    Vec2d dd = vmpos - vpos;
     vppos = vpos;
-    vpos += dm/speed;
-    Vec2d vmove = (vpos - vppos);
+    vpos += dd / friction;
+    translate += (vpos - vppos);
+    
+    
+    // virtual offset
+    Vec2d dm = vmoff - voff;
+    vpoff = voff;
+    voff += dm/speed;
+    Vec2d vmove = (voff - vpoff);
     
     
     // nodes
@@ -266,14 +270,19 @@ void Graph::draw() {
         }
     }
     
-    // tooltip / actions
+    // actions
     for (int t = 1; t <= nbtouch; t++) {
         actions[t].draw();
-        tooltips[t].draw();
     }
     
     // pop
     gl::popMatrices();
+    
+    
+    // tooltips
+    for (int t = 1; t <= nbtouch; t++) {
+        tooltips[t].draw();
+    }
 
 }
 
@@ -309,15 +318,14 @@ void Graph::reset() {
 void Graph::touchBegan(Vec2d tpos, int tid) {
     GLog();
     
-    // zoom
-    tpos -= translate;
-    tpos *= (1.0/scale);
+    // zoomed
+    Vec2d ztpos = (tpos - translate)*(1.0/scale);
     
     // actions
     bool action = false;
     for (int t = 1; t <= nbtouch; t++) {
         if (actions[t].isActive()) {
-            action = actions[t].action(tpos);
+            action = actions[t].action(ztpos);
         }
     }
     
@@ -328,7 +336,7 @@ void Graph::touchBegan(Vec2d tpos, int tid) {
         if ((*node)->isVisible()) {
             
             // distance
-            float d = (*node)->pos.distance(tpos);
+            float d = (*node)->pos.distance(ztpos);
             if (d < (*node)->core+harea) {
                 
                 // touched
@@ -364,14 +372,11 @@ void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
     if (touched[tid]) {
         GLog("tid = %d, node = ",tid);
         
-        // scale
-        tpos -= translate;
-        tpos *= (1.0/scale);
-        ppos -= translate;
-        ppos *= (1.0/scale);
+        // zoom
+        Vec2d ztpos = (tpos - translate)*(1.0/scale);
         
         // move
-        touched[tid]->moveTo(tpos);
+        touched[tid]->moveTo(ztpos);
         
         // tooltip
         tooltips[tid].position(tpos);
@@ -424,9 +429,8 @@ void Graph::touchEnded(Vec2d tpos, int tid){
 NodePtr Graph::doubleTap(Vec2d tpos, int tid) {
     GLog();
     
-    // scale
-    tpos -= translate;
-    tpos *= (1.0/scale);
+    // zoom
+    Vec2d ztpos = (tpos - translate)*(1.0/scale);
     
     // nodes
     for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
@@ -435,7 +439,7 @@ NodePtr Graph::doubleTap(Vec2d tpos, int tid) {
         if ((*node)->isVisible()) {
             
             // distance
-            float d = (*node)->pos.distance(tpos);
+            float d = (*node)->pos.distance(ztpos);
             if (d < (*node)->core+harea) {
                 
                 // tapped
@@ -479,7 +483,7 @@ void Graph::pinched(Vec2d p, Vec2d pp, double s, double ps) {
     // scale
     scale += (cs*0.5);
     scale = min(scale, 1.2); 
-    scale = max(scale, 0.2);
+    scale = max(scale, 0.3);
     
     // translate
     translate = -1 * (pt * scale - p); 
@@ -584,7 +588,7 @@ void Graph::subnodes() {
  * Move.
  */
 void Graph::move(Vec2d d) {
-    vmpos += d;
+    vmoff += d;
 }
 
 /**
@@ -593,12 +597,12 @@ void Graph::move(Vec2d d) {
 void Graph::drag(Vec2d d) {
     
     // translate
-    vmdrag += d;
+    vmpos += d;
     
     // threshold
     float thresh = 1.0;
-    if (abs(vmdrag.x) < thresh && abs(vmdrag.y) < thresh) {
-        vmdrag.set(0,0);
+    if (abs(vmpos.x) < thresh && abs(vmpos.y) < thresh) {
+        vmpos.set(0,0);
     }
 }
 
@@ -606,6 +610,22 @@ void Graph::drag(Vec2d d) {
 /**
  * Creates a node.
  */
+NodePtr Graph::createNode(string nid, string type) {
+    GLog();
+    
+    // scale
+    double sf = (1.0/scale);
+    
+    // position
+    int b = 240*sf;
+    Vec2d np = Vec2d( ((width*sf/2.0)-b + arc4random() % (2*b)), ((height*sf/2.0)-b + arc4random() % (2*b)) );
+    
+    // rezoom
+    np -= translate*(1.0/scale);
+    
+    // create
+    return createNode(nid,type,np.x,np.y);
+}
 NodePtr Graph::createNode(string nid, string type, double x, double y) {
     GLog();
     

@@ -93,7 +93,7 @@ void Solyaris::applyDeviceOrientation(int dorientation) {
     }
     else {
         this->setWindowSize(768, 1024);
-        graph.resize(768,1024,UIDeviceOrientationPortrait);
+        graph.resize(768,1024,orientation);
     }
     
 }
@@ -307,6 +307,12 @@ void Solyaris::pinched(UIPinchGestureRecognizer* recognizer) {
 /*
  * Creates a node.
  */
+NodePtr Solyaris::createNode(string nid, string type) {
+    GLog();
+    
+    // graph
+    return graph.createNode(nid,type);
+}
 NodePtr Solyaris::createNode(string nid, string type, double x, double y) {
     GLog();
     

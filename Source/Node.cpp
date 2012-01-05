@@ -52,7 +52,7 @@ Node::Node(string idn, double x, double y) {
     stiffness = 0.05;
     distraction = 0.15;
     ramp = 1.2;
-    mvelocity = 10;
+    mvelocity = 15;
     speed = 30;
     initial = 12;
     fcount = 0;
@@ -149,12 +149,12 @@ void Node::setting(GraphSettings s) {
     
     
     // distance
-    double length = 450;
+    double length = 480;
     Default graphEdgeLength = s.getDefault(sGraphEdgeLength);
     if (graphEdgeLength.isSet()) {
         length = graphEdgeLength.doubleVal();
     }
-    dist = length * 1.05;
+    dist = length * 1.02;
     perimeter = 0.9 * dist;
     zone = perimeter / 9.0;
 

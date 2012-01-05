@@ -215,7 +215,7 @@
     btnMovie.alpha = kAlphaBtn;
     btnMovie.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnMovie setBackgroundColor:[UIColor colorWithRed:70/255.0 green:121/255.0 blue:153/255.0 alpha:1]];
+    [btnMovie setBackgroundColor:[UIColor colorWithRed:112/255.0 green:137/255.0 blue:153/255.0 alpha:1]];
     [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnMovie setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnMovie setTitle:NSLocalizedString(@"Movie",@"Movie") forState:UIControlStateNormal];
@@ -236,7 +236,7 @@
     btnPerson.alpha = kAlphaBtn;
     btnPerson.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [btnPerson setBackgroundColor:[UIColor colorWithRed:145/255.0 green:148/255.0 blue:121/255.0 alpha:1]];
+    [btnPerson setBackgroundColor:[UIColor colorWithRed:153/255.0 green:151/255.0 blue:144/255.0 alpha:1]];
     [btnPerson setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateNormal];
     [btnPerson setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:kAlphaTxt] forState:UIControlStateSelected | UIControlStateHighlighted];
     [btnPerson setTitle:NSLocalizedString(@"Person",@"Person") forState:UIControlStateNormal];

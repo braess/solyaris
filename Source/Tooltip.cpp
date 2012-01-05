@@ -110,7 +110,6 @@ void Tooltip::update() {
  */
 void Tooltip::draw() {
     
-    
     // blend
     gl::enableAlphaBlending();
     
@@ -127,7 +126,6 @@ void Tooltip::draw() {
     
     // reset
     gl::disableAlphaBlending();
-    
     
 }
 

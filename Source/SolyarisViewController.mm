@@ -815,23 +815,12 @@
     // dismiss popover
     [_searchResultsPopoverController dismissPopoverAnimated:YES];
     
-    // random position
-    int b = 240;
-    float w = 768;
-    float h = 1024;
-    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
-        w = 1024;
-        h = 768;
-    }
-    int nx = ((w/2.0)-b + arc4random() % (2*b));
-    int ny = ((h/2.0)-b + arc4random() % (2*b));
-    
     
     // node
     NSString *nid = [self makeNodeId:result.ref type:result.type];
     NodePtr node = solyaris->getNode([nid UTF8String]);
     if (node == NULL) {
-        node = solyaris->createNode([nid UTF8String],[result.type UTF8String], nx, ny);
+        node = solyaris->createNode([nid UTF8String],[result.type UTF8String]);
     }
     
     // active
