@@ -42,12 +42,15 @@ Graph::Graph(int w, int h, int o) {
     vpos.set(0,0);
     vppos.set(0,0);
     vmpos.set(0,0);
-    vdrag.set(0,0);
     mbound = 90.0;
+    
+    // virtual drag
+    vdrag.set(0,0);
+    vpdrag.set(0,0);
     
     // movement
     speed = 45;
-    friction = 0.85;
+    friction = 10.0;
     
     // hitarea
     harea = 15;
@@ -160,11 +163,18 @@ void Graph::update() {
         this->subnodes();
     }
     
+    // drag translate
+    Vec2d dd = vmdrag - vdrag;
+    vpdrag = vdrag;
+    vdrag += dd / friction;
+    translate += (vdrag - vpdrag);
+    
+    
     // virtual movement
     Vec2d dm = vmpos - vpos;
     vppos = vpos;
     vpos += dm/speed;
-    Vec2d vmove = (vpos - vppos) + vdrag;
+    Vec2d vmove = (vpos - vppos);
     
     
     // nodes
@@ -232,12 +242,12 @@ void Graph::draw() {
     gl::color( ColorA(1.0f, 1.0f, 1.0f, 1.0f) ); // alpha channel
     gl::draw(background);
     
-    
     // push it
     gl::pushMatrices();
     gl::translate(translate);
     gl::scale(Vec2d(scale,scale));
-
+    
+    
     // edges
     for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
         
@@ -349,16 +359,16 @@ void Graph::touchBegan(Vec2d tpos, int tid) {
 }
 void Graph::touchMoved(Vec2d tpos, Vec2d ppos, int tid){
     GLog();
-    
-    // scale
-    tpos -= translate;
-    tpos *= (1.0/scale);
-    ppos -= translate;
-    ppos *= (1.0/scale);
 
     // node
     if (touched[tid]) {
         GLog("tid = %d, node = ",tid);
+        
+        // scale
+        tpos -= translate;
+        tpos *= (1.0/scale);
+        ppos -= translate;
+        ppos *= (1.0/scale);
         
         // move
         touched[tid]->moveTo(tpos);
@@ -446,30 +456,36 @@ NodePtr Graph::doubleTap(Vec2d tpos, int tid) {
 }
 
 
+
 #pragma mark -
 #pragma mark Gestures
 
+
 /**
- * Tapped.
+ * Pinched.
+ * @url: http://www.gamedev.net/topic/560485-how-can-you-calculate-translation-while-zooming-in-with-zoom-gestures/
  */
-void Graph::pinched(Vec2d p, Vec2d pp, float s, float ps) {
+void Graph::pinched(Vec2d p, Vec2d pp, double s, double ps) {
     GLog();
     
+    // scale pinch point
+    Vec2d pt = p;
+    pt -= translate;
+    pt *= (1.0/scale);
+    
     // value
-    float cs = s - ps;
-    Vec2d cp = p - pp;
-    //std::cout << "pinched: " << cscale << std::endl;
+    double cs = s - ps;
     
     // scale
     scale += (cs*0.5);
     scale = min(scale, 1.2); 
-    scale = max(scale, 0.1);
-    //std::cout << "zoom: " << zoom << std::endl;
+    scale = max(scale, 0.2);
     
     // translate
-    Vec2d c = Vec2d(width,height) - Vec2d(scale*width,scale*height);
-    translate = c/2.0;
-
+    translate = -1 * (pt * scale - p); 
+    
+    // drag
+    this->drag((p-pp) * scale);
     
 }
 
@@ -576,13 +592,13 @@ void Graph::move(Vec2d d) {
  */
 void Graph::drag(Vec2d d) {
     
-    // set
-    vdrag = d * friction;
+    // translate
+    vmdrag += d;
     
     // threshold
     float thresh = 1.0;
-    if (abs(vdrag.x) < thresh && abs(vdrag.y) < thresh) {
-        vdrag.set(0,0);
+    if (abs(vmdrag.x) < thresh && abs(vmdrag.y) < thresh) {
+        vmdrag.set(0,0);
     }
 }
 

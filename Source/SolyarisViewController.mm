@@ -155,6 +155,7 @@
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.view.opaque = NO;
     self.view.multipleTouchEnabled = YES;
+    self.view.userInteractionEnabled = YES;
     self.view.backgroundColor = [UIColor clearColor];
     [window addSubview:self.view];
     
@@ -236,9 +237,8 @@
     }
     
     // pinch gesture recognizer
-    UIPinchGestureRecognizer *pinch = [[[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinched:)] autorelease];
-    [self.view addGestureRecognizer:pinch];
-    
+    UIPinchGestureRecognizer *pinchGesture = [[[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinched:)] autorelease];
+    [self.view addGestureRecognizer:pinchGesture];
     
     // note
 	NoteView *noteView = [[NoteView alloc] initWithFrame:frame];
@@ -465,6 +465,9 @@
 
 #pragma mark -
 #pragma mark Gestures
+
+
+
 
 /*
  * Pinched.

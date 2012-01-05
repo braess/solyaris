@@ -75,8 +75,8 @@ class Graph {
     // Tap
     NodePtr doubleTap(Vec2d tpos, int tid);
     
-    // Pinch
-    void pinched(Vec2d p, Vec2d pp, float s, float ps);
+    // Gestures
+    void pinched(Vec2d p, Vec2d pp, double s, double ps);
     
     
     // Business
@@ -124,12 +124,19 @@ class Graph {
     Vec2d vpos;
     Vec2d vppos;
     Vec2d vmpos;
+    
+    // virtual drag
     Vec2d vdrag;
+    Vec2d vpdrag;
+    Vec2d vmdrag;
+    
+    // bound
     float mbound;
     
     // zoom
     Vec2d translate;
     double scale;
+
     
     // touched nodes
     int nbtouch;

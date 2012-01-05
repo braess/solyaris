@@ -48,8 +48,8 @@ void Solyaris::setup() {
     graph = Graph(768,1024,UIDeviceOrientationPortrait);
     
     // vars
-    ppinch = CGPointMake(0, 0);
     pscale = 1.0;
+    ppinch = CGPointMake(0,0);
     
     // app
     this->applyDeviceOrientation(UIDeviceOrientationPortrait);
@@ -171,7 +171,6 @@ void Solyaris::draw() {
 void Solyaris::reset() {
     
     // app
-    ppinch = CGPointMake(0, 0);
     pscale = 1.0;
     
     // graph
@@ -261,6 +260,8 @@ void Solyaris::touchesEnded( TouchEvent event ){
 #pragma mark Gestures
 
 
+
+
 /*
  * Pinched.
  */
@@ -283,14 +284,15 @@ void Solyaris::pinched(UIPinchGestureRecognizer* recognizer) {
     if ([recognizer numberOfTouches] == 2) {
         
         // position
-        CGPoint p = [recognizer locationInView:recognizer.view];
+        CGPoint pinch = [recognizer locationInView:recognizer.view];
+        double scale = recognizer.scale;
         
         // graph
-        graph.pinched(Vec2d(p.x,p.y), Vec2d(ppinch.x,ppinch.y), recognizer.scale, pscale);
+        graph.pinched(Vec2d(pinch.x,pinch.y), Vec2d(ppinch.x,ppinch.y), scale, pscale);
         
         // value
-        pscale = recognizer.scale;
-        ppinch = p;
+        pscale = scale;
+        ppinch = pinch;
     }
 
 }
