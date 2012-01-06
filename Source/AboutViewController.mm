@@ -391,7 +391,7 @@
 		[composer setToRecipients:[[[NSArray alloc] initWithObjects:vAppEmail,nil] autorelease]];
 		
 		// subject
-		[composer setSubject:[NSString stringWithFormat:@"[Solyaris] Feedback"]];
+		[composer setSubject:[NSString stringWithFormat:@"[Solyaris] Feedback v%@",[(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefault:udInformationAppVersion]]];
         
 		// show off
         [self presentModalViewController:composer animated:YES];
