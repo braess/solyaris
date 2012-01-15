@@ -154,9 +154,9 @@ void Node::setting(GraphSettings s) {
     if (graphEdgeLength.isSet()) {
         length = graphEdgeLength.doubleVal();
     }
-    dist = length * 1.02;
-    perimeter = 0.9 * dist;
-    zone = perimeter / 9.0;
+    dist = length*1.05;
+    perimeter = length*0.9;
+    zone = length / 9.0;
 
 }
 

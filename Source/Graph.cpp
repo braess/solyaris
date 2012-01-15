@@ -482,7 +482,7 @@ void Graph::pinched(Vec2d p, Vec2d pp, double s, double ps) {
     
     // scale
     scale += (cs*0.5);
-    scale = min(scale, 1.2); 
+    scale = min(scale, 1.3); 
     scale = max(scale, 0.3);
     
     // translate

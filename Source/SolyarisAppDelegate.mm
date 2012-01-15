@@ -48,6 +48,7 @@
     
     // track
 	[Tracker startTracker];
+    [Tracker trackEvent:TEventUsage action:@"Launch" label:appVersion];
     
     // customize appearance
 	[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
@@ -88,7 +89,7 @@
     DLog();
     
     // track
-	[Tracker trackPageView:@"/"];
+	[Tracker trackEvent:TEventUsage action:@"Active" label:@""];
     
     // cinder
     [super applicationDidBecomeActive:application];
@@ -103,6 +104,9 @@
     DLog();
     
     // track
+	[Tracker trackEvent:TEventUsage action:@"Resign" label:@""];
+    
+    // dispatch
     [Tracker dispatch];
     
     // cinder
@@ -122,6 +126,12 @@
  */
 - (void)applicationWillTerminate:(UIApplication *)application {
     DLog();
+    
+    // track
+	[Tracker trackEvent:TEventUsage action:@"Terminate" label:@""];
+    
+    // dispatch
+    [Tracker dispatch];
     
     // cinder
     [super applicationWillTerminate:application];

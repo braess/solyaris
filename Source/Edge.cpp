@@ -35,7 +35,7 @@ Edge::Edge(string ide, NodePtr n1, NodePtr n2) {
     
     // fields
     eid = ide;
-    length = 400;
+    length = 480;
     stiffness = 0.6;
     damping = 0.9;
     
@@ -105,7 +105,7 @@ void Edge::setting(GraphSettings s) {
     
     
     // length
-    length = 400;
+    length = 480;
     Default graphEdgeLength = s.getDefault(sGraphEdgeLength);
     if (graphEdgeLength.isSet()) {
         length = graphEdgeLength.doubleVal();

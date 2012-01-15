@@ -30,6 +30,7 @@ enum {
 
 // Categories
 #define TEventApp			@"App"
+#define TEventUsage			@"Usage"
 #define TEventSearch        @"Search"
 #define TEventLoad          @"Load"		
 #define TEventAbout         @"About"
