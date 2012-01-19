@@ -34,6 +34,7 @@
 #include "Action.h"
 #include "GraphSettings.h"
 #include "Resources.h"
+#include "I18N.h"
 #include <vector>
 #include <map>
 
@@ -60,6 +61,7 @@ class Graph {
     // Cinder
     void resize(int w, int h, int o);
     void setting(GraphSettings s);
+    void i18n(I18N tls);
     
     
     // Sketch
@@ -155,6 +157,8 @@ class Graph {
     // samples
     audio::SourceRef audioSampleClick;
     
+    // translations
+    I18N translations;
     
 };
 

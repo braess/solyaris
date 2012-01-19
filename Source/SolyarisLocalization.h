@@ -28,6 +28,9 @@
 #define kLocalizedDefaultWikipedia   @"wikipedia_en"
 #define kLocalizedDefaultAmazon      @"amazon_us"
 
+// Supported Languages
+#define kLanguageDE                  @"de"
+
 /**
  * Localization Support.
  */
@@ -38,6 +41,12 @@
     NSMutableDictionary *_wikipedia;
     NSMutableDictionary *_amazon;
 }
+
+// Class
++ (NSString*)currentLanguage;
+
+// Translations
++ (NSString*)translateTMDbJob:(NSString*)job;
 
 // Methods
 - (NSString*)urlIMDbMovie;
@@ -64,6 +73,7 @@
 @property (nonatomic, retain) NSString *key;
 @property (nonatomic, retain) NSString *value;
 @property (nonatomic, retain) NSString *label;
+
 
 // Initializer
 - (id)initWithKey:(NSString*)k value:(NSString*)v label:(NSString*)l;

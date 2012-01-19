@@ -318,7 +318,7 @@ bool Edge::isTouched(NodePtr n) {
 /**
  * Info.
  */
-string Edge::info() {
+string Edge::info(I18N translations) {
     string nfo = "";
     
     // nodes
@@ -336,17 +336,17 @@ string Edge::info() {
         
         // movie
         if (this->type == edgeMovie) {
-            nfo = person + " is " + this->label + " in " + movie;
+            nfo = person + translations.getTranslation(i18nTooltipActor1," is ") + this->label + translations.getTranslation(i18nTooltipActor2," in ") + movie;
         }
         
         // actor
         else if (this->type == edgePersonActor) {
-            nfo = person + " is " + this->label + " in " + movie;
+            nfo = person + translations.getTranslation(i18nTooltipActor1," is ") + this->label + translations.getTranslation(i18nTooltipActor2," in ") + movie;
         }
         
         // director / crew
         else if (this->type == edgePersonDirector || this->type == edgePersonCrew) {
-            nfo = person + " is the " + this->label + " of " + movie;
+            nfo = person + translations.getTranslation(i18nTooltipCrew1," is the ") + this->label + translations.getTranslation(i18nTooltipCrew2," of ") + movie;
         }
     }
     return nfo;

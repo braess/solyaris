@@ -40,6 +40,58 @@
 
 
 
+#pragma mark -
+#pragma mark Class Methods
+
+/**
+ * Returns the current language.
+ */
++ (NSString*)currentLanguage {
+    FLog();
+    
+    // defaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSArray *languages = [defaults objectForKey:@"AppleLanguages"];
+    
+    // return current
+    return [languages objectAtIndex:0];
+}
+
+/**
+ * Translates the TMDb job.
+ */
++ (NSString*)translateTMDbJob:(NSString*)job {
+    
+    
+    // translated core
+    NSString *translated = [job stringByReplacingOccurrencesOfString:@"Director of Photography" withString:NSLocalizedString(@"tmdb_term_director-of-photography", @"Director of Photography")];
+    translated = [translated stringByReplacingOccurrencesOfString:@"Director" withString:NSLocalizedString(@"tmdb_term_director", @"Director")];
+    translated = [translated stringByReplacingOccurrencesOfString:@"Executive Producer" withString:NSLocalizedString(@"tmdb_term_executive-producer", @"Executive Producer")];
+    translated = [translated stringByReplacingOccurrencesOfString:@"Producer" withString:NSLocalizedString(@"tmdb_term_producer", @"Producer")];
+    translated = [translated stringByReplacingOccurrencesOfString:@"Editor" withString:NSLocalizedString(@"tmdb_term_editor", @"Editor")];
+    translated = [translated stringByReplacingOccurrencesOfString:@"Casting" withString:NSLocalizedString(@"tmdb_term_casting", @"Casting")];
+    
+    // translated writer
+    translated = [translated stringByReplacingOccurrencesOfString:@"Novel" withString:NSLocalizedString(@"tmdb_term_novel", @"Novel")];
+    translated = [translated stringByReplacingOccurrencesOfString:@"Screenplay" withString:NSLocalizedString(@"tmdb_term_screenplay", @"Screenplay")];
+    translated = [translated stringByReplacingOccurrencesOfString:@"Author" withString:NSLocalizedString(@"tmdb_term_author", @"Author")];
+    translated = [translated stringByReplacingOccurrencesOfString:@"Writer" withString:NSLocalizedString(@"tmdb_term_writer", @"Writer")];
+    
+    // translated production
+    translated = [translated stringByReplacingOccurrencesOfString:@"Characters" withString:NSLocalizedString(@"tmdb_term_characters", @"Characters")];
+    translated = [translated stringByReplacingOccurrencesOfString:@"Production Design" withString:NSLocalizedString(@"tmdb_term_production-design", @"Production Design")];
+    translated = [translated stringByReplacingOccurrencesOfString:@"Stunts" withString:NSLocalizedString(@"tmdb_term_stunts", @"Stunts")];
+    
+    // translated music
+    translated = [translated stringByReplacingOccurrencesOfString:@"Sound Designer" withString:NSLocalizedString(@"tmdb_term_sound-designer", @"Sound Designer")];
+    translated = [translated stringByReplacingOccurrencesOfString:@"Original Music Composer" withString:NSLocalizedString(@"tmdb_term_original-music-composer", @"Original Music Composer")];
+    translated = [translated stringByReplacingOccurrencesOfString:@"Music" withString:NSLocalizedString(@"tmdb_term_music", @"Music")];
+    
+    // back
+    return translated;
+}
+
+
 
 #pragma mark -
 #pragma mark Object

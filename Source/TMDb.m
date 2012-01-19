@@ -700,7 +700,7 @@
         // error
         if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
             APIError *apiError = [[[APIError alloc] initError:typeMovie 
-                                                        title:NSLocalizedString(@"Data Error", @"TMDb Service Unavailable") 
+                                                        title:NSLocalizedString(@"Data Error", @"Data Error") 
                                                       message:[error localizedDescription]] autorelease];
             [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
         }

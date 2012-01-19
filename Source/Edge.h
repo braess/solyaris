@@ -27,6 +27,7 @@
 #include "cinder/Text.h"
 #include "cinder/CinderMath.h"
 #include "cinder/Color.h"
+#include "I18N.h"
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/shared_ptr.hpp>
 
@@ -82,7 +83,7 @@ class Edge {
     bool isActive();
     bool isVisible();
     bool isTouched(NodePtr n);
-    string info();
+    string info(I18N translations);
     
     
     // Public Fields

@@ -137,6 +137,13 @@ void Graph::setting(GraphSettings s) {
     
 }
 
+/**
+ * Applies the translations.
+ */
+void Graph::i18n(I18N tls) {
+    translations = tls;
+}
+
 
 #pragma mark -
 #pragma mark Sketch
@@ -830,7 +837,7 @@ void Graph::tooltip(int tid) {
         // touched
         if ((*edge)->isTouched(touched[tid])) {
             etouch = true;
-            txts.push_back((*edge)->info());
+            txts.push_back((*edge)->info(translations));
         }
     }
     

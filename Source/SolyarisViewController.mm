@@ -26,6 +26,7 @@
 #import "DataNode.h"
 #import "Solyaris.h"
 #import "SolyarisConstants.h"
+#import "SolyarisLocalization.h"
 #import "SplashView.h"
 #import "HelpView.h"
 #import "Tracker.h"
@@ -577,7 +578,7 @@
                 // label
                 NSString *clabel = m2p.character;
                 if ([m2p.type isEqualToString:typePersonDirector] || [m2p.type isEqualToString:typePersonCrew]) {
-                    clabel = m2p.job;
+                    clabel = [SolyarisLocalization translateTMDbJob:m2p.job];
                 }
                 
                 // render
@@ -667,7 +668,7 @@
                 // label
                 NSString *clabel = m2p.character;
                 if ([m2p.type isEqualToString:typePersonDirector] || [m2p.type isEqualToString:typePersonCrew]) {
-                    clabel = m2p.job;
+                    clabel = [SolyarisLocalization translateTMDbJob:m2p.job];
                 }
                 
                 // render

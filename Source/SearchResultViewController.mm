@@ -86,6 +86,9 @@
     
     // title
     self.navigationItem.title = [NSString stringWithFormat:@"%i %@",[_data count], NSLocalizedString(@"Results", @"Results")];
+    if ([_data count] == 1) {
+        self.navigationItem.title = [NSString stringWithFormat:@"%i %@",[_data count], NSLocalizedString(@"Result", @"Result")];
+    }
     
     // reload
     [self.tableView reloadData];

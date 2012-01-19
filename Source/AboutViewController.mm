@@ -23,6 +23,7 @@
 #import "AboutViewController.h"
 #import "SolyarisAppDelegate.h"
 #import "SolyarisConstants.h"
+#import "SolyarisLocalization.h"
 #import "Tracker.h"
 
 
@@ -121,33 +122,48 @@
     
     
     // link buttons
-    LinkButton *lbTMDb = [[LinkButton alloc] initWithFrame:CGRectMake(0, 267, 45, 20)];
+    LinkButton *lbTMDb = [[LinkButton alloc] initWithFrame:CGRectMake(0, 267, 46, 20)];
     lbTMDb.delegate = self;
     lbTMDb.link = @"http://www.themoviedb.org";
-    [self.view addSubview:lbTMDb];
-    [lbTMDb release];
     
-    LinkButton *lbIMDb = [[LinkButton alloc] initWithFrame:CGRectMake(49, 267, 40, 20)];
+    LinkButton *lbIMDb = [[LinkButton alloc] initWithFrame:CGRectMake(49, 267, 41, 20)];
     lbIMDb.delegate = self;
     lbIMDb.link = @"http://www.imdb.com";
-    [self.view addSubview:lbIMDb];
-    [lbIMDb release];
     
     LinkButton *lbYouTube = [[LinkButton alloc] initWithFrame:CGRectMake(92, 267, 65, 20)];
     lbYouTube.delegate = self;
     lbYouTube.link = @"http://www.youtube.com";
-    [self.view addSubview:lbYouTube];
-    [lbYouTube release];
     
     LinkButton *lbWikipedia = [[LinkButton alloc] initWithFrame:CGRectMake(186, 267, 72, 20)];
     lbWikipedia.delegate = self;
     lbWikipedia.link = @"http://www.wikipedia.org";
+    
+    LinkButton *lbCinder = [[LinkButton alloc] initWithFrame:CGRectMake(72, 343, 49, 20)];
+    lbCinder.delegate = self;
+    lbCinder.link = @"http://libcinder.org";
+    
+    // localization: de
+    if ([[SolyarisLocalization currentLanguage] isEqualToString:kLanguageDE]) {
+        lbTMDb.frame = CGRectMake(219, 227, 46, 20);
+        lbIMDb.frame = CGRectMake(268, 227, 41, 20);
+        lbYouTube.frame = CGRectMake(0, 247, 64, 20);
+        lbWikipedia.frame = CGRectMake(93, 247, 72, 20);
+        lbCinder.frame = CGRectMake(118, 343, 51, 20);
+    }
+    
+    // add
+    [self.view addSubview:lbTMDb];
+    [lbTMDb release];
+    
+    [self.view addSubview:lbIMDb];
+    [lbIMDb release];
+    
+    [self.view addSubview:lbYouTube];
+    [lbYouTube release];
+    
     [self.view addSubview:lbWikipedia];
     [lbWikipedia release];
     
-    LinkButton *lbCinder = [[LinkButton alloc] initWithFrame:CGRectMake(72, 343, 48, 20)];
-    lbCinder.delegate = self;
-    lbCinder.link = @"http://libcinder.org";
     [self.view addSubview:lbCinder];
     [lbCinder release];
     
@@ -354,7 +370,7 @@
 	
 	// show info
 	UIAlertView *alert = [[UIAlertView alloc]
-						  initWithTitle:@"AppStore" 
+						  initWithTitle:NSLocalizedString(@"AppStore",@"AppStore")
 						  message:NSLocalizedString(@"Thank you for rating Solyaris or writing a nice review.",@"Thank you for rating Solyaris or writing a nice review.")
 						  delegate:self 
 						  cancelButtonTitle:NSLocalizedString(@"Maybe later",@"Maybe later")
