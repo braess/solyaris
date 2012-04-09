@@ -27,6 +27,7 @@
 #include "cinder/Font.h"
 #include "cinder/Text.h"
 #include "cinder/CinderMath.h"
+#include "Configuration.h"
 
 
 // namespace
@@ -51,6 +52,7 @@ class Tooltip {
     Tooltip(Vec2d b);
     
     // Cinder
+    void config(Configuration c);
     void resize(int w, int h);
     
     // Sketch
@@ -70,6 +72,9 @@ class Tooltip {
     
     // private
     private:
+    
+    // config
+    bool retina;
     
     // States
     bool active;

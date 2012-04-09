@@ -33,6 +33,9 @@ Tooltip::Tooltip() {
 }
 Tooltip::Tooltip(Vec2d b) {
     
+    // config
+    retina = false;
+    
     // state
     active = false;
     
@@ -61,6 +64,33 @@ Tooltip::Tooltip(Vec2d b) {
 
 #pragma mark -
 #pragma mark Cinder
+
+/*
+ * Configuration.
+ */
+void Tooltip::config(Configuration c) {
+    
+    // display retina
+    retina = false;
+    Config confDisplayRetina = c.getConfiguration(cDisplayRetina);
+    if (confDisplayRetina.isSet()) {
+        retina = confDisplayRetina.boolVal();
+    }
+    
+    // retina stuff
+    if (retina) {
+        
+        // position
+        border *= 2;
+        
+        // font
+        font = Font("Helvetica",24);
+        sfont = Font("Helvetica",6);
+        off *= 2;
+        inset *= 2;
+    }
+   
+}
 
 /*
  * Resize.

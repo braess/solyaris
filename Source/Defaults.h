@@ -1,5 +1,5 @@
 //
-//  GraphSettings.h
+//  Defaults.h
 //  Solyaris
 //
 //  Created by CNPP on 19.8.2011.
@@ -34,24 +34,24 @@ class Default;
 
 
 // constants
-const string  sGraphLayoutNodesDisabled        = "graph_layout_nodes_disabled";
-const string  sGraphLayoutSubnodesDisabled     = "graph_layout_subnodes_disabled";
-const string  sGraphCrewEnabled                = "graph_crew_enabled";	
-const string  sGraphNodeInitial                = "graph_node_initial";	
-const string  sGraphEdgeLength                 = "graph_edge_length";
+const string  dGraphLayoutNodesDisabled        = "graph_layout_nodes_disabled";
+const string  dGraphLayoutSubnodesDisabled     = "graph_layout_subnodes_disabled";
+const string  dGraphCrewEnabled                = "graph_crew_enabled";	
+const string  dGraphNodeInitial                = "graph_node_initial";	
+const string  dGraphEdgeLength                 = "graph_edge_length";
 
 
 
 /**
- * Graph Settings.
+ * Defaults.
  */
-class GraphSettings {
+class Defaults {
     
     // public
     public:
     
     // Setting
-    GraphSettings();
+    Defaults();
     
     // Accessors
     void setDefault(string key, string value);
@@ -66,7 +66,7 @@ class GraphSettings {
 
 
 /**
- * Graph Default.
+ * Default.
  */
 class Default {
     

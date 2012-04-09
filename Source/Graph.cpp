@@ -37,6 +37,7 @@ Graph::Graph(int w, int h, int o) {
     width = w;
     height = h;
     orientation = o;
+    retina = false;
     
     // virtual offset
     voff.set(0,0);
@@ -101,25 +102,61 @@ void Graph::resize(int w, int h, int o) {
     
 }
 
+/**
+ * Applies the settings.
+ */
+void Graph::config(Configuration c) {
+    
+    // reference
+    conf = c;
+    
+    // display retina
+    retina = false;
+    Config confDisplayRetina = conf.getConfiguration(cDisplayRetina);
+    if (confDisplayRetina.isSet()) {
+        retina = confDisplayRetina.boolVal();
+    }
+    
+    // tooltip / action
+    for (int t = 1; t <= nbtouch; t++) {
+        tooltips[t].config(conf);
+        actions[t].config(conf);
+    }
+    
+    // retina stuff
+    if (retina) {
+        
+        // bound
+        mbound *= 2;
+        
+        // hitarea
+        harea *= 2;
+        
+        // background
+        background = gl::Texture(loadImage(loadResource("bg_graph@2x.png")));
+    }
+    
+}
+
 
 /**
  * Applies the settings.
  */
-void Graph::setting(GraphSettings s) {
+void Graph::defaults(Defaults d) {
     
     // reference
-    gsettings = s;
+    dflts = d;
     
     // layout nodes
     layout_nodes = true;
-    Default graphLayoutNodes = s.getDefault(sGraphLayoutNodesDisabled);
+    Default graphLayoutNodes = d.getDefault(dGraphLayoutNodesDisabled);
     if (graphLayoutNodes.isSet()) {
         layout_nodes = ! graphLayoutNodes.boolVal();
     }
     
     // layout subnodes
     layout_subnodes = true;
-    Default graphLayoutSubnodes = s.getDefault(sGraphLayoutSubnodesDisabled);
+    Default graphLayoutSubnodes = d.getDefault(dGraphLayoutSubnodesDisabled);
     if (graphLayoutSubnodes.isSet()) {
         layout_subnodes = ! graphLayoutSubnodes.boolVal();
     }
@@ -127,12 +164,12 @@ void Graph::setting(GraphSettings s) {
     
     // apply to nodes
     for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
-        (*node)->setting(gsettings);
+        (*node)->defaults(dflts);
     }
     
     // apply to edges
     for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
-        (*edge)->setting(gsettings);
+        (*edge)->defaults(dflts);
     }
     
 }
@@ -643,24 +680,28 @@ NodePtr Graph::createNode(string nid, string type, double x, double y) {
     if (type == nodeMovie) {
         boost::shared_ptr<NodeMovie> node(new NodeMovie(nid,x,y));
         node->sref = node;
-        node->setting(gsettings);
+        node->config(conf);
+        node->defaults(dflts);
         nodes.push_back(node);
         return node;
     }
     else if (type == nodePerson) {
         boost::shared_ptr<NodePerson> node(new NodePerson(nid,x,y));
         node->sref = node;
-        node->setting(gsettings);
+        node->config(conf);
+        node->defaults(dflts);
         nodes.push_back(node);
         return node;
     }
     else {
         boost::shared_ptr<Node> node(new Node(nid,x,y));
         node->sref = node;
-        node->setting(gsettings);
+        node->config(conf);
+        node->defaults(dflts);
         nodes.push_back(node);
         return node;
     }
+    
 
 }
 
@@ -693,19 +734,22 @@ EdgePtr Graph::createEdge(string eid, string type, NodePtr n1, NodePtr n2) {
     // node
     if (type == edgeMovie) {
         boost::shared_ptr<Edge> edge(new EdgeMovie(eid,n1,n2));
-        edge->setting(gsettings);
+        edge->config(conf);
+        edge->defaults(dflts);
         edges.push_back(edge);
         return edge;
     }
     else if (type == edgePerson) {
         boost::shared_ptr<Edge> edge(new EdgePerson(eid,n1,n2));
-        edge->setting(gsettings);
+        edge->config(conf);
+        edge->defaults(dflts);
         edges.push_back(edge);
         return edge;
     }
     else {
         boost::shared_ptr<Edge> edge(new Edge(eid,n1,n2));
-        edge->setting(gsettings);
+        edge->config(conf);
+        edge->defaults(dflts);
         edges.push_back(edge);
         return edge;
     }

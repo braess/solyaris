@@ -34,7 +34,8 @@
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
-#include "GraphSettings.h"
+#include "Configuration.h"
+#include "Defaults.h"
 
 
 
@@ -82,7 +83,8 @@ class Node {
     Node(string idn, double x, double y); 
     
     // Cinder
-    void setting(GraphSettings s);
+    void config(Configuration c);
+    void defaults(Defaults d);
     
     // Sketch
     void update();
@@ -174,6 +176,8 @@ class Node {
     int initial;
     int fcount;
     int minr,maxr;
+    double rincg,rincs;
+    bool retina;
     
     // Textures
     gl::Texture textureNode;

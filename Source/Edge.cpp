@@ -38,6 +38,7 @@ Edge::Edge(string ide, NodePtr n1, NodePtr n2) {
     length = 480;
     stiffness = 0.6;
     damping = 0.9;
+    retina = false;
     
     // nodes
     wnode1 = NodeWeakPtr(n1);
@@ -99,16 +100,41 @@ EdgePerson::EdgePerson(string ide, NodePtr n1, NodePtr n2): Edge::Edge(ide,n1,n2
 #pragma mark Cinder
 
 /**
+ * Applies the configuration.
+ */
+void Edge::config(Configuration c) {
+    
+    // display retina
+    retina = false;
+    Config confDisplayRetina = c.getConfiguration(cDisplayRetina);
+    if (confDisplayRetina.isSet()) {
+        retina = confDisplayRetina.boolVal();
+    }
+    
+    // init retina
+    if (retina) {
+        
+        // fonts
+        font = Font("Helvetica",24);
+        loff *= 2;
+    }
+}
+
+/**
  * Applies the settings.
  */
-void Edge::setting(GraphSettings s) {
-    
+void Edge::defaults(Defaults d) {
     
     // length
     length = 480;
-    Default graphEdgeLength = s.getDefault(sGraphEdgeLength);
+    Default graphEdgeLength = d.getDefault(dGraphEdgeLength);
     if (graphEdgeLength.isSet()) {
         length = graphEdgeLength.doubleVal();
+    }
+    
+    // retina
+    if (retina) {
+        length *= 2;
     }
 }
 
@@ -158,6 +184,7 @@ void Edge::draw() {
         if (selected) {gl::color(cstrokes);}
         
         // line
+        glLineWidth(retina ? 2 : 1);
         gl::drawLine(node1->pos, node2->pos);
         
         // label
@@ -246,7 +273,7 @@ void Edge::show() {
             || (node2->isActive() && node1->isLoading())) {
             
             // label
-            font = Font("Helvetica-Bold",12);
+            font = Font("Helvetica-Bold",retina ? 24 : 12);
             //loff.y = -15;
             this->renderLabel(label);
             

@@ -76,10 +76,12 @@
     translated = [translated stringByReplacingOccurrencesOfString:@"Screenplay" withString:NSLocalizedString(@"tmdb_term_screenplay", @"Screenplay")];
     translated = [translated stringByReplacingOccurrencesOfString:@"Author" withString:NSLocalizedString(@"tmdb_term_author", @"Author")];
     translated = [translated stringByReplacingOccurrencesOfString:@"Writer" withString:NSLocalizedString(@"tmdb_term_writer", @"Writer")];
+    translated = [translated stringByReplacingOccurrencesOfString:@"Original Story" withString:NSLocalizedString(@"tmdb_term_original-story", @"Original Story")];
     
     // translated production
     translated = [translated stringByReplacingOccurrencesOfString:@"Characters" withString:NSLocalizedString(@"tmdb_term_characters", @"Characters")];
     translated = [translated stringByReplacingOccurrencesOfString:@"Production Design" withString:NSLocalizedString(@"tmdb_term_production-design", @"Production Design")];
+    translated = [translated stringByReplacingOccurrencesOfString:@"Costume Design" withString:NSLocalizedString(@"tmdb_term_costume-design", @"Costume Design")];
     translated = [translated stringByReplacingOccurrencesOfString:@"Stunts" withString:NSLocalizedString(@"tmdb_term_stunts", @"Stunts")];
     
     // translated music

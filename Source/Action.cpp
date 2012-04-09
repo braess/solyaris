@@ -36,7 +36,7 @@ Action::Action() {
     
     // position
     pos.set(0,0);
-    offset.set(60,0);
+    offset.set(60,-4);
     size.set(45,120);
     asize.set(44,44);
     
@@ -49,6 +49,37 @@ Action::Action() {
     
     // hide
     this->hide();
+}
+
+
+#pragma mark -
+#pragma mark Cinder
+
+/*
+ * Configuration.
+ */
+void Action::config(Configuration c) {
+    
+    // display retina
+    retina = false;
+    Config confDisplayRetina = c.getConfiguration(cDisplayRetina);
+    if (confDisplayRetina.isSet()) {
+        retina = confDisplayRetina.boolVal();
+    }
+    
+    // retina stuff
+    if (retina) {
+        
+        // position
+        offset *= 2;
+        size *= 2;
+        asize *= 2;
+        
+        // textures
+        textureActionClose = gl::Texture(loadImage(loadResource("node_close@2x.png")));
+        
+    }
+    
 }
 
 
@@ -227,7 +258,7 @@ void Action::assignNode(NodePtr n) {
     
     // offset
     if (n) {
-        offset.set(n->radius*0.66,0);
+        offset.x = n->radius*0.66;
         size.y = n->radius * 2;
     }
 }

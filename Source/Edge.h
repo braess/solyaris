@@ -22,7 +22,8 @@
 
 #pragma once
 #include "Node.h"
-#include "GraphSettings.h"
+#include "Configuration.h"
+#include "Defaults.h"
 #include "cinder/gl/gl.h"
 #include "cinder/Text.h"
 #include "cinder/CinderMath.h"
@@ -59,7 +60,6 @@ const string edgePersonCrew = "person_crew";
  */
 class Edge {
     
-    
     // public
     public:
     
@@ -68,7 +68,8 @@ class Edge {
     Edge(string ide, NodePtr n1, NodePtr n2); 
     
     // Cinder
-    void setting(GraphSettings s);
+    void config(Configuration c);
+    void defaults(Defaults s);
     
     // Sketch
     void update();
@@ -106,6 +107,7 @@ class Edge {
     double length;
     double stiffness;
     double damping;
+    double retina;
     
     // position
     Vec2d pos;

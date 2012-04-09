@@ -24,7 +24,7 @@
 
 
 #pragma mark -
-#pragma mark Settings Object
+#pragma mark I18N Object
 
 /**
  * I18N.

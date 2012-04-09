@@ -25,6 +25,7 @@
 #include "cinder/gl/Texture.h"
 #include "cinder/Color.h"
 #include "cinder/CinderMath.h"
+#include "Configuration.h"
 #include "Node.h"
 
 
@@ -48,7 +49,9 @@ class Action {
     
     // Action
     Action();
-
+    
+    // Cinder
+    void config(Configuration c);
     
     // Sketch
     void update();
@@ -74,6 +77,9 @@ class Action {
     int timeout;
     int counter;
     int reminder;
+    
+    // config
+    bool retina;
     
     // position
     Vec2d offset;

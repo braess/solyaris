@@ -21,7 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #include "Solyaris.h"
-
+#include "Utils.h"
 
 #pragma mark -
 #pragma mark Cinder
@@ -41,11 +41,24 @@ void Solyaris::launch( const char *title, int argc, char * const argv[] ) {
 void Solyaris::setup() {
     DLog();
     
+    // display
+    retina = false;
+    dwidth = 768;
+    dheight = 1024;
+    
+    // ipad retina
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && [Utils isRetina]) {
+        retina = true;
+        dwidth = 1536;
+        dheight = 2048;
+    }
+    
+    
     // sketch
     bg = Color(30.0/255.0, 30.0/255.0, 30.0/255.0);
     
     // graph
-    graph = Graph(768,1024,UIDeviceOrientationPortrait);
+    graph = Graph(dwidth,dheight,UIDeviceOrientationPortrait);
     
     // vars
     pscale = 1.0;
@@ -54,6 +67,12 @@ void Solyaris::setup() {
     // app
     this->applyDeviceOrientation(UIDeviceOrientationPortrait);
     this->applySettings();
+    
+    // configuration
+    Configuration conf = Configuration();
+    conf.setConfiguration(cDisplayRetina,retina ? "1" : "0");
+    //conf.setConfiguration(cDisplayRetina,"1");
+    graph.config(conf);
     
     
     // translations
@@ -79,7 +98,7 @@ void Solyaris::prepareSettings(Settings *settings) {
     FLog();
     
     // stage
-    settings->setWindowSize(768, 1024);
+    settings->setWindowSize(dwidth, dheight);
     
     // device
     settings->enableMultiTouch();
@@ -96,12 +115,12 @@ void Solyaris::applyDeviceOrientation(int dorientation) {
     
     // orientation
     if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
-        this->setWindowSize(1024, 768);
-        graph.resize(1024,768,orientation);
+        this->setWindowSize(dheight, dwidth);
+        graph.resize(dheight,dwidth,orientation);
     }
     else {
-        this->setWindowSize(768, 1024);
-        graph.resize(768,1024,orientation);
+        this->setWindowSize(dwidth, dheight);
+        graph.resize(dwidth,dheight,orientation);
     }
     
 }
@@ -116,8 +135,10 @@ void Solyaris::applySettings() {
     // user defaults
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 	
-	// graph settings
-    GraphSettings gsettings = GraphSettings();
+	// defaults
+    Defaults defaults = Defaults();
+    
+    // user defaults
 	NSArray *keys = [[userDefaults dictionaryRepresentation] allKeys];
     for (NSString *key in keys) {
         NSObject *def = [userDefaults objectForKey:key];
@@ -128,13 +149,13 @@ void Solyaris::applySettings() {
             // match
             NSRange range = [key rangeOfString : @"graph_"];
             if (range.location != NSNotFound) {
-                gsettings.setDefault([key UTF8String], [(NSString*)def UTF8String]);
+                defaults.setDefault([key UTF8String], [(NSString*)def UTF8String]);
             }
         }
     }
     
     // apply
-    graph.setting(gsettings);
+    graph.defaults(defaults);
 }
 
 

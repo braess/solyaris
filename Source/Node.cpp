@@ -56,6 +56,7 @@ Node::Node(string idn, double x, double y) {
     speed = 30;
     initial = 12;
     fcount = 0;
+    retina = false;
     
     
     // position
@@ -78,6 +79,10 @@ Node::Node(string idn, double x, double y) {
     maxr = 90;
     minr = 60;
     mass = calcmass();
+    
+    // inc
+    rincg = 1.5;
+    rincs = 1.8;
     
     // velocity
     velocity.set(0,0);
@@ -135,14 +140,45 @@ NodePerson::NodePerson(string idn, double x, double y): Node::Node(idn, x, y) {
 #pragma mark Cinder
 
 /**
- * Applies the settings.
+ * Applies the configuration.
  */
-void Node::setting(GraphSettings s) {
+void Node::config(Configuration c) {
     
+    // display retina
+    retina = false;
+    Config confDisplayRetina = c.getConfiguration(cDisplayRetina);
+    if (confDisplayRetina.isSet()) {
+        retina = confDisplayRetina.boolVal();
+    }
+    
+    // init retina
+    if (retina) {
+        
+        // params
+        core *= 2;
+        radius *= 2;
+        maxr *= 2;
+        minr *= 2;
+        
+        // inc
+        rincg *= 2;
+        rincs *= 2;
+        
+        // fonts
+        font = Font("Helvetica",24);
+        loff *= 2;
+    }
+}
+
+
+/**
+ * Applies the defaults.
+ */
+void Node::defaults(Defaults d) {
     
     // children
     initial = 12;
-    Default graphNodeInitial = s.getDefault(sGraphNodeInitial);
+    Default graphNodeInitial = d.getDefault(dGraphNodeInitial);
     if (graphNodeInitial.isSet()) {
         initial = (int) graphNodeInitial.doubleVal();
     }
@@ -150,13 +186,21 @@ void Node::setting(GraphSettings s) {
     
     // distance
     double length = 480;
-    Default graphEdgeLength = s.getDefault(sGraphEdgeLength);
+    Default graphEdgeLength = d.getDefault(dGraphEdgeLength);
     if (graphEdgeLength.isSet()) {
         length = graphEdgeLength.doubleVal();
     }
     dist = length*1.05;
     perimeter = length*0.9;
     zone = length / 9.0;
+    
+    // scale retina
+    if (retina) {
+        length *= 2;
+        dist *= 2;
+        perimeter *= 2;
+        zone *= 2;
+    }
 
 }
 
@@ -199,7 +243,7 @@ void Node::update() {
     if (grow) {
         
         // radius
-        radius += 1.5;
+        radius += rincg;
         
         // mass
         mass = calcmass();
@@ -215,7 +259,7 @@ void Node::update() {
     if (shrink) {
         
         // radius
-        radius -= 1.8;
+        radius -= rincs;
         
         // mass
         mass = calcmass();
@@ -578,15 +622,15 @@ void Node::load() {
     loading = true;
     
     // radius
-    core = 15;
-    radius = 36;
+    core = retina ? 30 : 15;
+    radius = retina ? 72 : 36;
     
     // color
     ctxt = Color(0.9,0.9,0.9);
     
     // font
-    font = Font("Helvetica-Bold",15);
-    loff.y = 6;
+    font = Font("Helvetica-Bold",retina ? 30 : 15);
+    loff.y = retina ? 12 : 6;
     this->renderLabel(label);
     this->renderNode();
     
@@ -599,15 +643,15 @@ void Node::unload() {
     loading = false;
     
     // radius
-    core = 9;
-    radius = 9;
+    core = retina ? 18 : 9;
+    radius = retina ? 18 : 9;
     
     // color
     ctxt = Color(0.85,0.85,0.85);
     
     // font
-    font = Font("Helvetica",12);
-    loff.y = 5;
+    font = Font("Helvetica",retina ? 24 : 12);
+    loff.y = retina ? 10 : 5;
     this->renderLabel(label);
     
     // parent
@@ -891,14 +935,17 @@ void Node::renderLabel(string lbl) {
  */
 void Node::renderNode() {
     
+    // suffix
+    string sfx = retina ? "@2x.png" : ".png";
+    
     // movie
     if (type == nodeMovie) {
         
         // texture
-        textureNode = gl::Texture(loadImage(loadResource("node_movie.png")));
+        textureNode = gl::Texture(loadImage(loadResource("node_movie"+sfx)));
         if (active || loading) {
-            textureCore = gl::Texture(loadImage(loadResource("node_movie_core.png")));
-            textureGlow = gl::Texture(loadImage(loadResource("node_movie_glow.png")));
+            textureCore = gl::Texture(loadImage(loadResource("node_movie_core"+sfx)));
+            textureGlow = gl::Texture(loadImage(loadResource("node_movie_glow"+sfx)));
         }
         
     }
@@ -906,10 +953,10 @@ void Node::renderNode() {
     else if (type == nodePersonDirector || type == nodePersonCrew) {
         
         // texture
-        textureNode = gl::Texture(loadImage(loadResource("node_crew.png")));
+        textureNode = gl::Texture(loadImage(loadResource("node_crew"+sfx)));
         if  (active || loading) {
-            textureCore = gl::Texture(loadImage(loadResource("node_crew_core.png")));
-            textureGlow = gl::Texture(loadImage(loadResource("node_crew_glow.png")));
+            textureCore = gl::Texture(loadImage(loadResource("node_crew_core"+sfx)));
+            textureGlow = gl::Texture(loadImage(loadResource("node_crew_glow"+sfx)));
         }
         
     }
@@ -917,10 +964,10 @@ void Node::renderNode() {
     else {
         
         // texture
-        textureNode = gl::Texture(loadImage(loadResource("node_person.png")));
+        textureNode = gl::Texture(loadImage(loadResource("node_person"+sfx)));
         if (active || loading) {
-            textureCore = gl::Texture(loadImage(loadResource("node_person_core.png")));
-            textureGlow = gl::Texture(loadImage(loadResource("node_person_glow.png")));
+            textureCore = gl::Texture(loadImage(loadResource("node_person_core"+sfx)));
+            textureGlow = gl::Texture(loadImage(loadResource("node_person_glow"+sfx)));
         }
     }
 }

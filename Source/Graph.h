@@ -32,7 +32,8 @@
 #include "Edge.h"
 #include "Tooltip.h"
 #include "Action.h"
-#include "GraphSettings.h"
+#include "Configuration.h"
+#include "Defaults.h"
 #include "Resources.h"
 #include "I18N.h"
 #include <vector>
@@ -60,7 +61,8 @@ class Graph {
 
     // Cinder
     void resize(int w, int h, int o);
-    void setting(GraphSettings s);
+    void config(Configuration c);
+    void defaults(Defaults d);
     void i18n(I18N tls);
     
     
@@ -108,6 +110,7 @@ class Graph {
     int width;
     int height;
     int orientation;
+    bool retina;
     float speed;
     float friction;
     float harea;
@@ -151,8 +154,9 @@ class Graph {
     // actions
     map<int, Action> actions;
     
-    // settings
-    GraphSettings gsettings;
+    // configuration & settings
+    Configuration conf;
+    Defaults dflts;
     
     // samples
     audio::SourceRef audioSampleClick;

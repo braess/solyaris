@@ -1,5 +1,5 @@
 //
-//  GraphSettings.cpp
+//  Defaults.cpp
 //  Solyaris
 //
 //  Created by CNPP on 19.8.2011.
@@ -20,32 +20,32 @@
 //  You should have received a copy of the GNU General Public License
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
-#include "GraphSettings.h"
+#include "Defaults.h"
 
 
 #pragma mark -
-#pragma mark Settings Object
+#pragma mark Defaults Object
 
 /**
- * GraphSettings.
+ * Defaults.
  */
-GraphSettings::GraphSettings() {
+Defaults::Defaults() {
 }
 
 
 
 #pragma mark -
-#pragma mark GraphSettings Accessors
+#pragma mark Defaults Accessors
 
 /**
  * Set/get default.
  */
-void GraphSettings::setDefault(string key, string value) {
+void Defaults::setDefault(string key, string value) {
    
     // add
     defaults.insert(make_pair(key, Default(key,value)));
 }
-Default GraphSettings::getDefault(string key) {
+Default Defaults::getDefault(string key) {
     
     // search
     map<string,Default>::iterator it = defaults.find(key);
