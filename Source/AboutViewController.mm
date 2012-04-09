@@ -290,14 +290,13 @@
 		[composer setSubject:[NSString stringWithFormat:@"Solyaris iPad App"]];
         
 		// message
-		NSString *message = NSLocalizedString(@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or persons. Expand nodes to gather information about their relationships. Learn about the cast and filmography.\n\n\n--- Solyaris\nVisual Movie Browser\nhttp://solyaris.cecinestpasparis.net",@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or persons. Expand nodes to gather information about their relationships. Learn about the cast and filmography.\n\n\n--- Solyaris\nVisual Movie Browser\nhttp://solyaris.cecinestpasparis.net");
+        NSString *message = [NSString stringWithFormat:@"%@\n%@",NSLocalizedString(@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or persons. Expand nodes to gather information about their relationships. Learn about the cast and filmography.\n\n\n--- Solyaris\nVisual Movie Browser",@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or persons. Expand nodes to gather information about their relationships. Learn about the cast and filmography.\n\n\n--- Solyaris\nVisual Movie Browser"),vAppStoreURL];
 		[composer setMessageBody:message isHTML:NO];
 		
 		// promo image
 		UIImage *pimg = [UIImage imageNamed:@"promo_solyaris.png"];
 		NSData *data = UIImagePNGRepresentation(pimg);
 		[composer addAttachmentData:data mimeType:@"image/png" fileName:@"solyaris"];
-        
         
 		// show off
 		[self presentModalViewController:composer animated:YES];

@@ -3,10 +3,42 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Preload</title>
+    <style type="text/css">
+        
+        /* html */
+        html, body {
+            width:100%;
+            height:100%;
+            margin:0;
+            padding:0
+        }
+        
+        /* loader */
+        .container {
+            width:100%;
+        }
+        .loader {
+            display:block; 
+            width:32px;
+            height:32px;
+            border:none; 
+            margin:210px auto 0 auto;
+            background-image:url('preload.gif');
+            -webkit-background-size: 32px 32px;
+            background-position:left top;
+            background-repeat:no-repeat;
+        }
+        @media only screen and (-webkit-min-device-pixel-ratio: 2) { 
+            .loader {
+                background-image:url('preload@2x.gif');
+            }
+        }
+        
+    </style>
 </head>
 <body>
-    <div style="width:100%;">
-        <img src="preload.gif" style="display:block; border:none; margin:210px auto 0 auto;"/>
+    <div class="container">
+        <span class="loader">&nbsp;</span>
     </div>
 </body>
 </html>

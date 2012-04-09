@@ -25,6 +25,7 @@
 #import "SolyarisConstants.h"
 #import "BlockerView.h"
 #import "DataNode.h"
+#import "Utils.h"
 #import "Tracker.h"
 
 
@@ -1382,10 +1383,11 @@
     
     // poset
     NSString *poster = @"";
+    NSString *posterSize = [Utils isRetina] ? assetSizeMid : assetSizeThumb;
     for (Asset *a in movie.assets) {
         
         // poster
-        if ([a.type isEqualToString:assetPoster] && [a.size isEqualToString:assetSizeThumb]) {
+        if ([a.type isEqualToString:assetPoster] && [a.size isEqualToString:posterSize]) { 
             poster = a.url;
             break;
         }
