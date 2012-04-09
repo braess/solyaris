@@ -37,7 +37,10 @@ Graph::Graph(int w, int h, int o) {
     width = w;
     height = h;
     orientation = o;
+    
+    // retina
     retina = false;
+    dpr = 1.0;
     
     // virtual offset
     voff.set(0,0);
@@ -112,6 +115,7 @@ void Graph::config(Configuration c) {
     
     // display retina
     retina = false;
+    dpr = 1.0;
     Config confDisplayRetina = conf.getConfiguration(cDisplayRetina);
     if (confDisplayRetina.isSet()) {
         retina = confDisplayRetina.boolVal();
@@ -125,6 +129,9 @@ void Graph::config(Configuration c) {
     
     // retina stuff
     if (retina) {
+        
+        // device pixel ratio
+        dpr = 2.0;
         
         // bound
         mbound *= 2;
@@ -517,7 +524,7 @@ void Graph::pinched(Vec2d p, Vec2d pp, double s, double ps) {
     GLog();
     
     // scale pinch point
-    Vec2d pt = p;
+    Vec2d pt = p*dpr;
     pt -= translate;
     pt *= (1.0/scale);
     
@@ -530,7 +537,7 @@ void Graph::pinched(Vec2d p, Vec2d pp, double s, double ps) {
     scale = max(scale, 0.3);
     
     // translate
-    translate = -1 * (pt * scale - p); 
+    translate = -1 * (pt * scale - p*dpr); 
     
     // drag
     this->drag((p-pp) * scale);

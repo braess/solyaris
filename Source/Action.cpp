@@ -159,7 +159,7 @@ void Action::draw() {
  * It's hammer time.
  */
 bool Action::action(Vec2d tpos) {
-    FLog();
+    GLog();
     
     // action
     if (tpos.x > pos.x && tpos.x < pos.x+size.x) {

@@ -111,6 +111,7 @@ class Graph {
     int height;
     int orientation;
     bool retina;
+    float dpr;
     float speed;
     float friction;
     float harea;
