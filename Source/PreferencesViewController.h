@@ -28,9 +28,9 @@
 
 
 // Constants
-#define kPreferencesHeaderHeight    45.0f
+#define kPreferencesHeaderHeight    50.0f
 #define kPreferencesHeaderGap       15.0f
-#define kPreferencesFooterHeight    60.0f
+#define kPreferencesFooterHeight    55.0f
 
 
 
@@ -43,6 +43,8 @@
 - (void)preferencesResetDefaults;
 - (void)preferencesClearCache;
 - (void)preferencesHelp;
+- (void)preferencesAbout;
+- (void)preferencesModal:(BOOL)modal;
 @end
 
 
@@ -73,6 +75,7 @@ enum {
 	id<PreferencesDelegate> delegate;
     
     // ui
+    UINavigationController *_localizationController;
 	UIPopoverController *_localizationPopoverController;
     
     // private
@@ -88,7 +91,7 @@ enum {
 
 // Action Methods
 - (void)actionHelp:(id)sender;
-
+- (void)actionAbout:(id)sender;
 @end
 
 

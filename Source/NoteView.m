@@ -46,7 +46,7 @@
 #pragma mark Constants
 
 // constants
-#define kNoteOpacity                    0.9f
+#define kNoteOpacity                    0.8f
 #define kAnimateTimeNoteShow            0.21f
 #define kAnimateTimeNoteDismiss         0.21f
 #define kDelayTimeNoteDismiss           4.5f
@@ -61,8 +61,8 @@
 - (id)initWithFrame:(CGRect)frame {
     
 	// size
-	float nvs = 240;
-	float inset = 10.0;
+	float nvs = 180;
+	float inset = 5.0;
     
 	// init UIView
     self = [super initWithFrame:frame];
@@ -79,14 +79,14 @@
 		CGRect nframe = CGRectMake((frame.size.width/2.0)-nvs/2.0, (frame.size.height/2.0)-nvs/2.0, nvs, nvs);
 		UIView *note = [[UIView alloc] initWithFrame:nframe];
         note.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
-		note.backgroundColor = [UIColor whiteColor];
+		note.backgroundColor = [UIColor blackColor];
 		note.alpha = kNoteOpacity;
-		note.layer.cornerRadius = 10;
+		note.layer.cornerRadius = 8;
         
         note.layer.shadowColor = [[UIColor blackColor] CGColor];
         note.layer.shadowOpacity = 0.7;
-        note.layer.shadowRadius = 4.0;
-        note.layer.shadowOffset = CGSizeMake(5.0f, 5.0f);    
+        note.layer.shadowRadius = 5.0;
+        note.layer.shadowOffset = CGSizeMake(3.0f, 3.0f);    
         note.layer.shadowPath = [UIBezierPath bezierPathWithRect:note.bounds].CGPath;
         
         _note = [note retain];
@@ -97,7 +97,7 @@
         noteTitle.backgroundColor = [UIColor clearColor];
         noteTitle.textAlignment = UITextAlignmentCenter;
         noteTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
-        noteTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
+        noteTitle.textColor = [UIColor whiteColor];
         noteTitle.opaque = YES;
         noteTitle.numberOfLines = 1;
         
@@ -111,7 +111,7 @@
         noteMessage.textAlignment = UITextAlignmentCenter;
         noteMessage.backgroundColor = [UIColor clearColor];
         noteMessage.font = [UIFont fontWithName:@"Helvetica" size:15.0];
-        noteMessage.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
+        noteMessage.textColor = [UIColor whiteColor];
         noteMessage.opaque = YES;
         noteMessage.userInteractionEnabled = NO;
         noteMessage.editable = NO;
@@ -434,6 +434,9 @@
 	// message
 	_noteTitle.text = @"";
     _noteMessage.text = @"";
+    
+    // recenter
+    _note.center = self.center;
 
     
 	// activity
@@ -461,6 +464,16 @@
     
 }
 
+/**
+ * Offset.
+ */
+- (void)offset {
+    
+    // recenter
+    float off = (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) ? 0 : 20;
+    _note.center = CGPointMake(self.center.x,self.frame.size.height/4.0+off);
+}
+
 
 
 #pragma mark -
@@ -484,6 +497,168 @@
 	[_note release];
 	
 	// supimessage
+	[super dealloc];
+}
+
+@end
+
+
+
+/**
+ * Note.
+ */
+@implementation Note
+
+
+#pragma mark -
+#pragma mark Note
+
+/**
+ * Stores/retrieves a note.
+ */
++ (void)storeNote:(Note*)note key:(NSString*)key {
+    FLog();
+    
+    // notes
+    NSMutableDictionary *notes = [self retrieveNotes];
+    
+    // add note
+    [notes setObject:[NSKeyedArchiver archivedDataWithRootObject:note] forKey:key];
+    
+    // update
+    [self updateNotes:notes];
+    
+}
++ (Note*)retrieveNote:(NSString *)key {
+    GLog();
+    
+    // notes
+    NSMutableDictionary *notes = [self retrieveNotes];
+    
+    // retrieve & remove
+    if ([notes objectForKey:key]) {
+        
+        // note
+        Note *note = (Note*) [NSKeyedUnarchiver unarchiveObjectWithData:[notes objectForKey:key]];
+        
+        // remove
+        [notes removeObjectForKey:key];
+        
+        // update
+        [self updateNotes:notes];
+        
+        // return 
+        return note;
+    }
+    
+    // nop
+    return NULL;
+}
+
+/**
+ * Retrieve / update notes.
+ */
++ (NSMutableDictionary*)retrieveNotes {
+    
+    // defaults
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	
+	// notes
+	NSDictionary *notes = [defaults dictionaryForKey:udNotes];
+	
+	// init defaults
+	if (notes == nil) {
+        
+        // init
+        notes = [NSMutableDictionary dictionary];
+		[defaults setObject:notes forKey:udNotes];
+        [defaults synchronize];
+	}
+	
+	// return mutable copy
+	return [[notes mutableCopy] autorelease];;
+}
++ (void)updateNotes:(NSMutableDictionary *)notes {
+    
+    // defaults
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	
+	// set
+	[defaults setObject:notes forKey:udNotes];
+	[defaults synchronize]; 
+}
+
+
+
+#pragma mark -
+#pragma mark Properties
+
+// synthesize
+@synthesize title;
+@synthesize message;
+@synthesize type;
+
+
+#pragma mark -
+#pragma mark Object
+
+/*
+ * Init.
+ */
+- (id)initNoteWithTitle:(NSString *)ttl message:(NSString *)msg type:(int)tp {
+    GLog();
+    
+    // self
+    if ((self = [super init])) {
+        
+        // fields
+        self.title = ttl;
+        self.message = msg;
+        self.type = [NSNumber numberWithInt:tp];
+    }
+    return self;
+}
+
+
+#pragma mark -
+#pragma mark Coder
+
+
+/*
+ * Encode.
+ */
+- (void)encodeWithCoder:(NSCoder *)encoder {
+    [encoder encodeObject:self.title forKey:@"title"];
+    [encoder encodeObject:self.message forKey:@"message"];
+    [encoder encodeObject:self.type forKey:@"type"];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    if((self = [super init])) {
+        self.title = [decoder decodeObjectForKey:@"title"];
+        self.message = [decoder decodeObjectForKey:@"message"];
+        self.type = [decoder decodeObjectForKey:@"type"];
+    }
+    return self;
+}
+
+
+#pragma mark -
+#pragma mark Memory Management
+
+
+/*
+ * Deallocates all used memory.
+ */
+- (void)dealloc {	
+	GLog();
+	
+	// self
+    [title release];
+	[message release];
+    [type release];
+	
+	// sup
 	[super dealloc];
 }
 

@@ -39,7 +39,7 @@
 /**
  * SettingsViewController.
  */
-@interface SettingsViewController : UIViewController <PreferencesDelegate> {
+@interface SettingsViewController : UIViewController <PreferencesDelegate, AboutDelegate> {
     
     // delegate
 	id<SettingsDelegate> delegate;
@@ -48,6 +48,7 @@
     UIView *_contentView;
     AboutViewController *_aboutViewController;
     PreferencesViewController *_preferencesViewController;
+    UIButton *_buttonClose;
     
     // private
     @private
@@ -61,5 +62,8 @@
 
 // Object Methods
 - (id)initWithFrame:(CGRect)frame;
+
+// Actions
+- (void)actionClose:(id)sender;
 
 @end

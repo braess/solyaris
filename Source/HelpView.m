@@ -21,17 +21,20 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "HelpView.h"
-
+#import "SolyarisConstants.h"
 
 /**
  * Help Stack.
  */
-@interface HelpView (AnimationHelpers)
+@interface HelpView (HelpAnimations)
 - (void)animationShowHelp;
 - (void)animationShowNoteDone;
 - (void)animationDismissHelp;
 - (void)animationDismissHelpDone;
 @end
+
+
+
 
 
 /**
@@ -44,9 +47,8 @@
 #pragma mark Constants
 
 // constants
-#define kHelpOpacity                    0.93f
 #define kAnimateTimeHelpShow            2.4f
-#define kAnimateTimeHelpDismiss         0.6f
+#define kAnimateTimeHelpDismiss         0.45f
 
 
 
@@ -57,13 +59,10 @@
  * Initialize.
  */
 - (id)initWithFrame:(CGRect)frame {
+    GLog();
     
-    
-	// init UIView
-    self = [super initWithFrame:frame];
-    
-	// init self
-    if (self != nil) {
+	// super
+    if ((self = [super initWithFrame:frame])) {
         
         // self
         self.opaque = YES;
@@ -71,29 +70,178 @@
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         self.userInteractionEnabled = YES;
 		
+        // flags
+        animating = NO;
+        
 				
-		// portrait
+		// image
 		UIImageView *imageHelp = [[UIImageView alloc] initWithFrame:CGRectZero];
 		imageHelp.autoresizingMask = UIViewAutoresizingNone;
 		imageHelp.backgroundColor = [UIColor clearColor];
 		imageHelp.contentMode = UIViewContentModeCenter;
-		imageHelp.hidden = YES;
+        imageHelp.image = iPad ? [UIImage imageNamed:@"help.png"] : [UIImage imageNamed:@"help_redux.png"];
         
         _imageHelp = [imageHelp retain];
         [self addSubview:_imageHelp];
         [imageHelp release];
         
-        // flags
-        animation_show = NO;
-        animation_dismiss = NO;
-
+        // welcome
+        HelpLabel *lblWelcome = [[HelpLabel alloc] initWithFrame:CGRectZero];
+        lblWelcome.font = iPad ? [UIFont fontWithName:@"Helvetica-Bold" size:21.0] : [UIFont fontWithName:@"Helvetica-Bold" size:18.0];
+        lblWelcome.numberOfLines = 2;
+        [lblWelcome setText:NSLocalizedString(@"Welcome to Solyaris\nA Visual Movie Browser",@"Welcome to Solyaris\nA Visual Movie Browser")];
         
-		// return
-		return self;
+        _labelWelcome = [lblWelcome retain];
+        [self addSubview:_labelWelcome];
+        [lblWelcome release];
+        
+        HelpText *txtWelcome = [[HelpText alloc] initWithFrame:CGRectZero];
+        [txtWelcome setText:NSLocalizedString(@"Search the entire Open Movie Database (TMDb) for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography.",@"Search the entire Open Movie Database (TMDb) for movies, actors or directors. Expand nodes to gather information about their connections. Learn about the cast and filmography.")];
+        
+        _textWelcome = [txtWelcome retain];
+        [self addSubview:_textWelcome];
+        [txtWelcome release];
+        
+        // search
+        HelpLabel *lblSearch = [[HelpLabel alloc] initWithFrame:CGRectZero];
+        [lblSearch setText:NSLocalizedString(@"Search",@"Search")];
+        
+        _labelSearch = [lblSearch retain];
+        [self addSubview:_labelSearch];
+        [lblSearch release];
+        
+        HelpText *txtSearch = [[HelpText alloc] initWithFrame:CGRectZero];
+        [txtSearch setText:NSLocalizedString(@"for movies or people.",@"for movies or people.")];
+        
+        _textSearch = [txtSearch retain];
+        [self addSubview:_textSearch];
+        [txtSearch release];
+        
+        // node
+        HelpLabel *lblNode1 = [[HelpLabel alloc] initWithFrame:CGRectZero];
+        [lblNode1 setText:NSLocalizedString(@"Touch",@"Touch")];
+        
+        _labelNode1 = [lblNode1 retain];
+        [self addSubview:_labelNode1];
+        [lblNode1 release];
+        
+        HelpText *txtNode1 = [[HelpText alloc] initWithFrame:CGRectZero];
+        [txtNode1 setText:NSLocalizedString(@"to see their relation.",@"to see their relation.")];
+        
+        _textNode1 = [txtNode1 retain];
+        [self addSubview:_textNode1];
+        [txtNode1 release];
+        
+        HelpLabel *lblNode2 = [[HelpLabel alloc] initWithFrame:CGRectZero];
+        [lblNode2 setText:NSLocalizedString(@"Double Tap",@"Double Tap")];
+        
+        _labelNode2 = [lblNode2 retain];
+        [self addSubview:_labelNode2];
+        [lblNode2 release];
+        
+        HelpText *txtNode2 = [[HelpText alloc] initWithFrame:CGRectZero];
+        [txtNode2 setText:NSLocalizedString(@"to load and expand the movie or person.",@"to load and expand the movie or person.")];
+        
+        _textNode2 = [txtNode2 retain];
+        [self addSubview:_textNode2];
+        [txtNode2 release];
+        
+        HelpLabel *lblNode3 = [[HelpLabel alloc] initWithFrame:CGRectZero];
+        [lblNode3 setText:NSLocalizedString(@"Touch & Hold",@"Touch & Hold")];
+        
+        _labelNode3 = [lblNode3 retain];
+        [self addSubview:_labelNode3];
+        [lblNode3 release];
+        
+        HelpText *txtNode3 = [[HelpText alloc] initWithFrame:CGRectZero];
+        [txtNode3 setText:NSLocalizedString(@"to show and select actions.",@"to show and select actions.")];
+        
+        _textNode3 = [txtNode3 retain];
+        [self addSubview:_textNode3];
+        [txtNode3 release];
+        
+        HelpLabel *lblNode4 = [[HelpLabel alloc] initWithFrame:CGRectZero];
+        [lblNode4 setText:NSLocalizedString(@"Double Tap Loaded",@"Double Tap Loaded")];
+        
+        _labelNode4 = [lblNode4 retain];
+        [self addSubview:_labelNode4];
+        [lblNode4 release];
+        
+        HelpText *txtNode4 = [[HelpText alloc] initWithFrame:CGRectZero];
+        [txtNode4 setText:NSLocalizedString(@"to get additional information about the cast and filmography.",@"to get additional information about the cast and filmography.")];
+        
+        _textNode4 = [txtNode4 retain];
+        [self addSubview:_textNode4];
+        [txtNode4 release];
+        
+        
+        // app
+        HelpLabel *lblApp1 = [[HelpLabel alloc] initWithFrame:CGRectZero];
+        [lblApp1 setText:NSLocalizedString(@"Touch & Drag",@"Touch & Drag")];
+        
+        _labelApp1 = [lblApp1 retain];
+        [self addSubview:_labelApp1];
+        [lblApp1 release];
+        
+        HelpText *txtApp1 = [[HelpText alloc] initWithFrame:CGRectZero];
+        [txtApp1 setText:NSLocalizedString(@"to move the selected nodes.",@"to move the selected nodes.")];
+        
+        _textApp1 = [txtApp1 retain];
+        [self addSubview:_textApp1];
+        [txtApp1 release];
+        
+        HelpLabel *lblApp2 = [[HelpLabel alloc] initWithFrame:CGRectZero];
+        [lblApp2 setText:NSLocalizedString(@"Drag",@"Drag")];
+        
+        _labelApp2 = [lblApp2 retain];
+        [self addSubview:_labelApp2];
+        [lblApp2 release];
+        
+        HelpText *txtApp2 = [[HelpText alloc] initWithFrame:CGRectZero];
+        [txtApp2 setText:NSLocalizedString(@"to move all nodes.",@"to move all nodes.")];
+        
+        _textApp2 = [txtApp2 retain];
+        [self addSubview:_textApp2];
+        [txtApp2 release];
+        
+        HelpLabel *lblApp3 = [[HelpLabel alloc] initWithFrame:CGRectZero];
+        [lblApp3 setText:NSLocalizedString(@"Pinch",@"Pinch")];
+        
+        _labelApp3 = [lblApp3 retain];
+        [self addSubview:_labelApp3];
+        [lblApp3 release];
+        
+        HelpText *txtApp3 = [[HelpText alloc] initWithFrame:CGRectZero];
+        [txtApp3 setText:NSLocalizedString(@"to zoom in or out.",@"to zoom in or out.")];
+        
+        _textApp3 = [txtApp3 retain];
+        [self addSubview:_textApp3];
+        [txtApp3 release];
+        
+        HelpLabel *lblApp4 = [[HelpLabel alloc] initWithFrame:CGRectZero];
+        [lblApp4 setText:NSLocalizedString(@"Tap Corner",@"Tap Corner")];
+        
+        _labelApp4 = [lblApp4 retain];
+        [self addSubview:_labelApp4];
+        [lblApp4 release];
+        
+        HelpText *txtApp4 = [[HelpText alloc] initWithFrame:CGRectZero];
+        [txtApp4 setText:NSLocalizedString(@"to adjust and tweak settings.",@"to adjust and tweak settings.")];
+        
+        _textApp4 = [txtApp4 retain];
+        [self addSubview:_textApp4];
+        [txtApp4 release];
+        
+        // page control
+        PageControl *pControl = [[PageControl alloc] initWithFrame:CGRectZero];
+        _pageControl = [pControl retain];
+        [self addSubview:_pageControl];
+        [pControl release];
+        
 	}
 	
-	// nop
-	return nil;
+	// self
+	return self;
 }
 
 /*
@@ -102,15 +250,68 @@
 - (void)layoutSubviews {
     GLog();
     
-    // frame
-    CGRect frame = CGRectMake(0, 0, 768, 1024);
-    _imageHelp.image = [UIImage imageNamed:@"help_portrait.png"];
-    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
-        frame = CGRectMake(0, 0, 1024, 768);
-        _imageHelp.image = [UIImage imageNamed:@"help_landscape.png"];
-    }
-    self.frame = frame;
-    _imageHelp.frame = frame;
+    // frames
+    BOOL portrait = UIDeviceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation]);
+    CGRect frameSelf = iPad ? (portrait ? CGRectMake(0, 0, 768, 1024) : CGRectMake(0, 0, 1024, 768)) 
+                            : (portrait ? CGRectMake(0, 0, 320, 480) : CGRectMake(0, 0, 480, 320));
+    
+    // self
+    self.frame = frameSelf;
+    _imageHelp.frame = frameSelf;
+    
+    // steps
+    _labelWelcome.frame = iPad ? CGRectMake(30, 60, 360, 50) 
+                               : CGRectMake(10, 50, 320, 50);
+    _textWelcome.frame = CGRectMake(_labelWelcome.frame.origin.x, _labelWelcome.frame.origin.y+(iPad?50:45), _labelWelcome.frame.size.width, 120);
+    
+    _labelSearch.frame = iPad ? CGRectMake(frameSelf.size.width/2.0+20, 50, 360, 20)
+                              : CGRectMake(frameSelf.size.width/2.0-85, 50, 240, 20);
+    _textSearch.frame = CGRectMake(_labelSearch.frame.origin.x, _labelSearch.frame.origin.y+10, _labelSearch.frame.size.width, 45);
+    
+    _labelNode1.frame = iPad ? CGRectMake(frameSelf.size.width/2.0-160, frameSelf.size.height/2.0-205, 360, 20)
+                             : (portrait ? CGRectMake(frameSelf.size.width/2.0-150, frameSelf.size.height/2.0-190, 240, 20) 
+                                         : CGRectMake(frameSelf.size.width/2.0-200, frameSelf.size.height/2.0-75, 240, 20));
+    _textNode1.frame = CGRectMake(_labelNode1.frame.origin.x, _labelNode1.frame.origin.y+10, _labelNode1.frame.size.width, 45);
+    
+    _labelNode2.frame = iPad ? CGRectMake(frameSelf.size.width/2.0+50, frameSelf.size.height/2.0-160, 360, 20)
+                             : (portrait ? CGRectMake(frameSelf.size.width/2.0-20, frameSelf.size.height/2.0-145, 180, 20) 
+                                         : CGRectMake(frameSelf.size.width/2.0+50, frameSelf.size.height/2.0-105, 180, 20));
+    _textNode2.frame = CGRectMake(_labelNode2.frame.origin.x, _labelNode2.frame.origin.y+10, _labelNode2.frame.size.width, 45);
+    
+    _labelNode3.frame = iPad ? CGRectMake(frameSelf.size.width/2.0+135, frameSelf.size.height/2.0+60, 360, 20)
+                             : CGRectMake(frameSelf.size.width/2.0-140, frameSelf.size.height/2.0+25, 240, 20);
+    _textNode3.frame = CGRectMake(_labelNode3.frame.origin.x, _labelNode3.frame.origin.y+10, _labelNode3.frame.size.width, 45);
+    
+    _labelNode4.frame = iPad ? CGRectMake(frameSelf.size.width/2.0-50, frameSelf.size.height/2.0+170, 420, 20)
+                              : (portrait ? CGRectMake(frameSelf.size.width/2.0-70, frameSelf.size.height/2.0+135, 240, 20) 
+                                         :  CGRectMake(frameSelf.size.width/2.0+10, frameSelf.size.height/2.0+90, 240, 20));
+    _textNode4.frame = CGRectMake(_labelNode4.frame.origin.x, _labelNode4.frame.origin.y+10, _labelNode4.frame.size.width, 45);
+    
+    
+    _labelApp1.frame = iPad ? CGRectMake(frameSelf.size.width/2.0-210, frameSelf.size.height/2.0+230, 360, 20)
+                            : (portrait ? CGRectMake(frameSelf.size.width/2.0-140, frameSelf.size.height/2.0+85, 240, 20)
+                                        : CGRectMake(frameSelf.size.width/2.0-200, frameSelf.size.height/2.0+85, 240, 20));
+    _textApp1.frame = CGRectMake(_labelApp1.frame.origin.x, _labelApp1.frame.origin.y+10, _labelApp1.frame.size.width, 45);
+    
+    _labelApp2.frame = iPad ? CGRectMake(frameSelf.size.width/2.0-280, frameSelf.size.height/2.0+275, 360, 20)
+                            : (portrait ? CGRectMake(frameSelf.size.width/2.0-130, frameSelf.size.height/2.0-40, 280, 20) 
+                                        : CGRectMake(frameSelf.size.width/2.0-160, frameSelf.size.height/2.0-40, 280, 20));
+    _textApp2.frame = CGRectMake(_labelApp2.frame.origin.x, _labelApp2.frame.origin.y+10, _labelApp2.frame.size.width, 45);
+    
+    _labelApp3.frame = iPad ? CGRectMake(frameSelf.size.width/2.0-120, frameSelf.size.height/2.0+320, 360, 20)
+                            : (portrait ? CGRectMake(frameSelf.size.width/2.0-40, frameSelf.size.height/2.0-180, 240, 20) 
+                                        : CGRectMake(frameSelf.size.width/2.0+45, frameSelf.size.height/2.0-122, 240, 20));
+    _textApp3.frame = CGRectMake(_labelApp3.frame.origin.x, _labelApp3.frame.origin.y+10, _labelApp3.frame.size.width, 45);
+    
+    _labelApp4.frame = iPad ? CGRectMake(frameSelf.size.width-260, frameSelf.size.height-60, 220, 20)
+                            : (portrait ? CGRectMake(frameSelf.size.width-240, frameSelf.size.height-60, 240, 20) 
+                                        : CGRectMake(frameSelf.size.width-220, frameSelf.size.height-55, 220, 20));
+    _textApp4.frame = CGRectMake(_labelApp4.frame.origin.x, _labelApp4.frame.origin.y+10, _labelApp4.frame.size.width, 45);
+    
+    
+    // page control
+    _pageControl.frame = CGRectMake(0, frameSelf.size.height-25, frameSelf.size.width, 30);
+    _pageControl.numberOfPages = 4;
     
 }
 
@@ -136,7 +337,14 @@
  */
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	FLog();
-    [self dismissHelp];
+    
+    // next
+    if (step < 3) {
+        [self nextHelp];
+    }
+    else {
+        [self dismissHelp];
+    }
 }
 
 
@@ -144,18 +352,185 @@
 #pragma mark -
 #pragma mark Business Methods
 
+/**
+ * Update.
+ */
+- (void)update {
+    
+    // step
+    switch (step) {
+        
+        // welcome
+        case HelpStepWelcome: {
+            FLog("HelpStepWelcome");
+            
+            // page
+            _pageControl.currentPage = 0;
+            
+            // hide
+            _imageHelp.hidden = YES;
+            
+            _labelSearch.hidden = YES;
+            _textSearch.hidden = YES;
+            
+            _labelNode1.hidden = YES;
+            _textNode1.hidden = YES;
+            _labelNode2.hidden = YES;
+            _textNode2.hidden = YES;
+            _labelNode3.hidden = YES;
+            _textNode3.hidden = YES;
+            _labelNode4.hidden = YES;
+            _textNode4.hidden = YES;
+            
+            _labelApp1.hidden = YES;
+            _textApp1.hidden = YES;
+            _labelApp2.hidden = YES;
+            _textApp2.hidden = YES;
+            _labelApp3.hidden = YES;
+            _textApp3.hidden = YES;
+            _labelApp4.hidden = YES;
+            _textApp4.hidden = YES;
+            
+            // show
+            _labelWelcome.hidden = NO;
+            _textWelcome.hidden = NO;
+            
+            // done
+            break;
+        }
+            
+        // search
+        case HelpStepSearch: {
+            FLog("HelpStepSearch");
+            
+            // page
+            _pageControl.currentPage = 1;
+            
+            // hide
+            _labelWelcome.hidden = iPad ? NO : YES;
+            _textWelcome.hidden = iPad ? NO : YES;
+            
+            // show
+            _labelSearch.hidden = NO;
+            _textSearch.hidden = NO;
+            
+            // done
+            break;
+        }
+            
+        // node interaction
+        case HelpStepNodeInteraction: {
+            FLog("HelpStepNodeInteraction");
+            
+            // page
+            _pageControl.currentPage = 2;
+            
+            // hide
+            _labelWelcome.hidden = iPad ? NO : YES;
+            _textWelcome.hidden = iPad ? NO : YES;
+            
+            _labelSearch.hidden = iPad ? NO : YES;
+            _textSearch.hidden =iPad ? NO : YES;
+            
+            // show
+            _imageHelp.hidden = NO;
+            
+            _labelNode1.hidden = NO;
+            _textNode1.hidden = NO;
+            _labelNode2.hidden = NO;
+            _textNode2.hidden = NO;
+            _labelNode3.hidden = NO;
+            _textNode3.hidden = NO;
+            _labelNode4.hidden = NO;
+            _textNode4.hidden = NO;
+            
+            // done
+            break;
+        }
+            
+        // node interaction
+        case HelpStepAppInteraction: {
+            FLog("HelpStepAppInteraction");
+            
+            // page
+            _pageControl.currentPage = 3;
+            
+            // hide
+            _labelWelcome.hidden = iPad ? NO : YES;
+            _textWelcome.hidden = iPad ? NO : YES;
+            
+            _labelSearch.hidden = iPad ? NO : YES;
+            _textSearch.hidden = iPad ? NO : YES;
+            
+            _labelNode1.hidden = iPad ? NO : YES;
+            _textNode1.hidden = iPad ? NO : YES;
+            _labelNode2.hidden = iPad ? NO : YES;
+            _textNode2.hidden = iPad ? NO : YES;
+            _labelNode3.hidden = iPad ? NO : YES;
+            _textNode3.hidden = iPad ? NO : YES;
+            _labelNode4.hidden = iPad ? NO : YES;
+            _textNode4.hidden = iPad ? NO : YES;
+            
+            
+            // show
+            _labelApp1.hidden = NO;
+            _textApp1.hidden = NO;
+            _labelApp2.hidden = NO;
+            _textApp2.hidden = NO;
+            _labelApp3.hidden = NO;
+            _textApp3.hidden = NO;
+            _labelApp4.hidden = NO;
+            _textApp4.hidden = NO;
+            
+            // done
+            break;
+        }
+            
+            
+        // something's broken
+        default:
+            break;
+    }
+    
+}
 
 /**
  * Shows / dismisses the help.
  */
 - (void)showHelp {
     DLog();
+    
+    // reset
+    step = HelpStepWelcome;
+    
+    // update
+    [self update];
+    
+    // layout & show
     [self layoutSubviews];
 	[self animationShowHelp];
 }
 - (void)dismissHelp {
     DLog();
+    
+    // dismiss
     [self animationDismissHelp];
+}
+
+/**
+ * Next step.
+ */
+- (void)nextHelp {
+    DLog();
+    
+    // step
+    step++;
+    
+    // update
+    [self update];
+    
+    // layout & show
+    [self layoutSubviews];
 }
 
 
@@ -164,8 +539,6 @@
 #pragma mark -
 #pragma mark Animations
 
-
-
 /*
  * Animation help show.
  */
@@ -173,18 +546,17 @@
 	GLog();
     
     // flag
-    if (! animation_show) {
-        animation_show = YES;
+    if (! animating) {
+        animating = YES;
         
         // prepare view
-        _imageHelp.alpha = 0.0f;
-        _imageHelp.hidden = NO;
+        self.alpha = 0.0f;
         
         // animate
         [UIView beginAnimations:@"help_show" context:nil];
         [UIView setAnimationDuration:kAnimateTimeHelpShow];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
-        _imageHelp.alpha = kHelpOpacity;
+        self.alpha = 1.0;
         [UIView commitAnimations];
         
         // clean it up
@@ -197,7 +569,7 @@
 	GLog();
     
     // flag
-    animation_show = NO;
+    animating = NO;
 }
 
 
@@ -208,17 +580,14 @@
 	GLog();
     
     // flag
-    if (! animation_dismiss) {
-        animation_dismiss = YES;
-        
-        // prepare view
-        _imageHelp.alpha = kHelpOpacity;
+    if (! animating) {
+        animating = YES;
         
         // animate
         [UIView beginAnimations:@"help_dismiss" context:nil];
         [UIView setAnimationDuration:kAnimateTimeHelpDismiss];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
-        _imageHelp.alpha = 0.0f;
+        self.alpha = 0.0f;
         [UIView commitAnimations];
         
         // clean it up
@@ -230,10 +599,9 @@
 	GLog();
     
     // flag
-    animation_dismiss = NO;
+    animating = NO;
     
 	// hide
-	_imageHelp.hidden = YES;
 	self.hidden = YES;
 	
 	// remove
@@ -254,9 +622,97 @@
 	
 	// release
 	[_imageHelp release];
+    
+    [_labelWelcome release];
+    [_textWelcome release];
+    
+    [_labelSearch release];
+    [_textSearch release];
+    
+    [_labelNode1 release];
+    [_textNode1 release];
+    [_labelNode2 release];
+    [_textNode2 release];
+    [_labelNode3 release];
+    [_textNode3 release];
+    [_labelNode4 release];
+    [_textNode4 release];
+    
+    [_labelApp1 release];
+    [_textApp1 release];
+    [_labelApp2 release];
+    [_textApp2 release];
+    [_labelApp3 release];
+    [_textApp3 release];
+    [_labelApp4 release];
+    [_textApp4 release];
+    
+    [_pageControl release];
 	
 	// & done
 	[super dealloc];
 }
+
+@end
+
+
+/**
+ * HelpLabel.
+ */
+@implementation HelpLabel 
+    
+/*
+ * Initialize.
+ */
+- (id)initWithFrame:(CGRect)frame {
+    GLog();
+    
+    // super
+    if ((self = [super initWithFrame:frame])) {
+        
+        // style
+        self.backgroundColor = [UIColor clearColor];
+        self.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
+        self.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
+        self.opaque = YES;
+        self.numberOfLines =1;
+        
+    }
+    return self;
+}
+
+@end
+
+
+/**
+ * HelpText.
+ */
+@implementation HelpText 
+
+/*
+ * Initialize.
+ */
+- (id)initWithFrame:(CGRect)frame {
+    GLog();
+    
+    // super
+    if ((self = [super initWithFrame:frame])) {
+        
+        // style
+        self.contentInset = UIEdgeInsetsMake(0,-8,0,-8);
+        self.textAlignment = UITextAlignmentLeft;
+        self.backgroundColor = [UIColor clearColor];
+        self.font = [UIFont fontWithName:@"Helvetica" size:15.0];
+        self.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
+        self.opaque = YES;
+        self.userInteractionEnabled = NO;
+        self.scrollEnabled = NO; 
+        self.canCancelContentTouches = NO;
+        self.editable = NO;
+        
+    }
+    return self;
+}
+
 
 @end

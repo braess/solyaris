@@ -30,6 +30,7 @@
  * Cinder Launch.
  */
 void Solyaris::launch( const char *title, int argc, char * const argv[] ) {
+    DLog();
     
     // custom app delegate
 	::UIApplicationMain( argc, const_cast<char**>( argv ), nil, @"SolyarisAppDelegate" );
@@ -41,18 +42,21 @@ void Solyaris::launch( const char *title, int argc, char * const argv[] ) {
 void Solyaris::setup() {
     DLog();
     
+    // redux
+    redux = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? false : true;
+    
     // display
     retina = false;
-    dwidth = 768;
-    dheight = 1024;
+    dwidth = redux ? 320 : 768;
+    dheight = redux ? 480 : 1024;
     
-    // ipad retina
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && [Utils isRetina]) {
+    // retina
+    if ([Utils isRetina]) {
         retina = true;
-        dwidth = 1536;
-        dheight = 2048;
+        dwidth = redux ? 640 : 1536;
+        dheight = redux ? 960 : 2048;
     }
-    
+
     
     // sketch
     bg = Color(30.0/255.0, 30.0/255.0, 30.0/255.0);
@@ -70,8 +74,8 @@ void Solyaris::setup() {
     
     // configuration
     Configuration conf = Configuration();
+    conf.setConfiguration(cDeviceRedux,redux ? "1" : "0");
     conf.setConfiguration(cDisplayRetina,retina ? "1" : "0");
-    //conf.setConfiguration(cDisplayRetina,"1");
     graph.config(conf);
     
     
@@ -109,6 +113,7 @@ void Solyaris::prepareSettings(Settings *settings) {
  * Applies the orientation.
  */
 void Solyaris::applyDeviceOrientation(int dorientation) {
+    GLog();
     
     // orientation
     orientation = dorientation;

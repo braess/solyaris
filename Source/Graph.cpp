@@ -37,6 +37,7 @@ Graph::Graph(int w, int h, int o) {
     width = w;
     height = h;
     orientation = o;
+    portrait = (h > w) ? true : false; 
     
     // retina
     retina = false;
@@ -75,7 +76,8 @@ Graph::Graph(int w, int h, int o) {
     translate.set(0,0);
     
     // background
-    background = gl::Texture(loadImage(loadResource("bg_graph.png")));
+    bg_portrait = gl::Texture(1,1);
+    bg_landscape = gl::Texture(1,1);
     
     // sample
     audioSampleClick = audio::load(loadResource(SAMPLE_CLICK));
@@ -89,6 +91,7 @@ Graph::Graph(int w, int h, int o) {
  * Resize.
  */
 void Graph::resize(int w, int h, int o) {
+    FLog();
     
     // size
     width = w;
@@ -96,6 +99,7 @@ void Graph::resize(int w, int h, int o) {
     
     // orientation
     orientation = o;
+    portrait = (h > w) ? true : false; 
     
     
     // tooltip
@@ -113,9 +117,15 @@ void Graph::config(Configuration c) {
     // reference
     conf = c;
     
+    // device
+    redux = false;
+    Config confDeviceRedux = c.getConfiguration(cDeviceRedux);
+    if (confDeviceRedux.isSet()) {
+        redux = confDeviceRedux.boolVal();
+    }
+    
     // display retina
     retina = false;
-    dpr = 1.0;
     Config confDisplayRetina = conf.getConfiguration(cDisplayRetina);
     if (confDisplayRetina.isSet()) {
         retina = confDisplayRetina.boolVal();
@@ -127,11 +137,11 @@ void Graph::config(Configuration c) {
         actions[t].config(conf);
     }
     
+    // device pixel ratio
+    dpr = retina ? 2.0 : 1.0;
+    
     // retina stuff
     if (retina) {
-        
-        // device pixel ratio
-        dpr = 2.0;
         
         // bound
         mbound *= 2;
@@ -139,9 +149,27 @@ void Graph::config(Configuration c) {
         // hitarea
         harea *= 2;
         
-        // background
-        background = gl::Texture(loadImage(loadResource("bg_graph@2x.png")));
     }
+    
+    
+    // background
+    string bg = redux ? "bg_graph_redux" : "bg_graph";
+    bg += retina ? "@2x.png" : ".png";
+    
+    // surface
+    Surface surface_portrait = loadImage(loadResource(bg));
+    int surface_w = surface_portrait.getSize().x;
+    int surface_h = surface_portrait.getSize().y;
+    Surface surface_landscape = Surface( surface_h, surface_w, true, SurfaceChannelOrder::RGBA );
+    for (int x = 0; x < surface_w; x++) {
+        for (int y = 0; y < surface_h; y++) {
+            surface_landscape.setPixel(Vec2i(y,x), surface_portrait.getPixel(Vec2i(x,y)));
+        }
+    }
+    
+    // textures
+    bg_portrait = gl::Texture(surface_portrait);
+    bg_landscape = gl::Texture(surface_landscape);
     
 }
 
@@ -295,7 +323,7 @@ void Graph::draw() {
     
     // background
     gl::color( ColorA(1.0f, 1.0f, 1.0f, 1.0f) ); // alpha channel
-    gl::draw(background);
+    gl::draw(portrait ? bg_portrait : bg_landscape);
     
     // push it
     gl::pushMatrices();
@@ -540,7 +568,7 @@ void Graph::pinched(Vec2d p, Vec2d pp, double s, double ps) {
     translate = -1 * (pt * scale - p*dpr); 
     
     // drag
-    this->drag((p-pp) * scale);
+    this->drag((p-pp) * scale * dpr);
     
 }
 
@@ -668,7 +696,7 @@ NodePtr Graph::createNode(string nid, string type) {
     double sf = (1.0/scale);
     
     // position
-    int b = 240*sf;
+    int b = 150*sf;
     Vec2d np = Vec2d( ((width*sf/2.0)-b + arc4random() % (2*b)), ((height*sf/2.0)-b + arc4random() % (2*b)) );
     
     // rezoom
@@ -895,7 +923,7 @@ void Graph::tooltip(int tid) {
     // touched
     if (etouch && txts.size() > 0) {
         tooltips[tid].renderText(txts);
-        tooltips[tid].offset(touched[tid]->radius+12.0);
+        tooltips[tid].offset((touched[tid]->radius+12.0*dpr));
         tooltips[tid].show();
     }
     

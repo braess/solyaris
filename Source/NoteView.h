@@ -23,6 +23,18 @@
 #import <UIKit/UIKit.h>
 
 
+// Notes
+#define udNotes                 @"notes"
+
+// Types
+#define noteTypeInfo            0
+#define noteTypeSuccess         1
+#define noteTypeError           2
+
+// Notes
+#define noteAppUpdate           @"note_app_update"
+#define noteAppDeprecated       @"note_app_deprecated"
+
 /**
  * Note View.
  */
@@ -48,11 +60,32 @@
 - (void)noteGlitch:(NSString*)title message:(NSString*)msg;
 - (void)noteError:(NSString*)title message:(NSString*)msg;
 - (void)noteNotification:(NSString*)title message:(NSString*)msg;
+- (void)offset;
 - (void)showNote;
 - (void)showNoteAfterDelay:(float)delay;
 - (void)dismissNote;
 - (void)dismissNoteAfterDelay:(float)delay;
 
+@end
 
 
+/**
+ * Note.
+ */
+@interface Note :  NSObject <NSCoding> {
+}
+
+// Notes
++ (void)storeNote:(Note*)note key:(NSString*)key;
++ (Note*)retrieveNote:(NSString*)key;
++ (NSMutableDictionary*)retrieveNotes;
++ (void)updateNotes:(NSMutableDictionary*)notes;
+
+// Object
+- (id)initNoteWithTitle:(NSString*)ttl message:(NSString*)msg type:(int)tp;
+
+// Properties
+@property (nonatomic,retain) NSString *title;
+@property (nonatomic,retain) NSString *message;
+@property (nonatomic,retain) NSNumber *type;
 @end

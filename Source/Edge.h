@@ -107,7 +107,10 @@ class Edge {
     double length;
     double stiffness;
     double damping;
-    double retina;
+    
+    // config
+    bool redux;
+    bool retina;
     
     // position
     Vec2d pos;
@@ -117,6 +120,7 @@ class Edge {
     Color cstrokea;
     Color cstrokes;
     Color ctxt;
+    Color ctxta;
     Color ctxts;
     
     // Font

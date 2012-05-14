@@ -21,8 +21,8 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "TMDbView.h"
-#import "SolyarisConstants.h"
 #import "CacheImageView.h"
+#import "Utils.h"
 
 /**
  * Helper Stack.
@@ -112,7 +112,7 @@
     // text
     float hslides = mode_slides ? (sh+2*kTMDbGapOffset) : 0;
     float htext = _textView.contentSize.height;
-    _textView.frame = CGRectMake(kTMDbGapOffset, hslides+8, self.frame.size.width-30, htext);
+    _textView.frame = iPad ? CGRectMake(10, hslides+8, self.frame.size.width-30, htext) : CGRectMake(2, hslides+8, self.frame.size.width-4, htext);
     
     // content size
     self.contentSize = CGSizeMake(self.frame.size.width, hslides+3*kTMDbGapOffset+htext);
@@ -161,17 +161,20 @@
     
     // backdrops
     NSMutableArray *backdrops = [[NSMutableArray alloc] init];
+    NSString *asize = [NSString stringWithFormat:@"%@",iPad ? assetSizeOriginal : ([Utils isWiFi ] ? assetSizeMed : assetSizeMid)];
     for (Asset *a in assets) {
         
         // backdrop
-        if ([a.type isEqualToString:assetBackdrop] && [a.size isEqualToString:assetSizeOriginal]) {
+        if ([a.type isEqualToString:assetBackdrop] && [a.size isEqualToString:asize]) {
             
             // image
-            CacheImageView *civ = [[[CacheImageView alloc] init] autorelease];
-            [civ lazyloadImage:a.url];
+            CacheImageView *civ = [[CacheImageView alloc] init];
+            civ.imageView.backgroundColor = [UIColor whiteColor];
+            [civ lazyloadImage:a.value];
             
             // add 
             [backdrops addObject:civ];
+            [civ release];
         }
     }
     

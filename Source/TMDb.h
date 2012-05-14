@@ -24,10 +24,15 @@
 #import <CoreData/CoreData.h>
 #import "Search.h"
 #import "SearchResult.h"
+#import "Popular.h"
+#import "PopularResult.h"
+#import "NowPlaying.h"
+#import "NowPlayingResult.h"
 #import "Movie.h"
 #import "Person.h"
 #import "Movie2Person.h"
 #import "Asset.h"
+#import "Genre.h"
 
 
 /**
@@ -54,11 +59,17 @@
  */
 @protocol APIDelegate <NSObject>
 - (void)loadedSearch:(Search*)result;
+- (void)loadedPopular:(Popular*)popular more:(BOOL)more;
+- (void)loadedNowPlaying:(NowPlaying*)nowplaying more:(BOOL)more;
+- (void)loadedHistory:(NSArray*)history type:(NSString*)type;
 - (void)loadedMovie:(Movie*)movie;
 - (void)loadedPerson:(Person*)person;
+- (void)loadedMovieData:(Movie*)movie;
+- (void)loadedPersonData:(Person*)person;
 - (void)apiGlitch:(APIError*)error;
 - (void)apiError:(APIError*)error;
 - (void)apiFatal:(NSString*)title message:(NSString*)msg;
+- (void)apiInfo:(APIError*)error;
 @end
 
 /**
@@ -80,15 +91,24 @@
 // Properties
 @property (nonatomic, assign) NSObject <APIDelegate> *delegate;
 
+// Class
++ (void)clearCache;
+
 // Business
 - (void)reset;
 - (void)searchMovie:(NSString*)q;
 - (void)searchPerson:(NSString*)q;
+- (void)popularMovies:(BOOL)more;
+- (void)nowPlaying:(BOOL)more;
+- (void)historyMovie;
+- (void)historyPerson;
 - (void)movie:(NSNumber*)mid;
-- (void)person:(NSNumber*)mid;
-- (void)clearCache;
-- (Movie*)dataMovie:(NSNumber*)mid;
-- (Person*)dataPerson:(NSNumber*)pid;
+- (void)person:(NSNumber*)pid;
+- (NSString*)movieThumb:(NSNumber*)mid;
+- (NSString*)personThumb:(NSNumber*)pid;
+- (void)resetCache;
+- (void)dataMovie:(NSNumber*)mid;
+- (void)dataPerson:(NSNumber*)pid;
 - (NSArray*)dataMovies;
 
 

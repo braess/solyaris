@@ -77,20 +77,20 @@
     if (self == [super initWithFrame:frame]) {
         
         // self
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor clearColor];
         self.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
         
         // image view
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        imageView.backgroundColor = [UIColor clearColor];
-        imageView.contentMode = UIViewContentModeScaleAspectFill;
-        imageView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
-        imageView.clipsToBounds = YES;
+        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
+        iv.backgroundColor = [UIColor clearColor];
+        iv.contentMode = UIViewContentModeScaleAspectFill;
+        iv.autoresizingMask = ( UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight );
+        iv.clipsToBounds = YES;
         
         // add
-        _imageView = [imageView retain];
+        _imageView = [iv retain];
         [self addSubview:_imageView];
-        [imageView release];
+        [iv release];
         
         // loader
 		UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -116,7 +116,13 @@
         [iconError release];
         
         // link
-        _link = @"a-cached-image.png";
+        NSMutableString *lnk = [[NSMutableString alloc] init];
+        _link = [lnk retain];
+        [lnk release];
+        
+        
+        // reset
+        [self reset];
  
     }
     return self;
@@ -167,6 +173,25 @@
 
 
 /**
+ * Reset.
+ */
+- (void)reset {
+    GLog();
+    
+    // vars
+    [_link setString:@""];
+    
+    // views
+    _activityIndicator.hidden = YES;
+    _iconError.hidden = YES;
+    _imageView.hidden = NO;
+    
+    // state
+    loaded = NO;
+}
+
+
+/**
  * Sets the placeholder image.
  */
 - (void)placeholderImage:(UIImage *)img {
@@ -188,7 +213,7 @@
     GLog();
     
     // reference
-    _link = [link copy];
+    [_link setString:link];
     
     // placeholder
     _imageView.image = _placeholderImage;
@@ -207,7 +232,7 @@
     GLog();
     
     // reference
-    _link = [link copy];
+    [_link setString:link];
     
     // placeholder
     _imageView.image = _placeholderImage;
@@ -245,6 +270,8 @@
         }
     }
 }
+
+
 
 /**
  * Cancels loading.
@@ -295,10 +322,16 @@
  * Returns the loaded image.
  */
 - (UIImage*)cachedImage {
-    FLog();
     return _imageView.image;
 }
 
+
+/**
+ * Returns the image view.
+ */
+- (UIImageView*)imageView {
+    return _imageView;
+}
 
 
 #pragma mark -
@@ -345,7 +378,11 @@
     }
 }
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-	[_receivedData appendData:data];
+    
+    // check data
+    if (_receivedData) {
+        [_receivedData appendData:data]; // CRASH
+    }
 }
 
 
@@ -360,7 +397,9 @@
     [_activityIndicator stopAnimating];
 	
 	// make an image view for the image
-    _imageView.image = [UIImage imageWithData:_receivedData];
+    if (_receivedData) {
+        _imageView.image = [UIImage imageWithData:_receivedData];
+    }
     
     // cache it
     NSError *error = nil;
@@ -376,7 +415,6 @@
     // release data
 	[_receivedData release]; 
 	_receivedData=nil;
-    
     
     // loaded
     loaded = YES;
@@ -405,7 +443,7 @@
  * Loads a cached image.
  */
 - (void)cacheImageLoad {
-    FLog();
+    GLog();
     
     // hide activity
     _activityIndicator.hidden = YES;
@@ -487,12 +525,12 @@
     // ui
     [_imageView release];
     [_activityIndicator release];
-    if (_link != NULL) {
-        [_link release];
-    }
     if (_placeholderImage != NULL) {
         [_placeholderImage release];
     }
+    
+    // vars
+    [_link release];
     
     // view
     [super dealloc];

@@ -33,6 +33,12 @@
 @implementation AboutViewController
 
 
+#pragma mark -
+#pragma mark Properties
+
+// accessors
+@synthesize delegate;
+
 
 #pragma mark -
 #pragma mark Object Methods
@@ -72,12 +78,14 @@
     self.view = [[AboutBackgroundView alloc] initWithFrame:vframe];
     self.view.opaque = YES;
     self.view.backgroundColor = [UIColor clearColor];
+    self.view.autoresizingMask = UIViewAutoresizingNone;
     
     // frames
-    CGRect tframe = CGRectMake(0, 0, vframe.size.width, 18);
-    CGRect cframe = CGRectMake(0, 18, vframe.size.width, 18);
+    CGRect bframe = CGRectMake(0, 1, 44, 44);
+    CGRect tframe = iPad ? CGRectMake(0, 5, vframe.size.width, 18) : CGRectMake(44, 5, vframe.size.width-44, 18);
+    CGRect cframe = iPad ? CGRectMake(0, 23, vframe.size.width, 18) : CGRectMake(44, 23, vframe.size.width-44, 18);
     CGRect aframe = CGRectMake(0, kAboutHeaderHeight+5, vframe.size.width+20, vframe.size.height-kAboutFooterHeight-kAboutHeaderHeight);
-    CGRect abframe = CGRectMake(0, vframe.size.height-kAboutFooterHeight+5, vframe.size.width, 45);
+    CGRect abframe = CGRectMake(0, vframe.size.height-kAboutFooterHeight+(iPad?5:2), vframe.size.width, 45);
     
     // title
 	UILabel *lblTitle = [[UILabel alloc] initWithFrame:tframe];
@@ -105,6 +113,15 @@
 	[self.view addSubview:lblClaim];
 	[lblClaim release];
     
+    // button back
+    if (!iPad) {
+        UIButton *btnBack = [UIButton buttonWithType:UIButtonTypeCustom]; 
+        btnBack.frame = bframe;
+        [btnBack setImage:[UIImage imageNamed:@"btn_back.png"] forState:UIControlStateNormal];
+        [btnBack addTarget:self action:@selector(actionBack:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:btnBack];
+    }
+    
 	
 	// description
 	UITextView *txtAbout = [[UITextView alloc] initWithFrame:aframe];
@@ -120,35 +137,66 @@
     [self.view addSubview:txtAbout];
 	[txtAbout release];
     
-    
     // link buttons
-    LinkButton *lbTMDb = [[LinkButton alloc] initWithFrame:CGRectMake(0, 267, 46, 20)];
+    LinkButton *lbTMDb = [[LinkButton alloc] initWithFrame:CGRectZero];
     lbTMDb.delegate = self;
     lbTMDb.link = @"http://www.themoviedb.org";
     
-    LinkButton *lbIMDb = [[LinkButton alloc] initWithFrame:CGRectMake(49, 267, 41, 20)];
+    LinkButton *lbIMDb = [[LinkButton alloc] initWithFrame:CGRectZero];
     lbIMDb.delegate = self;
     lbIMDb.link = @"http://www.imdb.com";
     
-    LinkButton *lbYouTube = [[LinkButton alloc] initWithFrame:CGRectMake(92, 267, 65, 20)];
+    LinkButton *lbYouTube = [[LinkButton alloc] initWithFrame:CGRectZero];
     lbYouTube.delegate = self;
     lbYouTube.link = @"http://www.youtube.com";
     
-    LinkButton *lbWikipedia = [[LinkButton alloc] initWithFrame:CGRectMake(186, 267, 72, 20)];
+    LinkButton *lbWikipedia = [[LinkButton alloc] initWithFrame:CGRectZero];
     lbWikipedia.delegate = self;
     lbWikipedia.link = @"http://www.wikipedia.org";
     
-    LinkButton *lbCinder = [[LinkButton alloc] initWithFrame:CGRectMake(72, 343, 49, 20)];
+    LinkButton *lbCinder = [[LinkButton alloc] initWithFrame:CGRectZero];
     lbCinder.delegate = self;
     lbCinder.link = @"http://libcinder.org";
     
-    // localization: de
-    if ([[SolyarisLocalization currentLanguage] isEqualToString:kLanguageDE]) {
-        lbTMDb.frame = CGRectMake(219, 227, 46, 20);
-        lbIMDb.frame = CGRectMake(268, 227, 41, 20);
-        lbYouTube.frame = CGRectMake(0, 247, 64, 20);
-        lbWikipedia.frame = CGRectMake(93, 247, 72, 20);
-        lbCinder.frame = CGRectMake(118, 343, 51, 20);
+    
+    // ipad
+    if (iPad) {
+        
+        // localization: de
+        if ([[SolyarisLocalization currentLanguage] isEqualToString:kLanguageDE]) {
+            lbTMDb.frame = CGRectMake(219, 232, 46, 20);
+            lbIMDb.frame = CGRectMake(268, 232, 41, 20);
+            lbYouTube.frame = CGRectMake(0, 252, 64, 20);
+            lbWikipedia.frame = CGRectMake(93, 252, 72, 20);
+            lbCinder.frame = CGRectMake(118, 348, 51, 20);
+        }
+        // localization: en
+        else {
+            lbTMDb.frame = CGRectMake(0, 272, 46, 20);
+            lbIMDb.frame = CGRectMake(49, 272, 41, 20);
+            lbYouTube.frame = CGRectMake(92, 272, 65, 20);
+            lbWikipedia.frame = CGRectMake(186, 272, 72, 20);
+            lbCinder.frame = CGRectMake(72, 348, 49, 20);
+        }
+    }
+    else {
+        
+        // localization: de
+        if ([[SolyarisLocalization currentLanguage] isEqualToString:kLanguageDE]) {
+            lbTMDb.frame = CGRectMake(219, 232, 46, 20);
+            lbIMDb.frame = CGRectMake(0, 253, 41, 20);
+            lbYouTube.frame = CGRectMake(44, 253, 64, 20);
+            lbWikipedia.frame = CGRectMake(137, 253, 72, 20);
+            lbCinder.frame = CGRectMake(118, 348, 51, 20);
+        }
+        // localization: en
+        else {
+            lbTMDb.frame = CGRectMake(160, 290, 46, 20);
+            lbIMDb.frame = CGRectMake(209, 290, 41, 20);
+            lbYouTube.frame = CGRectMake(0, 310, 65, 20);
+            lbWikipedia.frame = CGRectMake(94, 310, 72, 20);
+            lbCinder.frame = CGRectMake(72, 386, 49, 20);
+        }
     }
     
     // add
@@ -183,7 +231,7 @@
                                  initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace 
                                  target:nil 
                                  action:nil];
-    nspace.width = -12;
+    nspace.width = -15;
     
     
     // action feedback
@@ -191,7 +239,6 @@
                                                                               title:NSLocalizedString(@"Feedback", @"Feedback") 
                                                                               target:self 
                                                                               action:@selector(actionFeedback:)];
-    [actionFeedback modeDarkie];
 
     
     // action email
@@ -199,21 +246,24 @@
                                                                             title:NSLocalizedString(@"Email", @"Email") 
                                                                            target:self 
                                                                            action:@selector(actionEmail:)];
-    [actionEmail modeDarkie];
     
     // action twitter
     ActionBarButtonItem *actionTwitter = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_twitter.png"] 
                                                                               title:NSLocalizedString(@"Twitter", @"Twitter") 
                                                                              target:self 
                                                                              action:@selector(actionTwitter:)];
-    [actionTwitter modeDarkie];
     
     // action app store
     ActionBarButtonItem *actionAppStore = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_appstore.png"] 
                                                                                title:NSLocalizedString(@"AppStore", @"AppStore")
                                                                               target:self 
                                                                               action:@selector(actionAppStore:)];
-    [actionAppStore modeDarkie];
+    
+    // dark
+    [actionFeedback dark:YES];
+    [actionEmail dark:YES];
+    [actionTwitter dark:YES];
+    [actionAppStore dark:YES];
     
     
     // actions
@@ -241,6 +291,7 @@
     
     // add action bar
     [self.view addSubview:actionBar];
+    
     
 }
 
@@ -278,12 +329,11 @@
 
 	
 	// check mail support
-	if ([MFMailComposeViewController canSendMail]) {
+	if ([MailComposeController canSendMail]) {
         
         // mail composer
-		MFMailComposeViewController *composer = [[MFMailComposeViewController alloc] init];
+		MailComposeController *composer = [[MailComposeController alloc] init];
 		composer.mailComposeDelegate = self;
-        composer.navigationBar.barStyle = UIBarStyleBlack;
         composer.modalPresentationStyle = UIModalPresentationFormSheet;
 		
 		// subject
@@ -391,15 +441,14 @@
     [Tracker trackEvent:TEventAbout action:@"Feedback" label:[NSString stringWithFormat:@"%@",[(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefault:udInformationAppVersion]]];
 	
 	// check mail support
-	if (! [MFMailComposeViewController canSendMail]) {
+	if (! [MailComposeController canSendMail]) {
         
 	}
 	else {
 		
 		// mail composer
-		MFMailComposeViewController *composer = [[MFMailComposeViewController alloc] init];
+		MailComposeController *composer = [[MailComposeController alloc] init];
 		composer.mailComposeDelegate = self;
-        composer.navigationBar.barStyle = UIBarStyleBlack;
         composer.modalPresentationStyle = UIModalPresentationFormSheet;
 		
 		// subject
@@ -416,6 +465,19 @@
 
 		
 	}
+}
+
+
+/*
+ * Action back.
+ */
+- (void)actionBack:(id)sender  {
+    DLog();
+    
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(aboutBack)]) {
+        [delegate aboutBack];
+    }
 }
 
 

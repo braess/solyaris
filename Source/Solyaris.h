@@ -84,6 +84,7 @@ class Solyaris : public AppCocoaTouch {
     double dwidth;
     double dheight;
     bool retina;
+    bool redux;
     double pscale;
     CGPoint ppinch;
 

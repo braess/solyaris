@@ -21,7 +21,8 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import <UIKit/UIKit.h>
-
+#import "Movie.h"
+#import "Asset.h"
 
 /**
  * Video View.
@@ -33,7 +34,9 @@
     
     // private
     @private
-    NSString *_url;
+    NSMutableArray *_videos;
+    
+    // state
     bool loaded;
     
 }
@@ -45,10 +48,12 @@
 - (id)initWithFrame:(CGRect)frame scrolling:(BOOL)bounces;
 
 // Methods
-- (void)reset:(NSString*)url;
-- (void)load;
+- (void)reset;
+- (void)resetTrailer:(Movie*)movie;
+- (NSArray*)videos;
+- (void)load:(int)ndx;
 - (void)unload;
-- (void)loadVideo:(NSString*)url;
+- (void)loadYouTube:(NSString*)vid;
 - (void)scrollTop:(bool)animated;
 - (void)resize;
 
@@ -57,25 +62,18 @@
 
 
 
-//
-//  DDURLParser.h
-//  
-//
-//  Created by Dimitris Doukas on 09/02/2010.
-//  Copyright 2010 doukasd.com. All rights reserved.
-//
-
-
-/*
- * URL Parser.
+/**
+ * Video.
  */
-@interface VideoURLParser : NSObject {
-    NSArray *variables;
+@interface Video : NSObject {
+    
 }
 
-@property (nonatomic, retain) NSArray *variables;
+// Object
+- (id)initWithTitle:(NSString*)t url:(NSString*)u;
 
-- (id)initWithURLString:(NSString *)url;
-- (NSString *)valueForVariable:(NSString *)varName;
+// Properties
+@property (nonatomic,retain) NSString* title;
+@property (nonatomic,retain) NSString* url;
 
 @end

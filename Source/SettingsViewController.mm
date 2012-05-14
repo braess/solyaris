@@ -23,11 +23,32 @@
 #import "SettingsViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "SolyarisAppDelegate.h"
+#import "SolyarisConstants.h"
+
+
+/**
+ * Animation Stack.
+ */
+@interface SettingsViewController (AnimationHelpers)
+- (void)animationAbout;
+- (void)animationAboutDone;
+- (void)animationPreferences;
+- (void)animationPreferencesDone;
+@end
+
 
 /**
  * SettingsViewController.
  */
 @implementation SettingsViewController
+
+
+#pragma mark -
+#pragma mark Constants
+
+// constants
+#define kAnimateTimeAbout           0.24
+#define kAnimateTimePreferences     0.24
 
 
 #pragma mark -
@@ -77,35 +98,36 @@
     float border = (wframe.size.width-vframe.size.width)/2.0;
     
     // frames
-    CGRect cframe = CGRectMake(border, wframe.size.height-vframe.size.height, vframe.size.width, vframe.size.height);
-    CGRect aframe = CGRectMake(0, border, 320, vframe.size.height-border);
-    CGRect pframe = CGRectMake(cframe.size.width-320, border, 320, vframe.size.height-border);
-
+    CGRect cframe = iPad ? CGRectMake(border, wframe.size.height-vframe.size.height, vframe.size.width, vframe.size.height) : CGRectMake(0, 0, vframe.size.width*2, vframe.size.height);
+    CGRect aframe = iPad ? CGRectMake(0, border, 320, vframe.size.height-border) : CGRectMake(vframe.size.width+10, 15, vframe.size.width-20, vframe.size.height-10);
+    CGRect pframe = iPad ? CGRectMake(cframe.size.width-320, border, 320, vframe.size.height-border) : CGRectMake(10, 15, vframe.size.width-20, vframe.size.height-10);
     
+    CGRect bframe =  CGRectMake(vframe.size.width-44, 5, 44, 44);
+
     // view
     self.view = [[UIView alloc] initWithFrame:wframe];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.view.hidden = YES;
     
-    
 	// content
     UIView *ctView = [[UIView alloc] initWithFrame:cframe];
     ctView.autoresizesSubviews = NO;
-    ctView.contentMode = UIViewContentModeRedraw; // Thats the one
-    ctView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
-    ctView.backgroundColor = [UIColor clearColor];
+    ctView.contentMode = UIViewContentModeRedraw; 
+    ctView.autoresizingMask = iPad ? (UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin) : UIViewAutoresizingNone;
+    ctView.backgroundColor = iPad ? [UIColor clearColor] : [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_settings.png"]];
 	ctView.opaque = YES;
     
     // drop that shadow
-    float dx = 1024-768;
-	CAGradientLayer *dropShadow = [[[CAGradientLayer alloc] init] autorelease];
-	dropShadow.frame = CGRectMake(-border-dx, 0, cframe.size.width+2*border+2*dx, 12);
-	dropShadow.colors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:0 alpha:1.0].CGColor,(id)[UIColor colorWithWhite:0 alpha:0.3].CGColor,(id)[UIColor colorWithWhite:0 alpha:0].CGColor,nil];
+    float dx = iPad ? (1024-768) : 0;
+	CAGradientLayer *dropShadow = [[CAGradientLayer alloc] init];
+	dropShadow.frame = CGRectMake(-border-dx, 0, cframe.size.width+2*border+2*dx, 15);
+	dropShadow.colors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:0 alpha:0.5].CGColor,(id)[UIColor colorWithWhite:0 alpha:0.03].CGColor,(id)[UIColor colorWithWhite:0 alpha:0].CGColor,nil];
 	[ctView.layer insertSublayer:dropShadow atIndex:0];
-    
+    [dropShadow release];
     
     // about
     AboutViewController *aboutViewController = [[AboutViewController alloc] initWithFrame:aframe];
+    aboutViewController.delegate = self;
     [aboutViewController loadView];
     _aboutViewController = [aboutViewController retain];
     [ctView addSubview:_aboutViewController.view];
@@ -117,6 +139,16 @@
     _preferencesViewController = [preferencesViewController retain];
     [ctView addSubview:_preferencesViewController.view];
     [preferencesViewController release];
+    
+    // close
+    UIButton *btnShut = [UIButton buttonWithType:UIButtonTypeCustom]; 
+    btnShut.frame = bframe;
+    [btnShut setImage:[UIImage imageNamed:@"btn_shut.png"] forState:UIControlStateNormal];
+    [btnShut addTarget:self action:@selector(actionClose:) forControlEvents:UIControlEventTouchUpInside];
+    _buttonClose = [btnShut retain];
+    [ctView  addSubview:_buttonClose];
+    
+    _buttonClose.hidden = iPad;
     
     
     // add & release content
@@ -212,9 +244,149 @@
         [delegate settingsHelp];
     }
 }
+- (void)preferencesAbout {
+    FLog();
+    
+    // about
+    [self animationAbout];
+}
+
+/* 
+ * Mode modal.
+ */
+- (void)preferencesModal:(BOOL)modal {
+    FLog();
+    
+    // hide close
+    _buttonClose.hidden = modal;
+}
 
 
 
+#pragma mark -
+#pragma mark Actions
+
+/*
+ * Action close.
+ */
+- (void)actionClose:(id)sender {
+    DLog();
+    
+    // dismiss
+    if (delegate && [delegate respondsToSelector:@selector(settingsDismiss)]) {
+        [delegate settingsDismiss];
+    }
+}
+
+
+
+#pragma mark -
+#pragma mark About Delegate
+
+/*
+ * Close.
+ */
+- (void)aboutBack {
+    FLog();
+    
+    // about
+    [self animationPreferences];
+}
+
+
+
+#pragma mark -
+#pragma mark Helpers
+
+
+/*
+ * Animation about.
+ */
+- (void)animationAbout {
+	GLog();
+	
+	// prepare controllers
+	[_aboutViewController viewWillAppear:YES];
+    [_preferencesViewController viewWillDisappear:YES];
+    
+    // frame
+    CGRect settingsFrame = self.contentView.frame;
+    settingsFrame.origin.x = 0;
+    self.contentView.frame = settingsFrame;
+    settingsFrame.origin.x = - vframe.size.width;
+    
+    // animate 
+	[UIView beginAnimations:@"animation_about" context:nil];
+	[UIView setAnimationDuration:kAnimateTimeAbout];
+    self.contentView.frame = settingsFrame;
+	[UIView commitAnimations];
+    
+	// clean it up
+	[self performSelector:@selector(animationAboutDone) withObject:nil afterDelay:kAnimateTimeAbout];
+}
+- (void)animationAboutDone {
+	GLog();
+    
+    // appeared
+    [_aboutViewController viewDidAppear:YES];
+    [_preferencesViewController viewDidDisappear:YES];
+    
+}
+
+
+/*
+ * Animation preferences.
+ */
+- (void)animationPreferences {
+	GLog();
+	
+	// prepare controllers
+	[_preferencesViewController viewWillAppear:YES];
+    [_aboutViewController viewWillDisappear:YES];
+    
+    // frame
+    CGRect settingsFrame = self.contentView.frame;
+    settingsFrame.origin.x = - vframe.size.width;
+    self.contentView.frame = settingsFrame;
+    settingsFrame.origin.x = 0;
+    
+    // animate 
+	[UIView beginAnimations:@"animation_preferences" context:nil];
+	[UIView setAnimationDuration:kAnimateTimePreferences];
+    self.contentView.frame = settingsFrame;
+	[UIView commitAnimations];
+    
+	// clean it up
+	[self performSelector:@selector(animationPreferencesDone) withObject:nil afterDelay:kAnimateTimePreferences];
+}
+- (void)animationPreferencesDone {
+	GLog();
+    
+    // appeared
+    [_preferencesViewController viewDidAppear:YES];
+    [_aboutViewController viewDidDisappear:YES];
+    
+}
+
+
+#pragma mark -
+#pragma mark Memory management
+
+/**
+ * Deallocates all used memory.
+ */
+- (void)dealloc {
+	GLog();
+    
+    // self
+	[_contentView release];
+    [_aboutViewController release];
+    [_preferencesViewController release];
+    [_buttonClose release];
+    
+	// super
+    [super dealloc];
+}
 
 
 @end

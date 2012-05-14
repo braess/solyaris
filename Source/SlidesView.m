@@ -67,11 +67,7 @@
         [sView release];
         
         // page control
-        ColorPageControl *pControl = [[ColorPageControl alloc] initWithFrame:CGRectZero];
-        pControl.backgroundColor = [UIColor clearColor];
-        pControl.inactivePageColor = [UIColor colorWithRed:180.0/255.0 green:180.0/255.0 blue:180.0/255.0 alpha:0.9];
-        pControl.activePageColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:0.9];
-        pControl.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        PageControl *pControl = [[PageControl alloc] initWithFrame:CGRectZero];
         _pageControl = [pControl retain];
         [self addSubview:_pageControl];
         [pControl release];
@@ -85,7 +81,6 @@
         
         _btnSave = [btnSave retain];
         [self addSubview:_btnSave];
-        [btnSave release];
         
         
         // data
@@ -285,7 +280,7 @@
         UIActionSheet *saveActions = [[UIActionSheet alloc]
                                       initWithTitle:nil
                                       delegate:self
-                                      cancelButtonTitle:nil
+                                      cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")
                                       destructiveButtonTitle:nil
                                       otherButtonTitles:NSLocalizedString(@"Save to Photos", @"Save to Photos"),nil];
         
@@ -402,103 +397,3 @@
 
 @end
 
-
-/**
- * Color page control.
- */
-@implementation ColorPageControl
-
-
-#pragma mark -
-#pragma mark Properties
-
-// accessors
-@synthesize numberOfPages, hidesForSinglePage, inactivePageColor, activePageColor;
-@dynamic currentPage;
-
-
-#pragma mark -
-#pragma mark Object Methods
-
-/*
- * Init.
- */
-- (id)initWithFrame:(CGRect)frame {
-    if (self == [super initWithFrame:frame]) {
-        
-        // self
-        self.contentMode = UIViewContentModeRedraw;
-        
-        // fields
-        hidesForSinglePage = NO;
-    }
-    return self;
-}
-
-/*
- * Draw.
- */
-- (void)drawRect:(CGRect)rect {
-	
-	// decide
-	if (hidesForSinglePage == NO || [self numberOfPages] > 1){
-        
-		// defaults
-		if (activePageColor == nil){
-			activePageColor = [UIColor blackColor];
-		}
-		
-		if (inactivePageColor == nil){
-			inactivePageColor = [UIColor grayColor];
-		}
-		
-		// vars
-		CGContextRef context = UIGraphicsGetCurrentContext();
-		float dotSize = self.frame.size.height / 6;		
-		float dotsWidth = (dotSize * [self numberOfPages]) + (([self numberOfPages] - 1) * 10);
-		float offset = (self.frame.size.width - dotsWidth) / 2;
-		
-		// draw dots
-		for (NSInteger i = 0; i < [self numberOfPages]; i++){
-			if (i == [self currentPage]){
-				CGContextSetFillColorWithColor(context, [activePageColor CGColor]);
-			} 
-			else {
-				CGContextSetFillColorWithColor(context, [inactivePageColor CGColor]);
-			}
-			
-			CGContextFillEllipseInRect(context, CGRectMake(offset + (dotSize + 10) * i, (self.frame.size.height / 2) - (dotSize / 2), dotSize, dotSize));
-		}
-	}
-}
-
-#pragma mark -
-#pragma mark Business Methods
-
-/*
- * Current.
- */
-- (NSInteger) currentPage{
-	return currentPage;
-}
-
-- (void) setCurrentPage:(NSInteger)page {
-	currentPage = page;
-	[self setNeedsDisplay];
-}
-
-
-#pragma mark -
-#pragma mark Memory Management
-
-/*
- * Dealloc.
- */
-- (void)dealloc {
-    
-    // sup
-    [super dealloc];
-}
-
-
-@end

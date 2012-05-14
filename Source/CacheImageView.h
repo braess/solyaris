@@ -40,7 +40,7 @@
     
     // private
     @private
-    NSString *_link;
+    NSMutableString *_link;
     bool loaded;
 }
 
@@ -52,7 +52,9 @@
 - (void)load;
 - (void)cancel;
 - (BOOL)loaded;
+- (void)reset;
 - (UIImage*)cachedImage;
+- (UIImageView*)imageView;
 + (void)clearCache;
 
 @end

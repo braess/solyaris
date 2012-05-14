@@ -111,12 +111,16 @@ class Graph {
     int height;
     int orientation;
     bool retina;
+    bool redux;
+    bool portrait;
     float dpr;
     float speed;
     float friction;
     float harea;
     bool layout_nodes, layout_subnodes;
-    gl::Texture background;
+    
+    // background
+    gl::Texture bg_portrait, bg_landscape;
     
     
     // data

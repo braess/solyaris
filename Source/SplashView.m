@@ -40,8 +40,15 @@
 #pragma mark Constants
 
 // constants
-#define kDelayTimeSplashDismiss             3.0f
+#define kDelayTimeSplashDismiss             1.5f
 #define kAnimateTimeSplashDismiss           1.5f
+
+
+#pragma mark -
+#pragma mark Properties
+
+// accessors
+@synthesize delegate;
 
 
 #pragma mark -
@@ -61,7 +68,7 @@
 		
 		// splash
 		_splash = [[UIImageView alloc] initWithFrame:frame];
-		_splash.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+		_splash.autoresizingMask = UIViewAutoresizingNone;
 		_splash.backgroundColor = [UIColor clearColor];
 		_splash.contentMode = UIViewContentModeTopLeft;
         
@@ -85,13 +92,22 @@
 - (void)layoutSubviews {
     
     // frame
-    CGRect frame = CGRectMake(0, 0, 768, 1024);
-    _splash.image = [UIImage imageNamed:@"Default-Portrait.png"];
-    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
-        NSLog(@"landscape");
-        frame = CGRectMake(0, 0, 1024, 768);
-        _splash.image = [UIImage imageNamed:@"Default-Landscape.png"];
+    CGRect frame = (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad)  ? CGRectMake(0, 0, 768, 1024) : CGRectMake(0, 0, 320, 480);
+    
+    // ipad
+    if ((UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad)) {
+        _splash.image = [UIImage imageNamed:@"Default-Portrait.png"];
+        if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+            frame = CGRectMake(0, 0, 1024, 768);
+            _splash.image = [UIImage imageNamed:@"Default-Landscape.png"];
+        }
     }
+    // redux
+    else {
+        _splash.image = [UIImage imageNamed:@"Default.png"];
+    }
+    
+    // self
     self.frame = frame;
     
 }
@@ -104,7 +120,7 @@
  * Rotate is the new black.
  */
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return YES;
+    return (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad);
 }
 
 
@@ -134,7 +150,7 @@
 	// animate
 	[UIView beginAnimations:@"splash_dismiss" context:nil];
 	[UIView setAnimationDuration:kAnimateTimeSplashDismiss];
-	[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
+	[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
 	_splash.alpha = 0.0f;
 	[UIView commitAnimations];
     
@@ -151,6 +167,11 @@
 	
 	// bye
 	[self removeFromSuperview];
+    
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(splashDismiss)]) {
+        [delegate splashDismiss];
+    }
 }
 
 

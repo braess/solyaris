@@ -27,7 +27,7 @@ http://itunes.apple.com/app/solyaris-visual-movie-browser/id481963410?mt=8
 
 
 -----------------------------------------------------------------
-Frameworks & COMPONENTS
+COMPONENTS
 -----------------------------------------------------------------
 
 
@@ -50,12 +50,3 @@ http://stig.brautaset.org
 - Project
 http://stig.github.com/json-framework
 
-
-
-DDURLParser
------------------------------------------------------------------
-- Author
-Dimitri Doukas
-
-- Project
-http://dev.doukasd.com/2011/03/

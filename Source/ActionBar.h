@@ -36,10 +36,13 @@
  * Custom ActionBarButton.
  */
 @interface ActionBarButton : UIButton {
+    
+    
 }
 
 // Constructor
 - (id)initWithImage:(UIImage *)image title:(NSString *)title target:(id)target action:(SEL)action;
+- (id)initWithImage:(UIImage *)image selected:(UIImage*)selected title:(NSString *)title target:(id)target action:(SEL)action;
 
 @end
 
@@ -55,8 +58,10 @@
 
 // Constructor
 - (id)initWithImage:(UIImage *)image title:(NSString *)title target:(id)target action:(SEL)action;
+- (id)initWithImage:(UIImage *)image selected:(UIImage*)selected title:(NSString *)title target:(id)target action:(SEL)action;
 - (void)setSelected:(BOOL)s;
+- (void)setFrame:(CGRect)frame;
 - (void)setTitle:(NSString *)title;
-- (void)modeDarkie;
+- (void)dark:(BOOL)flag;
 
 @end

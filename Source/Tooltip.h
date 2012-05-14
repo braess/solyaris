@@ -74,6 +74,7 @@ class Tooltip {
     private:
     
     // config
+    bool redux;
     bool retina;
     
     // States
@@ -98,6 +99,7 @@ class Tooltip {
     Vec2d off;
     Vec2d inset;
     Vec2d size;
+    Vec2i maxed;
     gl::Texture	textureText;
     
 };

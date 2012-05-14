@@ -36,11 +36,12 @@
 @property (nonatomic, retain) NSString *type;
 @property (nonatomic, retain) NSString *label;
 @property (nonatomic, retain) NSString *meta;
+@property (nonatomic, retain) NSString *thumb;
 @property (nonatomic, retain) DataEdge *edge;
 @property bool visible;
 @property bool loaded;
 
 // Object
-- (id)initData:(NSNumber*)n type:(NSString*)t label:(NSString*)l meta:(NSString*)m edge:(DataEdge*)e visible:(bool)iv loaded:(bool)il;
+- (id)initData:(NSNumber*)n type:(NSString*)t label:(NSString*)l meta:(NSString*)m thumb:(NSString*)tmb edge:(DataEdge*)e visible:(bool)iv loaded:(bool)il;
 
 @end

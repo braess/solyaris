@@ -29,12 +29,22 @@
 #define typePersonCrew                  @"person_crew"	
 #define typeSearch                      @"search"
 
+// Categories
+#define catEntertainment                @"entertainment"
+#define catViolence                     @"violence"
+#define catCreativity                   @"creativity"
+#define catPassion                      @"passion"
+#define catHappiness                    @"happiness"
+#define catNatural                      @"natural"
+
 
 // Assets
 #define assetProfile                    @"profile"
 #define assetPoster                     @"poster"
 #define assetBackdrop                   @"backdrop"
+#define assetTrailer                    @"trailer"
 #define assetSizeOriginal               @"original"
+#define assetSizeMed                    @"med"
 #define assetSizeMid                    @"mid"
 #define assetSizeThumb                  @"thumb"
 
@@ -48,6 +58,7 @@
 #define udGraphNodeInitial              @"graph_node_initial"	
 #define udGraphEdgeLength               @"graph_edge_length"	
 #define udSearchTerm                    @"search_term"	
+#define udSearchType                    @"search_type"
 
 
 // Localization
@@ -59,6 +70,7 @@
 // URLs
 #define urlTMDbMovie                    @"http://www.themoviedb.org/movie/"
 #define urlTMDbPerson                   @"http://www.themoviedb.org/person/"
+#define urlTMDbMissing                  @"http://www.themoviedb.org/movie"
 #define urlITunesSearch                 @"itms://ax.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?term="
 
 
@@ -67,10 +79,14 @@
 #define vAppStoreLink                   @"itms-apps://itunes.apple.com/app/id481963410"
 #define vAppStoreURL                    @"http://itunes.apple.com/app/solyaris-a-visual-movie-browser/id481963410?mt=8"
 
-// Messages
-#define msgAppInstall                   @"message_app_install"
-#define msgAppUpdate                    @"message_app_update"
+// Triggers
+#define triggerAppInstall               @"trigger_app_install"
+#define triggerAppUpdate                @"trigger_app_update"
 
+
+// Flags
+#define iPad                            (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad)
+#define iPhone                          (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPhone)
 
 // System Version
 #define iOS4    ([[[UIDevice currentDevice] systemVersion] compare:@"5.0" options:NSNumericSearch] == NSOrderedAscending)

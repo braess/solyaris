@@ -21,8 +21,10 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "SolyarisAppDelegate.h"
+#import "AppControllers.h"
 #import "SolyarisConstants.h"
 #import "TMDb.h"
+#import "NoteView.h"
 #import "CacheImageView.h"
 #import "Tracker.h"
 
@@ -52,6 +54,7 @@
     
     // customize appearance
 	[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
+    [AppControllers appAppearance];
     
     // version
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -66,9 +69,9 @@
 		[self update:appVersion];
 	}
     
+    
     // cinder
     [super applicationDidFinishLaunching:application];
-
 }
 
 /*
@@ -163,11 +166,14 @@
     // init search term
     [userDefaults setObject:@"Kill Bill" forKey:udSearchTerm];
     
-    // message
-    [userDefaults setObject:appVersion forKey:msgAppInstall];
+    // trigger
+    [userDefaults setObject:appVersion forKey:triggerAppInstall];
     
     // synchronize
     [userDefaults synchronize];
+    
+    // check depreceated
+    [self depreceated];
 
 }
 
@@ -181,9 +187,7 @@
 	[Tracker trackEvent:TEventApp action:@"Update" label:appVersion];
     
     // reset tmdb cache
-    TMDb *tmdb = [[TMDb alloc] init];
-    [tmdb clearCache];
-    [tmdb release];
+    [TMDb clearCache];
     
     // reset image cache
     [CacheImageView clearCache];
@@ -194,12 +198,52 @@
 	// set version
 	[userDefaults setObject:appVersion forKey:udInformationAppVersion];
     
-    // message
-    [userDefaults setObject:appVersion forKey:msgAppUpdate];
+    // trigger
+    [userDefaults setObject:appVersion forKey:triggerAppUpdate];
     
     // sync
 	[userDefaults synchronize];
+    
+    // check depreceated
+    if (! [self depreceated]) {
+        
+        // note
+        Note *note = [[Note alloc] initNoteWithTitle:NSLocalizedString(@"Updated", @"Updated") message:[NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Solyaris", @"Solyaris"),appVersion ] type:noteTypeSuccess];
+        
+        // store
+        [Note storeNote:note key:noteAppUpdate];
+        [note release];
+    }
 
+}
+
+/*
+ * Depreceated.
+ */
+- (BOOL)depreceated {
+    
+    // ios4
+    if (iOS4) {
+        NSLog(@"Solyaris depreceated iOS4.");
+        
+        // track
+        [Tracker trackEvent:TEventApp action:@"Depreceated" label:@"ios4"];
+        
+        // note
+        Note *note = [[Note alloc] initNoteWithTitle:NULL message:NSLocalizedString(@"Thanks for using Solyaris. Please note that iOS4 is no longer fully supported.", @"Thanks for using Solyaris. Please note that iOS4 is no longer fully supported.") type:noteTypeInfo];
+        
+        // store
+        [Note storeNote:note key:noteAppDeprecated];
+        [note release];
+        
+        // yup
+        return YES;
+        
+    }
+    
+    // nop
+    return NO;
+    
 }
 
 
@@ -294,6 +338,8 @@
 	[userDefaults removeObjectForKey:key];
 	[userDefaults synchronize];
 }
+
+
 
 
 

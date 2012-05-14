@@ -44,6 +44,7 @@
 @synthesize delegate;
 
 
+
 #pragma mark -
 #pragma mark Object Methods
 
@@ -85,6 +86,19 @@
     
     // self
     self.view.frame = vframe;
+    self.view.autoresizingMask = UIViewAutoresizingNone;
+    
+    // modal
+    if (! iPad) {
+        
+        // done
+        UIBarButtonItem *btnDone = [[UIBarButtonItem alloc] 
+                                    initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                    target:self 
+                                    action:@selector(actionDone:)];
+        self.navigationItem.rightBarButtonItem = btnDone;
+        [btnDone release];
+    }
    
 }
 
@@ -103,6 +117,24 @@
     [self.tableView reloadData];
     
 }
+
+
+
+#pragma mark -
+#pragma mark Actions
+
+/*
+ * Action done.
+ */
+- (void)actionDone:(id)sender {
+    DLog();
+    
+    // set localization
+    if (delegate && [delegate respondsToSelector:@selector(localizationDismiss)]) {
+        [delegate localizationDismiss];
+    }
+}
+
 
 
 #pragma mark -
@@ -200,7 +232,9 @@
         for (LocalizationProperty *lp in properties) {
             
             // picker data
-            [pdata addObject:[[[PickerData alloc] initWithIndex:index label:lp.label value:lp.key] autorelease] ];
+            PickerData *pd = [[PickerData alloc] initWithIndex:index label:lp.label value:lp.key];
+            [pdata addObject:pd];
+            [pd release];
             
             // set cell
 			if ([lp.key isEqualToString:locIMDb]) {
@@ -253,7 +287,9 @@
         for (LocalizationProperty *lp in properties) {
             
             // picker data
-            [pdata addObject:[[[PickerData alloc] initWithIndex:index label:lp.label value:lp.key] autorelease] ];
+            PickerData *pd = [[PickerData alloc] initWithIndex:index label:lp.label value:lp.key];
+            [pdata addObject:pd];
+            [pd release];
             
             // set cell
 			if ([lp.key isEqualToString:locWikipedia]) {
@@ -306,7 +342,9 @@
         for (LocalizationProperty *lp in properties) {
             
             // picker data
-            [pdata addObject:[[[PickerData alloc] initWithIndex:index label:lp.label value:lp.key] autorelease] ];
+            PickerData *pd = [[PickerData alloc] initWithIndex:index label:lp.label value:lp.key];
+            [pdata addObject:pd];
+            [pd release];
             
             // set cell
 			if ([lp.key isEqualToString:locAmazon]) {

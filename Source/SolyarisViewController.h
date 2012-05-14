@@ -23,10 +23,11 @@
 #import <UIKit/UIKit.h>
 #import "TMDb.h"
 #import "NoteView.h"
+#import "SearchBarViewController.h"
 #import "SearchViewController.h"
-#import "SearchResultViewController.h"
 #import "InformationViewController.h"
 #import "SettingsViewController.h"
+#import "SplashView.h"
 #import "cinder/app/CinderViewCocoaTouch.h"
 
 // Declarations
@@ -41,7 +42,7 @@ enum {
 /**
  * Solyaris ViewController.
  */
-@interface SolyarisViewController : UIViewController <UIPopoverControllerDelegate, UIAlertViewDelegate, APIDelegate, SearchDelegate, SearchResultDelegate, InformationDelegate, SettingsDelegate> {
+@interface SolyarisViewController : UIViewController <UIPopoverControllerDelegate, UIAlertViewDelegate, APIDelegate, SearchBarDelegate, SearchDelegate, InformationDelegate, SettingsDelegate, SplashDelegate> {
     
     // app
     Solyaris *solyaris;
@@ -49,8 +50,8 @@ enum {
     
     // controllers
     NoteView *_noteView;
+    SearchBarViewController *_searchBarViewController;
     SearchViewController *_searchViewController;
-    SearchResultViewController *_searchResultViewController;
     InformationViewController *_informationViewController;
     SettingsViewController *_settingsViewController;
     UIButton *_buttonSettings;
@@ -58,14 +59,17 @@ enum {
     // cinder
     CinderViewCocoaTouch *_cinderView;
     
-    // popover
-	UIPopoverController *_searchResultsPopoverController;
     
     // private
     @private
     
     // modes
     bool mode_settings;
+    bool mode_splash;
+    bool mode_search;
+    
+    // data nodes
+    NSMutableDictionary *_dta_nodes;
     
 }
 

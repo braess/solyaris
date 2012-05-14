@@ -22,13 +22,28 @@
 
 #import <UIKit/UIKit.h>
 
+/**
+ * HeaderDelegate Protocol.
+ */
+@protocol SplashDelegate<NSObject>
+@optional
+- (void)splashDismiss;
+@end
 
 /**
  * SplashView.
  */
 @interface SplashView : UIView {
+    
+    // delegate
+	id<SplashDelegate>delegate;
+    
+    // ui
     UIImageView *_splash;
 }
+
+// Properties
+@property (assign) id<SplashDelegate> delegate;
 
 // Business
 - (void)dismissSplash;

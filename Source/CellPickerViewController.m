@@ -21,6 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "CellPickerViewController.h"
+#import "SolyarisConstants.h"
 
 
 /**
@@ -51,11 +52,12 @@
 	if ((self = [super init])) {
 
 		// view
-		self.view = [[UIView alloc] initWithFrame:CGRectMake(0,0,320,180)];
+		self.view = [[UIView alloc] initWithFrame:iPad ? CGRectMake(0,0,320,180) : CGRectMake(0,0,320,436)];
 		self.contentSizeForViewInPopover = CGSizeMake(320, 180);
+        self.view.backgroundColor = [UIColor lightGrayColor];
         
 		// position the picker at the bottom
-		UIPickerView *p = [[UIPickerView alloc] initWithFrame:CGRectMake(0,0,320,180)];
+		UIPickerView *p = [[UIPickerView alloc] initWithFrame: iPad ? CGRectMake(0,0,320,180) : CGRectMake(0,0,320,216.0)];
 		p.showsSelectionIndicator = YES;	// note this is default to NO
 	
 		// data source and delegate

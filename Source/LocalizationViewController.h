@@ -31,6 +31,7 @@
 @protocol LocalizationDelegate <NSObject>
 - (void)setLocalization:(NSString*)key value:(NSObject*)value;
 - (NSObject*)getLocalization:(NSString*)key;
+- (void)localizationDismiss;
 @end
 
 
@@ -53,6 +54,9 @@ enum {
     @private
     CGRect vframe;
     SolyarisLocalization *_sloc;
+    
+    // modes
+    BOOL mode_modal;
 }
 
 // Object Methods
@@ -60,5 +64,9 @@ enum {
 
 // Properties
 @property (assign) id<LocalizationDelegate> delegate;
+
+
+// Actions
+- (void)actionDone:(id)sender;
 
 @end

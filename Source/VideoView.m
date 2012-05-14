@@ -21,7 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "VideoView.h"
-
+#import "SolyarisConstants.h"
 
 /**
  * VideoView.
@@ -33,8 +33,8 @@
 #pragma mark Constants
 
 // constants
-#define kVideoMatchYouTube	@"youtube.com"
-#define kVideoEmbedYouTube  @"http://www.youtube.com/embed/"
+#define kVideoYouTube       @"http://www.youtube.com/watch?v="
+#define kVideoYouTubeEmbed  @"http://www.youtube.com/embed/"
 
 
 
@@ -91,6 +91,11 @@
 		[self addSubview:_webView];
         
         // loaded
+        NSMutableArray *videos = [[NSMutableArray alloc] init];
+        _videos = [videos retain];
+        [videos release];
+        
+        // state
         loaded = NO;
         
     }
@@ -104,27 +109,65 @@
 
 
 /**
- * Reset.
+ * Reset trailer.
  */
-- (void)reset:(NSString*)vid {
-	FLog();
-    
-    // video url
-    _url = [vid retain];
+- (void)reset {
+    GLog();
     
     // unload
     [self unload];
+    
+    // reset
+    [_videos removeAllObjects];
+    
 }
+- (void)resetTrailer:(Movie *)movie {
+	FLog();
+    
+    // reset
+    [self reset];
+    
+    // sort
+	NSSortDescriptor *sorter = [[NSSortDescriptor alloc] initWithKey:@"sort" ascending:TRUE];
+	NSArray *assets = [[movie.assets allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sorter]];
+	[sorter release];
+    
+    
+    // backdrops
+    for (Asset *a in assets) {
+        
+        // backdrop
+        if ([a.type isEqualToString:assetTrailer]) {
+            
+            // video
+            Video *v = [[Video alloc] initWithTitle:a.name url:a.value];
+            [_videos addObject:v];
+            [v release];
+        }
+    }
+
+}
+
+/*
+ * Returns the video objects.
+ */
+- (NSArray*)videos {
+    return _videos;
+}
+
 
 /**
  * Loads the default video.
  */
-- (void)load {
+- (void)load:(int)ndx {
     FLog();
     
     // check
-    if (! loaded) {
-        [self loadVideo:_url];
+    if (! loaded && ndx < [_videos count]) {
+        
+        // video
+        Video *v = [_videos objectAtIndex:ndx];
+        [self loadYouTube:v.url];
     }
     
     // state
@@ -141,40 +184,17 @@
     loaded = NO;
     
     // black out
-    [_webView loadHTMLString:@"<html><head><style type='text/css'>html, body {background-color:black;}</style></head><body></body></html>" baseURL:nil];
+    [_webView loadHTMLString:@"<html><head><style type='text/css'>html, body {background-color:white;}</style></head><body></body></html>" baseURL:nil];
 }
 
 /**
  * Loads a video.
  */
-- (void)loadVideo:(NSString *)url {
+- (void)loadYouTube:(NSString *)vid {
     FLog();
     
-    // default
-    NSString *embed = [NSString stringWithFormat:@"<p>Video Format currently not supported by Solyaris.</p><p>Try to watch it online: <br/><a href='%@'>%@</a></p>",url,url];
-    
-    
-    // YouTube
-    if ([url rangeOfString:kVideoMatchYouTube].location != NSNotFound) {
-        
-        // video id
-        NSString *vid = NULL;
-        
-        // old style
-        if ([url rangeOfString:@"v="].location != NSNotFound) {
-            
-            // parser
-            VideoURLParser *parser = [[[VideoURLParser alloc] initWithURLString:url] autorelease];
-            vid = [parser valueForVariable:@"v"];
-        }
-        
-        // embed
-        if (vid != NULL) {
-            embed = [NSString stringWithFormat:@"<iframe src='%@%@' frameborder='0' allowfullscreen></iframe>",kVideoEmbedYouTube,vid];
-        }
-        
-    }
-    
+    // embed
+    NSString *embed = [NSString stringWithFormat:@"<iframe src='%@%@' frameborder='0' allowfullscreen></iframe>",kVideoYouTubeEmbed,vid];
     
     // html
     NSString *html = [NSString stringWithFormat:@"<html><head><style type='text/css'>html, body {display:table; width:100%%; height:100%%; margin:0; padding:0; font-family:Helvetica; -webkit-text-size-adjust: none; background-color:black;} iframe {width:100%%; height:100%%;} p {font-size:24px; line-height:30px; text-align:center; color:#FFFFFF; padding:90px 0 0 0; margin:0;} a, a:visited {color:#0077CC; text-decoration:underline;}</style></head><body>%@</body></html>",embed];
@@ -219,8 +239,6 @@
  * Called when the webview finishes loading.
  */
 - (void)webViewDidFinishLoad:(UIWebView *)theWebView {
-
-    
 }
 
 
@@ -238,7 +256,6 @@
  * Fail Loading With Error.
  */
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    FLog();
 }
 
 
@@ -253,6 +270,9 @@
  */
 - (void)dealloc {	
 	GLog();
+    
+    // data
+    [_videos release];
 	
 	// release
 	[_webView release];
@@ -268,52 +288,47 @@
 
 
 
-//
-//  DDURLParser.m
-//  
-//
-//  Created by Dimitris Doukas on 09/02/2010.
-//  Copyright 2010 doukasd.com. All rights reserved.
-//
-
 
 /*
- * URL Parser.
+ * Video.
  */
-@implementation VideoURLParser
-@synthesize variables;
+@implementation Video
 
-- (id) initWithURLString:(NSString *)url{
-    self = [super init];
-    if (self != nil) {
-        NSString *string = url;
-        NSScanner *scanner = [NSScanner scannerWithString:string];
-        [scanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@"&?"]];
-        NSString *tempString;
-        NSMutableArray *vars = [NSMutableArray new];
-		//ignore the beginning of the string and skip to the vars
-        [scanner scanUpToString:@"?" intoString:nil];
-        while ([scanner scanUpToString:@"&" intoString:&tempString]) {
-            [vars addObject:[tempString copy]];
-        }
-        self.variables = vars;
-        [vars release];
+#pragma mark -
+#pragma mark Properties
+
+// synthesize
+@synthesize title,url;
+
+
+#pragma mark -
+#pragma mark Object
+
+/*
+ * Init.
+ */
+- (id)initWithTitle:(NSString *)t url:(NSString *)u {
+    GLog();
+    
+    // super
+    if ((self = [super init])) {
+        self.title = t;
+        self.url = u;
     }
     return self;
 }
 
-- (NSString *)valueForVariable:(NSString *)varName {
-    for (NSString *var in self.variables) {
-        if ([var length] > [varName length]+1 && [[var substringWithRange:NSMakeRange(0, [varName length]+1)] isEqualToString:[varName stringByAppendingString:@"="]]) {
-            NSString *varValue = [var substringFromIndex:[varName length]+1];
-            return varValue;
-        }
-    }
-    return nil;
-}
 
+#pragma mark -
+#pragma mark Memory Management
+
+
+/*
+ * Deallocates all used memory.
+ */
 - (void) dealloc{
-    self.variables = nil;
+    [title release];
+    [url release];
     [super dealloc];
 }
 

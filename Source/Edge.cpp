@@ -38,6 +38,7 @@ Edge::Edge(string ide, NodePtr n1, NodePtr n2) {
     length = 480;
     stiffness = 0.6;
     damping = 0.9;
+    redux = false;
     retina = false;
     
     // nodes
@@ -53,12 +54,13 @@ Edge::Edge(string ide, NodePtr n1, NodePtr n2) {
     pos.set(0,0);
     
     // color
-    cstroke = Color(0.33,0.33,0.33);
-    cstrokea = Color(0.45,0.45,0.45);
-    cstrokes = Color(0.6,0.6,0.6);
+    cstroke = Color(0.85,0.85,0.85);
+    cstrokea = Color(0.85,0.85,0.85);
+    cstrokes = Color(0.75,0.75,0.75);
     
-    ctxt = Color(0.85,0.85,0.85);
-    ctxts = Color(1,1,1);
+    ctxt = Color(0.5,0.5,0.5);
+    ctxta = Color(0.5,0.5,0.5);
+    ctxts = Color(0.15,0.15,0.15);
     
     // label
     label = "";
@@ -104,12 +106,20 @@ EdgePerson::EdgePerson(string ide, NodePtr n1, NodePtr n2): Edge::Edge(ide,n1,n2
  */
 void Edge::config(Configuration c) {
     
+    // device redux
+    redux = false;
+    Config confDeviceRedux = c.getConfiguration(cDeviceRedux);
+    if (confDeviceRedux.isSet()) {
+        redux = confDeviceRedux.boolVal();
+    }
+    
     // display retina
     retina = false;
     Config confDisplayRetina = c.getConfiguration(cDisplayRetina);
     if (confDisplayRetina.isSet()) {
         retina = confDisplayRetina.boolVal();
     }
+    
     
     // init retina
     if (retina) {
@@ -126,7 +136,7 @@ void Edge::config(Configuration c) {
 void Edge::defaults(Defaults d) {
     
     // length
-    length = 480;
+    length = redux ? 300 : 480;
     Default graphEdgeLength = d.getDefault(dGraphEdgeLength);
     if (graphEdgeLength.isSet()) {
         length = graphEdgeLength.doubleVal();
@@ -191,7 +201,7 @@ void Edge::draw() {
         if (active || selected) {
             
             // color
-            selected ? gl::color(ctxts) : gl::color(ctxt);
+            selected ? gl::color(ctxts) : (active ? gl::color(ctxta) : gl::color(ctxt));
             
             // angle 
             float ar = cinder::math<float>::atan2(node2->pos.x - node1->pos.x, node2->pos.y - node1->pos.y);

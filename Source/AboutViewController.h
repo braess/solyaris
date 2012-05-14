@@ -21,17 +21,16 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import <UIKit/UIKit.h>
-#import <MessageUI/MessageUI.h>
-#import <MessageUI/MFMailComposeViewController.h>
+#import "AppControllers.h"
 #import <Accounts/Accounts.h>
 #import <Twitter/Twitter.h>
 #import "ActionBar.h"
-#import "LinkButton.h"
+#import "AppButtons.h"
 
 
 // Constants
-#define kAboutHeaderHeight      45.0f
-#define kAboutFooterHeight      60.0
+#define kAboutHeaderHeight      50.0f
+#define kAboutFooterHeight      55.0
 
 
 // Alerts
@@ -40,10 +39,21 @@ enum {
 };
 
 
+/*
+ * AboutDelegate.
+ */
+@protocol AboutDelegate <NSObject>
+- (void)aboutBack;
+@end
+
+
 /**
  * AboutViewController.
  */
 @interface AboutViewController : UITableViewController <UIAlertViewDelegate, MFMailComposeViewControllerDelegate, LinkButtonDelegate> {
+    
+    // delegate
+	id<AboutDelegate> delegate;
     
     // private
     @private
@@ -53,12 +63,15 @@ enum {
 // Object Methods
 - (id)initWithFrame:(CGRect)frame;
 
+// Properties
+@property (assign) id<AboutDelegate> delegate;
 
 // Action Methods
 - (void)actionEmail:(id)sender;
 - (void)actionTwitter:(id)sender;
 - (void)actionAppStore:(id)sender;
 - (void)actionFeedback:(id)sender;
+- (void)actionBack:(id)sender;
 
 @end
 

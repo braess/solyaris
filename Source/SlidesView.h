@@ -21,7 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import <UIKit/UIKit.h>
-
+#import "PageControl.h"
 
 // Constants
 #define kSlidesFooterHeight      30.0
@@ -37,26 +37,6 @@ enum {
 };
 
 
-/**
- * Color page control.
- */
-@interface ColorPageControl : UIPageControl {
-	NSInteger currentPage;
-	NSInteger numberOfPages;
-	BOOL hidesForSinglePage;
-	
-	UIColor *inactivePageColor;
-	UIColor *activePageColor;
-}
-
-@property (nonatomic) NSInteger currentPage;
-@property (nonatomic) NSInteger numberOfPages;
-@property (nonatomic) BOOL hidesForSinglePage;
-
-@property (nonatomic, retain) UIColor *inactivePageColor;
-@property (nonatomic, retain) UIColor *activePageColor;
-
-@end
 
 /**
  * SlidesView.
@@ -65,7 +45,7 @@ enum {
     
     // ui
 	UIScrollView *_scrollView;
-	ColorPageControl *_pageControl;
+	PageControl *_pageControl;
     UIButton *_btnSave;
     
 	// data

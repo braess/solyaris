@@ -27,7 +27,6 @@
 #import "Solyaris.h"
 #import "SolyarisConstants.h"
 #import "SolyarisLocalization.h"
-#import "SplashView.h"
 #import "HelpView.h"
 #import "Tracker.h"
 
@@ -35,7 +34,7 @@
 /**
  * Helper Stack.
  */
-@interface SolyarisViewController (HelperStack)
+@interface SolyarisViewController (Animations)
 - (NSString*)makeNodeId:(NSNumber*)nid type:(NSString*)type;
 - (NSString*)makeEdgeId:(NSString*)pid to:(NSString*)cid;
 - (NSNumber*)toDBId:(NSString*)nid;
@@ -48,6 +47,8 @@
  * Animation Stack.
  */
 @interface SolyarisViewController (AnimationHelpers)
+- (void)animationInformationLoad;
+- (void)animationInformationLoadDone;
 - (void)animationInformationShow;
 - (void)animationInformationShowDone;
 - (void)animationInformationHide;
@@ -56,6 +57,10 @@
 - (void)animationSettingsShowDone;
 - (void)animationSettingsHide;
 - (void)animationSettingsHideDone;
+- (void)animationSearchShow;
+- (void)animationSearchShowDone;
+- (void)animationSearchHide;
+- (void)animationSearchHideDone;
 @end
 
 
@@ -79,15 +84,18 @@
 #pragma mark Constants
 
 // constants
-#define kAnimateTimeInformationShow	0.6f
-#define kAnimateTimeInformationHide	0.45f
-#define kAnimateTimeSettingsShow	0.6f
-#define kAnimateTimeSettingsHide	0.3f
-#define kDelayTimeNodeLoad          1.3f
-#define kDelayTimeStartup           4.8f
-#define kOffsetSettings             480
-#define kAlphaInfoModal             0.42f
-
+#define kDelayTimeNodeLoad              1.3f
+#define kDelayTimeStartup               3.3f
+#define kAnimateTimeInformationLoad     0.45f
+#define kAnimateTimeInformationShow     (iPad ? 0.6f : 0.45f)
+#define kAnimateTimeInformationHide     (iPad ? 0.45f : 0.33f)
+#define kAnimateTimeSearchShow          0.3f
+#define kAnimateTimeSearchHide          0.3f
+#define kAnimateTimeSettingsShow        0.6f
+#define kAnimateTimeSettingsHide        0.3f
+#define kOffsetSettings                 480
+#define kAlphaModalInfo                 0.3f
+#define kAlphaModalSearch               0.03f
 
 
 #pragma mark -
@@ -117,6 +125,11 @@
         // mode
         mode_settings = NO;
         
+        // data
+        NSMutableDictionary *dtaNodes = [[NSMutableDictionary alloc] init];
+        _dta_nodes = [dtaNodes retain];
+        [dtaNodes release];
+        
 		// return
 		return self;
 	}
@@ -141,15 +154,16 @@
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
     
     // frames
-    CGRect frame = CGRectMake(0, 0, 768, 1024);
+    CGRect frame = iPad ? CGRectMake(0, 0, 768, 1024) : CGRectMake(0, 0, 320, 480);
     if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
-        frame = CGRectMake(0, 0, 1024, 768);
+        frame = iPad ? CGRectMake(0, 0, 1024, 768) : CGRectMake(0, 0, 480, 320);
     }
-    CGRect frameSearch = CGRectMake(0, 0, frame.size.width, 40);
-    CGRect frameSearchResult = CGRectMake(0, 0, 320, 480);
-    CGRect frameInformation = CGRectMake(0, 0, 580, 625);
-    CGRect frameSettings = CGRectMake(0, 0, 708, kOffsetSettings);
+    CGRect frameSearchBar = CGRectMake(0, 0, frame.size.width, 40);
+    CGRect frameSearch = iPad ? CGRectMake(0, 40, 360,439) : CGRectMake(0, 40, 320,480-40);
+    CGRect frameInformation = iPad ? CGRectMake(0, 0, 580, 624) : CGRectMake(0, 0, 320, 480);
+    CGRect frameSettings = iPad ? CGRectMake(0, 0, 708, kOffsetSettings) : CGRectMake(0, 0, 320, kOffsetSettings);
     CGRect frameSettingsButton = CGRectMake(frame.size.width-44, frame.size.height-44, 44, 44);
+    
     
     // view
     self.view = [[[UIView alloc] initWithFrame:frame] autorelease];
@@ -162,40 +176,34 @@
     
     
     // background
-    UIView *bgView = [[UIView alloc] initWithFrame:frame];
-    bgView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    bgView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_app.png"]];
-    bgView.opaque = NO;
-    [window addSubview:bgView];
-    [window sendSubviewToBack:bgView];
-    [bgView release];
+    UIView *bgApp = [[UIView alloc] initWithFrame:frame];
+    bgApp.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    bgApp.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_settings.png"]];
+    bgApp.opaque = NO;
+    [window addSubview:bgApp];
+    [window sendSubviewToBack:bgApp];
+    [bgApp release];
+    
+    
+    // search
+    SearchBarViewController *searchBarViewController = [[SearchBarViewController alloc] initWithFrame:frameSearchBar];
+    searchBarViewController.delegate = self;
+    [searchBarViewController loadView];
+    _searchBarViewController = [searchBarViewController retain];
+    [self.view addSubview:_searchBarViewController.view];
+    [self.view bringSubviewToFront:_searchBarViewController.view];
+    [searchBarViewController release];
     
     
     // search
     SearchViewController *searchViewController = [[SearchViewController alloc] initWithFrame:frameSearch];
     searchViewController.delegate = self;
-    [searchViewController loadView];
+    searchViewController.view.hidden = YES;
+    
     _searchViewController = [searchViewController retain];
     [self.view addSubview:_searchViewController.view];
-    [self.view bringSubviewToFront:_searchViewController.view];
-    [searchViewController release];
-    
-    
-    // search result
-    SearchResultViewController *searchResultViewController = [[SearchResultViewController alloc] initWithStyle:UITableViewStylePlain];
-    searchResultViewController.delegate = self;
-    searchResultViewController.view.frame = frameSearchResult;
-	[searchResultViewController.view setAutoresizingMask: UIViewAutoresizingNone];
-	_searchResultViewController = [searchResultViewController retain];
-    
-    
-	UINavigationController *searchResultNavigationController = [[UINavigationController alloc] initWithRootViewController:searchResultViewController];
-	UIPopoverController *searchResultPopoverController = [[UIPopoverController alloc] initWithContentViewController:searchResultNavigationController];
-	[searchResultPopoverController setPopoverContentSize:CGSizeMake(searchResultViewController.view.frame.size.width, searchResultViewController.view.frame.size.height)];
-    searchResultPopoverController.contentViewController.view.alpha = 0.9f;
-    searchResultPopoverController.delegate = self;
-	_searchResultsPopoverController = [searchResultPopoverController retain];
-	[searchResultPopoverController release];
+    [self.view sendSubviewToBack:_searchViewController.view];
+	[searchViewController release];
 
     
     // information
@@ -203,8 +211,8 @@
     informationViewController.delegate = self;
     [informationViewController loadView];
     _informationViewController = [informationViewController retain];
-    [self.view  addSubview:_informationViewController.view];
-    [self.view  sendSubviewToBack:_informationViewController.view];
+    [self.view addSubview:_informationViewController.view];
+    [self.view sendSubviewToBack:_informationViewController.view];
     [informationViewController release];
     
     
@@ -226,7 +234,6 @@
 	[btnSettings addTarget:self action:@selector(actionSettings:) forControlEvents:UIControlEventTouchUpInside];
     _buttonSettings = [btnSettings retain];
 	[self.view  addSubview:_buttonSettings];
-    [btnSettings release];
     
     
     // fluff cinder view
@@ -238,8 +245,9 @@
     }
     
     // pinch gesture recognizer
-    UIPinchGestureRecognizer *pinchGesture = [[[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinched:)] autorelease];
+    UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinched:)];
     [self.view addGestureRecognizer:pinchGesture];
+    [pinchGesture release];
     
     // note
 	NoteView *noteView = [[NoteView alloc] initWithFrame:frame];
@@ -251,14 +259,17 @@
     
     // splash
     SplashView *splash = [[[SplashView alloc] initWithFrame:frame] autorelease];
+    splash.delegate = self;
     [self.view addSubview:splash];
     [self.view bringSubviewToFront:splash];
     [splash dismissSplash];
     
+    // mode
+    mode_splash = iPad ? NO : YES; // avoids rotation
+    
     
     // notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(activate) name: UIApplicationDidBecomeActiveNotification object:nil];
-
 
 }
 
@@ -287,16 +298,16 @@
     // delegate
     SolyarisAppDelegate *appDelegate = (SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate];
     
-    // messages
-    NSString *msgInstall = (NSString*) [appDelegate getUserDefault:msgAppInstall];
-    if (msgInstall) {
-        [self install:msgInstall];
-        [appDelegate removeUserDefault:msgAppInstall];
+    // triggers
+    NSString *triggerInstall = (NSString*) [appDelegate getUserDefault:triggerAppInstall];
+    if (triggerInstall) {
+        [self install:triggerInstall];
+        [appDelegate removeUserDefault:triggerAppInstall];
     }
-    NSString *msgUpdate = (NSString*) [appDelegate getUserDefault:msgAppUpdate];
-    if (msgUpdate) {
-        [self update:msgUpdate];
-        [appDelegate removeUserDefault:msgAppUpdate];
+    NSString *triggerUpdate = (NSString*) [appDelegate getUserDefault:triggerAppUpdate];
+    if (triggerUpdate) {
+        [self update:triggerUpdate];
+        [appDelegate removeUserDefault:triggerAppUpdate];
     }
 
 }
@@ -342,6 +353,18 @@
     
     // help
     [self performSelector:@selector(help) withObject:nil afterDelay:kDelayTimeStartup];
+    
+    // note deprecated
+    Note *deprecated = [Note retrieveNote:noteAppDeprecated];
+    if (deprecated) {
+        
+        // view
+        [self.view bringSubviewToFront:_noteView];
+        
+        // note
+        [_noteView noteInfo:deprecated.title message:deprecated.message];
+        [_noteView showNoteAfterDelay:kDelayTimeStartup*1.5];
+    }
 }
 
 
@@ -350,6 +373,31 @@
  */
 - (void)update:(NSString*)version {
     DLog();
+    
+    // note deprecated
+    Note *deprecated = [Note retrieveNote:noteAppDeprecated];
+    if (deprecated) {
+        
+        // view
+        [self.view bringSubviewToFront:_noteView];
+        
+        // note
+        [_noteView noteInfo:deprecated.title message:deprecated.message];
+        [_noteView showNoteAfterDelay:kDelayTimeStartup];
+    }
+    
+    // note update
+    Note *updated = [Note retrieveNote:noteAppUpdate];
+    if (updated) {
+        
+        // view
+        [self.view bringSubviewToFront:_noteView];
+        
+        // note
+        [_noteView noteSuccess:updated.title message:updated.message];
+        [_noteView showNoteAfterDelay:kDelayTimeStartup*1.25];
+        [_noteView dismissNoteAfterDelay:kDelayTimeStartup*1.25+3.9];
+    }
 }
 
 
@@ -362,8 +410,9 @@
  * Rotate is the new black.
  */
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    
     // maybe baby
-    return ! mode_settings;
+    return ! (mode_settings || mode_splash);
 }
 
 /*
@@ -371,9 +420,11 @@
  */
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     FLog();
-    
-    // close popups
-    [_searchResultsPopoverController dismissPopoverAnimated:NO];
+
+    // hide settings
+    if (! iPad) {
+        _buttonSettings.hidden = (UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) ? YES : NO;
+    }
 
 }
 
@@ -385,7 +436,7 @@
     
     // app
     solyaris->applyDeviceOrientation(toInterfaceOrientation);
-    
+ 
     // animate cinder
     [UIView beginAnimations:@"flip" context:nil];
     [UIView setAnimationDuration:0]; // animation distorts view
@@ -394,26 +445,28 @@
     if (toInterfaceOrientation == UIInterfaceOrientationPortrait) {      
         _cinderView.transform = CGAffineTransformIdentity;
         _cinderView.transform = CGAffineTransformMakeRotation(0);
-        _cinderView.bounds = CGRectMake(0.0, 0.0, 768, 1024);
+        _cinderView.bounds = iPad ? CGRectMake(0.0, 0.0, 768, 1024) : CGRectMake(0.0, 0.0, 320, 480);
     }
     else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {      
         _cinderView.transform = CGAffineTransformIdentity;
         _cinderView.transform = CGAffineTransformMakeRotation(M_PI * 0.5);
-        _cinderView.bounds = CGRectMake(0.0, 0.0, 1024, 768);
+        _cinderView.bounds = iPad ? CGRectMake(0.0, 0.0, 1024, 768) : CGRectMake(0.0, 0.0, 480, 320);
     }
     else if (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {      
         _cinderView.transform = CGAffineTransformIdentity;
         _cinderView.transform = CGAffineTransformMakeRotation(M_PI);
-        _cinderView.bounds = CGRectMake(0.0, 0.0, 768, 1024);
+        _cinderView.bounds = iPad ? CGRectMake(0.0, 0.0, 768, 1024) : CGRectMake(0.0, 0.0, 320, 480);
     }
     else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft) {      
         _cinderView.transform = CGAffineTransformIdentity;
         _cinderView.transform = CGAffineTransformMakeRotation(- M_PI * 0.5);
-        _cinderView.bounds = CGRectMake(0.0, 0.0, 1024, 768);
+        _cinderView.bounds = iPad ? CGRectMake(0.0, 0.0, 1024, 768) : CGRectMake(0.0, 0.0, 480, 320);
     }
     [UIView commitAnimations];
+
     
     // resize
+    [_searchBarViewController resize];
     [_searchViewController resize];
     [_informationViewController resize];
 }
@@ -423,8 +476,10 @@
  * Cleanup rotation.
  */
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    GLog();
     
     // resize
+    [_searchBarViewController resize];
     [_searchViewController resize];
     [_informationViewController resize];
     
@@ -491,9 +546,39 @@
 - (void)loadedSearch:(Search*)result {
     DLog();
     
-    // results
-    [_searchResultViewController searchResultShow:result];
+    // loaded
+    [_searchViewController loadedSearch:result];
     
+}
+
+/*
+ * Loaded popular.
+ */
+- (void)loadedPopular:(Popular*)popular more:(BOOL)more {
+    DLog();
+
+    // loaded
+    [_searchViewController loadedPopular:popular more:more];
+}
+
+/*
+ * Loaded now playing.
+ */
+- (void)loadedNowPlaying:(NowPlaying*)nowplaying more:(BOOL)more {
+    DLog();
+    
+    // loaded
+    [_searchViewController loadedNowPlaying:nowplaying more:more];
+}
+
+/*
+ * Loaded now playing.
+ */
+- (void)loadedHistory:(NSArray *)history type:(NSString *)type {
+    DLog();
+    
+    // loaded
+    [_searchViewController loadedHistory:history type:type];
 }
 
 
@@ -522,6 +607,7 @@
         
         // properties
         node->renderLabel([movie.name UTF8String]);
+        node->updateCategory([movie.category UTF8String]);
         if (movie.released) {
             node->updateMeta([[yearFormatter stringFromDate:movie.released] UTF8String]);
         }
@@ -687,21 +773,73 @@
     
 }
 
+/*
+ * Loaded movie data.
+ */
+- (void)loadedMovieData:(Movie *)movie {
+    DLog();
+    
+    // nodes
+    NSArray *nodes = [_dta_nodes objectForKey:[self makeNodeId:movie.mid type:typeMovie]];
+    
+    // information
+    [_informationViewController informationMovie:movie nodes:nodes];
+    
+    // animate
+    [self animationInformationShow]; 
+}
+
+/*
+ * Loaded person data.
+ */
+- (void)loadedPersonData:(Person *)person {
+    DLog();
+    
+    // nodes
+    NSArray *nodes = [_dta_nodes objectForKey:[self makeNodeId:person.pid type:typePerson]];
+    
+    // information
+    [_informationViewController informationPerson:person nodes:nodes];
+    
+    // animate
+    [self animationInformationShow]; 
+}
+
+/*
+ * API Info.
+ */
+- (void)apiInfo:(APIError *)error {
+    FLog();
+    
+    // view
+    [self.view bringSubviewToFront:_noteView];
+    
+    // note
+    [_noteView noteInfo:error.errorTitle message:error.errorMessage]; 
+    if (mode_search) {
+        [_noteView offset];
+    }
+    [_noteView showNote];
+    [_noteView dismissNoteAfterDelay:4.5];
+    
+}
+
+
 
 /*
  * API Glitch.
  */
 - (void)apiGlitch:(APIError *)error {
-    DLog();
-    
-    // dismiss popover
-    [_searchResultsPopoverController dismissPopoverAnimated:YES];
+    FLog();
     
     // view
     [self.view bringSubviewToFront:_noteView];
     
     // note
     [_noteView noteGlitch:error.errorTitle message:error.errorMessage]; 
+    if (mode_search) {
+        [_noteView offset];
+    }
     [_noteView showNote];
     
     // stop loader
@@ -721,16 +859,16 @@
 * API Error.
 */
 - (void)apiError:(APIError *)error {
-    DLog();
-    
-    // dismiss popover
-    [_searchResultsPopoverController dismissPopoverAnimated:YES];
+    FLog();
     
     // view
     [self.view bringSubviewToFront:_noteView];
     
     // note
     [_noteView noteError:error.errorTitle message:error.errorMessage]; 
+    if (mode_search) {
+        [_noteView offset];
+    }
     [_noteView showNote];
     
     // stop loader
@@ -750,20 +888,19 @@
  * API Quit.
  */
 - (void)apiFatal:(NSString *)title message:(NSString *)msg {
-    DLog();
+    FLog();
     
     // alert
     UIAlertView *alert = [[UIAlertView alloc]
                           initWithTitle:title 
                           message:msg 
                           delegate:self 
-                          cancelButtonTitle: @"Cancel"
-                          otherButtonTitles:@"Quit",nil];
+                          cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")
+                          otherButtonTitles:NSLocalizedString(@"Quit", @"Quit"),nil];
     [alert setTag:SolyarisAlertAPIFatal];
     [alert show];    
     [alert release];
-    
-    
+ 
 }
 
 
@@ -802,45 +939,49 @@
 }
 
 
+
+
 #pragma mark -
-#pragma mark SearchResult Delegate
+#pragma mark Search Delegate
 
 
 /* 
- * Search selected.
+ * Data selected.
  */
-- (void)searchSelected:(SearchResult*)result {
-    DLog();
+- (void)dataSelected:(DBData*)data {
+    FLog();
     
+    // disable
+    [_searchBarViewController enable:NO];
     
-    // dismiss popover
-    [_searchResultsPopoverController dismissPopoverAnimated:YES];
+    // un tab
+    [self animationSearchHide];
     
     
     // node
-    NSString *nid = [self makeNodeId:result.ref type:result.type];
+    NSString *nid = [self makeNodeId:data.ref type:data.type];
     NodePtr node = solyaris->getNode([nid UTF8String]);
     if (node == NULL) {
-        node = solyaris->createNode([nid UTF8String],[result.type UTF8String]);
+        node = solyaris->createNode([nid UTF8String],[data.type UTF8String]);
     }
     
     // active
     if (! (node->isActive() || node->isLoading())) {
         
         // track
-        [Tracker trackEvent:TEventLoad action:@"Search" label:result.type];
+        [Tracker trackEvent:TEventLoad action:@"Search" label:data.type];
         
         // load
         node->load();
             
         // movie
-        if ([result.type isEqualToString:typeMovie]) {
-            [tmdb movie:result.ref];
+        if ([data.type isEqualToString:typeMovie]) {
+            [tmdb movie:data.ref];
         }
         
         // person
-        if ([result.type isEqualToString:typePerson]) {
-            [tmdb person:result.ref];
+        if ([data.type isEqualToString:typePerson]) {
+            [tmdb person:data.ref];
         }
 
 
@@ -848,6 +989,21 @@
 
 
 }
+
+/*
+ * Search close.
+ */
+- (void)searchClose {
+    FLog();
+    
+    // disable
+    [_searchBarViewController enable:NO];
+    
+    // hide
+    [self animationSearchHide];
+}
+
+
 
 
 
@@ -898,6 +1054,11 @@
 
     }
     
+    // dismiss
+    if (! iPad) {
+        [self informationDismiss];
+    }
+    
 }
 
 
@@ -923,54 +1084,129 @@
 }
 
 
-#pragma mark -
-#pragma mark Popopver Delegate
 
+
+
+#pragma mark -
+#pragma mark SearchBarDelegate 
 
 /**
- * Popover dismissed.
+ * Search bar.
  */
--(void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+- (void)searchBarPrepare {
+    FLog();
+    
+    // show
+    [self animationSearchShow];
+    
+}
+- (void)searchBarChanged:(NSString*)txt {
     GLog();
     
+    // reset
+    [_searchViewController searchChanged:txt];
+}
+- (void)searchBarCancel {
+    FLog();
+    
+    // hide
+    [self animationSearchHide];
 }
 
 
 
 #pragma mark -
-#pragma mark Search Delegate
+#pragma mark Search 
 
-/**
- * Performs the search.
+
+/*
+ * Search.
  */
-- (void)search:(NSString*)s type:(NSString*)t {
-    DLog();
+- (void)search:(NSString*)q type:(NSString*)type {
+    FLog();
     
     // track
-    [Tracker trackEvent:TEventSearch action:t label:s];
+    [Tracker trackEvent:TEventSearch action:type label:q];
     
     // reset
-    [_searchResultViewController searchResultReset];
+    [_searchViewController dataLoading];
     
-    // framed
-    CGRect srframe = _searchViewController.buttonMovie.frame;
-    if (t == typePerson) {
-        srframe = _searchViewController.buttonPerson.frame;
-    }
-    
-    // pop it
-    [_searchResultsPopoverController setPopoverContentSize:CGSizeMake(320, 125) animated:NO];
-	[_searchResultsPopoverController presentPopoverFromRect:srframe inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     
     // api
-    if (t == typeMovie) {
-        [tmdb searchMovie:s];
+    if ([type isEqualToString:typePerson]) {
+        [tmdb searchPerson:q];
     }
-    else if (t == typePerson) {
-        [tmdb searchPerson:s];
+    else {
+        [tmdb searchMovie:q];
     }
     
 }
+
+/*
+ * Popular.
+ */
+- (void)popular:(NSString*)type more:(BOOL)more {
+    FLog();
+    
+    // track
+    [Tracker trackEvent:TEventSearch action:@"Popular" label:type];
+    
+    // loading
+    if (!more) {
+        [_searchViewController dataLoading];
+    }
+    
+    // api
+    if ([type isEqualToString:typeMovie]) {
+        [tmdb popularMovies:more];
+    }
+
+}
+
+/*
+ * Now Playing.
+ */
+- (void)nowPlaying:(NSString*)type more:(BOOL)more {
+    FLog();
+    
+    // track
+    [Tracker trackEvent:TEventSearch action:@"Now Playing" label:type];
+    
+    // loading
+    if (!more) {
+        [_searchViewController dataLoading];
+    }
+    
+    // api
+    if ([type isEqualToString:typeMovie]) {
+        [tmdb nowPlaying:more];
+    }
+    
+}
+
+/*
+ * History.
+ */
+- (void)history:(NSString *)type {
+    FLog();
+    
+    // track
+    [Tracker trackEvent:TEventSearch action:@"History" label:type];
+    
+    // loading
+    [_searchViewController dataLoading];
+    
+    // api
+    if ([type isEqualToString:typeMovie]) {
+        [tmdb historyMovie];
+    }
+    else if ([type isEqualToString:typePerson]) {
+        [tmdb historyPerson];
+    }
+    
+}
+
+
 
 /*
  * Resets the graph.
@@ -978,8 +1214,12 @@
 - (void)reset {
     DLog();
     
+    // data
+    [_dta_nodes removeAllObjects];
+    
     // app reset
     solyaris->reset();
+
 }
 
 /*
@@ -1029,10 +1269,13 @@
     FLog();
     
     // api
-    [tmdb clearCache];
+    [tmdb resetCache];
     
     // images
     [CacheImageView clearCache];
+    
+    // search
+    [_searchViewController reset];
     
     // reset 
     [self reset];
@@ -1053,6 +1296,20 @@
     
 }
 
+
+
+#pragma mark -
+#pragma mark Splash Delegate
+
+/*
+ * Splash dismiss.
+ */
+- (void)splashDismiss {
+    FLog();
+    
+    // mode
+    mode_splash = NO;
+}
 
 
 
@@ -1141,7 +1398,6 @@
     
     // node
     NodePtr node = solyaris->getNode([nid UTF8String]);
-    NSMutableArray *nodes = [[[NSMutableArray alloc] init] autorelease];
     
     // info
     if (node->isActive()) {
@@ -1152,6 +1408,8 @@
         // type
         NSString *ntype = [NSString stringWithCString:node->type.c_str() encoding:[NSString defaultCStringEncoding]];
         
+        // nodes
+        NSMutableArray *nodes = [[NSMutableArray alloc] init];
         
         // children
         for (NodeIt child = node->children.begin(); child != node->children.end(); ++child) {
@@ -1172,38 +1430,42 @@
             NSString *type = [NSString stringWithCString:(*child)->type.c_str() encoding:NSUTF8StringEncoding];
             NSString *label = [NSString stringWithCString:(*child)->label.c_str() encoding:NSUTF8StringEncoding];
             NSString *meta = [NSString stringWithCString:(*child)->meta.c_str() encoding:NSUTF8StringEncoding];
+            NSString *thumb = [type isEqualToString:typeMovie] ? [tmdb movieThumb:nid] : [tmdb personThumb:nid];
             bool visible = (*child)->isVisible();
             bool loaded = ( (*child)->isActive() || (*child)->isLoading() );
             
             // data
-            DataEdge *dtaEdge = [[[DataEdge alloc] initData:eid type:etype label:elabel] autorelease];
-            DataNode *dtaNode = [[[DataNode alloc] initData:nid type:type label:label meta:meta edge:dtaEdge visible:visible loaded:loaded] autorelease];
+            DataEdge *dtaEdge = [[DataEdge alloc] initData:eid type:etype label:elabel];
+            DataNode *dtaNode = [[DataNode alloc] initData:nid type:type label:label meta:meta thumb:thumb edge:dtaEdge visible:visible loaded:loaded];
             [nodes addObject:dtaNode];
+            [dtaEdge release];
+            [dtaNode release];
             
         }
+        
+        // save
+        [_dta_nodes setObject:nodes forKey:nid];
+        [nodes release];
+        
+        // loader
+        [self animationInformationLoad];
         
         
         // movie
         if ([ntype isEqualToString:typeMovie]) {
             
             // data
-            Movie *movie = [tmdb dataMovie:[self toDBId:pid]];
-            
-            // information
-            [_informationViewController informationMovie:movie nodes:nodes];
+            [tmdb dataMovie:[self toDBId:pid]];
+
         }
         else {
             
             // data
-            Person *person = [tmdb dataPerson:[self toDBId:pid]];
-            
-            // information
-            [_informationViewController informationPerson:person nodes:nodes];
+            [tmdb dataPerson:[self toDBId:pid]];
+
         }
         
 
-        // animate
-        [self animationInformationShow];        
     }
     
 }
@@ -1212,34 +1474,71 @@
 
 
 #pragma mark -
-#pragma mark Animation
+#pragma mark Animations
+
 
 /**
- * Shows the information.
+ * Shows the information loader.
  */
-- (void)animationInformationShow {
+- (void)animationInformationLoad {
 	GLog();
 	
-	
-	// prepare controllers
+    // prepare controllers
 	[_informationViewController viewWillAppear:YES];
-
     
 	// prepare views
     _informationViewController.view.hidden = NO;
 	_informationViewController.modalView.alpha = 0.0f;
     [self.view bringSubviewToFront:_informationViewController.view];
     
+	// animate
+	[UIView beginAnimations:@"information_load" context:nil];
+	[UIView setAnimationDuration:kAnimateTimeInformationLoad];
+    _informationViewController.modalView.alpha = kAlphaModalInfo;
+	[UIView commitAnimations];
+    
+	// clean it up
+	[self performSelector:@selector(animationInformationLoadDone) withObject:nil afterDelay:kAnimateTimeInformationLoad];
+}
+- (void)animationInformationLoadDone {
+	GLog();
+    
+    // starts the loader
+    [_informationViewController loading:YES];
+    
+}
+
+
+/**
+ * Shows the information.
+ */
+- (void)animationInformationShow {
+	GLog();
+    
+    // cancel
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(animationInformationLoad) object:nil];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(animationInformationLoadDone) object:nil];
+    
+	// offset
     CGPoint informationCenter = _informationViewController.contentView.center;
     informationCenter.y += self.view.frame.size.height;
     _informationViewController.contentView.center = informationCenter;
 
     informationCenter.y -= self.view.frame.size.height;
     
+    
+    // prepare controlers
+    [_informationViewController loading:NO];
+    
+    // prepare views
+    _informationViewController.view.hidden = NO;
+    [self.view bringSubviewToFront:_informationViewController.view];
+    
+    
 	// animate
 	[UIView beginAnimations:@"information_show" context:nil];
 	[UIView setAnimationDuration:kAnimateTimeInformationShow];
-    _informationViewController.modalView.alpha = kAlphaInfoModal;
+    _informationViewController.modalView.alpha = kAlphaModalInfo;
     _informationViewController.contentView.center = informationCenter;
 	[UIView commitAnimations];
     
@@ -1283,6 +1582,7 @@
     
     // view
 	[_informationViewController.view setHidden:YES];
+    [_informationViewController.contentView setHidden:YES];
     [self.view sendSubviewToBack:_informationViewController.view];
     
     // controller
@@ -1293,7 +1593,95 @@
     informationCenter.y -= self.view.frame.size.height;
     _informationViewController.contentView.center = informationCenter;
     
+    // modal
+     _informationViewController.modalView.alpha = 0.0f;
+    
 }
+
+
+/**
+ * Shows the search.
+ */
+- (void)animationSearchShow {
+	GLog();
+    
+    // state
+    mode_search = YES;
+	
+	// prepare controllers
+	[_searchViewController viewWillAppear:YES];
+    
+	// prepare views
+    _searchViewController.view.hidden = NO;
+    [self.view bringSubviewToFront:_searchViewController.view];
+    
+    // modal view
+    _searchViewController.modalView.alpha = 0.0f;
+    
+    // content view
+    CGRect contentFrame = _searchViewController.contentView.frame;
+    contentFrame.origin.y = self.view.frame.size.height;
+    _searchViewController.contentView.frame = contentFrame;
+    
+    contentFrame.origin.y = 0;
+    
+	// animate
+	[UIView beginAnimations:@"search_show" context:nil];
+	[UIView setAnimationDuration:kAnimateTimeSearchShow];
+    _searchViewController.modalView.alpha = kAlphaModalSearch;
+    _searchViewController.contentView.frame = contentFrame;
+	[UIView commitAnimations];
+    
+	// clean it up
+	[self performSelector:@selector(animationSearchShowDone) withObject:nil afterDelay:kAnimateTimeSearchShow];
+}
+- (void)animationSearchShowDone {
+	GLog();
+    
+    // appeared
+    [_searchViewController viewDidAppear:YES];
+    
+}
+
+
+/**
+ * Hides the search.
+ */
+- (void)animationSearchHide {
+	GLog();
+	
+	// prepare controllers
+	[_searchViewController viewWillDisappear:YES];
+    
+    // content view
+    CGRect contentFrame = _searchViewController.contentView.frame;
+    contentFrame.origin.y = self.view.frame.size.height;
+    
+	// animate
+	[UIView beginAnimations:@"search_hide" context:nil];
+	[UIView setAnimationDuration:kAnimateTimeSearchHide];
+    _searchViewController.modalView.alpha = 0.0f;
+    _searchViewController.contentView.frame = contentFrame;
+	[UIView commitAnimations];
+    
+	// clean it up
+	[self performSelector:@selector(animationSearchHideDone) withObject:nil afterDelay:kAnimateTimeSearchHide];
+}
+- (void)animationSearchHideDone {
+	GLog();
+    
+    // view
+	[_searchViewController.view setHidden:YES];
+    [self.view sendSubviewToBack:_searchViewController.view];
+    
+    // controller
+    [_searchViewController viewDidDisappear:YES];
+    
+    // state
+    mode_search = NO;
+    
+}
+
 
 
 /**
@@ -1310,7 +1698,6 @@
 	[_settingsViewController viewWillAppear:YES];
     
     // prepare views
-    [_searchResultViewController.view setHidden:NO];
     [_settingsViewController.view setHidden:NO];
     
     // calculate centers
@@ -1319,7 +1706,7 @@
     _settingsViewController.contentView.center = settingsCenter;
     settingsCenter.y -= kOffsetSettings;
     
-    CGPoint searchCenter = _searchViewController.view.center;
+    CGPoint searchCenter = _searchBarViewController.view.center;
     searchCenter.y -= kOffsetSettings;
     
     CGPoint buttonCenter = _buttonSettings.center;
@@ -1345,7 +1732,7 @@
 	[UIView beginAnimations:@"settings_show" context:nil];
 	[UIView setAnimationDuration:kAnimateTimeSettingsShow];
     _settingsViewController.contentView.center = settingsCenter;
-    _searchViewController.view.center = searchCenter;
+    _searchBarViewController.view.center = searchCenter;
     _buttonSettings.center = buttonCenter;
     _cinderView.center = cinderCenter;
 	[UIView commitAnimations];
@@ -1378,7 +1765,7 @@
     CGPoint settingsCenter = _settingsViewController.contentView.center;
     settingsCenter.y += kOffsetSettings;
     
-    CGPoint searchCenter = _searchViewController.view.center;
+    CGPoint searchCenter = _searchBarViewController.view.center;
     searchCenter.y += kOffsetSettings;
     
     CGPoint buttonCenter = _buttonSettings.center;
@@ -1403,7 +1790,7 @@
 	[UIView beginAnimations:@"settings_hide" context:nil];
 	[UIView setAnimationDuration:kAnimateTimeSettingsHide];
     _settingsViewController.contentView.center = settingsCenter;
-    _searchViewController.view.center = searchCenter;
+    _searchBarViewController.view.center = searchCenter;
     _buttonSettings.center = buttonCenter;
     _cinderView.center = cinderCenter;
 	[UIView commitAnimations];
@@ -1416,7 +1803,6 @@
 	GLog();
     
     // view
-    [_searchResultViewController.view setHidden:NO];
     [_settingsViewController.view setHidden:YES];
     
     CGPoint settingsCenter = _settingsViewController.contentView.center;
@@ -1506,7 +1892,7 @@
     [taglines release];
     
     // set
-    [_searchViewController claim:tagline];
+    [_searchBarViewController claim:tagline];
 }
 
 
@@ -1521,10 +1907,13 @@
 	
     // controllers
     [_noteView release];
+    [_searchBarViewController release];
     [_searchViewController release];
-    [_searchResultViewController release];
     [_informationViewController release];
     [_settingsViewController release];
+    
+    // data
+    [_dta_nodes release];
     
     // notifications
     [[NSNotificationCenter defaultCenter] removeObserver:self];

@@ -41,6 +41,7 @@ Node::Node(string idn, double x, double y) {
     label = "";
     meta = "";
     type = "Node";
+    category = "";
     
     
     // fields
@@ -50,13 +51,14 @@ Node::Node(string idn, double x, double y) {
     damping = 0.5;
     strength = -1;
     stiffness = 0.05;
-    distraction = 0.15;
+    distraction = 0.3;
     ramp = 1.2;
     mvelocity = 15;
     speed = 30;
     initial = 12;
     fcount = 0;
     retina = false;
+    redux = false;
     
     
     // position
@@ -88,16 +90,17 @@ Node::Node(string idn, double x, double y) {
     velocity.set(0,0);
     
     // color
-    ctxt = Color(0.85,0.85,0.85);
-    ctxts = Color(1,1,1);
+    ctxt = Color(0.3,0.3,0.3);
+    ctxta = Color(0.2,0.2,0.2);
+    ctxts = Color(0.15,0.15,0.15);
     
     // alpha
-    anode = 0.6;
+    anode = 0.8;
     asnode = 0.9;
-    acore = 0.75;
+    acore = 0.8;
     ascore = 0.9;
-    aglow = 0.24;
-    asglow = 0.54;
+    aglow = 0.3;
+    asglow = 0.39;
     
     // textures
     textureNode = gl::Texture(1,1);
@@ -144,11 +147,24 @@ NodePerson::NodePerson(string idn, double x, double y): Node::Node(idn, x, y) {
  */
 void Node::config(Configuration c) {
     
+    // device
+    redux = false;
+    Config confDeviceRedux = c.getConfiguration(cDeviceRedux);
+    if (confDeviceRedux.isSet()) {
+        redux = confDeviceRedux.boolVal();
+    }
+    
     // display retina
     retina = false;
     Config confDisplayRetina = c.getConfiguration(cDisplayRetina);
     if (confDisplayRetina.isSet()) {
         retina = confDisplayRetina.boolVal();
+    }
+    
+    // init redux
+    if (redux) {
+        minr *= 0.75;
+        maxr *= 0.75;
     }
     
     // init retina
@@ -177,7 +193,7 @@ void Node::config(Configuration c) {
 void Node::defaults(Defaults d) {
     
     // children
-    initial = 12;
+    initial = redux ? 5 : 8;
     Default graphNodeInitial = d.getDefault(dGraphNodeInitial);
     if (graphNodeInitial.isSet()) {
         initial = (int) graphNodeInitial.doubleVal();
@@ -185,12 +201,14 @@ void Node::defaults(Defaults d) {
     
     
     // distance
-    double length = 480;
+    double length = redux ? 300 : 480;
     Default graphEdgeLength = d.getDefault(dGraphEdgeLength);
     if (graphEdgeLength.isSet()) {
         length = graphEdgeLength.doubleVal();
     }
-    dist = length*1.05;
+    
+    // props
+    dist = length*1.11;
     perimeter = length*0.9;
     zone = length / 9.0;
     
@@ -322,7 +340,7 @@ void Node::draw() {
         gl::enableAlphaBlending(true);
         
         // drawy thingy
-        selected ? gl::color(ctxts) : gl::color(ctxt);
+        selected ? gl::color(ctxts) : (active ? gl::color(ctxta) : gl::color(ctxt));
         gl::draw(textureLabel, Vec2d(pos.x+loff.x, pos.y+core+loff.y));
     }
 
@@ -626,7 +644,7 @@ void Node::load() {
     radius = retina ? 72 : 36;
     
     // color
-    ctxt = Color(0.9,0.9,0.9);
+    ctxt = Color(0.6,0.6,0.6);
     
     // font
     font = Font("Helvetica-Bold",retina ? 30 : 15);
@@ -647,7 +665,7 @@ void Node::unload() {
     radius = retina ? 18 : 9;
     
     // color
-    ctxt = Color(0.85,0.85,0.85);
+    ctxt = Color(0.75,0.75,0.75);
     
     // font
     font = Font("Helvetica",retina ? 24 : 12);
@@ -934,6 +952,7 @@ void Node::renderLabel(string lbl) {
  * Renders the node.
  */
 void Node::renderNode() {
+    GLog();
     
     // suffix
     string sfx = retina ? "@2x.png" : ".png";
@@ -941,11 +960,14 @@ void Node::renderNode() {
     // movie
     if (type == nodeMovie) {
         
+        // category
+        string cat = (category.length()) > 0 ? "_" + category : "";
+        
         // texture
         textureNode = gl::Texture(loadImage(loadResource("node_movie"+sfx)));
         if (active || loading) {
-            textureCore = gl::Texture(loadImage(loadResource("node_movie_core"+sfx)));
-            textureGlow = gl::Texture(loadImage(loadResource("node_movie_glow"+sfx)));
+            textureCore = gl::Texture(loadImage(loadResource("node_movie_core"+cat+sfx)));
+            textureGlow = gl::Texture(loadImage(loadResource("node_movie_glow"+cat+sfx)));
         }
         
     }
@@ -979,6 +1001,18 @@ void Node::updateType(string t) {
     
     // type
     type = t;
+    
+    // render
+    this->renderNode();
+}
+
+/**
+ * Updates the category.
+ */
+void Node::updateCategory(string c) {
+    
+    // category
+    category = c;
     
     // render
     this->renderNode();

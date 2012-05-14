@@ -25,7 +25,6 @@
 #include "cinder/app/CinderAppDelegateIPhone.h"
 
 
-
 /**
  * Solyaris AppDelegate.
  */
@@ -36,6 +35,7 @@
 // Business
 - (void)update:(NSString*)appVersion;
 - (void)install:(NSString*)appVersion;
+- (BOOL)depreceated;
 
 // User Defaults
 - (void)resetUserDefaults;
@@ -44,5 +44,6 @@
 - (NSObject*)getUserDefault:(NSString*)key;
 - (void)removeUserDefault:(NSString*)key;
 - (BOOL)getUserDefaultBool:(NSString*)key;
+
 
 @end

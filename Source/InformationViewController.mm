@@ -38,7 +38,7 @@
 - (void)swapTMDb;
 - (void)swapIMDb;
 - (void)swapWikipedia;
-- (void)swapTrailer;
+- (void)swapTrailer:(int)vndx;
 - (void)swapReset;
 @end
 
@@ -131,7 +131,6 @@
         _referenceTMDb = [[NSMutableString alloc] init];
         _referenceIMDb = [[NSMutableString alloc] init];
         _referenceWikipedia = [[NSMutableString alloc] init];
-        _referenceTrailer = [[NSMutableString alloc] init];
         _referenceAmazon = [[NSMutableString alloc] init];
         _referenceITunes = [[NSMutableString alloc] init];
 
@@ -163,6 +162,9 @@
     CGRect footerFrame = CGRectMake(0, contentFrame.size.height-kInformationFooterHeight, contentFrame.size.width, kInformationFooterHeight);
     CGRect componentFrame = CGRectMake(0, kInformationHeaderHeight, contentFrame.size.width, contentFrame.size.height-kInformationHeaderHeight-kInformationFooterHeight);
     CGRect trailerFrame = CGRectMake(kInformationGapInset, kInformationHeaderHeight+kInformationGapInset, contentFrame.size.width-2*kInformationGapInset, contentFrame.size.height-kInformationHeaderHeight-kInformationFooterHeight-2*kInformationGapInset);
+    CGRect actionBarFrame = CGRectMake(0, 0, footerFrame.size.width, footerFrame.size.height);
+    CGRect toolsFrame = CGRectMake(footerFrame.size.width-kInformationGapInset-80, 5, 80, kInformationFooterHeight-10);
+    CGRect navigatorFrame = CGRectMake(kInformationGapInset, 5, 80, kInformationFooterHeight-10);
     
     
     // view
@@ -176,7 +178,7 @@
     mView.backgroundColor = [UIColor blackColor];
     mView.opaque = NO;
     mView.alpha = 0.3;
-    self.modalView = [mView retain];
+    _modalView = [mView retain];
     [self.view addSubview:_modalView];
     [mView release];
     
@@ -211,24 +213,38 @@
     
     
     // resize
-	UIButton *btnResize = [UIButton buttonWithType:UIButtonTypeCustom]; 
+    UIButton *btnResize = [UIButton buttonWithType:UIButtonTypeCustom]; 
     btnResize.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-	btnResize.frame = CGRectMake(contentFrame.size.width-44, 0, 44, 44);
-	[btnResize setImage:[UIImage imageNamed:@"btn_resize-full.png"] forState:UIControlStateNormal];
-	[btnResize addTarget:self action:@selector(actionResize:) forControlEvents:UIControlEventTouchUpInside];
+    btnResize.frame = CGRectMake(contentFrame.size.width-44, 0, 44, 44);
+    [btnResize setImage:[UIImage imageNamed:@"btn_resize-full.png"] forState:UIControlStateNormal];
+    [btnResize addTarget:self action:@selector(actionResize:) forControlEvents:UIControlEventTouchUpInside];
     _buttonResize = [btnResize retain];
-	[ctView  addSubview:_buttonResize];
-    [btnResize release];
+    
+    // close
+    UIButton *btnClose = [UIButton buttonWithType:UIButtonTypeCustom]; 
+    btnClose.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+    btnClose.frame = CGRectMake(contentFrame.size.width-44, 0, 44, 44);
+    [btnClose setImage:[UIImage imageNamed:@"btn_close.png"] forState:UIControlStateNormal];
+    [btnClose addTarget:self action:@selector(actionClose:) forControlEvents:UIControlEventTouchUpInside];
+    _buttonClose = [btnClose retain];
+    
+    // ipad
+    if (iPad) {
+        [ctView  addSubview:_buttonResize];
+    }
+    else {
+        [ctView  addSubview:_buttonClose];
+    }
+    
     
     // button trailer
     UIButton *btnTrailer = [UIButton buttonWithType:UIButtonTypeCustom]; 
     btnTrailer.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-    btnTrailer.frame = CGRectMake(headerFrame.size.width-44-kInformationGapInset+6, headerFrame.size.height-44-kInformationGapOffset+1, 44, 44);
+    btnTrailer.frame = CGRectMake(headerFrame.size.width-44-kInformationGapInset+6, headerFrame.size.height-44-kInformationGapOffset+(iPad ? 1 : 10), 44, 44);
     [btnTrailer setImage:[UIImage imageNamed:@"btn_trailer.png"] forState:UIControlStateNormal];
     [btnTrailer addTarget:self action:@selector(actionTrailer:) forControlEvents:UIControlEventTouchUpInside];
     _buttonTrailer = [btnTrailer retain];
     [ctView addSubview:_buttonTrailer];
-    [btnTrailer release];
 
     
     // component listing
@@ -293,7 +309,7 @@
 	footerView.opaque = YES;
     
     // actions
-    ActionBar *abar = [[ActionBar alloc] initWithFrame:CGRectMake(kInformationGapInset, kInformationGapOffset, footerFrame.size.width-2*kInformationGapInset, footerFrame.size.height-2*kInformationGapOffset)];
+    ActionBar *abar = [[ActionBar alloc] initWithFrame:actionBarFrame];
     
     // flex
 	UIBarButtonItem *itemFlex = [[UIBarButtonItem alloc] 
@@ -307,59 +323,66 @@
                                target:nil 
                                action:nil];
     nspace.width = -12;
-
+    UIBarButtonItem *spacer = [[UIBarButtonItem alloc] 
+                               initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace 
+                               target:nil 
+                               action:nil];
+    spacer.width = -9;
+    
     
     // action items
-    ActionBarButtonItem *actionListing = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_listing.png"] 
+    ActionBarButtonItem *actionListing = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"tab_listing.png"] 
+                                                                           selected:[UIImage imageNamed:@"tab_listing_selected.png"] 
                                                                               title:NSLocalizedString(@"Cast", @"Cast") 
                                                                              target:self 
                                                                              action:@selector(swapListing)];
+    [actionListing setFrame:CGRectMake(0, 0, 80, kInformationFooterHeight)];
     _actionListing = [actionListing retain];
     [actionListing release];
     
-    ActionBarButtonItem *actionTMDb = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_tmdb.png"] 
+    ActionBarButtonItem *actionTMDb = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"tab_tmdb.png"] 
+                                                                        selected:[UIImage imageNamed:@"tab_tmdb_selected.png"] 
                                                                                   title:NSLocalizedString(@"Info", @"Info")
                                                                                  target:self 
                                                                                  action:@selector(swapTMDb)];
+    [actionTMDb setFrame:CGRectMake(0, 0, 80, kInformationFooterHeight)];
     _actionTMDb = [actionTMDb retain];
     [actionTMDb release];
     
-    ActionBarButtonItem *actionIMDb = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_imdb.png"] 
+    ActionBarButtonItem *actionIMDb = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"tab_imdb.png"] 
+                                                                        selected:[UIImage imageNamed:@"tab_imdb_selected.png"] 
                                                                            title:NSLocalizedString(@"IMDb", @"IMDb")
                                                                           target:self 
                                                                           action:@selector(swapIMDb)];
+    [actionIMDb setFrame:CGRectMake(0, 0, 80, kInformationFooterHeight)];
     _actionIMDb = [actionIMDb retain];
     [actionIMDb release];
     
-    ActionBarButtonItem *actionWikipedia = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_wikipedia.png"] 
+    ActionBarButtonItem *actionWikipedia = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"tab_wikipedia.png"] 
+                                                                             selected:[UIImage imageNamed:@"tab_wikipedia_selected.png"] 
                                                                                 title:NSLocalizedString(@"Wikipedia", @"Wikipedia")
                                                                                target:self 
                                                                                action:@selector(swapWikipedia)];
+    [actionWikipedia setFrame:CGRectMake(0, 0, 80, kInformationFooterHeight)];
     _actionWikipedia = [actionWikipedia retain];
     [actionWikipedia release];
     
     
-    
     // add action tab bar
-    [abar setItems:[NSArray arrayWithObjects:nspace,itemFlex,_actionListing,_actionTMDb,_actionIMDb,_actionWikipedia,itemFlex,nspace,nil]];
+    [abar setItems:[NSArray arrayWithObjects:nspace,itemFlex,_actionListing,spacer,_actionTMDb,spacer,_actionIMDb,spacer,_actionWikipedia,itemFlex,nspace,nil]];
     [footerView addSubview:abar];
     [itemFlex release];
     
-    
-    
     // navigator
-    HTMLNavigatorView *htmlNavigator = [[HTMLNavigatorView alloc] initWithFrame:CGRectMake(kInformationGapInset, 10, 80, 40)];
+    HTMLNavigatorView *htmlNavigator = [[HTMLNavigatorView alloc] initWithFrame:navigatorFrame];
     htmlNavigator.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin);
     htmlNavigator.delegate = self;
     
-    // add navigator to footer
     _htmlNavigator = [htmlNavigator retain];
-    [footerView addSubview:_htmlNavigator];
     [htmlNavigator release];
     
-    
     // tools
-    UIView *toolsView = [[UIView alloc] initWithFrame:CGRectMake(footerFrame.size.width-kInformationGapInset-80, 10, 80, 40)];
+    UIView *toolsView = [[UIView alloc] initWithFrame:toolsFrame];
     toolsView.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin);
     toolsView.backgroundColor = [UIColor clearColor];
     
@@ -370,11 +393,17 @@
     [btnReference setImage:[UIImage imageNamed:@"btn_reference.png"] forState:UIControlStateNormal];
     [btnReference addTarget:self action:@selector(actionToolsReference:) forControlEvents:UIControlEventTouchUpInside];
     [toolsView addSubview:btnReference];
-
     
-    // add tools to footer
-    [footerView addSubview:toolsView];
-    
+    // ipad
+    if (iPad) {
+        
+        // add navigator to footer
+        [footerView addSubview:_htmlNavigator];
+        
+        // add tools to footer
+        [footerView addSubview:toolsView];
+    }
+    [toolsView release];
     
     // add footer view to content
     [ctView addSubview:footerView];
@@ -386,29 +415,22 @@
     [self.view bringSubviewToFront:_contentView];
     [ctView release];
     
+    // hide
+    _contentView.hidden = YES;
     
-	    
+    
+    // loader
+    UIActivityIndicatorView *loader = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    loader.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+    loader.center = self.view.center;
+    loader.hidden = YES;
+    
+    _loader = [loader retain];
+    [self.view addSubview:_loader];
+    [loader release];
+    
 }
 
-
-/*
- * Resize.
- */
-- (void)resize {
-    FLog();
-    
-    // fullscreen
-    if (fullscreen) {
-        [self resizeFull];
-    }
-    
-    // resize components
-    [_componentListing resize];
-    [_componentTMDb resize];
-    [_componentIMDb resize];
-    [_componentWikipedia resize];
-    [_componentTrailer resize];
-}
 
 
 /*
@@ -421,9 +443,20 @@
 }
 
 /*
+ * Enters the view.
+ */
+- (void)viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
+	DLog();
+    
+}
+
+/*
  * Leaves the view.
  */
 - (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    FLog();
     
     // reset
     [self swapReset];
@@ -447,7 +480,7 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
     
     // dismiss
-	if (delegate != nil && [delegate respondsToSelector:@selector(informationDismiss)]) {
+	if (!mode_loading && delegate != nil && [delegate respondsToSelector:@selector(informationDismiss)]) {
 		[delegate informationDismiss];
 	}
 }
@@ -461,6 +494,54 @@
 #pragma mark Business
 
 /*
+ * Loading.
+ */
+- (void)loading:(BOOL)loading {
+    GLog();
+    
+    // mode
+    mode_loading = loading;
+    if (mode_loading) {
+        
+        // hide
+        _contentView.hidden = YES;
+        
+        // loader
+        [_loader startAnimating];
+        _loader.hidden = NO;
+    }
+    else {
+        
+        // show
+        _contentView.hidden = NO;
+        
+        // unload
+        [_loader stopAnimating];
+        _loader.hidden = YES;
+    }
+}
+
+
+/*
+ * Resize.
+ */
+- (void)resize {
+    FLog();
+    
+    // fullscreen
+    if (fullscreen) {
+        [self resizeFull];
+    }
+    
+    // resize components
+    [_componentListing resize];
+    [_componentTMDb resize];
+    [_componentIMDb resize];
+    [_componentWikipedia resize];
+    [_componentTrailer resize];
+}
+
+/*
  * Information movie.
  */
 - (void)informationMovie:(Movie*)movie nodes:(NSArray *)nodes {
@@ -472,14 +553,13 @@
     
     // references
     [_referenceTMDb setString:[NSString stringWithFormat:@"%@%i",urlTMDbMovie,[movie.mid intValue]]];
-    if (([movie.imdb_id length] > 0)) {
-        [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",[_sloc urlIMDbMovie],movie.imdb_id]];
+    if (([movie.imdb length] > 0)) {
+        [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",[_sloc urlIMDbMovie],movie.imdb]];
     }
     else {
         [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",[_sloc urlIMDbSearch],[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     }
     [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",[_sloc urlWikipediaSearch],[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-    [_referenceTrailer setString:movie.trailer];
     [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",[_sloc urlAmazonSearch],[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceITunes setString:[NSString stringWithFormat:@"%@%@",urlITunesSearch,[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 
@@ -488,11 +568,7 @@
     _informationPersonView.hidden = YES;
     _informationMovieView.hidden = NO;
     
-    // trailer
-    _buttonTrailer.hidden = YES;
-    if ([_referenceTrailer length] > 0) {
-        _buttonTrailer.hidden = NO;
-    }
+
     
     // component listing
     [_componentListing reset:nodes];
@@ -507,8 +583,12 @@
     // component wikipedia
     [_componentWikipedia reset:_referenceWikipedia];
     
-    // reset
-    [_componentTrailer reset:_referenceTrailer];
+    // component trailer
+    [_componentTrailer resetTrailer:movie];
+    _buttonTrailer.hidden = YES;
+    if ([_componentTrailer.videos count] > 0) {
+        _buttonTrailer.hidden = NO;
+    }
     
     // swap listing
     [self swapReset];
@@ -530,7 +610,6 @@
     [_referenceTMDb setString:[NSString stringWithFormat:@"%@%i",urlTMDbPerson,[person.pid intValue]]];
     [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",[_sloc urlIMDbSearch],[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",[_sloc urlWikipediaSearch],[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-    [_referenceTrailer setString:@""];
     [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",[_sloc urlAmazonSearch],[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceITunes setString:[NSString stringWithFormat:@"%@%@",urlITunesSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     
@@ -556,7 +635,7 @@
     [_componentWikipedia reset:_referenceWikipedia];
     
     // component trailer
-    [_componentTrailer reset:_referenceTrailer];
+    [_componentTrailer reset];
     
     // swap listing
     [self swapReset];
@@ -690,30 +769,26 @@
 /*
  * Swap Trailer.
  */
-- (void)swapTrailer {
+- (void)swapTrailer:(int)vndx {
     FLog();
     
-    // change mode
-    if (! mode_trailer) {
-        
-        // track
-        [Tracker trackPageView:@"/information/trailer"];
-        
-        // reset
-        [self swapReset];
-        
-        // mode
-        mode_trailer = YES;
-        
-        // button
-        [_buttonTrailer setSelected:YES];
-        
-        // component
-        [_componentTrailer load];
-        [_componentTrailer scrollTop:NO];
-        [_componentTrailer setHidden:NO];
-        
-    }
+    // track
+    [Tracker trackPageView:@"/information/trailer"];
+    
+    // reset
+    [self swapReset];
+    
+    // mode
+    mode_trailer = YES;
+    
+    // button
+    [_buttonTrailer setSelected:YES];
+    
+    // component
+    [_componentTrailer unload];
+    [_componentTrailer load:vndx];
+    [_componentTrailer scrollTop:NO];
+    [_componentTrailer setHidden:NO];
 }
 
 
@@ -886,13 +961,53 @@
 }
 
 /*
+ * Action close.
+ */
+- (void)actionClose:(id)sender {
+    DLog();
+    
+    // dismiss
+	if (delegate != nil && [delegate respondsToSelector:@selector(informationDismiss)]) {
+		[delegate informationDismiss];
+	}
+}
+
+/*
  * Action Trailer.
  */
 - (void)actionTrailer:(id)sender {
 	DLog();
     
-    // swap
-    [self swapTrailer];
+    // single
+    if ([_componentTrailer.videos count] == 1) {
+        
+        // swap
+        [self swapTrailer:0];
+    }
+    // select
+    else {
+        
+        // on the trail
+        UIActionSheet *trailerActions = [[UIActionSheet alloc]
+                                         initWithTitle:nil
+                                         delegate:self
+                                         cancelButtonTitle:nil
+                                         destructiveButtonTitle:nil
+                                         otherButtonTitles:nil];
+        
+        // videos
+        for (Video *v in _componentTrailer.videos) {
+            [trailerActions addButtonWithTitle:v.title];
+        }
+        [trailerActions addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel")];
+        trailerActions.cancelButtonIndex = [_componentTrailer.videos count];
+        
+        // show
+        [trailerActions setTag:ActionInformationTrailers];
+        [trailerActions showFromRect:_buttonTrailer.frame inView:self.contentView animated:YES];
+        [trailerActions release];
+    }
+
 }
 
 
@@ -906,7 +1021,7 @@
     UIActionSheet *referenceActions = [[UIActionSheet alloc]
                                   initWithTitle:nil
                                   delegate:self
-                                  cancelButtonTitle:nil
+                                  cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")
                                   destructiveButtonTitle:nil
                                   otherButtonTitles:NSLocalizedString(@"Open on TMDb",@"Open on TMDb"),NSLocalizedString(@"Open on IMDb",@"Open on IMDb"),NSLocalizedString(@"Open on Wikipedia",@"Open on Wikipedia"),NSLocalizedString(@"Find on Amazon",@"Find on Amazon"),NSLocalizedString(@"Find on iTunes",@"Find on iTunes"),nil];
     
@@ -999,6 +1114,20 @@
 	// tag
 	switch ([actionSheet tag]) {
             
+        // trailers
+		case ActionInformationTrailers: {
+            
+            // trailer
+            if (buttonIndex < [_componentTrailer.videos count]) {
+                
+                // switch
+                [self swapTrailer:buttonIndex];
+            }
+            
+            // twix
+			break;
+		}
+            
         // reference
 		case ActionInformationToolsReference: {
             
@@ -1032,7 +1161,7 @@
 		}
             
             
-            // default
+        // default
 		default: {
 			break;
 		}
@@ -1060,6 +1189,7 @@
     
     // buttons
     [_buttonResize release];
+    [_buttonClose release];
     [_buttonTrailer release];
     
     // components
@@ -1069,6 +1199,9 @@
     [_componentWikipedia release];
     [_componentTrailer release];
     
+    // loader
+    [_loader release];
+    
     // localization
     [_sloc release];
     
@@ -1076,7 +1209,6 @@
     [_referenceTMDb release]; 
     [_referenceIMDb release]; 
     [_referenceWikipedia release]; 
-    [_referenceTrailer release]; 
     [_referenceAmazon release]; 
     [_referenceITunes release]; 
 	
@@ -1119,7 +1251,7 @@
 		self.opaque = YES;
 		self.backgroundColor = [UIColor whiteColor];
         self.autoresizesSubviews = YES;
-        self.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin);
+        self.autoresizingMask = iPad ? (UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin) : (UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight);
         self.contentMode = UIViewContentModeRedraw; // Thats the one
         
 		// return
@@ -1155,7 +1287,7 @@
 	CGContextFillRect(context, mrect);
     
     // textures
-    UIImage *texture = [UIImage imageNamed:@"bg_information.png"];
+    UIImage *texture = [UIImage imageNamed:@"bg_content.png"];
     CGRect tcRect;
     tcRect.size = texture.size; 
     
@@ -1166,7 +1298,7 @@
     
 	// header lines
 	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
-	CGContextMoveToPoint(context, 0, 110-1);
+	CGContextMoveToPoint(context, 0, kInformationHeaderHeight-1);
 	CGContextAddLineToPoint(context, w, kInformationHeaderHeight-1);
 	CGContextStrokePath(context);
     
@@ -1186,8 +1318,6 @@
 	CGContextAddLineToPoint(context, w, h-kInformationFooterHeight+1);
 	CGContextStrokePath(context);
      
-    
-    
 }
 
 
@@ -1268,27 +1398,28 @@
         self.opaque = YES;
         
         // vars
-        float gapInset = 15;
+        float gapInset = iPad ? 15 : 10;
         float gapOffset = 10;
+        float roff = iPad ? 0 : -5;
         
         // frames
-        CGRect iframe = CGRectMake(gapInset, gapOffset, 60, 90);
-        CGRect mframe = CGRectMake(2*gapInset+60, gapOffset, frame.size.width-(2*gapInset+90), frame.size.height-2*gapInset);
+        CGRect iframe = iPad ? CGRectMake(gapInset, gapOffset, 60, 90) : CGRectMake(gapInset, gapOffset, 40, 60);
+        CGRect mframe = CGRectMake(2*gapInset+iframe.size.width+roff, gapOffset+2*roff, frame.size.width-(2*gapInset+iframe.size.height), frame.size.height-2*gapInset);
         
         // poster
         CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:iframe];
         ciView.autoresizingMask = UIViewAutoresizingNone;
-        [ciView placeholderImage:[UIImage imageNamed:@"placeholder_info_movie.png"]];
+        [ciView placeholderImage:iPad ? [UIImage imageNamed:@"placeholder_info_movie.png"] : [UIImage imageNamed:@"placeholder_info_movie_redux.png"]];
         
         _imagePoster = [ciView retain];
         [self addSubview:_imagePoster];
         [ciView release];
         
         // name
-        UILabel *lblName = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y, mframe.size.width, 36)];
+        UILabel *lblName = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y, mframe.size.width, iPad ? 36 : 34)];
         lblName.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         lblName.backgroundColor = [UIColor clearColor];
-        lblName.font = [UIFont fontWithName:@"Helvetica-Bold" size:21.0];
+        lblName.font = [UIFont fontWithName:@"Helvetica-Bold" size:iPad ? 21.0 : 15];
         lblName.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
         lblName.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
         lblName.shadowOffset = CGSizeMake(1,1);
@@ -1300,10 +1431,10 @@
         [lblName release];
         
         // tagline
-        UILabel *lblTagline = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+30, mframe.size.width, 18)];
+        UILabel *lblTagline = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+(iPad ? 30 : 23), mframe.size.width, 18)];
         lblTagline.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         lblTagline.backgroundColor = [UIColor clearColor];
-        lblTagline.font = [UIFont fontWithName:@"Helvetica" size:15.0];
+        lblTagline.font = [UIFont fontWithName:@"Helvetica" size:iPad ? 15.0 : 12];
         lblTagline.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
         lblTagline.opaque = YES;
         lblTagline.numberOfLines = 1;
@@ -1317,7 +1448,7 @@
         
         
         // released
-        UILabel *lblPropReleased = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+54, pwidth, 15)];
+        UILabel *lblPropReleased = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+(iPad ? 54 : 42), pwidth, 15)];
         lblPropReleased.backgroundColor = [UIColor clearColor];
         lblPropReleased.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         lblPropReleased.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
@@ -1326,7 +1457,7 @@
         [lblPropReleased setText:NSLocalizedString(@"Year:", @"Year:")];
         [self addSubview:lblPropReleased];
         
-        UILabel *lblReleased = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+54, mframe.size.width-pwidth, 15)];
+        UILabel *lblReleased = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 54 : 42), mframe.size.width-pwidth, 15)];
         lblReleased.backgroundColor = [UIColor clearColor];
         lblReleased.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         lblReleased.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
@@ -1339,7 +1470,7 @@
         
         
         // runtime
-        UILabel *lblPropRuntime = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+69, pwidth, 15)];
+        UILabel *lblPropRuntime = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+(iPad ? 69 : 57), pwidth, 15)];
         lblPropRuntime.backgroundColor = [UIColor clearColor];
         lblPropRuntime.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         lblPropRuntime.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
@@ -1348,7 +1479,7 @@
         [lblPropRuntime setText:NSLocalizedString(@"Runtime:", @"Runtime:")];
         [self addSubview:lblPropRuntime];
         
-        UILabel *lblRuntime = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+69, mframe.size.width-pwidth, 15)];
+        UILabel *lblRuntime = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 69 : 57), mframe.size.width-pwidth, 15)];
         lblRuntime.backgroundColor = [UIColor clearColor];
         lblRuntime.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         lblRuntime.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
@@ -1383,12 +1514,12 @@
     
     // poset
     NSString *poster = @"";
-    NSString *posterSize = [Utils isRetina] ? assetSizeMid : assetSizeThumb;
+    NSString *posterSize = [NSString stringWithFormat:@"%@",((iPad && [Utils isRetina]) ? assetSizeMid : assetSizeThumb)];
     for (Asset *a in movie.assets) {
         
         // poster
         if ([a.type isEqualToString:assetPoster] && [a.size isEqualToString:posterSize]) { 
-            poster = a.url;
+            poster = a.value;
             break;
         }
     }
@@ -1461,26 +1592,27 @@
         self.opaque = YES;
         
         // vars
-        float gapInset = 15;
+        float gapInset = iPad ? 15 : 10;
         float gapOffset = 10;
+        float roff = iPad ? 0 : -5;
         
         // frames
-        CGRect iframe = CGRectMake(gapInset, gapOffset, 60, 90);
-        CGRect mframe = CGRectMake(2*gapInset+60, gapOffset, frame.size.width-(2*gapInset+90), frame.size.height-2*gapOffset);
+        CGRect iframe = iPad ? CGRectMake(gapInset, gapOffset, 60, 90) : CGRectMake(gapInset, gapOffset, 40, 60);
+        CGRect mframe = CGRectMake(2*gapInset+iframe.size.width+roff, gapOffset+2*roff, frame.size.width-(2*gapInset+iframe.size.height), frame.size.height-2*gapInset);
         
         // poster
         CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:iframe];
         ciView.autoresizingMask = UIViewAutoresizingNone;
-        [ciView placeholderImage:[UIImage imageNamed:@"placeholder_info_person.png"]];
+        [ciView placeholderImage:iPad ? [UIImage imageNamed:@"placeholder_info_person.png"] : [UIImage imageNamed:@"placeholder_info_person_redux.png"]];
         
         _imageProfile = [ciView retain];
         [self addSubview:_imageProfile];
         [ciView release];
         
         // name
-        UILabel *lblName = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y, mframe.size.width, 36)];
+        UILabel *lblName = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y, mframe.size.width, iPad ? 36 : 34)];
         lblName.backgroundColor = [UIColor clearColor];
-        lblName.font = [UIFont fontWithName:@"Helvetica-Bold" size:21.0];
+        lblName.font = [UIFont fontWithName:@"Helvetica-Bold" size:iPad ? 21.0 : 15];
         lblName.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
         lblName.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
         lblName.shadowOffset = CGSizeMake(1,1);
@@ -1496,7 +1628,7 @@
         
         
         // known movies
-        UILabel *lblPropKnownMovies = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+39, pwidth, 15)];
+        UILabel *lblPropKnownMovies = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+(iPad ? 39 : 28), pwidth, 15)];
         lblPropKnownMovies.backgroundColor = [UIColor clearColor];
         lblPropKnownMovies.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         lblPropKnownMovies.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
@@ -1505,7 +1637,7 @@
         [lblPropKnownMovies setText:NSLocalizedString(@"Movies:", @"Movies:")];
         [self addSubview:lblPropKnownMovies];
         
-        UILabel *lblKnownMovies = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+39, mframe.size.width-pwidth, 15)];
+        UILabel *lblKnownMovies = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 39 : 28), mframe.size.width-pwidth, 15)];
         lblKnownMovies.backgroundColor = [UIColor clearColor];
         lblKnownMovies.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         lblKnownMovies.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
@@ -1518,7 +1650,7 @@
         
         
         // birthplace
-        UILabel *lblPropBirthday = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+54, pwidth, 15)];
+        UILabel *lblPropBirthday = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+(iPad ? 54 : 43), pwidth, 15)];
         lblPropBirthday.backgroundColor = [UIColor clearColor];
         lblPropBirthday.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         lblPropBirthday.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
@@ -1527,7 +1659,7 @@
         [lblPropBirthday setText:NSLocalizedString(@"Birthday:", @"Birthday:")];
         [self addSubview:lblPropBirthday];
         
-        UILabel *lblBirthday = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+54, mframe.size.width-pwidth, 15)];
+        UILabel *lblBirthday = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 54 : 43), mframe.size.width-pwidth, 15)];
         lblBirthday.backgroundColor = [UIColor clearColor];
         lblBirthday.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         lblBirthday.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
@@ -1539,7 +1671,7 @@
         [lblBirthday release];
         
         // birthplace
-        UILabel *lblPropBirthplace = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+69, pwidth, 15)];
+        UILabel *lblPropBirthplace = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+(iPad ? 69 : 58), pwidth, 15)];
         lblPropBirthplace.backgroundColor = [UIColor clearColor];
         lblPropBirthplace.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         lblPropBirthplace.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
@@ -1548,7 +1680,7 @@
         [lblPropBirthplace setText:NSLocalizedString(@"Birthplace:", @"Birthplace:")];
         [self addSubview:lblPropBirthplace];
         
-        UILabel *lblBirthplace = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+69, mframe.size.width-pwidth, 15)];
+        UILabel *lblBirthplace = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 69 : 58), mframe.size.width-pwidth, 15)];
         lblBirthplace.backgroundColor = [UIColor clearColor];
         lblBirthplace.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         lblBirthplace.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
@@ -1589,7 +1721,7 @@
         
         // profile
         if ([a.type isEqualToString:assetProfile] && [a.size isEqualToString:assetSizeMid]) {
-            profile = a.url;
+            profile = a.value;
             break;
         }
     }
@@ -1598,9 +1730,9 @@
     // header
     [_imageProfile loadImage:profile];
     [_labelName setText:person.name];
-    [_labelBirthday setText:person.birthday ? [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:person.birthday]] : @"-" ];
+    [_labelBirthday setText:person.birthday ? (person.deathday ? [NSString stringWithFormat:@"%@ - %@",[dateFormatter stringFromDate:person.birthday],[dateFormatter stringFromDate:person.deathday]] : [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:person.birthday]]) : @"-" ];
     [_labelBirthplace setText: (person.birthplace && ! [person.birthplace isEqualToString:@""]) ? person.birthplace : @"-"];
-    [_labelKnownMovies setText:([person.known_movies intValue] > 0) ? [NSString stringWithFormat:@"%i",[person.known_movies intValue]]: @"-"];
+    [_labelKnownMovies setText:([person.casts intValue] > 0) ? [NSString stringWithFormat:@"%i",[person.casts intValue]]: @"-"];
     
 }
 

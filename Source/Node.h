@@ -64,7 +64,7 @@ const string nodePersonCrew = "person_crew";
 
 // lengths
 const float nodeUnfoldMin = 0.9f;
-const float nodeUnfoldMax = 1.5f;
+const float nodeUnfoldMax = 1.53f;
 const float nodeFoldMin = 0.3f;
 const float nodeFoldMax = 0.9f;
 
@@ -122,6 +122,7 @@ class Node {
     void renderNode();
     void updateType(string t);
     void updateMeta(string m);
+    void updateCategory(string c);
     bool isActive();
     bool isClosed();
     bool isInactive();
@@ -135,6 +136,7 @@ class Node {
     string label;
     string meta;
     string type;
+    string category;
     NodeWeakPtr sref;
     NodeWeakPtr parent;
     NodeVectorPtr children;
@@ -178,6 +180,7 @@ class Node {
     int minr,maxr;
     double rincg,rincs;
     bool retina;
+    bool redux;
     
     // Textures
     gl::Texture textureNode;
@@ -187,6 +190,7 @@ class Node {
     
     // Color
     Color ctxt;
+    Color ctxta;
     Color ctxts;
     float anode,asnode;
     float acore,ascore;

@@ -21,14 +21,17 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import <UIKit/UIKit.h>
+#import "CacheImageView.h"
+#import "SolyarisConstants.h"
 
 
 // Constants
 #define kListingCellHeight  36.0f
-#define kListingCellInset   15.0f
-#define kListingGapHeight   39.0f
-#define kListingGapOffset   10.0f
-#define kListingGapInset    15.0f
+#define kListingCellInset   (iPad ? 15.0f : 10.0f)
+#define kListingCellThumb   25.0f
+#define kListingGapHeight   (iPad ? 35.0f : 34.0f)
+#define kListingGapOffset   5.0f
+#define kListingGapInset    (iPad ? 15.0f : 10.0f)
 
 
 // Sections
@@ -90,8 +93,7 @@ enum {
     UILabel *_labelInfo;
     UILabel *_labelMeta;
     NSString *_type;
-    UIImageView *_iconMovie;
-    UIImageView *_iconPerson;
+    CacheImageView *_thumbImageView;
     
     // state
     bool loaded;
@@ -104,5 +106,9 @@ enum {
 @property (nonatomic,retain) NSString *type;
 @property bool loaded;
 @property bool visible;
+
+// Business
+- (void)update;
+- (void)loadThumb:(NSString*)thumb type:(NSString*)type;
 
 @end

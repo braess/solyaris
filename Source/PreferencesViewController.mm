@@ -89,6 +89,7 @@
     
     // self
     self.view.frame = vframe;
+    self.view.autoresizingMask = UIViewAutoresizingNone;
     
 	
 	// remove background for iPhone
@@ -99,48 +100,75 @@
     self.tableView.separatorColor = [UIColor clearColor];
     
     // background view
-    self.tableView.backgroundView = [[PreferencesBackgroundView alloc] initWithFrame:vframe];
+    self.tableView.backgroundView = [[PreferencesBackgroundView alloc] initWithFrame:CGRectMake(0, 0, vframe.size.width, vframe.size.height)];
     
     
     // header
     CGRect hframe = CGRectMake(0, 0, vframe.size.width, kPreferencesHeaderHeight+kPreferencesHeaderGap);
-    CGRect tframe = CGRectMake(0, 18, vframe.size.width, 18);
-    CGRect abframe = CGRectMake(0, vframe.size.height-kPreferencesFooterHeight+5, vframe.size.width, 45);
+    CGRect tframe = CGRectMake(0, 5, vframe.size.width-44, 18);
+    CGRect cframe = CGRectMake(0, 23, vframe.size.width-44, 18);
+    CGRect abframe = CGRectMake(0, vframe.size.height-kPreferencesFooterHeight+(iPad?5:2), vframe.size.width, 45);
     
     // header view
     UIView *hView = [[UIView alloc] initWithFrame:hframe];
     
     // title
-	UILabel *lblTitle = [[UILabel alloc] initWithFrame:tframe];
-	lblTitle.backgroundColor = [UIColor clearColor];
-	lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
-	lblTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
-	lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-	lblTitle.shadowOffset = CGSizeMake(1,1);
-	lblTitle.opaque = YES;
-	lblTitle.numberOfLines = 1;
-	[lblTitle setText:NSLocalizedString(@"Settings",@"Settings")];
-	[hView addSubview:lblTitle];
-	[lblTitle release];
+    if (!iPad) {
+        
+        // label
+        UILabel *lblTitle = [[UILabel alloc] initWithFrame:tframe];
+        lblTitle.backgroundColor = [UIColor clearColor];
+        lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
+        lblTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
+        lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
+        lblTitle.shadowOffset = CGSizeMake(1,1);
+        lblTitle.opaque = YES;
+        lblTitle.numberOfLines = 1;
+        [lblTitle setText:NSLocalizedString(@"Solyaris",@"Solyaris")];
+        [hView addSubview:lblTitle];
+        [lblTitle release];
+    }
+    
+    // claim
+	UILabel *lblClaim = [[UILabel alloc] initWithFrame:cframe];
+	lblClaim.backgroundColor = [UIColor clearColor];
+	lblClaim.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
+	lblClaim.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
+	lblClaim.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
+	lblClaim.shadowOffset = CGSizeMake(1,1);
+	lblClaim.opaque = YES;
+	lblClaim.numberOfLines = 1;
+	[lblClaim setText:NSLocalizedString(@"Settings",@"Settings")];
+	[hView addSubview:lblClaim];
+	[lblClaim release];
     
     // set
     self.tableView.tableHeaderView = hView;
     
     
     // localization
-    LocalizationViewController *locViewController = [[LocalizationViewController alloc] initWithFrame:CGRectMake(0, 0, 320, 180)];
+    LocalizationViewController *locViewController = [[LocalizationViewController alloc] initWithFrame:CGRectMake(0, 0, 320, iPad?180:480)];
     locViewController.delegate = self;
+    
     UINavigationController *locNavigationController = [[UINavigationController alloc] initWithRootViewController:locViewController];
+    locNavigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+    _localizationController = [locNavigationController retain];
     
-    // popover
-    UIPopoverController *locPopoverController = [[UIPopoverController alloc] initWithContentViewController:locNavigationController];
-    [locPopoverController setPopoverContentSize:CGSizeMake(locViewController.view.frame.size.width, locViewController.view.frame.size.height)];
-    locPopoverController.contentViewController.view.alpha = 0.9f;
+    // ipad
+    if ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
+        
+        // popover
+        UIPopoverController *locPopoverController = [[UIPopoverController alloc] initWithContentViewController:_localizationController];
+        [locPopoverController setPopoverContentSize:CGSizeMake(locViewController.view.frame.size.width, locViewController.view.frame.size.height)];
+        locPopoverController.contentViewController.view.alpha = 0.9f;
+        
+        _localizationPopoverController = [locPopoverController retain];
+        [locPopoverController release];
+    }
+
     
-    _localizationPopoverController = [locPopoverController retain];
-    [locPopoverController release];
-    
-    
+    [locViewController release];
+    [locNavigationController release];
     
     
     // actions
@@ -158,15 +186,23 @@
                                initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace 
                                target:nil 
                                action:nil];
-    nspace.width = -12;
+    nspace.width = -15;
     
+    // action about
+    ActionBarButtonItem *actionAbout = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_about.png"] 
+                                                                           title:NSLocalizedString(@"About", @"About") 
+                                                                          target:self 
+                                                                          action:@selector(actionAbout:)];
     
     // action help
     ActionBarButtonItem *actionHelp = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_help.png"] 
                                                                                title:NSLocalizedString(@"Help", @"Help") 
                                                                               target:self 
                                                                               action:@selector(actionHelp:)];
-    [actionHelp modeDarkie];
+    
+    // dark
+    [actionAbout dark:YES];
+    [actionHelp dark:YES];
     
     
     // actions
@@ -174,12 +210,16 @@
     [actions addObject:nspace];
     [actions addObject:actionHelp];
     [actions addObject:itemFlex];
+    if (!iPad) {
+        [actions addObject:actionAbout];
+    }
     [actions addObject:nspace];
     
     
     // add & release actions
     [actionBar setItems:actions];
     [actionHelp release];
+    [actionAbout release];
     [itemFlex release];
     [nspace release];
     [actions release];
@@ -218,6 +258,18 @@
     }
 }
 
+/*
+ * Action About.
+ */
+- (void)actionAbout:(id)sender{
+	DLog();
+    
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(preferencesAbout)]) {
+        [delegate preferencesAbout];
+    }
+}
+
 
 
 #pragma mark -
@@ -233,22 +285,38 @@
 	if ([c.key isEqualToString:kKeyLocalization]) {
         FLog();
         
-        
-        // dismiss
-        if ([_localizationPopoverController isPopoverVisible]) {
-            [_localizationPopoverController dismissPopoverAnimated:YES];
-        } 
-        
-        // show girl
-        else {
-            [_localizationPopoverController.contentViewController.navigationController popToRootViewControllerAnimated:NO]; 
-            [_localizationPopoverController presentPopoverFromRect:c.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES]; 
+        // ipad
+        if (iPad) {
+            
+            // dismiss
+            if ([_localizationPopoverController isPopoverVisible]) {
+                [_localizationPopoverController dismissPopoverAnimated:YES];
+            } 
+            
+            // show girl
+            else {
+                [_localizationPopoverController.contentViewController.navigationController popToRootViewControllerAnimated:NO]; 
+                [_localizationPopoverController presentPopoverFromRect:c.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES]; 
+            }
         }
+        else {
+            
+            // delegate
+            if (delegate && [delegate respondsToSelector:@selector(preferencesModal:)]) {
+                [delegate preferencesModal:YES];
+            }
+            
+            // present
+            [self presentModalViewController:_localizationController animated:YES];
+
+        }
+        
 
     }
 	
 	// reset
 	if ([c.key isEqualToString:kKeyReset]) {
+        
 		// action sheet
 		UIActionSheet *resetAction = [[UIActionSheet alloc]
                                       initWithTitle:nil
@@ -309,6 +377,25 @@
 - (NSObject*)getLocalization:(NSString *)key {
     GLog();
     return [self retrievePreference:key];
+}
+
+/*
+ * Dismiss.
+ */
+- (void)localizationDismiss {
+    FLog();
+    
+    // dismissed
+    [self dismissModalViewControllerAnimated:YES];
+    
+    // reset frame (apple bug?)
+    [self.view setFrame:vframe];
+    
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(preferencesModal:)]) {
+        [delegate preferencesModal:NO];
+    }
+    
 }
 
 
@@ -579,7 +666,7 @@
         cslider.help =  NSLocalizedString(@"Initial",@"Initial");
         cslider.sliderAccessory.minimumValue = 0;
         cslider.sliderAccessory.maximumValue = 30;
-        cslider.sliderAccessory.value = 12;
+        cslider.sliderAccessory.value = iPad ? 8 : 5;
         
         // preference
         NSString *graphNodeInitial = [self retrievePreference:udGraphNodeInitial];
@@ -608,9 +695,9 @@
         cslider.key = udGraphEdgeLength;
         cslider.textLabel.text = NSLocalizedString(@"Edge",@"Edge");
         cslider.help =  NSLocalizedString(@"Length",@"Length");
-        cslider.sliderAccessory.minimumValue = 300;
+        cslider.sliderAccessory.minimumValue = 180;
         cslider.sliderAccessory.maximumValue = 600;
-        cslider.sliderAccessory.value = 480;
+        cslider.sliderAccessory.value = iPad ? 480 : 300;
         
         
         // preference

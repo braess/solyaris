@@ -34,10 +34,10 @@
 
 
 // Constants
-#define kInformationHeaderHeight        110.0f
-#define kInformationFooterHeight        60.0f
+#define kInformationHeaderHeight        (iPad ? 110.0f : 80.0f)
+#define kInformationFooterHeight        (iPad ? 55.0f : 44.0f)
 #define kInformationGapOffset           10.0f
-#define kInformationGapInset            15.0f
+#define kInformationGapInset            (iPad ? 15.0f : 10.0f)
 
 
 //  Tags
@@ -54,7 +54,8 @@ enum {
 
 //  Actions
 enum {
-    ActionInformationToolsReference
+    ActionInformationToolsReference,
+    ActionInformationTrailers
 };
 
 
@@ -135,7 +136,11 @@ enum {
     
     // buttons
     UIButton *_buttonResize;
+    UIButton *_buttonClose;
     UIButton *_buttonTrailer;
+    
+    // loader
+    UIActivityIndicatorView *_loader;
     
     // private
     @private
@@ -161,9 +166,12 @@ enum {
     NSMutableString *_referenceTMDb;
     NSMutableString *_referenceIMDb;
     NSMutableString *_referenceWikipedia;
-    NSMutableString *_referenceTrailer;
     NSMutableString *_referenceAmazon;
     NSMutableString *_referenceITunes;
+
+    
+    // modes
+    BOOL mode_loading;
     
 }
 
@@ -180,12 +188,14 @@ enum {
 
 // Actions
 - (void)actionResize:(id)sender;
+- (void)actionClose:(id)sender;
 - (void)actionTrailer:(id)sender;
 
 // Business Methods
 - (void)resize;
 - (void)informationMovie:(Movie*)movie nodes:(NSArray*)nodes;
 - (void)informationPerson:(Person*)person nodes:(NSArray*)nodes;
+- (void)loading:(BOOL)loading;
 
 
 @end

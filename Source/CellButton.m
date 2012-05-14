@@ -21,7 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "CellButton.h"
-#import <QuartzCore/QuartzCore.h>
+
 
 
 /*
@@ -43,9 +43,6 @@
 #pragma mark -
 #pragma mark Constants
 
-// constants
-#define kAlphaBtn 0.8f
-#define kAlphaBtnActive 0.96f
 
 
 
@@ -84,13 +81,19 @@
 	buttonObj.frame = CGRectMake(0, 10, 100, 30); 
     buttonObj.opaque = YES;
 	buttonObj.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    buttonObj.layer.cornerRadius = 3;
-    buttonObj.layer.masksToBounds = YES;
-    buttonObj.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:12.0];
     
-    [buttonObj setBackgroundColor:[UIColor colorWithRed:121/255.0 green:125/255.0 blue:128/255.0 alpha:kAlphaBtn]];
-    [buttonObj setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:0.75] forState:UIControlStateNormal];
+    // image
+    UIImage *button30 = [[UIImage imageNamed:@"app_button_30_lite.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
+    [buttonObj setBackgroundImage:button30 forState:UIControlStateNormal];
+    
+    // font
+    buttonObj.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
+    buttonObj.titleLabel.textColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
+    buttonObj.titleLabel.shadowColor = [UIColor colorWithWhite:0 alpha:0.9];
+    buttonObj.titleLabel.shadowOffset = CGSizeMake(-1,-1);
+    
 	[buttonObj setTitle:@"Button" forState:UIControlStateNormal];
+    
 				
 	// targets and actions
 	[buttonObj addTarget:self action:@selector(buttonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
@@ -100,10 +103,7 @@
 				
 	// accessory
 	self.buttonAccessory = buttonObj;
-    self.buttonAccessory.alpha = kAlphaBtn;
 	self.accessoryView = buttonAccessory;
-    self.accessoryView.alpha = kAlphaBtn;
-	[buttonObj release];
 
     // return
     return self;
@@ -130,9 +130,6 @@
 }
 - (void)buttonDown:(UIButton*)b {
 	GLog();
-    
-    // state
-    [buttonAccessory setBackgroundColor:[UIColor colorWithRed:121/255.0 green:125/255.0 blue:128/255.0 alpha:kAlphaBtnActive]];
 	
 	// delegate
 	if (delegate != nil && [delegate respondsToSelector:@selector(cellButtonDown:)]) {
@@ -141,9 +138,6 @@
 }
 - (void)buttonUp:(UIButton*)b {
 	GLog();
-    
-    // state
-    [buttonAccessory setBackgroundColor:[UIColor colorWithRed:121/255.0 green:125/255.0 blue:128/255.0 alpha:kAlphaBtn]];
 	
 	// delegate
 	if (delegate != nil && [delegate respondsToSelector:@selector(cellButtonUp:)]) {

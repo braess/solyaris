@@ -21,7 +21,6 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "ListingView.h"
-#import "SolyarisConstants.h"
 #import "DataNode.h"
 
 
@@ -100,6 +99,7 @@
  * Layout.
  */
 - (void)layoutSubviews {
+    GLog();
     
     // table view
     _tableView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
@@ -256,7 +256,7 @@
  * Customize the cell height.
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return kListingCellHeight;
+    return kListingCellHeight-1; // compensate anti alias stuff
 }
 
 /*
@@ -368,7 +368,14 @@
  */
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-	// identifiers
+	// formatter
+    static NSDateFormatter *dateFormatter;
+    if (dateFormatter == nil) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy"];
+    }
+    
+    // identifiers
     static NSString *CellListingIdentifier = @"CellListing";
 	
 	// create cell
@@ -377,12 +384,6 @@
 		cell = [[[ListingCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellListingIdentifier] autorelease];
 	}
     
-    // formatter
-    static NSDateFormatter *dateFormatter;
-    if (dateFormatter == nil) {
-        dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"yyyy"];
-    }
 	
 	// info
 	DataNode *dta;
@@ -410,6 +411,11 @@
 	cell.labelInfo.text = nfo;
 	cell.labelMeta.text = dta.edge.label;
     cell.type = dta.type;
+    
+    // thumb
+    [cell loadThumb:dta.thumb type:dta.type];
+    
+    // state
     cell.loaded = NO;
     cell.visible = NO;
     if (dta.loaded) {
@@ -418,7 +424,9 @@
     if (dta.visible) {
         cell.visible = YES;
     }
-    [cell setNeedsDisplay];
+    
+    // flush
+    [cell update];
     
 	// return
     return cell;
@@ -450,15 +458,19 @@
     // check
     if (! dta.loaded) {
         
-        // state
-        dta.loaded = YES;
-        [_tableView reloadData];
-        
         // load
         if (delegate && [delegate respondsToSelector:@selector(listingSelected:type:)]) {
             NSString *type = [dta.type isEqualToString:typeMovie] ? typeMovie : typePerson;
             [delegate listingSelected:dta.nid type:type];
         }
+        
+        // state
+        dta.loaded = YES;
+        
+        // update
+        ListingCell *cell = (ListingCell*) [tableView cellForRowAtIndexPath:indexPath];
+        cell.loaded = YES;
+        [cell update];
     }
 }
 
@@ -476,6 +488,13 @@
 	GLog();
 	
 	// release
+    [_tableView release];
+    
+    // data
+	[_movies release];
+	[_actors release];
+    [_directors release];
+    [_crew release];
 	
 	// superduper
 	[super dealloc];
@@ -524,13 +543,14 @@
         
         
         // back
-        UIView *backView = [[[UIView alloc] initWithFrame:CGRectZero] autorelease];
+        UIView *backView = [[UIView alloc] initWithFrame:CGRectZero];
         backView.backgroundColor = [UIColor clearColor];
-        self.backgroundView = backView;
+        self.backgroundView = [backView retain];
+        [backView release];
         
         
         // labels
-        UILabel *lblInfo = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
+        UILabel *lblInfo = [[UILabel alloc] initWithFrame:CGRectZero];
         lblInfo.backgroundColor = [UIColor clearColor];
         lblInfo.font = [UIFont fontWithName:@"Helvetica" size:15.0];
         lblInfo.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
@@ -541,7 +561,7 @@
         [self.contentView addSubview: _labelInfo];
         [lblInfo release];
         
-        UILabel *lblMeta = [[[UILabel alloc] initWithFrame:CGRectZero] autorelease];
+        UILabel *lblMeta = [[UILabel alloc] initWithFrame:CGRectZero];
         lblMeta.backgroundColor = [UIColor clearColor];
         lblMeta.font = [UIFont fontWithName:@"Helvetica" size:15.0];
         lblMeta.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
@@ -549,27 +569,17 @@
         lblMeta.numberOfLines = 1;
         
         _labelMeta = [lblMeta retain];
-        [self.contentView addSubview: lblMeta];
+        [self.contentView addSubview: _labelMeta];
         [lblMeta release];
         
-        // icons
-        CGRect iframe = CGRectMake(0, 0, 16, 16);
         
-		_iconMovie = [[UIImageView alloc] initWithFrame:iframe];
-		_iconMovie.image = [UIImage imageNamed:@"icon_mini_movie.png"];
-		_iconMovie.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-		_iconMovie.backgroundColor = [UIColor clearColor];
-		_iconMovie.contentMode = UIViewContentModeCenter;
-        _iconMovie.hidden = YES;
-        [self.contentView addSubview: _iconMovie];
+        // thumb
+        CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:CGRectZero];
+        [[ciView imageView] setContentMode:UIViewContentModeScaleToFill];
         
-        _iconPerson = [[UIImageView alloc] initWithFrame:iframe];
-		_iconPerson.image = [UIImage imageNamed:@"icon_mini_person.png"];
-		_iconPerson.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-		_iconPerson.backgroundColor = [UIColor clearColor];
-		_iconPerson.contentMode = UIViewContentModeCenter;
-        _iconPerson.hidden = YES;
-        [self.contentView addSubview: _iconPerson];
+        _thumbImageView = [ciView retain];
+        [self.contentView addSubview:_thumbImageView];
+        [ciView release];
         
         
     }
@@ -578,6 +588,50 @@
 
 #pragma mark -
 #pragma mark TableCell Methods
+
+
+/* 
+ * Sub stuff.
+ */
+- (void)layoutSubviews {
+    GLog();
+    
+    // offsets
+    float oxinfo = 5;
+    if (iOS4) {
+        oxinfo = -3;
+    }
+    
+    // size
+    [_labelInfo sizeToFit];
+    [_labelMeta sizeToFit];
+    
+    
+    // thumb
+    [_thumbImageView setFrame:CGRectMake(kListingCellInset, 0, 24, 36)];
+    
+    // adjust labels
+    float ml = self.frame.size.width-kListingGapInset-2*kListingCellInset-kListingCellThumb;
+    
+    // info
+    CGRect finfo = _labelInfo.frame;
+    finfo.origin.x = CGRectGetMinX (self.contentView.bounds) + kListingCellInset + oxinfo + kListingCellThumb;
+    finfo.origin.y = CGRectGetMinY (self.contentView.bounds) + 9;
+    finfo.size.width = MIN(finfo.size.width, ml);
+    [_labelInfo setFrame: finfo];
+    
+    // meta
+    CGRect fmeta = _labelMeta.frame;
+    fmeta.origin.x = CGRectGetMaxX (_labelInfo.frame) + 10;
+    fmeta.origin.y = CGRectGetMinY (self.contentView.bounds) + 9;
+    fmeta.size.width = MIN(fmeta.size.width, ml-(finfo.size.width+10));
+    [_labelMeta setFrame: fmeta];
+    [_labelMeta setHidden:finfo.size.width >= ml ];
+    
+
+    
+}
+
 
 /*
  * Draws the cell.
@@ -591,8 +645,8 @@
     //CGContextSetShouldAntialias(ctx, NO);
     
     // background
-    CGRect bg = CGRectMake(kListingCellInset, 0, self.frame.size.width-2*kListingCellInset, kListingCellHeight+1);
-    UIColor *bgc = self.highlighted ? [UIColor colorWithWhite:0 alpha:0.06] : [UIColor colorWithWhite:0 alpha:0.03];
+    CGRect bg = CGRectMake(kListingCellInset, 0, self.frame.size.width-2*kListingCellInset, kListingCellHeight);
+    UIColor *bgc = loaded ? [UIColor colorWithWhite:0 alpha:0.05] : (self.highlighted ? [UIColor colorWithWhite:0 alpha:0.08] : [UIColor colorWithWhite:0 alpha:0.02]);
     CGContextSetFillColorWithColor(ctx, bgc.CGColor);
 	CGContextFillRect(ctx, bg);
     
@@ -604,56 +658,6 @@
     
 }
 
-
-/* 
- * Sub stuff.
- */
-- (void)layoutSubviews {
-    
-    // offsets
-    float oxinfo = 5;
-    float oxdisc = -25;
-    if (iOS4) {
-        oxinfo = -3;
-        oxdisc = -35;
-    }
-    
-    // size
-    [_labelInfo sizeToFit];
-    [_labelMeta sizeToFit];
-    
-    // position
-    CGRect finfo = _labelInfo.frame;
-    finfo.origin.x = CGRectGetMinX (self.contentView.bounds) + kListingCellInset + oxinfo;
-    finfo.origin.y = CGRectGetMinY (self.contentView.bounds) + 9;
-    [_labelInfo setFrame: finfo];
-    
-    // meta
-    CGRect fmeta = _labelMeta.frame;
-    fmeta.origin.x = CGRectGetMaxX (_labelInfo.frame) + 10;
-    fmeta.origin.y = CGRectGetMinY (self.contentView.bounds) + 9;
-    [_labelMeta setFrame: fmeta];
-    
-    // disclosure
-    CGRect fdisc = CGRectMake(self.frame.size.width-kListingCellInset+oxdisc, 10, 16, 16);
-    _iconMovie.hidden = YES;
-    _iconPerson.hidden = YES;
-    if (loaded) {
-        
-        // movie
-        if ([_type isEqualToString:typeMovie]) {
-            _iconMovie.frame = fdisc;
-            _iconMovie.hidden = NO;
-        }
-        // person
-        else  {
-            _iconPerson.frame = fdisc;
-            _iconPerson.hidden = NO;
-        }
-        
-    }
-    
-}
 
 
 /*
@@ -674,6 +678,35 @@
 
 
 
+#pragma mark -
+#pragma mark Business Methods
+
+
+/**
+ * Updates the cell.
+ */
+- (void)update {
+     GLog();
+    
+    // layout
+    [self setNeedsLayout];
+}
+
+/**
+ * Loads the thumb.
+ */
+- (void)loadThumb:(NSString *)thumb type:(NSString *)type {
+    GLog();
+    
+    // type
+    if ([type isEqualToString:typeMovie]) {
+        [_thumbImageView placeholderImage:[UIImage imageNamed:@"placeholder_listing_movie.png"]];
+    }
+    else {
+        [_thumbImageView placeholderImage:[UIImage imageNamed:@"placeholder_listing_person.png"]];
+    }
+    [_thumbImageView loadImage:thumb];
+}
 
 
 
@@ -685,7 +718,13 @@
  */
 - (void)dealloc {
 	GLog();
-	
+    
+    // self
+    [_labelInfo release];
+    [_labelMeta release];
+    [_thumbImageView release];
+
+
 	// super
     [super dealloc];
 }

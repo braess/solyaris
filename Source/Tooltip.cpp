@@ -34,6 +34,7 @@ Tooltip::Tooltip() {
 Tooltip::Tooltip(Vec2d b) {
     
     // config
+    redux = false;
     retina = false;
     
     // state
@@ -48,13 +49,13 @@ Tooltip::Tooltip(Vec2d b) {
     cbg = ColorA(0.9,0.9,0.9,0.9);
     ctxt = ColorA(0,0,0,1);
     
-    
     // font
     font = Font("Helvetica",12);
     sfont = Font("Helvetica",3);
     size.set(0,0);
     off.set(0,-75);
     inset.set(6,6);
+    maxed.set(40,100);
     textureText = gl::Texture(0,0);
     
     // hide
@@ -70,12 +71,20 @@ Tooltip::Tooltip(Vec2d b) {
  */
 void Tooltip::config(Configuration c) {
     
+    // device redux
+    redux = false;
+    Config confDeviceRedux = c.getConfiguration(cDeviceRedux);
+    if (confDeviceRedux.isSet()) {
+        redux = confDeviceRedux.boolVal();
+    }
+    
     // display retina
     retina = false;
     Config confDisplayRetina = c.getConfiguration(cDisplayRetina);
     if (confDisplayRetina.isSet()) {
         retina = confDisplayRetina.boolVal();
     }
+    
     
     // retina stuff
     if (retina) {
@@ -88,6 +97,7 @@ void Tooltip::config(Configuration c) {
         sfont = Font("Helvetica",6);
         off *= 2;
         inset *= 2;
+        maxed *= 2;
     }
    
 }
@@ -126,7 +136,7 @@ void Tooltip::update() {
         float py = max(border.y,(pos.y-size.y+off.y));
         px += min(0.0,bounds.x-(px+size.x+border.x));
         py += min(0.0,bounds.y-(py+size.y+border.y));
-        
+
         // set
         dpos.set(px, py);
         
@@ -171,6 +181,7 @@ void Tooltip::draw() {
 void Tooltip::renderText(vector<string> txts) {
     GLog();
     
+    
     // text
     TextLayout tlText;
 	tlText.clear(ColorA(0, 0, 0, 0));
@@ -179,6 +190,8 @@ void Tooltip::renderText(vector<string> txts) {
     
     // lines
     for (vector<string>::iterator txt = txts.begin(); txt != txts.end(); ++txt) {
+        
+        // line
         tlText.setFont(sfont);
         tlText.addLine(" ");
         tlText.setFont(font);
@@ -187,7 +200,21 @@ void Tooltip::renderText(vector<string> txts) {
     
     // render
 	Surface8u rendered = tlText.render(true, true);
-	textureText = gl::Texture(rendered);
+    
+    
+    // resize
+    int resized_w = min(rendered.getWidth(),(int)bounds.x-maxed.x);
+    int resized_h = min(rendered.getHeight(),(int)bounds.y-maxed.y);
+    Surface resized = Surface( resized_w, resized_h, true, SurfaceChannelOrder::RGBA );
+    for (int x = 0; x < resized_w; x++) {
+        for (int y = 0; y < resized_h; y++) {
+            resized.setPixel(Vec2i(x,y), rendered.getPixel(Vec2i(x,y)));
+        }
+    }
+    
+    // texture
+	textureText = gl::Texture(resized);
+    
     
     // off
     size.x = textureText.getWidth() + 2*abs(inset.x);
@@ -239,7 +266,7 @@ void Tooltip::position(Vec2d p) {
  * Offset.
  */
 void Tooltip::offset(double o) {
-    off.set(0,- max(o,60.0));
+    off.set(0,- max(o,retina ? 150.0 : 75.0));
 }
 
 

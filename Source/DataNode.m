@@ -36,6 +36,7 @@
 @synthesize type;
 @synthesize label;
 @synthesize meta;
+@synthesize thumb;
 @synthesize edge;
 @synthesize loaded;
 @synthesize visible;
@@ -47,13 +48,14 @@
 /**
  * Init.
  */
-- (id)initData:(NSNumber *)n type:(NSString *)t label:(NSString *)l meta:(NSString *)m edge:(DataEdge*)e visible:(_Bool)iv loaded:(_Bool)il {
+- (id)initData:(NSNumber *)n type:(NSString *)t label:(NSString *)l meta:(NSString *)m thumb:(NSString*)tmb edge:(DataEdge*)e visible:(_Bool)iv loaded:(_Bool)il {
     GLog();
     if ((self = [super init])) {
         self.nid = n;
         self.type = t;
 		self.label = l;
 		self.meta = m;
+        self.thumb = tmb;
         self.edge = [e retain];
         self.visible = iv;
         self.loaded = il;
@@ -77,6 +79,7 @@
     [type release];
 	[label release];
 	[meta release];
+    [thumb release];
     [edge release];
 	
 	// super
