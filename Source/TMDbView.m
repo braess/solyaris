@@ -158,10 +158,12 @@
 	NSArray *assets = [[movie.assets allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sorter]];
 	[sorter release];
     
+    // flags
+    BOOL wifi = [Utils isWiFi];
     
     // backdrops
     NSMutableArray *backdrops = [[NSMutableArray alloc] init];
-    NSString *asize = [NSString stringWithFormat:@"%@",iPad ? assetSizeOriginal : ([Utils isWiFi ] ? assetSizeMed : assetSizeMid)];
+    NSString *asize = [NSString stringWithFormat:@"%@",iPad ? (wifi ? assetSizeOriginal : assetSizeMed) : (wifi ? assetSizeMed : assetSizeMid)];
     for (Asset *a in assets) {
         
         // backdrop

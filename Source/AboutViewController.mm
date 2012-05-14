@@ -337,14 +337,14 @@
         composer.modalPresentationStyle = UIModalPresentationFormSheet;
 		
 		// subject
-		[composer setSubject:[NSString stringWithFormat:@"Solyaris iPad App"]];
+		[composer setSubject:[NSString stringWithFormat:@"Solyaris iPhone/iPad App"]];
         
 		// message
         NSString *message = [NSString stringWithFormat:@"%@\n%@",NSLocalizedString(@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or persons. Expand nodes to gather information about their relationships. Learn about the cast and filmography.\n\n\n--- Solyaris\nVisual Movie Browser",@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or persons. Expand nodes to gather information about their relationships. Learn about the cast and filmography.\n\n\n--- Solyaris\nVisual Movie Browser"),vAppStoreURL];
 		[composer setMessageBody:message isHTML:NO];
 		
 		// promo image
-		UIImage *pimg = [UIImage imageNamed:@"promo_solyaris.png"];
+		UIImage *pimg = [UIImage imageNamed:@"promo.png"];
 		NSData *data = UIImagePNGRepresentation(pimg);
 		[composer addAttachmentData:data mimeType:@"image/png" fileName:@"solyaris"];
         
@@ -378,7 +378,7 @@
         TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
         
         // initial tweet text
-        [tweetViewController setInitialText:NSLocalizedString(@"Solyaris iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net\n",@"Solyaris iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net\n")];
+        [tweetViewController setInitialText:NSLocalizedString(@"Solyaris iPhone/iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net\n",@"Solyaris iPhone/iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net\n")];
         
         // promo image
         UIImage *pimg = [UIImage imageNamed:@"promo_solyaris.png"];

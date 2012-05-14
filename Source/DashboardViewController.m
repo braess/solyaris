@@ -83,7 +83,7 @@
     [tabView release];
     
     // segment
-    SegmentedControl *segments = [[SegmentedControl alloc] initWithTitles:[NSArray arrayWithObjects:NSLocalizedString(@"Movie", @"Movie"),NSLocalizedString(@"People", @"People"), nil]];
+    SegmentedControl *segments = [[SegmentedControl alloc] initWithTitles:[NSArray arrayWithObjects:NSLocalizedString(@"Movies", @"Movies"),NSLocalizedString(@"People", @"People"), nil]];
     segments.delegate = self;
     segments.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     CGRect segFrame = segments.frame;
@@ -278,7 +278,7 @@
             if (indx == DashboardPopular) {
                 
                 // title
-                [cell.labelData setText:[NSString stringWithFormat:@"%@",mode_movie ? NSLocalizedString(@"Popular Movies", @"Popular Movies") : NSLocalizedString(@"Popular People", @"Popular People") ]];
+                [cell.labelData setText:NSLocalizedString(@"Popular Movies", @"Popular Movies")];
             }
             
             // history

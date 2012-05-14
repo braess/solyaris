@@ -172,8 +172,8 @@
     // synchronize
     [userDefaults synchronize];
     
-    // check depreceated
-    [self depreceated];
+    // check deprecated
+    [self deprecated];
 
 }
 
@@ -204,8 +204,8 @@
     // sync
 	[userDefaults synchronize];
     
-    // check depreceated
-    if (! [self depreceated]) {
+    // check deprecated
+    if (! [self deprecated]) {
         
         // note
         Note *note = [[Note alloc] initNoteWithTitle:NSLocalizedString(@"Updated", @"Updated") message:[NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Solyaris", @"Solyaris"),appVersion ] type:noteTypeSuccess];
@@ -218,16 +218,16 @@
 }
 
 /*
- * Depreceated.
+ * Deprecated.
  */
-- (BOOL)depreceated {
+- (BOOL)deprecated {
     
     // ios4
     if (iOS4) {
-        NSLog(@"Solyaris depreceated iOS4.");
+        NSLog(@"Solyaris deprecated iOS4.");
         
         // track
-        [Tracker trackEvent:TEventApp action:@"Depreceated" label:@"ios4"];
+        [Tracker trackEvent:TEventApp action:@"Deprecated" label:@"ios4"];
         
         // note
         Note *note = [[Note alloc] initNoteWithTitle:NULL message:NSLocalizedString(@"Thanks for using Solyaris. Please note that iOS4 is no longer fully supported.", @"Thanks for using Solyaris. Please note that iOS4 is no longer fully supported.") type:noteTypeInfo];

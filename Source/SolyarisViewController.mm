@@ -1288,6 +1288,9 @@
 - (void)settingsHelp {
     FLog();
     
+    // reset
+    [self reset];
+    
     // dismiss
     [self settingsDismiss];
     

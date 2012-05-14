@@ -327,7 +327,7 @@
                                initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace 
                                target:nil 
                                action:nil];
-    spacer.width = -9;
+    spacer.width = -10;
     
     
     // action items
