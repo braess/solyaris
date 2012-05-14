@@ -207,7 +207,9 @@ enum {
  * InformationBackgroundView.
  */
 @interface InformationBackgroundView : UIView {
-
+    @private
+    UIImage *_texture;
+    CGRect _tsize;
 }
 @end
 

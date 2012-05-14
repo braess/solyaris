@@ -689,6 +689,11 @@
         self.autoresizesSubviews = YES;
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         self.contentMode = UIViewContentModeRedraw; 
+        
+        // texture
+        UIImage *texture = [UIImage imageNamed:@"bg_content.png"];
+        _texture = [texture retain];
+        _tsize.size = _texture.size;
 
 	}
 	
@@ -701,6 +706,7 @@
  * Draw that thing.
  */
 - (void)drawRect:(CGRect)rect {
+    GLog();
     
 	// vars
 	float w = self.frame.size.width;
@@ -719,14 +725,10 @@
     CGContextSetFillColorWithColor(context, [UIColor colorWithRed:238.0/255.0 green:238.0/255.0 blue:239.0/255.0 alpha:1.0].CGColor);
 	CGContextFillRect(context, mrect);
     
-    // textures
-    UIImage *texture = [UIImage imageNamed:@"bg_content.png"];
-    CGRect tcRect;
-    tcRect.size = texture.size; 
-
+    // texture
     CGContextSaveGState(context);
     CGContextClipToRect(context, mrect);
-    CGContextDrawTiledImage(context,tcRect,texture.CGImage);
+    CGContextDrawTiledImage(context,_tsize,_texture.CGImage);
     CGContextRestoreGState(context);
      
 	// header lines
@@ -760,6 +762,24 @@
     
     
 }
+
+
+#pragma mark -
+#pragma mark Memory management
+
+/*
+ * Deallocates used memory.
+ */
+- (void)dealloc {
+	GLog();
+    
+    // self
+    [_texture release];
+	
+	// release 
+    [super dealloc];
+}
+
 
 @end
 

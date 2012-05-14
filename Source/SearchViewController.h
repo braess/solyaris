@@ -98,7 +98,9 @@
  * SearchView.
  */
 @interface SearchView : UIView {
-    
+    @private
+    UIImage *_texture;
+    CGRect _tsize;
 }
 @end
 

@@ -1240,12 +1240,9 @@
  */
 - (id)initWithFrame:(CGRect)frame {
 	GLog();
-    
-	// init UIView
-    self = [super initWithFrame:frame];
 	
-	// init self
-    if (self != nil) {
+	// super
+    if ((self = [super initWithFrame:frame])) {
 		
 		// init
 		self.opaque = YES;
@@ -1254,12 +1251,15 @@
         self.autoresizingMask = iPad ? (UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin) : (UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight);
         self.contentMode = UIViewContentModeRedraw; // Thats the one
         
-		// return
-		return self;
+        // texture
+        UIImage *texture = [UIImage imageNamed:@"bg_content.png"];
+        _texture = [texture retain];
+        _tsize.size = _texture.size;
+
 	}
 	
-	// nop
-	return nil;
+	// self
+	return self;
 }
 
 
@@ -1267,6 +1267,7 @@
  * Draw that thing.
  */
 - (void)drawRect:(CGRect)rect {
+    GLog();
     
 	// vars
 	float w = self.frame.size.width;
@@ -1286,14 +1287,9 @@
     CGContextSetFillColorWithColor(context, [UIColor colorWithRed:238.0/255.0 green:238.0/255.0 blue:239.0/255.0 alpha:1.0].CGColor);
 	CGContextFillRect(context, mrect);
     
-    // textures
-    UIImage *texture = [UIImage imageNamed:@"bg_content.png"];
-    CGRect tcRect;
-    tcRect.size = texture.size; 
-    
-    // main
+    // texture
     CGContextClipToRect(context, mrect);
-    CGContextDrawTiledImage(context,tcRect,texture.CGImage);
+    CGContextDrawTiledImage(context,_tsize,_texture.CGImage);
 	
     
 	// header lines
@@ -1362,6 +1358,22 @@
     // ignore
 }
 
+
+#pragma mark -
+#pragma mark Memory management
+
+/*
+ * Deallocates used memory.
+ */
+- (void)dealloc {
+	GLog();
+    
+    // self
+    [_texture release];
+	
+	// release 
+    [super dealloc];
+}
 
 
 @end
