@@ -406,7 +406,7 @@
         [self.header head:[NSString stringWithFormat:@"%@ (%i)", NSLocalizedString(@"Popular Movies", @"Popular Movies"),nb]];
     }
     else if ([popular.type isEqualToString:typePerson]) {
-        [self.header head:[NSString stringWithFormat:@"%@ (%i)", NSLocalizedString(@"Popular Persons", @"Popular Persons"),nb]];
+        [self.header head:[NSString stringWithFormat:@"%@ (%i)", NSLocalizedString(@"Popular People", @"Popular People"),nb]];
     }
     
     // flag

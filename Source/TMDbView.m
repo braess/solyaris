@@ -112,7 +112,7 @@
     // text
     float hslides = mode_slides ? (sh+2*kTMDbGapOffset) : 0;
     float htext = _textView.contentSize.height;
-    _textView.frame = iPad ? CGRectMake(10, hslides+8, self.frame.size.width-30, htext) : CGRectMake(2, hslides+8, self.frame.size.width-4, htext);
+    _textView.frame = iPad ? CGRectMake(10, hslides+13, self.frame.size.width-30, htext) : CGRectMake(2, hslides+8, self.frame.size.width-4, htext);
     
     // content size
     self.contentSize = CGSizeMake(self.frame.size.width, hslides+3*kTMDbGapOffset+htext);
