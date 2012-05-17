@@ -55,7 +55,7 @@ Tooltip::Tooltip(Vec2d b) {
     size.set(0,0);
     off.set(0,-75);
     inset.set(6,6);
-    maxed.set(40,100);
+    maxed.set(30,100);
     textureText = gl::Texture(0,0);
     
     // hide

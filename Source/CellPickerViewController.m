@@ -50,11 +50,15 @@
     
     // init
 	if ((self = [super init])) {
-
-		// view
-		self.view = [[UIView alloc] initWithFrame:iPad ? CGRectMake(0,0,320,180) : CGRectMake(0,0,320,436)];
-		self.contentSizeForViewInPopover = CGSizeMake(320, 180);
-        self.view.backgroundColor = [UIColor lightGrayColor];
+        
+        // view
+        UIView *sview = [[UIView alloc] initWithFrame:iPad ? CGRectMake(0,0,320,180) : CGRectMake(0,0,320,436)];
+        sview.backgroundColor = [UIColor lightGrayColor];
+        
+		// self
+		self.view = sview;
+        self.contentSizeForViewInPopover = CGSizeMake(320, 180);
+        [sview release];
         
 		// position the picker at the bottom
 		UIPickerView *p = [[UIPickerView alloc] initWithFrame: iPad ? CGRectMake(0,0,320,180) : CGRectMake(0,0,320,216.0)];

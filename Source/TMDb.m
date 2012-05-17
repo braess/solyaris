@@ -251,7 +251,7 @@
         static NSDateFormatter *pmFormatter;
         if (pmFormatter == nil) {
             pmFormatter = [[NSDateFormatter alloc] init];
-            [pmFormatter setDateFormat:@"yyyy-MM-dd"];
+            [pmFormatter setDateFormat:@"yyyy_ww"];
         }
         
         // ident
@@ -297,7 +297,7 @@
         static NSDateFormatter *npFormatter;
         if (npFormatter == nil) {
             npFormatter = [[NSDateFormatter alloc] init];
-            [npFormatter setDateFormat:@"yyyy-MM-dd"];
+            [npFormatter setDateFormat:@"yyyy_ww"];
         }
         
         // ident
@@ -1011,7 +1011,7 @@
     }
     
     // json
-    NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
+    NSString *json = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];  
     
     // invalid response 
     if (! [self validResponse:json]) {
@@ -1168,7 +1168,7 @@
     
     
     // json
-    NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]; 
+    NSString *json = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease]; 
     
     // invalid response
     if (! [self validResponse:json]) {
@@ -1329,7 +1329,7 @@
     }
     
     // json
-    NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]; 
+    NSString *json = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease]; 
     
     // invalid response 
     if (! [self validResponse:json]) {
@@ -1507,7 +1507,7 @@
     }
     
     // json
-    NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]; 
+    NSString *json = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease]; 
     
     // invalid response 
     if (! [self validResponse:json]) {
@@ -1668,7 +1668,7 @@
     
     
     // json
-    NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSString *json = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
     
     // invalid response
     if (! [self validResponse:json]) {
@@ -1905,7 +1905,7 @@
     
     
     // json
-    NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSString *json = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
     
     // invalid response
     if (! [self validResponse:json]) {
@@ -2192,7 +2192,7 @@
     FLog("received data.");
     
     // json
-    NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
+    NSString *json = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];  
     
     
     // error / invalid response
@@ -2284,7 +2284,7 @@
     FLog("received data.");
     
     // json
-    NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
+    NSString *json = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];  
     
     
     // error / invalid response
@@ -2378,7 +2378,7 @@
     
     
     // json
-    NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
+    NSString *json = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];  
     
     
     // invalid response
@@ -2585,7 +2585,7 @@
     
     
     // json
-    NSString *json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];  
+    NSString *json = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];  
     
     
     // invalid response
@@ -3049,7 +3049,7 @@
                 
             // Horror
             case 27:
-                counter_violence += 1;
+                counter_violence += 2;
                 break;
                 
             // Indie
@@ -3157,12 +3157,12 @@
                 
             // War
             case 10752:
-                counter_violence += 1;
+                counter_violence += 2;
                 break;
                 
             // War & Politics
             case 10768:
-                counter_violence += 1;
+                counter_violence += 2;
                 break;
                 
             // Western

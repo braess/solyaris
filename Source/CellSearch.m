@@ -101,33 +101,28 @@
     
     // cell width
     float cw = self.contentView.frame.size.width-20;
-    
-    // offset
-    float ox = 0;
-    if (iOS4) {
-        ox = -10;
-    }
+
     
     // thumb
     if (mode_thumb) {
         
         // thumb
-        [_thumbImageView setFrame:CGRectMake(0+ox, 0, 32, 44)];
+        [_thumbImageView setFrame:CGRectMake(0, 0, 32, 44)];
         
         // label
-        [_labelData setFrame:CGRectMake(40+ox, 0, cw-40-ox, kCellSearchHeight)];
+        [_labelData setFrame:CGRectMake(40, 0, cw-40, kCellSearchHeight)];
     }
     
     // loader
     else if (mode_more) {
         
         // label
-        [_labelData setFrame:CGRectMake(10+ox, 0, cw-44-ox, kCellSearchHeight)];
+        [_labelData setFrame:CGRectMake(10, 0, cw-44, kCellSearchHeight)];
     }
     else {
         
         // label
-        [_labelData setFrame:CGRectMake(10+ox, 0, cw-ox, kCellSearchHeight)];
+        [_labelData setFrame:CGRectMake(10, 0, cw, kCellSearchHeight)];
     }
     
 }

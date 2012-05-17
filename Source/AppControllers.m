@@ -76,6 +76,7 @@
         
         // navigation bar
         self.navigationBar.barStyle = UIBarStyleBlackOpaque;
+        self.navigationBar.tintColor = [UIColor colorWithRed:24.0/255.0 green:24.0/255.0 blue:24.0/255.0 alpha:1.0];
      
         // toolbar
         self.toolbar.barStyle = UIBarStyleBlack;
@@ -115,8 +116,8 @@
     if ((self = [super init])) { 
         
         // navigation bar
-        self.navigationBar.barStyle = UIBarStyleBlackTranslucent;
-        self.navigationBar.tintColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
+        self.navigationBar.barStyle = UIBarStyleBlackOpaque;
+        self.navigationBar.tintColor = [UIColor colorWithRed:24.0/255.0 green:24.0/255.0 blue:24.0/255.0 alpha:1.0];
         
         
     }

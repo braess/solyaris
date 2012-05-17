@@ -69,7 +69,6 @@
 		[self update:appVersion];
 	}
     
-    
     // cinder
     [super applicationDidFinishLaunching:application];
 }

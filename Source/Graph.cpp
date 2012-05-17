@@ -909,7 +909,7 @@ void Graph::tooltip(int tid) {
     GLog();
     
     // selected edges
-    bool etouch;
+    bool etouch = false;
     vector<string> txts = vector<string>();
     for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {
         
@@ -921,7 +921,7 @@ void Graph::tooltip(int tid) {
     }
     
     // touched
-    if (etouch && txts.size() > 0) {
+    if (etouch) {
         tooltips[tid].renderText(txts);
         tooltips[tid].offset((touched[tid]->radius+12.0*dpr));
         tooltips[tid].show();

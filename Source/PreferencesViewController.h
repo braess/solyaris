@@ -25,7 +25,7 @@
 #import "CellSwitch.h"
 #import "CellSlider.h"
 #import "LocalizationViewController.h"
-
+#import "AppControllers.h"
 
 // Constants
 #define kPreferencesHeaderHeight    50.0f
@@ -75,7 +75,7 @@ enum {
 	id<PreferencesDelegate> delegate;
     
     // ui
-    UINavigationController *_localizationController;
+    NavigationController *_localizationController;
 	UIPopoverController *_localizationPopoverController;
     
     // private

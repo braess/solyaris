@@ -276,7 +276,7 @@
 - (UIView *)sectionHeader:(NSString*)label {
     
     // view
-    UIView *shView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, kListingGapHeight)];
+    UIView *shView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, kListingGapHeight)] autorelease];
     
     // label
     UILabel *lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(kListingGapInset, kListingGapOffset, shView.frame.size.width-2*kListingGapInset, kListingGapHeight-kListingGapOffset)];
@@ -316,7 +316,7 @@
 - (UIView *)sectionFooter{
     
     // view
-    UIView *sfView = [[UIView alloc] initWithFrame:self.frame];
+    UIView *sfView = [[[UIView alloc] initWithFrame:self.frame] autorelease];
     
     // view
     UIView *sfLine = [[UIView alloc] initWithFrame:CGRectMake(kListingGapInset, -1, self.frame.size.width-2*kListingGapInset, 1)];
@@ -399,6 +399,9 @@
 	else if ([indexPath section] == SectionListingCrew) {
 		dta = [_crew objectAtIndex:[indexPath row]];
 	}
+    else {
+        dta = [[[DataNode alloc] init] autorelease];
+    }
     
     // label
     NSString *nfo = dta.label;
@@ -454,6 +457,9 @@
 	else if ([indexPath section] == SectionListingCrew) {
 		dta = [_crew objectAtIndex:[indexPath row]];
 	}
+    else {
+        dta = [[[DataNode alloc] init] autorelease];
+    }
     
     // check
     if (! dta.loaded) {
@@ -545,7 +551,7 @@
         // back
         UIView *backView = [[UIView alloc] initWithFrame:CGRectZero];
         backView.backgroundColor = [UIColor clearColor];
-        self.backgroundView = [backView retain];
+        self.backgroundView = backView;
         [backView release];
         
         
@@ -575,7 +581,6 @@
         
         // thumb
         CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:CGRectZero];
-        [[ciView imageView] setContentMode:UIViewContentModeScaleToFill];
         
         _thumbImageView = [ciView retain];
         [self.contentView addSubview:_thumbImageView];
@@ -598,8 +603,10 @@
     
     // offsets
     float oxinfo = 5;
+    float oxthumb = 0;
     if (iOS4) {
         oxinfo = -3;
+        oxthumb = -10;
     }
     
     // size
@@ -608,7 +615,7 @@
     
     
     // thumb
-    [_thumbImageView setFrame:CGRectMake(kListingCellInset, 0, 24, 36)];
+    [_thumbImageView setFrame:CGRectMake(kListingCellInset+oxthumb, 0, 24, 36)];
     
     // adjust labels
     float ml = self.frame.size.width-kListingGapInset-2*kListingCellInset-kListingCellThumb;

@@ -209,7 +209,10 @@
     static NSString *CellLocalizationPickerIdentifier = @"CellLocalizationPicker";
 	
 	// cell
-	UITableViewCell *cell;
+	UITableViewCell *cell = (UITableViewCell*) [tableView dequeueReusableCellWithIdentifier:CellLocalizationPickerIdentifier];
+	if (cell == nil) {
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellLocalizationPickerIdentifier] autorelease];
+	}
     
     // imdb
     if ([indexPath row] == LocalizationIMDb) {

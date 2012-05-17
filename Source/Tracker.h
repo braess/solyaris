@@ -22,9 +22,11 @@
 
 #import <Foundation/Foundation.h>
 
+
 //  Variables
 enum {
     TrackerVariables,
+    TrackerVariableDevice,
 	TrackerVariableIOS
 };
 

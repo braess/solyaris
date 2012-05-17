@@ -100,7 +100,9 @@
     self.tableView.separatorColor = [UIColor clearColor];
     
     // background view
-    self.tableView.backgroundView = [[PreferencesBackgroundView alloc] initWithFrame:CGRectMake(0, 0, vframe.size.width, vframe.size.height)];
+    PreferencesBackgroundView *pbgView = [[PreferencesBackgroundView alloc] initWithFrame:CGRectMake(0, 0, vframe.size.width, vframe.size.height)];
+    self.tableView.backgroundView = pbgView;
+    [pbgView release];
     
     
     // header
@@ -144,14 +146,14 @@
     
     // set
     self.tableView.tableHeaderView = hView;
+    [hView release];
     
     
     // localization
     LocalizationViewController *locViewController = [[LocalizationViewController alloc] initWithFrame:CGRectMake(0, 0, 320, iPad?180:480)];
     locViewController.delegate = self;
     
-    UINavigationController *locNavigationController = [[UINavigationController alloc] initWithRootViewController:locViewController];
-    locNavigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+    NavigationController *locNavigationController = [[NavigationController alloc] initWithRootViewController:locViewController];
     _localizationController = [locNavigationController retain];
     
     // ipad
@@ -226,7 +228,7 @@
     
     // add action bar
     [self.view addSubview:actionBar];
-    
+    [actionBar release];
 }
 
 

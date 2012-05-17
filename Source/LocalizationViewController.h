@@ -54,9 +54,7 @@ enum {
     @private
     CGRect vframe;
     SolyarisLocalization *_sloc;
-    
-    // modes
-    BOOL mode_modal;
+
 }
 
 // Object Methods

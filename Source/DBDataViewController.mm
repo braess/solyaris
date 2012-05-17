@@ -827,7 +827,7 @@
         lblMessage.shadowOffset = CGSizeMake(1,1);
         lblMessage.opaque = YES;
         lblMessage.numberOfLines = 2;
-        lblMessage.textAlignment = UITextAlignmentCenter;
+        lblMessage.textAlignment = UITextAlignmentLeft;
         
         self.labelMessage = lblMessage;
         [self addSubview:_labelMessage];

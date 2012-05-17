@@ -102,6 +102,7 @@ enum {
 - (void)update;
 - (void)showHelp;
 - (void)nextHelp;
+- (void)previousHelp;
 - (void)dismissHelp;
 
 @end

@@ -52,10 +52,10 @@
 /*
  * Initialize.
  */
-- (id) initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame {
 	return [self initWithFrame:frame scrolling:YES];
 }
-- (id) initWithFrame:(CGRect)frame scrolling:(BOOL)bounces {
+- (id)initWithFrame:(CGRect)frame scrolling:(BOOL)bounces {
 	GLog();
 	
 	// init UIView
@@ -201,7 +201,6 @@
 
     
     // load
-    //NSLog(@"%@",html);
     [_webView loadHTMLString:html baseURL:nil];
     
 }
@@ -280,9 +279,6 @@
 	// super
 	[super dealloc];
 }
-
-
-
 
 @end
 

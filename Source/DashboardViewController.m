@@ -285,7 +285,7 @@
             if (indx == DashboardHistory) {
                 
                 // title
-                [cell.labelData setText:[NSString stringWithFormat:@"%@",NSLocalizedString(@"Browse History", @"Browse History")]];
+                [cell.labelData setText:[NSString stringWithFormat:@"%@",NSLocalizedString(@"History", @"History")]];
             }
             
 			

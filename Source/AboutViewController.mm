@@ -73,12 +73,16 @@
 	[super loadView];
 	DLog();
 	
-	
+    // about
+    AboutBackgroundView *about = [[AboutBackgroundView alloc] initWithFrame:vframe];
+	about.opaque = YES;
+    about.backgroundColor = [UIColor clearColor];
+    about.autoresizingMask = UIViewAutoresizingNone;
+    
 	// view
-    self.view = [[AboutBackgroundView alloc] initWithFrame:vframe];
-    self.view.opaque = YES;
-    self.view.backgroundColor = [UIColor clearColor];
-    self.view.autoresizingMask = UIViewAutoresizingNone;
+    self.view = about;
+    [about release];
+    
     
     // frames
     CGRect bframe = CGRectMake(0, 1, 44, 44);
@@ -200,19 +204,19 @@
     }
     
     // add
-    [self.view addSubview:lbTMDb];
+    if (! iOS4) {
+        [self.view addSubview:lbTMDb];
+        [self.view addSubview:lbIMDb];
+        [self.view addSubview:lbYouTube];
+        [self.view addSubview:lbWikipedia];
+        [self.view addSubview:lbCinder];
+    }
+    
+    // release
     [lbTMDb release];
-    
-    [self.view addSubview:lbIMDb];
     [lbIMDb release];
-    
-    [self.view addSubview:lbYouTube];
     [lbYouTube release];
-    
-    [self.view addSubview:lbWikipedia];
     [lbWikipedia release];
-    
-    [self.view addSubview:lbCinder];
     [lbCinder release];
     
     
@@ -291,7 +295,7 @@
     
     // add action bar
     [self.view addSubview:actionBar];
-    
+    [actionBar release];
     
 }
 
@@ -375,13 +379,13 @@
     if(NSClassFromString(@"TWTweetComposeViewController") != nil) {
         
         // twitter composition view controller
-        TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
+        TWTweetComposeViewController *tweetViewController = [[[TWTweetComposeViewController alloc] init] autorelease];
         
         // initial tweet text
-        [tweetViewController setInitialText:NSLocalizedString(@"Solyaris iPhone/iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net\n",@"Solyaris iPhone/iPad App. A Visual Movie Browser. http://solyaris.cecinestpasparis.net\n")];
+        [tweetViewController setInitialText:[NSString stringWithFormat:@"%@ %@\n",NSLocalizedString(@"Solyaris iPhone/iPad App. A Visual Movie Browser.",@"Solyaris iPhone/iPad App. A Visual Movie Browser."),vAppStoreURL ]];
         
         // promo image
-        UIImage *pimg = [UIImage imageNamed:@"promo_solyaris.png"];
+        UIImage *pimg = [UIImage imageNamed:@"promo.png"];
         [tweetViewController addImage:pimg];
         
         // completion handler

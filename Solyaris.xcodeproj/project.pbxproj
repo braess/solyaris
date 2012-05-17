@@ -1293,7 +1293,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				180F311E155D7D0A00391E97 /* SystemConfiguration.framework */,
 				1804C6E213AA277200417D32 /* Assets */,
 				00CFDFA7113848F40091E310 /* Source */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -1331,6 +1330,7 @@
 			children = (
 				18AC0286143F5BD90096259D /* libsqlite3.0.dylib */,
 				18AC0284143F5BA10096259D /* CFNetwork.framework */,
+				180F311E155D7D0A00391E97 /* SystemConfiguration.framework */,
 				18AC0277143F54A30096259D /* Twitter.framework */,
 				18AC0275143F548E0096259D /* Accounts.framework */,
 				18FE6EC513ED39B900C379BC /* MessageUI.framework */,

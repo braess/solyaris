@@ -21,7 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "CellButton.h"
-
+#import <QuartzCore/QuartzCore.h>
 
 
 /*
@@ -83,8 +83,14 @@
 	buttonObj.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     
     // image
-    UIImage *button30 = [[UIImage imageNamed:@"app_button_30_lite.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
-    [buttonObj setBackgroundImage:button30 forState:UIControlStateNormal];
+    UIImage *button30 = [UIImage imageNamed:@"app_button_30_lite.png"];
+    if ([button30 respondsToSelector:@selector(resizableImageWithCapInsets:)]) {
+        [buttonObj setBackgroundImage:[button30 resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateNormal];
+    }
+    else {
+        [buttonObj setBackgroundColor:[UIColor colorWithRed:120.0/255.0 green:120.0/255.0 blue:120.0/255.0 alpha:1.0]];
+        buttonObj.layer.cornerRadius = 4;
+    }
     
     // font
     buttonObj.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];

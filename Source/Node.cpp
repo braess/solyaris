@@ -214,7 +214,6 @@ void Node::defaults(Defaults d) {
     
     // scale retina
     if (retina) {
-        length *= 2;
         dist *= 2;
         perimeter *= 2;
         zone *= 2;
@@ -961,7 +960,7 @@ void Node::renderNode() {
     if (type == nodeMovie) {
         
         // category
-        string cat = (category.length()) > 0 ? "_" + category : "";
+        string cat = (category.length()) > 0 ? ("_" + category) : "";
         
         // texture
         textureNode = gl::Texture(loadImage(loadResource("node_movie"+sfx)));

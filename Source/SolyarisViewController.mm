@@ -310,6 +310,7 @@
         [appDelegate removeUserDefault:triggerAppUpdate];
     }
 
+
 }
 
 
@@ -357,13 +358,7 @@
     // note deprecated
     Note *deprecated = [Note retrieveNote:noteAppDeprecated];
     if (deprecated) {
-        
-        // view
-        [self.view bringSubviewToFront:_noteView];
-        
-        // note
-        [_noteView noteInfo:deprecated.title message:deprecated.message];
-        [_noteView showNoteAfterDelay:kDelayTimeStartup*1.5];
+        // ignore (messes up help view...)
     }
 }
 

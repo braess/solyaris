@@ -33,6 +33,13 @@
 
 
 #pragma mark -
+#pragma mark Constants
+
+// Dispatch period in seconds
+static const NSInteger kGANDispatchPeriodSec = 30;
+
+
+#pragma mark -
 #pragma mark Class Methods
 
 /**
@@ -40,17 +47,35 @@
  */
 + (void)startTracker {
 
+    // device
+	NSString *device = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? @"iPad" : @"iPhone";
+	
+	// version
+	NSString *version = [[UIDevice currentDevice] systemVersion];
+	
+    // track
     #ifndef DEBUG
+    
 	// shared tracker
 	[[GANTracker sharedTracker] startTrackerWithAccountID:kGoogleAnalytics
-                                           dispatchPeriod:30
+                                           dispatchPeriod:kGANDispatchPeriodSec
                                                  delegate:nil];
+    
+    
+	// device variable
+	NSError *error;
+	if (![[GANTracker sharedTracker] setCustomVariableAtIndex:TrackerVariableDevice name:@"device" value:device scope:kGANSessionScope withError:&error]) {
+		NSLog(@"Solyaris error in setting device variable");
+	}
 	
 	// ios variable
-    NSString *version = [[UIDevice currentDevice] systemVersion];
-	[[GANTracker sharedTracker] setCustomVariableAtIndex:TrackerVariableIOS name:@"ios" value:version scope:kGANSessionScope withError:nil];
+	if (![[GANTracker sharedTracker] setCustomVariableAtIndex:TrackerVariableIOS name:@"ios" value:version scope:kGANSessionScope withError:&error]) {
+		NSLog(@"Solyaris error in setting ios variable");
+	}
+    
+    // debug
     #else
-    NSLog(@"Tracker: start");
+    NSLog(@"Tracker: Start %@ %@",device,version);
     #endif
 }
 + (void)stopTracker {
@@ -60,7 +85,7 @@
     #ifndef DEBUG
 	[[GANTracker sharedTracker] stopTracker];
     #else
-    NSLog(@"Tracker: stop");
+    NSLog(@"Tracker: Stop");
     #endif
 }
 
@@ -75,7 +100,7 @@
     #ifndef DEBUG
 	[[GANTracker sharedTracker] dispatch];
     #else
-    NSLog(@"Tracker: dispatch");
+    NSLog(@"Tracker: Dispatch");
     #endif
 
 }

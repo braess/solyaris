@@ -103,11 +103,15 @@
     CGRect pframe = iPad ? CGRectMake(cframe.size.width-320, border, 320, vframe.size.height-border) : CGRectMake(10, 15, vframe.size.width-20, vframe.size.height-10);
     
     CGRect bframe =  CGRectMake(vframe.size.width-44, 5, 44, 44);
-
+    
     // view
-    self.view = [[UIView alloc] initWithFrame:wframe];
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    self.view.hidden = YES;
+    UIView *sview = [[UIView alloc] initWithFrame:wframe];
+    sview.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    sview.hidden = YES;
+    
+    // self
+    self.view = sview;
+    [sview release];
     
 	// content
     UIView *ctView = [[UIView alloc] initWithFrame:cframe];
@@ -152,7 +156,7 @@
     
     
     // add & release content
-    self.contentView = [ctView retain];
+    self.contentView = ctView;
     [self.view addSubview:_contentView];
     [self.view bringSubviewToFront:_contentView];
     [ctView release];

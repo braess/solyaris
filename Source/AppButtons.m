@@ -21,7 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "AppButtons.h"
-
+#import <QuartzCore/QuartzCore.h>
 
 /**
  * Button.
@@ -41,8 +41,14 @@
     if ((self = [super init])) {
         
         // image
-        UIImage *button30 = [[UIImage imageNamed:@"app_button_30"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
-        [self setBackgroundImage:button30 forState:UIControlStateNormal];
+        UIImage *button30 = [UIImage imageNamed:@"app_button_30.png"];
+        if ([button30 respondsToSelector:@selector(resizableImageWithCapInsets:)]) {
+            [self setBackgroundImage:[button30 resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateNormal];
+        }
+        else {
+            [self setBackgroundColor:[UIColor colorWithRed:78.0/255.0 green:78.0/255.0 blue:78.0/255.0 alpha:1.0]];
+            self.layer.cornerRadius = 4;
+        }
         
         // font
         self.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];

@@ -34,6 +34,14 @@
 @end
 
 
+/**
+ * Gesture Stack.
+ */
+@interface HelpView (Gestures)
+- (void)tapped:(UITapGestureRecognizer*)recognizer;
+- (void)swipedRight:(UITapGestureRecognizer*)recognizer;
+- (void)swipedLeft:(UITapGestureRecognizer*)recognizer;
+@end
 
 
 
@@ -238,6 +246,21 @@
         [self addSubview:_pageControl];
         [pControl release];
         
+        // gestures
+        UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
+        [self addGestureRecognizer:tapRecognizer];
+        [tapRecognizer release];
+        
+        UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedRight:)];
+        swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
+        [self addGestureRecognizer:swipeRight];
+        [swipeRight release];
+        
+        UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipedLeft:)];
+        swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
+        [self addGestureRecognizer:swipeLeft];
+        [swipeLeft release];
+        
 	}
 	
 	// self
@@ -313,6 +336,7 @@
     _pageControl.frame = CGRectMake(0, frameSelf.size.height-25, frameSelf.size.width, 30);
     _pageControl.numberOfPages = 4;
     
+    
 }
 
 
@@ -330,12 +354,12 @@
 
 
 #pragma mark -
-#pragma mark Touch
+#pragma mark Gestures
 
 /*
- * Touch.
+ * Tapped.
  */
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+- (void)tapped:(UITapGestureRecognizer*) recognizer  {
 	FLog();
     
     // next
@@ -345,6 +369,30 @@
     else {
         [self dismissHelp];
     }
+}
+
+/*
+ * Swiped.
+ */
+- (void)swipedLeft:(UITapGestureRecognizer *)recognizer {
+    FLog();
+    
+    // next
+    if (step < 3) {
+        [self nextHelp];
+    }
+    else {
+        [self dismissHelp];
+    }
+}
+- (void)swipedRight:(UITapGestureRecognizer *)recognizer {
+    FLog();
+    
+    // next
+    if (step > 0) {
+        [self previousHelp];
+    }
+
 }
 
 
@@ -406,9 +454,30 @@
             // page
             _pageControl.currentPage = 1;
             
-            // hide
+            // unhide
             _labelWelcome.hidden = iPad ? NO : YES;
             _textWelcome.hidden = iPad ? NO : YES;
+            
+            // hide
+            _imageHelp.hidden = YES;
+            
+            _labelNode1.hidden = YES;
+            _textNode1.hidden = YES;
+            _labelNode2.hidden = YES;
+            _textNode2.hidden = YES;
+            _labelNode3.hidden = YES;
+            _textNode3.hidden = YES;
+            _labelNode4.hidden = YES;
+            _textNode4.hidden = YES;
+            
+            _labelApp1.hidden = YES;
+            _textApp1.hidden = YES;
+            _labelApp2.hidden = YES;
+            _textApp2.hidden = YES;
+            _labelApp3.hidden = YES;
+            _textApp3.hidden = YES;
+            _labelApp4.hidden = YES;
+            _textApp4.hidden = YES;
             
             // show
             _labelSearch.hidden = NO;
@@ -425,12 +494,22 @@
             // page
             _pageControl.currentPage = 2;
             
-            // hide
+            // unhide
             _labelWelcome.hidden = iPad ? NO : YES;
             _textWelcome.hidden = iPad ? NO : YES;
             
             _labelSearch.hidden = iPad ? NO : YES;
             _textSearch.hidden =iPad ? NO : YES;
+            
+            // hide
+            _labelApp1.hidden = YES;
+            _textApp1.hidden = YES;
+            _labelApp2.hidden = YES;
+            _textApp2.hidden = YES;
+            _labelApp3.hidden = YES;
+            _textApp3.hidden = YES;
+            _labelApp4.hidden = YES;
+            _textApp4.hidden = YES;
             
             // show
             _imageHelp.hidden = NO;
@@ -455,7 +534,7 @@
             // page
             _pageControl.currentPage = 3;
             
-            // hide
+            // unhide
             _labelWelcome.hidden = iPad ? NO : YES;
             _textWelcome.hidden = iPad ? NO : YES;
             
@@ -470,7 +549,6 @@
             _textNode3.hidden = iPad ? NO : YES;
             _labelNode4.hidden = iPad ? NO : YES;
             _textNode4.hidden = iPad ? NO : YES;
-            
             
             // show
             _labelApp1.hidden = NO;
@@ -518,13 +596,25 @@
 }
 
 /**
- * Next step.
+ * Next/previous step.
  */
 - (void)nextHelp {
     DLog();
     
     // step
     step++;
+    
+    // update
+    [self update];
+    
+    // layout & show
+    [self layoutSubviews];
+}
+- (void)previousHelp {
+    DLog();
+    
+    // step
+    step--;
     
     // update
     [self update];

@@ -166,11 +166,15 @@
     CGRect toolsFrame = CGRectMake(footerFrame.size.width-kInformationGapInset-80, 5, 80, kInformationFooterHeight-10);
     CGRect navigatorFrame = CGRectMake(kInformationGapInset, 5, 80, kInformationFooterHeight-10);
     
+    // view
+    UIView *sview = [[UIView alloc] initWithFrame:windowFrame];
+    sview.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    sview.hidden = YES;
     
     // view
-    self.view = [[UIView alloc] initWithFrame:windowFrame];
-    self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    self.view.hidden = YES;
+    self.view = sview;
+    [sview release];
+    
     
     // modal
     UIView *mView = [[UIView alloc] initWithFrame:windowFrame];
@@ -186,6 +190,7 @@
     float safety = 25;
     BlockerView *bView = [[BlockerView alloc] initWithFrame:CGRectMake(contentFrame.origin.x-safety, contentFrame.origin.y-safety, contentFrame.size.width+2*safety, contentFrame.size.height+2*safety)];
     [_modalView addSubview:bView];
+    [bView release];
 
 	
 	// content
@@ -372,6 +377,9 @@
     [abar setItems:[NSArray arrayWithObjects:nspace,itemFlex,_actionListing,spacer,_actionTMDb,spacer,_actionIMDb,spacer,_actionWikipedia,itemFlex,nspace,nil]];
     [footerView addSubview:abar];
     [itemFlex release];
+    [spacer release];
+    [nspace release];
+    [abar release];
     
     // navigator
     HTMLNavigatorView *htmlNavigator = [[HTMLNavigatorView alloc] initWithFrame:navigatorFrame];
@@ -1467,7 +1475,9 @@
         lblPropReleased.opaque = YES;
         lblPropReleased.numberOfLines = 1;
         [lblPropReleased setText:NSLocalizedString(@"Year:", @"Year:")];
+        
         [self addSubview:lblPropReleased];
+        [lblPropReleased release];
         
         UILabel *lblReleased = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 54 : 42), mframe.size.width-pwidth, 15)];
         lblReleased.backgroundColor = [UIColor clearColor];
@@ -1489,7 +1499,9 @@
         lblPropRuntime.opaque = YES;
         lblPropRuntime.numberOfLines = 1;
         [lblPropRuntime setText:NSLocalizedString(@"Runtime:", @"Runtime:")];
+        
         [self addSubview:lblPropRuntime];
+        [lblPropRuntime release];
         
         UILabel *lblRuntime = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 69 : 57), mframe.size.width-pwidth, 15)];
         lblRuntime.backgroundColor = [UIColor clearColor];
@@ -1647,7 +1659,9 @@
         lblPropKnownMovies.opaque = YES;
         lblPropKnownMovies.numberOfLines = 1;
         [lblPropKnownMovies setText:NSLocalizedString(@"Movies:", @"Movies:")];
+        
         [self addSubview:lblPropKnownMovies];
+        [lblPropKnownMovies release];
         
         UILabel *lblKnownMovies = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 39 : 28), mframe.size.width-pwidth, 15)];
         lblKnownMovies.backgroundColor = [UIColor clearColor];
@@ -1669,7 +1683,9 @@
         lblPropBirthday.opaque = YES;
         lblPropBirthday.numberOfLines = 1;
         [lblPropBirthday setText:NSLocalizedString(@"Birthday:", @"Birthday:")];
+        
         [self addSubview:lblPropBirthday];
+        [lblPropBirthday release];
         
         UILabel *lblBirthday = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 54 : 43), mframe.size.width-pwidth, 15)];
         lblBirthday.backgroundColor = [UIColor clearColor];
@@ -1690,7 +1706,9 @@
         lblPropBirthplace.opaque = YES;
         lblPropBirthplace.numberOfLines = 1;
         [lblPropBirthplace setText:NSLocalizedString(@"Birthplace:", @"Birthplace:")];
+        
         [self addSubview:lblPropBirthplace];
+        [lblPropBirthplace release];
         
         UILabel *lblBirthplace = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 69 : 58), mframe.size.width-pwidth, 15)];
         lblBirthplace.backgroundColor = [UIColor clearColor];

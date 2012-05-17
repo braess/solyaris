@@ -107,6 +107,7 @@
             
             // subview
             [self addSubview:button];
+            [button release];
             
             // divider
             if (i != titles.count - 1) {

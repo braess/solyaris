@@ -30,6 +30,15 @@
 
 
 /**
+ * Gesture Stack.
+ */
+@interface DashboardViewController (Gestures)
+- (void)tapped:(UITapGestureRecognizer*) recognizer;
+@end
+
+
+
+/**
  * SearchViewController
  */
 @implementation SearchViewController
@@ -85,7 +94,9 @@
 	DLog();
     
     // view
-    self.view = [[UIView alloc] initWithFrame:CGRectZero];
+    UIView *sview = [[UIView alloc] initWithFrame:CGRectZero];
+    self.view = sview;
+    [sview release];
 
     
     // modal

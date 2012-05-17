@@ -63,7 +63,6 @@ string I18N::getTranslation(string key, string def) {
  * Translates.
  */
 string I18N::translate(string msg, string key, string value) {
-    std::cout << msg << key << value << std::endl;
     
     // search
     string term = this->getTranslation(key, value);
