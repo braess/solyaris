@@ -178,16 +178,9 @@
 - (void)reset {
     GLog();
     
-    // vars
-    [_link setString:@""];
+   // cancel
+   [self cancel];
     
-    // views
-    _activityIndicator.hidden = YES;
-    _iconError.hidden = YES;
-    _imageView.hidden = NO;
-    
-    // state
-    loaded = NO;
 }
 
 
@@ -279,15 +272,17 @@
 - (void)cancel {
     
     // cancel connection
-    [_connection cancel];
-    
-    // release connection
-	[_connection release];
-	_connection=nil;
+    if (_connection != nil) {
+        [_connection cancel];
+        [_connection release];
+        _connection = nil;
+    }
     
     // release data
-	[_receivedData release]; 
-	_receivedData=nil;
+    if (_receivedData != nil) {
+        [_receivedData release];
+        _receivedData = nil;
+    }
     
     // hide activity
     _activityIndicator.hidden = YES;
@@ -296,14 +291,17 @@
     
     // placeholder
     _imageView.image = _placeholderImage;
+    _imageView.hidden = NO;
     
     // error
-    if (_placeholderImage == NULL) {
-        _iconError.hidden = NO;
-    }
+    _iconError.hidden = YES;
+    
+    // vars
+    [_link setString:@""];
     
     // loaded
     loaded = NO;
+    loading = NO;
     
     // redraw
     [self setNeedsLayout];
@@ -343,17 +341,12 @@
  */
 - (void)urlImageLoad {
     FLog();
-    
-    // connection & data
-    if (_connection!=nil) { 
-        [_connection release]; 
-    } 
-    if (_receivedData!=nil) { 
-        [_receivedData release]; 
-    }
-    
+        
     // url
     NSURL *url = [NSURL URLWithString: _link];
+    
+    // loading
+    loading = YES;
     
     // request
     NSURLRequest* request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:20.0];
@@ -365,22 +358,27 @@
  */
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     
+    // nop
+    if (! loading || ! [[response MIMEType] hasPrefix:@"image"]) {
+        [self cancel];
+        return;
+    }
+    
 	// every time we get an response it might be a forward, so we discard what data we have
-	[_receivedData release], _receivedData = nil;
+    if (_receivedData != nil) {
+        [_receivedData release];
+        _receivedData = nil;
+    }
     
     // prepare data
 	_receivedData = [[NSMutableData alloc] init];
     [_receivedData setLength:0];
 
-    // only images
-    if (! [[response MIMEType] hasPrefix:@"image"]) {
-        [self cancel];
-    }
 }
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     
     // check data
-    if (_receivedData) {
+    if (loading && _receivedData) {
         [_receivedData appendData:data]; // CRASH
     }
 }
@@ -409,14 +407,19 @@
     }
     
     // release connection
-	[_connection release];
-	_connection=nil;
+	if (_connection != nil) {
+        [_connection release];
+        _connection = nil;
+    }
     
     // release data
-	[_receivedData release]; 
-	_receivedData=nil;
+    if (_receivedData != nil) {
+        [_receivedData release];
+        _receivedData = nil;
+    }
     
     // loaded
+    loading = NO;
     loaded = YES;
     
     // show
@@ -430,6 +433,11 @@
     
     // cancel
     [self cancel];
+    
+    // error
+    if (_placeholderImage == NULL) {
+        _iconError.hidden = NO;
+    }
   
 }
 
@@ -517,10 +525,6 @@
  */
 - (void)dealloc {
     
-    // connection
-    [_connection cancel]; 
-	[_connection release];
-	[_receivedData release];
     
     // ui
     [_imageView release];

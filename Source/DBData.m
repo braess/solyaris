@@ -31,7 +31,9 @@
 #pragma mark Properties
 
 // accessors
+@synthesize dta;
 @synthesize ref;
+@synthesize src;
 @synthesize type;
 @synthesize label;
 @synthesize thumb;
@@ -50,7 +52,9 @@
     if ((self = [super init])) {
         
         // self
+        self.dta = -1;
         self.ref = [NSNumber numberWithInt:-1];
+        self.src = [NSNumber numberWithInt:-1];
         self.type = @"";
 		self.label = @"";
         self.thumb = @"";
@@ -62,13 +66,14 @@
 	}
 	return self;
 }
-- (id)initData:(NSNumber *)dta_ref type:(NSString *)dta_type label:(NSString *)dta_label thumb:(NSString *)dta_thumb {
+- (id)initData:(int)dta_ ref:(NSNumber *)dta_ref type:(NSString *)dta_type label:(NSString *)dta_label thumb:(NSString *)dta_thumb {
     GLog();
     
     // super
     if ((self = [super init])) {
         
         // self
+        self.dta = dta_;
         self.ref = dta_ref;
         self.type = dta_type;
 		self.label = dta_label;
@@ -94,6 +99,7 @@
 	
 	// self
     [ref release];
+    [src release];
     [type release];
 	[label release];
     [thumb release];

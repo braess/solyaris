@@ -26,6 +26,7 @@
 #import "SearchBarViewController.h"
 #import "SearchViewController.h"
 #import "InformationViewController.h"
+#import "RelatedViewController.h"
 #import "SettingsViewController.h"
 #import "SplashView.h"
 #import "cinder/app/CinderViewCocoaTouch.h"
@@ -42,7 +43,7 @@ enum {
 /**
  * Solyaris ViewController.
  */
-@interface SolyarisViewController : UIViewController <UIPopoverControllerDelegate, UIAlertViewDelegate, APIDelegate, SearchBarDelegate, SearchDelegate, InformationDelegate, SettingsDelegate, SplashDelegate> {
+@interface SolyarisViewController : UIViewController <UIPopoverControllerDelegate, UIAlertViewDelegate, APIDelegate, SearchBarDelegate, SearchDelegate, InformationDelegate, RelatedDelegate, SettingsDelegate, SplashDelegate> {
     
     // app
     Solyaris *solyaris;
@@ -53,6 +54,7 @@ enum {
     SearchBarViewController *_searchBarViewController;
     SearchViewController *_searchViewController;
     InformationViewController *_informationViewController;
+    RelatedViewController *_relatedViewController;
     SettingsViewController *_settingsViewController;
     UIButton *_buttonSettings;
     
@@ -67,6 +69,7 @@ enum {
     bool mode_settings;
     bool mode_splash;
     bool mode_search;
+    bool mode_animating;
     
     // data nodes
     NSMutableDictionary *_dta_nodes;
@@ -87,7 +90,10 @@ enum {
 - (void)actionSettings:(id)sender;
 
 // Business Methods
-- (void)nodeInformation:(NSString*)nid;
+- (void)nodeInfo:(NSString*)nid;
+- (void)nodeRelated:(NSString*)nid;
+- (void)nodeClose:(NSString*)nid;
 - (void)nodeLoad:(NSString*)nid;
+- (void)nodeInformation:(NSString*)nid;
 
 @end

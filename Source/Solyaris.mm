@@ -189,6 +189,7 @@ void Solyaris::draw() {
     // prepare
     gl::setMatricesWindow( getWindowSize() );
 	gl::setViewport( getWindowBounds() );
+    glEnable(GL_LINE_SMOOTH);
     
     // clear
 	gl::clear(bg);    
@@ -233,7 +234,38 @@ void Solyaris::touchesBegan( TouchEvent event ) {
         if (taps == 1) {
             
             // touch graph
-            graph.touchBegan(touch->getPos(),touch->getId());
+            NodePtr node = graph.touchBegan(touch->getPos(),touch->getId());
+            if (node != NULL) {
+                
+                // touch controller
+                NSString *nid = [NSString stringWithCString:node->nid.c_str() encoding:[NSString defaultCStringEncoding]];
+                
+                // info
+                if (node->action == actionInfo) {
+                    FLog("action info");
+                    
+                    // info
+                    [solyarisViewController nodeInfo:nid];
+                }
+                // related
+                else if (node->action == actionRelated) {
+                    FLog("action related");
+                    
+                    // related
+                    [solyarisViewController nodeRelated:nid];
+                }
+                // close
+                else if (node->action == actionClose) {
+                    FLog("action close");
+                    
+                    // related
+                    [solyarisViewController nodeClose:nid];
+                }
+                
+                // reset
+                node->setAction("");
+  
+            }
         }
         
         // double tap
@@ -249,7 +281,7 @@ void Solyaris::touchesBegan( TouchEvent event ) {
                 // load
                 if (! node->isActive() && ! node->isLoading()) {
                     
-                    // data
+                    // node load
                     [solyarisViewController nodeLoad:nid];
                 }
                 // open
@@ -258,7 +290,7 @@ void Solyaris::touchesBegan( TouchEvent event ) {
                 }
                 // information
                 else {
-                    // data
+                    // node info
                     [solyarisViewController nodeInformation:nid];
                 }
             }
@@ -385,6 +417,27 @@ EdgePtr Solyaris::getEdge(string nid1, string nid2) {
 }
 
 /*
+ * Creates a connection.
+ */
+ConnectionPtr Solyaris::createConnection(string cid, string type, NodePtr n1, NodePtr n2) {
+    GLog();
+    
+    // graph
+    return graph.createConnection(cid,type,n1,n2);
+}
+
+/*
+ * Gets a connection.
+ */
+ConnectionPtr Solyaris::getConnection(string nid1, string nid2) {
+    GLog();
+    
+    // graph
+    return graph.getConnection(nid1,nid2);
+}
+
+
+/*
  * Prepares solyaris for loading.
  */
 void Solyaris::load(NodePtr n) {
@@ -402,6 +455,26 @@ void Solyaris::unload(NodePtr n) {
     
     // graph
     graph.unload(n);
+}
+
+/**
+ * Shifts the graph.
+ */
+void Solyaris::graphShift(double mx, double my) {
+    GLog();
+    
+    // graph
+    graph.move(Vec2d(mx,my));
+}
+
+/**
+ * Calculates a node's real world coordinates.
+ */
+Vec3d Solyaris::nodeCoordinates(NodePtr n) {
+    GLog();
+    
+    // calculate real world position
+    return graph.coordinates(n->pos.x, n->pos.y, n->radius);
 }
 
 

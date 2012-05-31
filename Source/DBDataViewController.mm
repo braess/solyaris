@@ -144,7 +144,7 @@
 /**
  * Resets the controller.
  */
-- (void)reset:(int)ddta {
+- (void)reset {
     GLog();
     
     // reset modes
@@ -157,8 +157,6 @@
     // reset data
     [_data removeAllObjects];
     
-    // reset type
-    ddata = ddta;
     
     // reset ui
     [_loader stopAnimating];
@@ -229,7 +227,7 @@
     if (! mode_reset) {
         
         // reset
-        [self reset:DBDataUndef];
+        [self reset];
         mode_reset = YES;
         
         // update
@@ -249,7 +247,7 @@
     [self.header head:NSLocalizedString(@"Loading...", @"Loading...")];
     
     // reset & update
-    [self reset:DBDataUndef];
+    [self reset];
     mode_loading = YES;
     [self update];
 }
@@ -261,7 +259,7 @@
     FLog();
     
     // reset
-    [self reset:DBDataSearchResult];
+    [self reset];
     
     // check for null
     if (search == NULL) {
@@ -280,7 +278,7 @@
     for (SearchResult* s in search.results) {
         
         // data
-        DBData *dta = [[DBData alloc] initData:s.ref type:s.type label:s.data thumb:s.thumb];
+        DBData *dta = [[DBData alloc] initData:DBDataSearchResult ref:s.ref type:s.type label:s.data thumb:s.thumb];
         
         // add
         [_data addObject:dta];
@@ -337,7 +335,7 @@
     else {
         
         // reset
-        [self reset:DBDataPopularMovies];
+        [self reset];
     }
     
     // check for null
@@ -369,7 +367,7 @@
         PopularResult *p = (PopularResult*) [results objectAtIndex:i];
         
         // data
-        DBData *dta = [[DBData alloc] initData:p.ref type:p.type label:p.data thumb:p.thumb];
+        DBData *dta = [[DBData alloc] initData:DBDataPopularMovies ref:p.ref type:p.type label:p.data thumb:p.thumb];
         dta.sort = p.sort;
         
         // add
@@ -387,6 +385,8 @@
         
         // always more
         DBData *dta = [[DBData alloc] init];
+        dta.dta = DBDataPopularMovies;
+        dta.ref = [NSNumber numberWithInt:0];
         dta.sort = [NSNumber numberWithInt:[_data count]];
         dta.label = NSLocalizedString(@"Load more movies", @"Load more movies");
         dta.type = popular.type;
@@ -450,7 +450,7 @@
     else {
         
         // reset
-        [self reset:DBDataNowPlaying];
+        [self reset];
     }
     
     // check for null
@@ -482,7 +482,7 @@
         NowPlayingResult *np = (NowPlayingResult*) [results objectAtIndex:i];
         
         // data
-        DBData *dta = [[DBData alloc] initData:np.ref type:np.type label:np.data thumb:np.thumb];
+        DBData *dta = [[DBData alloc] initData:DBDataNowPlaying ref:np.ref type:np.type label:np.data thumb:np.thumb];
         dta.sort = np.sort;
         
         // add
@@ -500,6 +500,8 @@
         
         // always more
         DBData *dta = [[DBData alloc] init];
+        dta.dta = DBDataNowPlaying;
+        dta.ref = [NSNumber numberWithInt:0];
         dta.sort = [NSNumber numberWithInt:[_data count]];
         dta.label = NSLocalizedString(@"Load more movies", @"Load more movies");
         dta.type = nowplaying.type;
@@ -537,6 +539,7 @@
 }
 
 
+
 /**
  * Shows the history.
  */
@@ -544,7 +547,7 @@
     FLog();
     
     // reset
-    [self reset:DBDataHistory];
+    [self reset];
     
     // results
     NSMutableArray *results = [[NSMutableArray alloc] initWithArray:history];
@@ -567,7 +570,7 @@
         for (Movie *movie in results) {
             
             // title
-            NSString *title = movie.name;
+            NSString *title = movie.title;
             if (movie.released) {
                 title = [NSString stringWithFormat:@"%@ (%@)",title,[yearFormatter stringFromDate:movie.released]];
             }
@@ -584,7 +587,7 @@
             }
             
             // data
-            DBData *dta = [[DBData alloc] initData:movie.mid type:typeMovie label:title thumb:thumb];
+            DBData *dta = [[DBData alloc] initData:DBDataHistory ref:movie.mid type:typeMovie label:title thumb:thumb];
             
             // add
             [_data addObject:dta];
@@ -608,7 +611,7 @@
             }
             
             // data
-            DBData *dta = [[DBData alloc] initData:person.pid type:typePerson label:person.name thumb:thumb];
+            DBData *dta = [[DBData alloc] initData:DBDataHistory ref:person.pid type:typePerson label:person.name thumb:thumb];
             
             // add
             [_data addObject:dta];
@@ -633,6 +636,132 @@
     // update
     [self update];
     
+}
+
+/**
+ * Shows the related movies.
+ */
+- (void)dbMovieRelated:(Movie *)movie more:(BOOL)more {
+    FLog();
+    
+    // current
+    int current = [_data count] > 0 ? [_data count]-1 : 0;
+    
+    // reset
+    if (more) {
+        
+        // remove
+        [_data removeLastObject];
+        [_results deleteRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:current inSection:SectionDBDataResults]] withRowAnimation:UITableViewRowAnimationNone];
+        
+    }
+    else {
+        
+        // reset
+        [self reset];
+    }
+    
+    // check for null
+    if (movie == NULL || movie.similar == NULL || [movie.similar.movies count] <= 0) {
+        
+        // in the moode
+        mode_error = YES;
+        
+        // update
+        [self update];
+        
+        // nothing
+        return;
+    }
+    
+    // results
+    NSMutableArray *results = [[NSMutableArray alloc] initWithArray:[movie.similar.movies allObjects]];
+    
+    // sort
+	NSSortDescriptor *sorter = [[NSSortDescriptor alloc] initWithKey:@"sort" ascending:TRUE];
+	[results sortUsingDescriptors:[NSArray arrayWithObject:sorter]];
+	[sorter release];
+    
+    // data
+    NSMutableArray *indexes = [[NSMutableArray alloc] init];
+    for (int i = current; i < [results count]; i++) {
+        
+        // similar
+        SimilarMovie *sm = (SimilarMovie*) [results objectAtIndex:i];
+        
+        // data
+        DBData *dta = [[DBData alloc] initData:DBDataMovieRelated ref:sm.mid type:typeMovie label:sm.title thumb:sm.thumb];
+        dta.src = movie.mid;
+        dta.sort = sm.sort;
+        
+        // add
+        [_data addObject:dta];
+        [dta release];
+        
+        // index
+        [indexes addObject:[NSIndexPath indexPathForRow:i inSection:SectionDBDataResults]];
+    }
+    [results release];
+    
+    // more
+    int nb = [_data count];
+    if (nb < [movie.similar.total intValue]) {
+        
+        // always more
+        DBData *dta = [[DBData alloc] init];
+        dta.dta = DBDataMovieRelated;
+        dta.src = movie.mid;
+        dta.sort = [NSNumber numberWithInt:[_data count]];
+        dta.label = NSLocalizedString(@"Load more movies", @"Load more movies");
+        dta.type = typeMovie;
+        dta.more = YES;
+        
+        // add
+        [_data addObject:dta];
+        [dta release];
+        
+        // index
+        [indexes addObject:[NSIndexPath indexPathForRow:nb-1 inSection:SectionDBDataResults]];
+    }
+    
+    
+    // title
+    [self.header head:[NSString stringWithFormat:@"%@ (%i)", NSLocalizedString(@"Related Movies", @"Related Movies"),nb]];
+    
+    // flag
+    mode_result = YES;
+    
+    // update
+    if (more) {
+        
+        // insert
+        [_results insertRowsAtIndexPaths:indexes withRowAnimation:UITableViewRowAnimationNone];
+        
+        // scroll
+        [self performSelector:@selector(animationScrollResults:) withObject:[NSIndexPath indexPathForRow:MAX(0,current-1) inSection:SectionDBDataResults] afterDelay:0.3];
+    }
+    else {
+        [self update];
+    }
+    [indexes release];
+    
+}
+
+/**
+ * Hides the back.
+ */
+- (void)hideBack:(BOOL)hide {
+    FLog();
+    
+    // hide
+    header.back = ! hide;
+}
+
+/**
+ * Sets the title font.
+ */
+- (void)titleFont:(UIFont*)thaFont {
+    [self.header.labelTitle setFont:thaFont];
 }
 
 
@@ -733,7 +862,7 @@
         
         // delegate
         if (delegate != nil && [delegate respondsToSelector:@selector(dbDataLoadMore:)]) {
-            [delegate dbDataLoadMore:ddata];
+            [delegate dbDataLoadMore:dta];
         }
         
     }

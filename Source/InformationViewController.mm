@@ -565,11 +565,11 @@
         [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",[_sloc urlIMDbMovie],movie.imdb]];
     }
     else {
-        [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",[_sloc urlIMDbSearch],[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+        [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",[_sloc urlIMDbSearch],[movie.title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     }
-    [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",[_sloc urlWikipediaSearch],[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-    [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",[_sloc urlAmazonSearch],[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
-    [_referenceITunes setString:[NSString stringWithFormat:@"%@%@",urlITunesSearch,[movie.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",[_sloc urlWikipediaSearch],[movie.title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",[_sloc urlAmazonSearch],[movie.title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceITunes setString:[NSString stringWithFormat:@"%@%@",urlITunesSearch,[movie.title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 
     // header
     [_informationMovieView reset:movie];
@@ -1435,20 +1435,20 @@
         [self addSubview:_imagePoster];
         [ciView release];
         
-        // name
-        UILabel *lblName = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y, mframe.size.width, iPad ? 36 : 34)];
-        lblName.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        lblName.backgroundColor = [UIColor clearColor];
-        lblName.font = [UIFont fontWithName:@"Helvetica-Bold" size:iPad ? 21.0 : 15];
-        lblName.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
-        lblName.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-        lblName.shadowOffset = CGSizeMake(1,1);
-        lblName.opaque = YES;
-        lblName.numberOfLines = 1;
+        // title
+        UILabel *lblTitle = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y, mframe.size.width, iPad ? 36 : 34)];
+        lblTitle.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        lblTitle.backgroundColor = [UIColor clearColor];
+        lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:iPad ? 21.0 : 15];
+        lblTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
+        lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
+        lblTitle.shadowOffset = CGSizeMake(1,1);
+        lblTitle.opaque = YES;
+        lblTitle.numberOfLines = 1;
         
-        _labelName = [lblName retain];
-        [self addSubview:_labelName];
-        [lblName release];
+        _labelTitle = [lblTitle retain];
+        [self addSubview:_labelTitle];
+        [lblTitle release];
         
         // tagline
         UILabel *lblTagline = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+(iPad ? 30 : 23), mframe.size.width, 18)];
@@ -1551,7 +1551,7 @@
     
     // header
     [_imagePoster loadImage:poster];
-    [_labelName setText:movie.name];
+    [_labelTitle setText:movie.title];
     [_labelTagline setText:movie.tagline];
     [_labelReleased setText:(movie.released) ? [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:movie.released]] : @"-"];
     [_labelRuntime setText:([movie.runtime intValue] > 0) ? [NSString stringWithFormat:@"%im",[movie.runtime intValue]] : @"-"];
@@ -1570,7 +1570,7 @@
 - (void)dealloc {
     
     // release
-    [_labelName release];
+    [_labelTitle release];
     [_labelTagline release];
     [_labelRuntime release];
     [_labelReleased release];

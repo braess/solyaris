@@ -29,6 +29,9 @@
 #define typePersonCrew                  @"person_crew"	
 #define typeSearch                      @"search"
 
+// Connections
+#define connRelated                     @"related"
+
 // Categories
 #define catEntertainment                @"entertainment"
 #define catViolence                     @"violence"

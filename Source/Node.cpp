@@ -42,6 +42,7 @@ Node::Node(string idn, double x, double y) {
     meta = "";
     type = "Node";
     category = "";
+    action = "";
     
     
     // fields
@@ -902,6 +903,39 @@ void Node::tapped() {
     
 }
 
+/**
+ * Connect.
+ */
+void Node::connect(NodePtr n) {
+    FLog();
+    
+    // reposition
+    if (! n->active && ! n->loading) {
+        
+        // randomize position
+        float rx = Rand::randFloat(this->radius * nodeUnfoldMin,this->radius * nodeUnfoldMax) + 0.1;
+        rx *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
+        float ry = Rand::randFloat(this->radius * nodeUnfoldMin,this->radius * nodeUnfoldMax) + 0.1;
+        ry *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
+        
+        // set
+        n->pos.set(Vec2d(this->pos.x+rx,this->pos.y+ry));
+        
+        // distance
+        Vec2d cdist =  n->pos - this->pos;
+        if (cdist.length() < dist) {
+            
+            // unity vector
+            cdist.safeNormalize();
+            
+            // move
+            n->moveTo(this->pos+cdist*dist*0.75);
+        }
+        
+    }
+    
+}
+
 
 /**
  * States.
@@ -1023,6 +1057,13 @@ void Node::updateCategory(string c) {
  */
 void Node::updateMeta(string m) {
     meta = m;
+}
+
+/**
+ * Sets the action.
+ */
+void Node::setAction(string a) {
+    action = a;
 }
 
 /*

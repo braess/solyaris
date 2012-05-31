@@ -51,6 +51,7 @@ class Solyaris : public AppCocoaTouch {
     void applyDeviceOrientation(int dorientation);
     void applySettings();
     
+    
     // Sketch
 	void update();
 	void draw();
@@ -70,10 +71,14 @@ class Solyaris : public AppCocoaTouch {
     NodePtr createNode(string nid, string type);
     NodePtr createNode(string nid, string type, double x, double y);
     NodePtr getNode(string nid);
-    EdgePtr createEdge(string eid,string type, NodePtr n1, NodePtr n2);
+    EdgePtr createEdge(string eid, string type, NodePtr n1, NodePtr n2);
     EdgePtr getEdge(string nid1, string nid2);
+    ConnectionPtr createConnection(string cid, string type, NodePtr n1, NodePtr n2);
+    ConnectionPtr getConnection(string nid1, string nid2);
     void load(NodePtr n);
     void unload(NodePtr n);
+    void graphShift(double mx, double my);
+    Vec3d nodeCoordinates(NodePtr n);
     
     
     // Fields

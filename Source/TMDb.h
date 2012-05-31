@@ -33,7 +33,8 @@
 #import "Movie2Person.h"
 #import "Asset.h"
 #import "Genre.h"
-
+#import "Similar.h"
+#import "SimilarMovie.h"
 
 /**
  * APIError.
@@ -65,12 +66,14 @@
 - (void)loadedMovie:(Movie*)movie;
 - (void)loadedPerson:(Person*)person;
 - (void)loadedMovieData:(Movie*)movie;
+- (void)loadedMovieRelated:(Movie*)movie more:(BOOL)more;
 - (void)loadedPersonData:(Person*)person;
 - (void)apiGlitch:(APIError*)error;
 - (void)apiError:(APIError*)error;
 - (void)apiFatal:(NSString*)title message:(NSString*)msg;
 - (void)apiInfo:(APIError*)error;
 @end
+
 
 /**
  * API TMDb.
@@ -103,13 +106,14 @@
 - (void)historyMovie;
 - (void)historyPerson;
 - (void)movie:(NSNumber*)mid;
+- (void)movieData:(NSNumber*)mid;
+- (void)movieRelated:(NSNumber*)mid more:(BOOL)more;
 - (void)person:(NSNumber*)pid;
+- (void)personData:(NSNumber*)pid;
 - (NSString*)movieThumb:(NSNumber*)mid;
 - (NSString*)personThumb:(NSNumber*)pid;
 - (void)resetCache;
-- (void)dataMovie:(NSNumber*)mid;
-- (void)dataPerson:(NSNumber*)pid;
-- (NSArray*)dataMovies;
+- (NSArray*)movies;
 
 
 @end

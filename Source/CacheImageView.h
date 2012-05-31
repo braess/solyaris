@@ -42,6 +42,7 @@
     @private
     NSMutableString *_link;
     bool loaded;
+    bool loading;
 }
 
 

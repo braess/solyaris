@@ -38,6 +38,13 @@ using namespace ci;
 const int actionTimeout = 12;
 const int actionReminder = 90;
 
+// constants
+const string actionNone = "action_none";
+const string actionInfo = "action_info";
+const string actionRelated = "action_related";
+const string actionClose = "action_close";
+
+
 /**
  * Graph Action.
  */
@@ -65,12 +72,17 @@ class Action {
     bool isActive();
     bool action(Vec2d tpos);
     void assignNode(NodePtr n);
-    
-    // private
-    private:
+    void renderAction();
     
     // node
     NodeWeakPtr node;
+    
+    // current action
+    string act;
+    
+    
+    // private
+    private:
     
     // states
     bool active;
@@ -82,13 +94,22 @@ class Action {
     bool retina;
     
     // position
-    Vec2d offset;
-    Vec2d size;
     Vec2d pos;
+    Rectd bounds;
+    Vec2d pos_info;
+    Vec2d pos_related;
+    Vec2d pos_close;
     Vec2d asize;
     
     // textures
+    gl::Texture textureActionInfo;
+    gl::Texture textureActionRelated;
     gl::Texture textureActionClose;
+    
+    // actions
+    bool action_info;
+    bool action_related;
+    bool action_close;
     
     
 };

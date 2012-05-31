@@ -189,7 +189,7 @@
     }
     
     // reset
-    [self reset:movie.name content:movie.overview slides:backdrops];
+    [self reset:movie.title content:movie.overview slides:backdrops];
     [backdrops release];
     
 }

@@ -5,6 +5,20 @@
 //  Created by Beat Raess on 25.4.2012.
 //  Copyright (c) 2012 Beat Raess. All rights reserved.
 //
+//  This file is part of Solyaris.
+//  
+//  Solyaris is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//  
+//  Solyaris is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//  
+//  You should have received a copy of the GNU General Public License
+//  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "SearchViewController.h"
 #import "SolyarisConstants.h"
@@ -29,17 +43,10 @@
 @end
 
 
-/**
- * Gesture Stack.
- */
-@interface DashboardViewController (Gestures)
-- (void)tapped:(UITapGestureRecognizer*) recognizer;
-@end
-
 
 
 /**
- * SearchViewController
+ * SearchViewController.
  */
 @implementation SearchViewController
 
@@ -51,6 +58,15 @@
 #define kAnimateTimeSearchFooterShow     0.21f
 #define kAnimateTimeSearchFooterHide     0.15f
 
+
+
+#pragma mark -
+#pragma mark Properties
+
+// synthesize
+@synthesize delegate;
+@synthesize modalView = _modalView;
+@synthesize contentView = _contentView;
 
 
 #pragma mark -
@@ -71,16 +87,6 @@
 	return self;
     
 }
-
-
-#pragma mark -
-#pragma mark Properties
-
-// synthesize
-@synthesize delegate;
-@synthesize modalView = _modalView;
-@synthesize contentView = _contentView;
-
 
 
 #pragma mark -
@@ -199,15 +205,6 @@
     // add to container
     [_containerView addSubview:_searchNavigationController.view];
     
-    // gestures
-    UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
-    _tapRecognizer = [tapRecognizer retain];
-    [tapRecognizer release];
-    
-    // tap tap
-    if (iPad) {
-        [_modalView addGestureRecognizer:_tapRecognizer];
-    }
     
     // vars
     NSMutableString *strTerm = [[NSMutableString alloc] init];
@@ -264,6 +261,37 @@
     }
     
     
+}
+
+
+
+#pragma mark -
+#pragma mark Touch
+
+/*
+ * Touches.
+ */
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    // ignore
+}
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    // ignore
+}
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+    
+    // you have a point there
+    CGPoint point = [[touches anyObject] locationInView:self.view];
+    if (point.y > _contentView.frame.size.height+60) {
+        
+        // delegate
+        if (delegate && [delegate respondsToSelector:@selector(searchClose)]) {
+            [delegate searchClose];
+        }
+        
+    }
+}
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    // ignore
 }
 
 
@@ -457,8 +485,8 @@
     FLog();
     
     // delegate
-    if (delegate && [delegate respondsToSelector:@selector(dataSelected:)]) {
-        [delegate dataSelected:data];
+    if (delegate && [delegate respondsToSelector:@selector(searchSelected:)]) {
+        [delegate searchSelected:data];
     }
  
 }
@@ -466,11 +494,11 @@
 /*
  * Load more.
  */
-- (void)dbDataLoadMore:(int)dbdata {
+- (void)dbDataLoadMore:(DBData*)data {
     FLog();
     
     // switch
-    switch (dbdata) {
+    switch (data.dta) {
             
         // now playing
         case DBDataNowPlaying: {
@@ -500,27 +528,6 @@
 
 
 
-#pragma mark -
-#pragma mark Gestures
-
-/*
- * Tapped.
- */
-- (void)tapped:(UITapGestureRecognizer*) recognizer {
-	DLog();
-    
-    // what's the point
-    CGPoint point = [recognizer locationInView:self.view];
-    if (point.y > _contentView.frame.size.height+60) {
-        
-        // delegate
-        if (delegate && [delegate respondsToSelector:@selector(searchClose)]) {
-            [delegate searchClose];
-        }
-        
-    }
-}
-
 
 #pragma mark -
 #pragma mark Actions
@@ -541,6 +548,7 @@
         [delegate search:_term type:searchType];
     }
 }
+
 
 
 #pragma mark -
@@ -662,8 +670,6 @@
     [_dashboardViewController release];
     [_dbDataViewController release];
     
-    // gestures
-    [_tapRecognizer release];
 	
 	// release 
     [super dealloc];

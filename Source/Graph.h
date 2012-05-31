@@ -30,6 +30,7 @@
 #include "cinder/audio/Io.h"
 #include "Node.h"
 #include "Edge.h"
+#include "Connection.h"
 #include "Tooltip.h"
 #include "Action.h"
 #include "Configuration.h"
@@ -72,7 +73,7 @@ class Graph {
     void draw();
     
     // Touch
-	void touchBegan(Vec2d tpos, int tid);
+	NodePtr touchBegan(Vec2d tpos, int tid);
     void touchMoved(Vec2d tpos, Vec2d ppos, int tid);
     void touchEnded(Vec2d tpos, int tid);
     
@@ -89,18 +90,22 @@ class Graph {
     void subnodes();
     void move(Vec2d d);
     void drag(Vec2d d);
+    void shift(Vec2d d);
+    Vec3d coordinates(double px, double py, double d);
     NodePtr createNode(string nid, string type);
     NodePtr createNode(string nid, string type, double x, double y);
     NodePtr getNode(string nid);
     EdgePtr createEdge(string eid, string type, NodePtr n1, NodePtr n2);
     EdgePtr getEdge(string nid1, string nid2);
+    ConnectionPtr createConnection(string cid, string type, NodePtr n1, NodePtr n2);
+    ConnectionPtr getConnection(string nid1, string nid2);
+    void removeNode(string nid);
     void load(NodePtr n);
     void unload(NodePtr n);
     bool onStage(NodePtr n);
     void tooltip(int tid);
     void action(int tid);
     void sample(int s);
-    void removeNode(string nid);
     
     
     // private
@@ -126,10 +131,12 @@ class Graph {
     // data
     NodeVectorPtr nodes;
     EdgeVectorPtr edges;
+    ConnectionVectorPtr connections;
     
     // maps
     map<string,int>nmap;
     map<string,int>emap;
+    map<string,int>cmap;
     
     // virtual offset
     Vec2d voff;

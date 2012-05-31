@@ -63,6 +63,7 @@
 - (BOOL)validPopular:(NSDictionary*)dresult;
 - (BOOL)validNowPlaying:(NSDictionary*)dresult;
 - (BOOL)validMovie:(NSDictionary*)dmovie;
+- (BOOL)validSimilar:(NSDictionary*)dresult;
 - (BOOL)validPerson:(NSDictionary*)dperson;
 - (BOOL)validResponse:(NSString*)response;
 - (BOOL)validResult:(NSString*)result;
@@ -95,6 +96,7 @@
 - (NowPlaying*)queryNowPlaying:(NSString*)ident retry:(BOOL)retry;
 - (Movie*)queryMovie:(NSNumber*)mid retry:(BOOL)retry;
 - (Movie*)queryMovieDetails:(Movie*)movie retry:(BOOL)retry;
+- (Movie*)queryMovieRelated:(Movie*)movie retry:(BOOL)retry;
 - (Movie*)queryMovieCasts:(Movie*)movie retry:(BOOL)retry;
 - (Movie*)queryMovieImages:(Movie*)movie retry:(BOOL)retry;
 - (Movie*)queryMovieTrailers:(Movie *)movie retry:(BOOL)retry;
@@ -119,7 +121,7 @@
 #define kTMDbTimeRetryRandom	2.5f
 #define kTMDbTimeQueueBase      0.5f
 #define kTMDbTimeQueueRandom	1.0f
-#define kTMDbTimeQueueDetail    0.3f
+#define kTMDbTimeQueueDetail    0.6f
 #define kTMDbTimeout            15.0f
 #define kTMDbTimeoutQuery       10.0f
 #define kTMDbTimeoutDetail      5.0f
@@ -419,9 +421,9 @@
 }
 
 /**
- * Data movie.
+ * Movie data.
  */
-- (void)dataMovie:(NSNumber *)mid {
+- (void)movieData:(NSNumber *)mid {
     DLog();
     
     // queue
@@ -461,6 +463,48 @@
 
 
 /**
+ * Movie related.
+ */
+- (void)movieRelated:(NSNumber *)mid more:(BOOL)more {
+    DLog();
+    
+    // queue
+    [queue addOperationWithBlock:^{
+        
+        // cache
+        [managedObjectContext lock];
+        
+        // movie    
+        Movie *movie = [self cachedMovie:mid];
+        if (movie == NULL) {
+            movie = [self queryMovie:mid retry:YES];
+        }
+        
+        // related
+        if (! [movie.related boolValue] || more) {
+            movie = [self queryMovieRelated:movie retry:YES];
+        }
+        
+        // unlock
+        [managedObjectContext unlock];
+        
+        // delegate
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            
+            // loaded
+            if (delegate != nil && [delegate respondsToSelector:@selector(loadedMovieRelated:more:)]) {
+                [delegate loadedMovieRelated:movie more:more];
+            }
+            
+        }];
+        
+        
+    }];
+    
+}
+
+
+/**
  * Person.
  */
 - (void)person:(NSNumber *)pid {
@@ -491,9 +535,9 @@
 }
 
 /**
- * Data person.
+ * Person Data.
  */
-- (void)dataPerson:(NSNumber *)pid {
+- (void)personData:(NSNumber *)pid {
     DLog();
     
     // queue
@@ -583,9 +627,9 @@
 
 
 /**
- * Returns the loaded movies.
+ * Returns the cached movies.
  */
-- (NSArray*)dataMovies {
+- (NSArray*)movies {
     DLog();
     
     // cache
@@ -1353,7 +1397,7 @@
         if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typeMovie 
                                                         title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable")
-                                                      message:NSLocalizedString(@"Could not load popular movies. \nPlease try again later.", @"Could not load popular movies. \nPlease try again later.")] autorelease];
+                                                      message:NSLocalizedString(@"Could not load movies. \nPlease try again later.", @"Could not load movies. \nPlease try again later.")] autorelease];
             [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
         }
         
@@ -1734,7 +1778,7 @@
         
         // set data
         movie.mid = [self parseNumber:[djson objectForKey:@"id"]];
-        movie.name = [self parseString:[djson objectForKey:@"original_title"]];
+        movie.title = [self parseString:[djson objectForKey:@"original_title"]];
         movie.released = [self parseDate:[djson objectForKey:@"release_date"]];
         movie.tagline = [self parseString:[djson objectForKey:@"tagline"]];
         movie.overview = [self parseString:[djson objectForKey:@"overview"]];
@@ -1744,13 +1788,13 @@
         
         // nfo
         #ifdef DEBUG
-        NSLog(@"%@",movie.name);
+        NSLog(@"%@",movie.title);
         #endif
         
         
         // poster thumb
         Asset *poster_thumb = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
-        poster_thumb.name = movie.name;
+        poster_thumb.name = movie.title;
         poster_thumb.type = assetPoster;
         poster_thumb.size = assetSizeThumb;
         poster_thumb.value = [self parseImage:[djson objectForKey:@"poster_path"] type:apiTMDbPosterThumb];
@@ -1760,7 +1804,7 @@
         
         // poster mid
         Asset *poster_mid = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
-        poster_mid.name = movie.name;
+        poster_mid.name = movie.title;
         poster_mid.type = assetPoster;
         poster_mid.size = assetSizeMid;
         poster_mid.value = [self parseImage:[djson objectForKey:@"poster_path"] type:apiTMDbPosterMid];
@@ -1770,7 +1814,7 @@
         
         // poster original
         Asset *poster_original = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
-        poster_original.name = movie.name;
+        poster_original.name = movie.title;
         poster_original.type = assetPoster;
         poster_original.size = assetSizeOriginal;
         poster_original.value = [self parseImage:[djson objectForKey:@"poster_path"] type:apiTMDbPosterOriginal];
@@ -1827,6 +1871,7 @@
     // loaded
     movie.loaded = [NSNumber numberWithBool:YES];
     movie.details = [NSNumber numberWithBool:NO];
+    movie.related = [NSNumber numberWithBool:NO];
     movie.timestamp = [NSDate date];
     
     // save
@@ -2099,10 +2144,6 @@
     // track
     [Tracker trackEvent:TEventAPI action:@"Query" label:@"queryMovieDetails"];
     
-    // test
-    //[NSThread sleepForTimeInterval:0.6];
-    //return movie;
-    
     // errors
     NSError *error = nil;
     
@@ -2220,7 +2261,7 @@
         
         // backdrop mid
         Asset *backdrop_mid = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
-        backdrop_mid.name = movie.name;
+        backdrop_mid.name = movie.title;
         backdrop_mid.type = assetBackdrop;
         backdrop_mid.size = assetSizeMid;
         backdrop_mid.value = [self parseImage:[dbackdrop objectForKey:@"file_path"] type:apiTMDbBackdropMid];
@@ -2230,7 +2271,7 @@
         
         // backdrop med
         Asset *backdrop_med = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
-        backdrop_med.name = movie.name;
+        backdrop_med.name = movie.title;
         backdrop_med.type = assetBackdrop;
         backdrop_med.size = assetSizeMed;
         backdrop_med.value = [self parseImage:[dbackdrop objectForKey:@"file_path"] type:apiTMDbBackdropMed];
@@ -2240,7 +2281,7 @@
         
         // backdrop original
         Asset *backdrop_original = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
-        backdrop_original.name = movie.name;
+        backdrop_original.name = movie.title;
         backdrop_original.type = assetBackdrop;
         backdrop_original.size = assetSizeOriginal;
         backdrop_original.value = [self parseImage:[dbackdrop objectForKey:@"file_path"] type:apiTMDbBackdropOriginal];
@@ -2325,6 +2366,188 @@
     return movie;
     
 }
+
+
+/*
+ * Query movie related.
+ */
+- (Movie*)queryMovieRelated:(Movie*)movie retry:(BOOL)retry {
+    FLog();
+    
+    // track
+    [Tracker trackEvent:TEventAPI action:@"Query" label:@"queryMovieRelated"];
+    
+    // similar
+    Similar *similar = movie.similar;
+    if (similar == NULL) {
+        
+        // create
+        similar = (Similar*)[NSEntityDescription insertNewObjectForEntityForName:@"Similar" inManagedObjectContext:managedObjectContext];
+        similar.page = [NSNumber numberWithInt:0];
+        similar.count = [NSNumber numberWithInt:0];
+        similar.total = [NSNumber numberWithInt:0];
+        
+        similar.movie = movie;
+        movie.similar = similar;
+    }
+    
+    // sending
+    FLog("Send request...");
+	
+    // request
+    NSString *url = [NSString stringWithFormat:@"%@%i%@?api_key=%@&page=%i",apiTMDbMovie,[movie.mid intValue],apiTMDbMovieRelated,apiTMDbKey,[similar.page intValue]+1];
+	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]
+                                             cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                         timeoutInterval:kTMDbTimeoutQuery];
+    
+    // response
+    NSError *error = nil;
+    NSURLResponse *response = nil;
+    #ifdef DEBUG    
+    NSLog(@"%@",url);
+    #endif
+    
+	
+    // connection
+	NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    FLog("received data.");
+    
+    
+    // connection error
+    if (error) {
+        
+        // rollback
+        [managedObjectContext rollback];
+        
+        // delegate
+        if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
+            
+            // error
+            APIError *apiError = [[[APIError alloc] initError:typeMovie 
+                                                        title:NSLocalizedString(@"Connection Error", @"Connection Error") 
+                                                      message:[error localizedDescription]] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
+        }
+        
+        // today is not my day
+        return movie;
+    }
+    
+    
+    // json
+    NSString *json = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];  
+    
+    // invalid response 
+    if (! [self validResponse:json]) {
+        #ifdef DEBUG
+        NSLog(@"Invalid related query: %@", movie.title);
+        NSLog(@"%@",json);
+        #endif
+        
+        // back
+        [managedObjectContext rollback];
+        
+        // retry
+        if (retry) {
+            FLog("Wait...");
+            [NSThread sleepForTimeInterval:kTMDbTimeRetryBase+((rand() / RAND_MAX) * kTMDbTimeRetryRandom)];
+            FLog("... and try again.");
+            return [self queryMovieRelated:movie retry:NO];
+        }
+        
+        // note
+        if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
+            APIError *apiError = [[[APIError alloc] initError:typeMovie 
+                                                        title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable")
+                                                      message:NSLocalizedString(@"Could not load movies. \nPlease try again later.", @"Could not load movies. \nPlease try again later.")] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
+        }
+        
+        // well then
+        return movie;
+    }
+    
+    
+    // parse result
+    int count = 0;
+    int sort = [similar.count intValue];
+    if ([self validResult:json]) {
+        
+        // parse
+        SBJsonParser *parser = [[SBJsonParser alloc] init];
+        NSDictionary *djson = [parser objectWithString:json error:nil];
+        [parser release];
+        
+        // results
+        NSArray *results = [djson objectForKey:@"results"];
+        for (NSDictionary *dresult in results)	{
+            
+            // similar data
+            SimilarMovie *similarMovie = (SimilarMovie*)[NSEntityDescription insertNewObjectForEntityForName:@"SimilarMovie" inManagedObjectContext:managedObjectContext];
+            
+            // validate
+            if ([self validSimilar:dresult]) {
+                
+                // dta
+                NSString *title = [self parseString:[dresult objectForKey:@"original_title"]];
+                if (! [self isEmpty:[dresult objectForKey:@"release_date"]]) {
+                    title = [NSString stringWithFormat:@"%@ (%@)",title,[self parseYear:[dresult objectForKey:@"release_date"]]];
+                }
+                
+                // data
+                similarMovie.mid = [self parseNumber:[dresult objectForKey:@"id"]];
+                similarMovie.title = title;
+                similarMovie.thumb = [self parseImage:[dresult objectForKey:@"poster_path"] type:apiTMDbPosterThumb];
+                similarMovie.sort = [NSNumber numberWithInt:sort];
+                
+                // add
+                count++;
+                sort++;
+                [similar addMoviesObject:similarMovie];
+            }
+        }
+        
+        // total
+        similar.total = [self parseNumber:[djson objectForKey:@"total_results"]];
+        
+    }
+    
+    // related
+    movie.related = [NSNumber numberWithBool:YES];
+    
+    // count
+    similar.count = [NSNumber numberWithInt:[similar.count intValue] + count];
+    
+    // page
+    similar.page = [NSNumber numberWithInt:[similar.page intValue] + 1];
+    
+    
+    // save
+    if (! [managedObjectContext save:&error]) {
+        
+        // error
+        if (delegate && [delegate respondsToSelector:@selector(apiError:)]) {
+            APIError *apiError = [[[APIError alloc] initError:typeMovie 
+                                                        title:NSLocalizedString(@"Data Error", @"Data Error") 
+                                                      message:[error localizedDescription]] autorelease];
+            [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
+        }
+        
+        // handle the error
+        NSLog(@"TMDb CoreData Error\n%@\n%@", error, [error userInfo]);
+        [managedObjectContext rollback];
+        
+        // back
+        return movie;
+        
+    }
+    
+   
+    
+    // return
+    return movie;
+}
+
 
 
 
@@ -2656,12 +2879,12 @@
                     
                     // data
                     movie.mid = mid;
-                    movie.name = [self parseString:[dmovie objectForKey:@"original_title"]];
+                    movie.title = [self parseString:[dmovie objectForKey:@"original_title"]];
                     movie.released = [self parseDate:[dmovie objectForKey:@"release_date"]];
                     
                     // poster
                     Asset *poster = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
-                    poster.name = movie.name;
+                    poster.name = movie.title;
                     poster.type = assetPoster;
                     poster.size = assetSizeThumb;
                     poster.value = [self parseImage:[dmovie objectForKey:@"poster_path"] type:apiTMDbPosterThumb];
@@ -2672,6 +2895,7 @@
                     // defaults
                     movie.loaded = [NSNumber numberWithBool:NO];
                     movie.details = [NSNumber numberWithBool:NO];
+                    movie.related = [NSNumber numberWithBool:NO];
                 }
                 
                 // Movie2Person
@@ -3229,7 +3453,8 @@
 - (BOOL)validSearch:(NSDictionary *)dresult {
     
     // exclude adult
-    if ([[dresult objectForKey:@"adult"] boolValue]) {
+    if (dresult == NULL 
+        || [[dresult objectForKey:@"adult"] boolValue]) {
         return NO;
     }
     
@@ -3243,7 +3468,8 @@
 - (BOOL)validPopular:(NSDictionary *)dresult {
     
     // exclude adult
-    if ([[dresult objectForKey:@"adult"] boolValue]) {
+    if (dresult == NULL 
+        || [[dresult objectForKey:@"adult"] boolValue]) {
         return NO;
     }
     
@@ -3257,7 +3483,8 @@
 - (BOOL)validNowPlaying:(NSDictionary *)dresult {
     
     // exclude adult
-    if ([[dresult objectForKey:@"adult"] boolValue]) {
+    if (dresult == NULL 
+        || [[dresult objectForKey:@"adult"] boolValue]) {
         return NO;
     }
     
@@ -3271,14 +3498,12 @@
 - (BOOL)validMovie:(NSDictionary *)dmovie {
     
     // kosher
-    if ([[self parseNumber:[dmovie objectForKey:@"id"]] intValue] <= 0) {
+    if (dmovie == NULL 
+        || [[self parseNumber:[dmovie objectForKey:@"id"]] intValue] <= 0
+        || [[dmovie objectForKey:@"adult"] boolValue]) {
         return NO;
     }
     
-    // exclude adult
-    if ([[dmovie objectForKey:@"adult"] boolValue]) {
-        return NO;
-    }
     
     // exclude by title
     NSString *name = [[self parseString:[dmovie objectForKey:@"original_title"]] lowercaseString];
@@ -3291,19 +3516,31 @@
 }
 
 /*
+ * Validate Similar.
+ */
+- (BOOL)validSimilar:(NSDictionary *)dresult {
+    
+    // exclude 
+    if (dresult == NULL || [[dresult objectForKey:@"adult"] boolValue]) {
+        return NO;
+    }
+    
+    // valid
+    return YES;
+}
+
+/*
  * Validate Person.
  */
 - (BOOL)validPerson:(NSDictionary *)dperson {
     
     // kosher
-    if ([[self parseNumber:[dperson objectForKey:@"id"]] intValue] <= 0) {
+    if (dperson == NULL 
+        || [[self parseNumber:[dperson objectForKey:@"id"]] intValue] <= 0
+        || [[dperson objectForKey:@"adult"] boolValue]) {
         return NO;
     }
-    
-    // exclude adult
-    if ([[dperson objectForKey:@"adult"] boolValue]) {
-        return NO;
-    }
+
     
     // valid
     return YES;
@@ -3315,7 +3552,9 @@
 - (BOOL)validResponse:(NSString *)response {
     
     // service down
-    if ([response length] <= 0) {
+    if (response == nil 
+        || [[response stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] <= 0 
+        || [response length] <= 0) {
         
         // track
         [Tracker trackEvent:TEventAPI action:@"Error" label:@"down"];
@@ -3344,7 +3583,9 @@
 - (BOOL)validResult:(NSString *)result {
     
     // nothing found
-    if ([result rangeOfString : @"Nothing found."].location != NSNotFound) {
+    if (result == nil 
+        || [[result stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] <= 0 
+        || [result rangeOfString : @"Nothing found."].location != NSNotFound) {
         return NO;
     }
     

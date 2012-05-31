@@ -34,6 +34,9 @@
 
 // accessors
 @synthesize delegate;
+@synthesize back = mode_back;
+@synthesize labelTitle = _labelTitle;
+@synthesize buttonBack = _buttonBack;
 
 
 #pragma mark -
@@ -59,7 +62,7 @@
         [btnBack setImage:[UIImage imageNamed:@"btn_back.png"] forState:UIControlStateNormal];
         [btnBack addTarget:self action:@selector(actionBack:) forControlEvents:UIControlEventTouchUpInside];
         
-        _buttonBack = [btnBack retain];
+        self.buttonBack = btnBack;
         [self addSubview:btnBack];
         
         // title
@@ -73,7 +76,7 @@
         lblTitle.numberOfLines = 1;
 
         
-        _labelTitle = [lblTitle retain];
+        self.labelTitle = lblTitle;
         [self addSubview:lblTitle];
         [lblTitle release];
         
@@ -97,7 +100,7 @@
     
     // frames
     CGRect frameBack = mode_back ? CGRectMake(-6, 0, 44, 44) : CGRectZero;
-    CGRect frameTitle = CGRectMake(frameBack.size.width-5, 0, self.frame.size.width-frameBack.size.width, kHeaderHeight);
+    CGRect frameTitle = CGRectMake(frameBack.size.width-(mode_back ? 5 : 0), 0, self.frame.size.width-frameBack.size.width, kHeaderHeight);
     
     // button
     _buttonBack.hidden = ! mode_back;
@@ -136,6 +139,7 @@
 - (void)head:(NSString*)title {
     [_labelTitle setText:title];
 }
+
 
 
 

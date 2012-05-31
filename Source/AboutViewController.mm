@@ -350,7 +350,7 @@
 		// promo image
 		UIImage *pimg = [UIImage imageNamed:@"promo.png"];
 		NSData *data = UIImagePNGRepresentation(pimg);
-		[composer addAttachmentData:data mimeType:@"image/png" fileName:@"solyaris"];
+		[composer addAttachmentData:data mimeType:@"image/png" fileName:@"Solyaris"];
         
 		// show off
 		[self presentModalViewController:composer animated:YES];

@@ -37,6 +37,7 @@
 @interface SolyarisViewController (Animations)
 - (NSString*)makeNodeId:(NSNumber*)nid type:(NSString*)type;
 - (NSString*)makeEdgeId:(NSString*)pid to:(NSString*)cid;
+- (NSString*)makeConnectionId:(NSString*)sid to:(NSString*)nid;
 - (NSNumber*)toDBId:(NSString*)nid;
 - (void)randomTagline;
 @end
@@ -53,6 +54,10 @@
 - (void)animationInformationShowDone;
 - (void)animationInformationHide;
 - (void)animationInformationHideDone;
+- (void)animationRelatedShow;
+- (void)animationRelatedShowDone;
+- (void)animationRelatedHide;
+- (void)animationRelatedHideDone;
 - (void)animationSettingsShow;
 - (void)animationSettingsShowDone;
 - (void)animationSettingsHide;
@@ -89,12 +94,15 @@
 #define kAnimateTimeInformationLoad     0.45f
 #define kAnimateTimeInformationShow     (iPad ? 0.6f : 0.45f)
 #define kAnimateTimeInformationHide     (iPad ? 0.45f : 0.33f)
+#define kAnimateTimeRelatedShow         0.3f
+#define kAnimateTimeRelatedHide         0.3f
 #define kAnimateTimeSearchShow          0.3f
 #define kAnimateTimeSearchHide          0.3f
 #define kAnimateTimeSettingsShow        0.6f
 #define kAnimateTimeSettingsHide        0.3f
 #define kOffsetSettings                 480
 #define kAlphaModalInfo                 0.3f
+#define kAlphaModalRelated              0.03f
 #define kAlphaModalSearch               0.03f
 
 
@@ -161,6 +169,7 @@
     CGRect frameSearchBar = CGRectMake(0, 0, frame.size.width, 40);
     CGRect frameSearch = iPad ? CGRectMake(0, 40, 360,439) : CGRectMake(0, 40, 320,480-40);
     CGRect frameInformation = iPad ? CGRectMake(0, 0, 580, 624) : CGRectMake(0, 0, 320, 480);
+    CGRect frameRelated = iPad ? CGRectMake(0, 0, 320, 275) : CGRectMake(0, 0, 280, 275);
     CGRect frameSettings = iPad ? CGRectMake(0, 0, 708, kOffsetSettings) : CGRectMake(0, 0, 320, kOffsetSettings);
     CGRect frameSettingsButton = CGRectMake(frame.size.width-44, frame.size.height-44, 44, 44);
     
@@ -214,6 +223,17 @@
     [self.view addSubview:_informationViewController.view];
     [self.view sendSubviewToBack:_informationViewController.view];
     [informationViewController release];
+    
+    
+    // related
+    RelatedViewController *relatedViewController = [[RelatedViewController alloc] initWithFrame:frameRelated];
+    relatedViewController.delegate = self;
+    relatedViewController.view.hidden = YES;
+    
+    _relatedViewController = [relatedViewController retain];
+    [self.view addSubview:_relatedViewController.view];
+    [self.view sendSubviewToBack:_relatedViewController.view];
+	[relatedViewController release];
     
     
     // settings
@@ -464,6 +484,7 @@
     [_searchBarViewController resize];
     [_searchViewController resize];
     [_informationViewController resize];
+    [_relatedViewController resize];
 }
 
 
@@ -477,6 +498,7 @@
     [_searchBarViewController resize];
     [_searchViewController resize];
     [_informationViewController resize];
+    [_relatedViewController resize];
     
 }
 
@@ -601,7 +623,7 @@
         }
         
         // properties
-        node->renderLabel([movie.name UTF8String]);
+        node->renderLabel([movie.title UTF8String]);
         node->updateCategory([movie.category UTF8String]);
         if (movie.released) {
             node->updateMeta([[yearFormatter stringFromDate:movie.released] UTF8String]);
@@ -726,7 +748,7 @@
                 
                 // new child
                 child = solyaris->createNode([cid UTF8String],[typeMovie UTF8String], node->pos.x, node->pos.y);
-                child->renderLabel([m2p.movie.name UTF8String]);
+                child->renderLabel([m2p.movie.title UTF8String]);
                 if (m2p.year) {
                     child->updateMeta([[yearFormatter stringFromDate:m2p.year] UTF8String]);
                 }
@@ -782,6 +804,16 @@
     
     // animate
     [self animationInformationShow]; 
+}
+
+/*
+ * Loaded movie related.
+ */
+- (void)loadedMovieRelated:(Movie*)movie more:(BOOL)more {
+    DLog();
+    
+    // loaded
+    [_relatedViewController loadedRelated:movie more:more];
 }
 
 /*
@@ -899,51 +931,237 @@
 }
 
 
+
 #pragma mark -
-#pragma mark UIAlertViewDelegate Delegate
+#pragma mark Business
+
+
+/**
+ * Loads a node.
+ */
+- (void)nodeLoad:(NSString*)nid {
+    DLog();
+    
+    // node
+    NodePtr node = solyaris->getNode([nid UTF8String]);
+    if (node && ! node->isLoading()) {
+        
+        // flag
+        node->load();
+        
+        // solyaris
+        solyaris->load(node);
+        
+        // node
+        NSNumber *dbid = [self toDBId:nid];
+        
+        // type
+        NSString *type = [NSString stringWithCString:node->type.c_str() encoding:[NSString defaultCStringEncoding]];
+        if (! [type isEqualToString:typeMovie]) {
+            type = typePerson;
+        }
+        
+        // track
+        [Tracker trackEvent:TEventLoad action:@"Graph" label:type];
+        
+        
+        // movie
+        if ([type isEqualToString:typeMovie]) {
+            [tmdb performSelector:@selector(movie:) withObject:dbid afterDelay:kDelayTimeNodeLoad];
+        }
+        // person
+        else {
+            [tmdb performSelector:@selector(person:) withObject:dbid afterDelay:kDelayTimeNodeLoad];
+        }
+        
+    }
+    
+}
+
+/**
+ * Node information.
+ */
+- (void)nodeInfo:(NSString*)nid {
+    GLog();
+    
+    // track
+    [Tracker trackEvent:TEventNode action:@"Action" label:@"info"];
+    
+    // info
+    [self nodeInformation:nid];
+    
+}
+- (void)nodeInformation:(NSString*)nid {
+    DLog();
+    
+    // node
+    NodePtr node = solyaris->getNode([nid UTF8String]);
+    
+    // info
+    if (node->isActive()) {
+        
+        // parent
+        NSString *pid = [NSString stringWithCString:node->nid.c_str() encoding:[NSString defaultCStringEncoding]];
+        
+        // type
+        NSString *ntype = [NSString stringWithCString:node->type.c_str() encoding:[NSString defaultCStringEncoding]];
+        
+        // nodes
+        NSMutableArray *nodes = [[NSMutableArray alloc] init];
+        
+        // children
+        for (NodeIt child = node->children.begin(); child != node->children.end(); ++child) {
+            
+            // child id
+            NSString *cid = [NSString stringWithCString:(*child)->nid.c_str() encoding:[NSString defaultCStringEncoding]];
+            
+            // edge
+            EdgePtr nedge = solyaris->getEdge([pid UTF8String], [cid UTF8String]);
+            
+            // properties edge
+            NSString *eid = [self makeEdgeId:pid to:cid];
+            NSString *etype = [NSString stringWithCString:nedge->type.c_str() encoding:NSUTF8StringEncoding];
+            NSString *elabel = [NSString stringWithCString:nedge->label.c_str() encoding:NSUTF8StringEncoding];
+            
+            // properties node
+            NSNumber *nid = [self toDBId:[NSString stringWithCString:(*child)->nid.c_str() encoding:NSUTF8StringEncoding]];
+            NSString *type = [NSString stringWithCString:(*child)->type.c_str() encoding:NSUTF8StringEncoding];
+            NSString *label = [NSString stringWithCString:(*child)->label.c_str() encoding:NSUTF8StringEncoding];
+            NSString *meta = [NSString stringWithCString:(*child)->meta.c_str() encoding:NSUTF8StringEncoding];
+            NSString *thumb = [type isEqualToString:typeMovie] ? [tmdb movieThumb:nid] : [tmdb personThumb:nid];
+            bool visible = (*child)->isVisible();
+            bool loaded = ( (*child)->isActive() || (*child)->isLoading() );
+            
+            // data
+            DataEdge *dtaEdge = [[DataEdge alloc] initData:eid type:etype label:elabel];
+            DataNode *dtaNode = [[DataNode alloc] initData:nid type:type label:label meta:meta thumb:thumb edge:dtaEdge visible:visible loaded:loaded];
+            [nodes addObject:dtaNode];
+            [dtaEdge release];
+            [dtaNode release];
+            
+        }
+        
+        // save
+        [_dta_nodes setObject:nodes forKey:nid];
+        [nodes release];
+        
+        // loader
+        [self animationInformationLoad];
+        
+        
+        // movie
+        if ([ntype isEqualToString:typeMovie]) {
+            
+            // data
+            [tmdb movieData:[self toDBId:pid]];
+            
+        }
+        else {
+            
+            // data
+            [tmdb personData:[self toDBId:pid]];
+            
+        }
+        
+        
+    }
+    
+}
+
+
+/**
+ * Node related.
+ */
+- (void)nodeRelated:(NSString*)nid {
+    DLog();
+    
+    // track
+    [Tracker trackEvent:TEventNode action:@"Action" label:@"related"];
+    
+    // node
+    NodePtr node = solyaris->getNode([nid UTF8String]);
+    if (node->isActive()) {
+        
+        // adjust position
+        Vec3d npos = solyaris->nodeCoordinates(node);
+        CGPoint offset = [_relatedViewController position:npos.z posx:npos.x posy:npos.y];
+        solyaris->graphShift(offset.x,offset.y);
+        
+        // related
+        [_relatedViewController reset];
+        [_relatedViewController dataLoading];
+        
+        // query related
+        NSNumber *dbid = [self toDBId:nid];
+        [tmdb movieRelated:dbid more:NO];
+        
+        // show related
+        [self animationRelatedShow];
+    }
+}
+
+
+/**
+ * Node close.
+ */
+- (void)nodeClose:(NSString*)nid {
+    DLog();
+    
+    // track
+    [Tracker trackEvent:TEventNode action:@"Action" label:@"close"];
+    
+    // node
+    NodePtr node = solyaris->getNode([nid UTF8String]);
+    
+    // close
+    if (node->isActive()) {
+        node->close();
+    }
+}
+
+
+
+#pragma mark -
+#pragma mark Actions
+
 
 /*
- * Alert view button clicked.
+ * Settings.
  */
-- (void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-	FLog();
+- (void)actionSettings:(id)sender {
+	DLog();
 	
-	// determine alert
-	switch ([actionSheet tag]) {
-            
-        // fatal
-		case SolyarisAlertAPIFatal: {
-            
-			// cancel
-			if (buttonIndex == 0) {
-			}
-			// quit
-			else {
-				[self quit];
-			}
-			
-			break;
-		}
-            
-        // default
-		default:
-			break;
-	}
-	
-	
+	// animate
+    if (! mode_settings) {
+        
+        // track
+        [Tracker trackPageView:@"/settings"];
+        
+        // show
+        [self animationSettingsShow];
+    }
+    else {
+        
+        // track
+        [Tracker trackPageView:@"/graph"];
+        
+        // hide
+        [self animationSettingsHide];
+    }
 }
 
 
 
 
+
 #pragma mark -
-#pragma mark Search Delegate
+#pragma mark SearchDelegate
 
 
 /* 
- * Data selected.
+ * Search selected.
  */
-- (void)dataSelected:(DBData*)data {
+- (void)searchSelected:(DBData*)data {
     FLog();
     
     // disable
@@ -997,87 +1215,6 @@
     // hide
     [self animationSearchHide];
 }
-
-
-
-
-
-#pragma mark -
-#pragma mark Information Delegate
-
-
-/* 
- * Information selected.
- */
-- (void)informationSelected:(NSNumber *)nid type:(NSString *)type {
-    DLog();
-    
-    // type
-    NSString *t = typePerson;
-    if ([type isEqualToString:typeMovie]) {
-        t = typeMovie;
-    }
-    
-    // node
-    NSString *iid = [self makeNodeId:nid type:t];
-    NodePtr node = solyaris->getNode([iid UTF8String]);
-    if (node == NULL) {
-        node = solyaris->createNode([iid UTF8String],[t UTF8String], 0, 0);
-    }
-    
-    // active
-    if (! (node->isActive() || node->isLoading())) {
-        
-        // track
-        [Tracker trackEvent:TEventLoad action:@"Info" label:type];
-        
-        // tap & load
-        node->tapped();
-        node->load();
-        
-        // solyaris
-        solyaris->load(node);
-        
-        // movie
-        if ([t isEqualToString:typeMovie]) {
-            [tmdb movie:nid];
-        }
-        // person
-        else {
-            [tmdb person:nid];
-        }
-
-    }
-    
-    // dismiss
-    if (! iPad) {
-        [self informationDismiss];
-    }
-    
-}
-
-
-/* 
- * Dismiss information.
- */
-- (void)informationDismiss {
-    FLog();
-    
-    // track
-    [Tracker trackPageView:@"/graph"];
-    
-    // hide
-    [self animationInformationHide];
-}
-
-
-/*
- * Orientation landscape.
-*/
-- (bool)informationOrientationLandscape {
-    return (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft || self.interfaceOrientation == UIInterfaceOrientationLandscapeRight);
-}
-
 
 
 
@@ -1232,7 +1369,168 @@
 
 
 #pragma mark -
-#pragma mark Settings Delegate
+#pragma mark InformationDelegate
+
+
+/* 
+ * Information selected.
+ */
+- (void)informationSelected:(NSNumber *)nid type:(NSString *)type {
+    DLog();
+    
+    // type
+    NSString *t = typePerson;
+    if ([type isEqualToString:typeMovie]) {
+        t = typeMovie;
+    }
+    
+    // node
+    NSString *iid = [self makeNodeId:nid type:t];
+    NodePtr node = solyaris->getNode([iid UTF8String]);
+    if (node == NULL) {
+        node = solyaris->createNode([iid UTF8String],[t UTF8String], 0, 0);
+    }
+    
+    // active
+    if (! (node->isActive() || node->isLoading())) {
+        
+        // track
+        [Tracker trackEvent:TEventLoad action:@"Info" label:type];
+        
+        // tap & load
+        node->tapped();
+        node->load();
+        
+        // solyaris
+        solyaris->load(node);
+        
+        // movie
+        if ([t isEqualToString:typeMovie]) {
+            [tmdb movie:nid];
+        }
+        // person
+        else {
+            [tmdb person:nid];
+        }
+        
+    }
+    
+    // dismiss
+    if (! iPad) {
+        [self informationDismiss];
+    }
+    
+}
+
+
+/* 
+ * Dismiss information.
+ */
+- (void)informationDismiss {
+    FLog();
+    
+    // track
+    [Tracker trackPageView:@"/graph"];
+    
+    // hide
+    [self animationInformationHide];
+}
+
+
+/*
+ * Orientation landscape.
+ */
+- (bool)informationOrientationLandscape {
+    return (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft || self.interfaceOrientation == UIInterfaceOrientationLandscapeRight);
+}
+
+
+
+#pragma mark -
+#pragma mark RelatedDelegate
+
+
+/* 
+ * Related selected.
+ */
+- (void)relatedSelected:(DBData*)data {
+    FLog();
+    
+    // hide related
+    [self animationRelatedHide];
+    
+    // source
+    NSString *sid = [self makeNodeId:data.src type:typeMovie];
+    NodePtr source = solyaris->getNode([sid UTF8String]);
+    if (source == NULL) {
+        source = solyaris->createNode([sid UTF8String],[typeMovie UTF8String]);
+    }
+    
+    // node
+    NSString *nid = [self makeNodeId:data.ref type:typeMovie];
+    NodePtr node = solyaris->getNode([nid UTF8String]);
+    if (node == NULL) {
+        node = solyaris->createNode([nid UTF8String],[typeMovie UTF8String]);
+    }
+    
+    // connection
+    ConnectionPtr connection = solyaris->getConnection([sid UTF8String], [nid UTF8String]);
+    if (connection == NULL) {
+        
+        // create
+        NSString *cid = [self makeConnectionId:sid to:nid];
+        connection = solyaris->createConnection([cid UTF8String],[connRelated UTF8String],source,node);
+        
+        // connect it
+        source->connect(node);
+    }
+    
+    // active
+    if (! (node->isActive() || node->isLoading())) {
+        
+        // track
+        [Tracker trackEvent:TEventLoad action:@"Related" label:typeMovie];
+        
+        // load
+        node->load();
+        
+        // solyaris
+        solyaris->load(node);
+        
+        // movie
+        [tmdb movie:data.ref];
+        
+    }
+    
+}
+
+/*
+ * Related more.
+ */
+- (void)relatedLoadMore:(DBData*)data {
+    FLog();
+    
+    // api
+    [tmdb movieRelated:data.src more:YES];
+    
+}
+
+
+/*
+ * Related close.
+ */
+- (void)relatedClose {
+    FLog();
+    
+    // hide related
+    [self animationRelatedHide];
+}
+
+
+
+
+#pragma mark -
+#pragma mark SettingsDelegate
 
 /* 
  * Dismiss settings.
@@ -1307,165 +1605,6 @@
     
     // mode
     mode_splash = NO;
-}
-
-
-
-#pragma mark -
-#pragma mark Actions
-
-
-/*
- * Settings.
- */
-- (void)actionSettings:(id)sender {
-	DLog();
-	
-	// animate
-    if (! mode_settings) {
-        
-        // track
-        [Tracker trackPageView:@"/settings"];
-        
-        // show
-        [self animationSettingsShow];
-    }
-    else {
-        
-        // track
-        [Tracker trackPageView:@"/graph"];
-        
-        // hide
-        [self animationSettingsHide];
-    }
-}
-
-
-
-#pragma mark -
-#pragma mark Business
-
-
-/**
- * Loads a node.
- */
-- (void)nodeLoad:(NSString*)nid {
-    DLog();
-    
-    // node
-    NodePtr node = solyaris->getNode([nid UTF8String]);
-    if (node && ! node->isLoading()) {
-        
-        // flag
-        node->load();
-        
-        // solyaris
-        solyaris->load(node);
-        
-        // node
-        NSNumber *dbid = [self toDBId:nid];
-        
-        // type
-        NSString *type = [NSString stringWithCString:node->type.c_str() encoding:[NSString defaultCStringEncoding]];
-        if (! [type isEqualToString:typeMovie]) {
-            type = typePerson;
-        }
-        
-        // track
-        [Tracker trackEvent:TEventLoad action:@"Graph" label:type];
-        
-        
-        // movie
-        if ([type isEqualToString:typeMovie]) {
-            [tmdb performSelector:@selector(movie:) withObject:dbid afterDelay:kDelayTimeNodeLoad];
-        }
-        // person
-        else {
-            [tmdb performSelector:@selector(person:) withObject:dbid afterDelay:kDelayTimeNodeLoad];
-        }
-        
-    }
-    
-}
-
-/**
- * Node information.
- */
-- (void)nodeInformation:(NSString*)nid {
-    DLog();
-    
-    // node
-    NodePtr node = solyaris->getNode([nid UTF8String]);
-    
-    // info
-    if (node->isActive()) {
-        
-        // parent
-        NSString *pid = [NSString stringWithCString:node->nid.c_str() encoding:[NSString defaultCStringEncoding]];
-        
-        // type
-        NSString *ntype = [NSString stringWithCString:node->type.c_str() encoding:[NSString defaultCStringEncoding]];
-        
-        // nodes
-        NSMutableArray *nodes = [[NSMutableArray alloc] init];
-        
-        // children
-        for (NodeIt child = node->children.begin(); child != node->children.end(); ++child) {
-            
-            // child id
-            NSString *cid = [NSString stringWithCString:(*child)->nid.c_str() encoding:[NSString defaultCStringEncoding]];
-            
-            // edge
-            EdgePtr nedge = solyaris->getEdge([pid UTF8String], [cid UTF8String]);
-            
-            // properties edge
-            NSString *eid = [self makeEdgeId:pid to:cid];
-            NSString *etype = [NSString stringWithCString:nedge->type.c_str() encoding:NSUTF8StringEncoding];
-            NSString *elabel = [NSString stringWithCString:nedge->label.c_str() encoding:NSUTF8StringEncoding];
-            
-            // properties node
-            NSNumber *nid = [self toDBId:[NSString stringWithCString:(*child)->nid.c_str() encoding:NSUTF8StringEncoding]];
-            NSString *type = [NSString stringWithCString:(*child)->type.c_str() encoding:NSUTF8StringEncoding];
-            NSString *label = [NSString stringWithCString:(*child)->label.c_str() encoding:NSUTF8StringEncoding];
-            NSString *meta = [NSString stringWithCString:(*child)->meta.c_str() encoding:NSUTF8StringEncoding];
-            NSString *thumb = [type isEqualToString:typeMovie] ? [tmdb movieThumb:nid] : [tmdb personThumb:nid];
-            bool visible = (*child)->isVisible();
-            bool loaded = ( (*child)->isActive() || (*child)->isLoading() );
-            
-            // data
-            DataEdge *dtaEdge = [[DataEdge alloc] initData:eid type:etype label:elabel];
-            DataNode *dtaNode = [[DataNode alloc] initData:nid type:type label:label meta:meta thumb:thumb edge:dtaEdge visible:visible loaded:loaded];
-            [nodes addObject:dtaNode];
-            [dtaEdge release];
-            [dtaNode release];
-            
-        }
-        
-        // save
-        [_dta_nodes setObject:nodes forKey:nid];
-        [nodes release];
-        
-        // loader
-        [self animationInformationLoad];
-        
-        
-        // movie
-        if ([ntype isEqualToString:typeMovie]) {
-            
-            // data
-            [tmdb dataMovie:[self toDBId:pid]];
-
-        }
-        else {
-            
-            // data
-            [tmdb dataPerson:[self toDBId:pid]];
-
-        }
-        
-
-    }
-    
 }
 
 
@@ -1682,6 +1821,103 @@
 
 
 
+
+/**
+ * Shows the related.
+ */
+- (void)animationRelatedShow {
+	GLog();
+    
+    // mode
+    if (mode_animating) {
+        return;
+    }
+    mode_animating = YES;
+    
+    // prepare controllers
+	[_relatedViewController viewWillAppear:YES];
+    
+    // prepare views
+    _relatedViewController.view.hidden = NO;
+    _relatedViewController.modalView.alpha = 0.0f;
+    _relatedViewController.contentView.alpha = 0.0f;
+    [self.view bringSubviewToFront:_relatedViewController.view];
+    
+    // animate
+	[UIView beginAnimations:@"related_show" context:nil];
+	[UIView setAnimationDuration:kAnimateTimeRelatedShow];
+    _relatedViewController.modalView.alpha = kAlphaModalRelated;
+    _relatedViewController.contentView.alpha = 1.0f;
+	[UIView commitAnimations];
+    
+    // clean it up
+	[self performSelector:@selector(animationRelatedShowDone) withObject:nil afterDelay:kAnimateTimeRelatedShow];
+
+}
+- (void)animationRelatedShowDone {
+	GLog();
+    
+    // mode
+    mode_animating = NO;
+    
+    // controller
+    [_relatedViewController viewDidAppear:YES];
+}
+
+
+/**
+ * Hides the related.
+ */
+- (void)animationRelatedHide {
+	GLog();
+    
+    // mode
+    if (mode_animating || _relatedViewController.view.hidden) {
+        return;
+    }
+    mode_animating = YES;
+	
+	// prepare controllers
+	[_relatedViewController viewWillDisappear:YES];
+    
+    // prepare views
+    _relatedViewController.view.hidden = NO;
+    _relatedViewController.modalView.alpha = kAlphaModalRelated;
+    _relatedViewController.contentView.alpha = 1.0f;
+    [self.view bringSubviewToFront:_relatedViewController.view];
+    
+    // animate
+	[UIView beginAnimations:@"related_hide" context:nil];
+	[UIView setAnimationDuration:kAnimateTimeRelatedHide];
+    _relatedViewController.modalView.alpha = 0.0f;
+    _relatedViewController.contentView.alpha = 0.0f;
+	[UIView commitAnimations];
+    
+    // clean it up
+	[self performSelector:@selector(animationRelatedHideDone) withObject:nil afterDelay:kAnimateTimeRelatedHide];
+    
+
+}
+- (void)animationRelatedHideDone {
+	GLog();
+    
+    // mode
+    mode_animating = NO;
+    
+    // view
+	[_relatedViewController.view setHidden:YES];
+    _relatedViewController.modalView.alpha = 0.0f;
+    _relatedViewController.contentView.alpha = 0.0f;
+    [self.view sendSubviewToBack:_relatedViewController.view];
+    
+    // controller
+    [_relatedViewController viewDidDisappear:YES];
+
+}
+
+
+
+
 /**
  * Shows the settings.
  */
@@ -1836,6 +2072,15 @@
     return [NSString stringWithFormat:@"%@_edge_%@",pid,cid];
 }
 
+/* 
+ * Connection id.
+ */
+- (NSString*)makeConnectionId:(NSString *)sid to:(NSString *)nid {
+    
+    // connect this
+    return [NSString stringWithFormat:@"%@_connection_%@",sid,nid];
+}
+
 
 /* 
  * DB ID.
@@ -1864,7 +2109,7 @@
     FLog();
     
     // random tagline
-    NSArray *movies = [tmdb dataMovies];
+    NSArray *movies = [tmdb movies];
     NSMutableArray *taglines = [[NSMutableArray alloc] init];
     for (Movie *m in movies) {
         
@@ -1894,6 +2139,45 @@
 }
 
 
+
+
+#pragma mark -
+#pragma mark UIAlertViewDelegate Delegate
+
+/*
+ * Alert view button clicked.
+ */
+- (void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+	FLog();
+	
+	// determine alert
+	switch ([actionSheet tag]) {
+            
+            // fatal
+		case SolyarisAlertAPIFatal: {
+            
+			// cancel
+			if (buttonIndex == 0) {
+			}
+			// quit
+			else {
+				[self quit];
+			}
+			
+			break;
+		}
+            
+            // default
+		default:
+			break;
+	}
+	
+	
+}
+
+
+
+
 #pragma mark -
 #pragma mark Memory management
 
@@ -1908,6 +2192,7 @@
     [_searchBarViewController release];
     [_searchViewController release];
     [_informationViewController release];
+    [_relatedViewController release];
     [_settingsViewController release];
     
     // data

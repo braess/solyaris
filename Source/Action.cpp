@@ -36,8 +36,9 @@ Action::Action() {
     
     // position
     pos.set(0,0);
-    offset.set(60,-4);
-    size.set(45,120);
+    pos_info.set(0,0);
+    pos_related.set(0,0);
+    pos_close.set(0,0);
     asize.set(44,44);
     
     // time
@@ -45,7 +46,14 @@ Action::Action() {
     reminder = -1;
     
     // textures
-    textureActionClose = gl::Texture(loadImage(loadResource("node_close.png")));
+    textureActionInfo = gl::Texture(1,1);
+    textureActionRelated = gl::Texture(1,1);
+    textureActionClose = gl::Texture(1,1);
+    
+    // actions
+    action_info = false;
+    action_related = false;
+    action_close = false;
     
     // hide
     this->hide();
@@ -70,15 +78,12 @@ void Action::config(Configuration c) {
     // retina stuff
     if (retina) {
         
-        // position
-        offset *= 2;
-        size *= 2;
+        // size
         asize *= 2;
-        
-        // textures
-        textureActionClose = gl::Texture(loadImage(loadResource("node_close@2x.png")));
-        
     }
+    
+    // render
+    this->renderAction();
     
 }
 
@@ -116,7 +121,7 @@ void Action::update() {
         if (n) {
     
             // position
-            pos = (n->pos-size/2.0)+offset;
+            pos = (n->pos);
         }
         
     }
@@ -131,9 +136,8 @@ void Action::draw() {
     
     // test
     //gl::enableAlphaBlending();
-    //Rectf rect = Rectf(pos.x,pos.y,pos.x+size.x,pos.y+size.y);
     //glColor4f(1,0,0,0.9);
-    //gl::drawSolidRect(rect, false);
+    //gl::drawSolidRect(Rectf(pos.x+bounds.x1,pos.y+bounds.y1,pos.x+bounds.x2,pos.y+bounds.y2), false);
     
     // active
     if (active) {
@@ -143,13 +147,24 @@ void Action::draw() {
         
         // draw textures
         gl::color( ColorA(1.0f, 1.0f, 1.0f, 1.0f) ); // alpha channel
-        gl::draw(textureActionClose, pos);
+        
+        // info
+        gl::draw(textureActionInfo, pos+pos_info);
+        
+        // related
+        if (action_related) {
+            gl::draw(textureActionRelated, pos+pos_related);
+        }
+        
+        // close
+        gl::draw(textureActionClose, pos+pos_close);
         
         // reset
         gl::disableAlphaBlending();
     }
     
 }
+
 
 
 #pragma mark -
@@ -162,26 +177,29 @@ bool Action::action(Vec2d tpos) {
     GLog();
     
     // action
-    if (tpos.x > pos.x && tpos.x < pos.x+size.x) {
+    if (Rectf(pos.x+bounds.x1,pos.y+bounds.y1,pos.x+bounds.x2,pos.y+bounds.y2).contains(tpos)) {
+        
+        // info
+        if (action_info && Rectf(pos.x+pos_info.x,pos.y+pos_info.y,pos.x+pos_info.x+asize.x,pos.y+pos_info.y+asize.y).contains(tpos)) {
+            act = actionInfo;
+            return true;
+        }
+        
+        // related
+        else if (action_related && Rectf(pos.x+pos_related.x,pos.y+pos_related.y,pos.x+pos_related.x+asize.x,pos.y+pos_related.y+asize.y).contains(tpos)) {
+            act = actionRelated;
+            return true;
+        }
         
         // close
-        if (tpos.y > pos.y && tpos.y < pos.y+asize.y) {
-            
-            // node
-            NodePtr n = this->node.lock();
-            if (n) {
-                
-                // close node
-                n->close();
-                
-                // deactivate actions
-                this->deactivate();
-            }
-            
+        else if (action_close && Rectf(pos.x+pos_close.x,pos.y+pos_close.y,pos.x+pos_close.x+asize.x,pos.y+pos_close.y+asize.y).contains(tpos)) {
+            act = actionClose;
+            return true;
         }
     }
     
     // miss
+    act = actionNone;
     return false;
 }
 
@@ -227,6 +245,8 @@ void Action::activate() {
     timeout = -1;
     reminder = -1;
     
+    // current
+    act = actionNone;
 
 }
 void Action::deactivate() {
@@ -244,6 +264,14 @@ void Action::deactivate() {
     
     // no no node
     node = NodePtr();
+    
+    // reset
+    action_info = false;
+    action_related = false;
+    action_close = false;
+    
+    // current
+    act = actionNone;
 }
 
 
@@ -252,15 +280,47 @@ void Action::deactivate() {
  */
 void Action::assignNode(NodePtr n) {
     
-    
     // ref
     node = n;
     
-    // offset
-    if (n) {
-        offset.x = n->radius*0.66;
-        size.y = n->radius * 2;
+    // position (shift -90°)
+    pos_info.set(n->radius * cos(-2.617993878), n->radius * sin(-2.617993878)); // -150°
+    pos_related.set(n->radius * cos(-1.570796327), n->radius * sin(-1.570796327)); // -> -90°
+    pos_close.set(n->radius * cos(-0.523598776), n->radius * sin(-0.523598776)); //  -30°
+    
+    pos_info -= asize/2.0;
+    pos_related -= asize/2.0;
+    pos_close -= asize/2.0;
+    
+    // actions
+    action_info = true;
+    action_related = true;
+    action_close = true;
+    if (n->type != nodeMovie) {
+        action_related = false;
     }
+    
+    // bounds
+    bounds.x1 = pos_info.x;
+    bounds.x2 = pos_close.x+asize.x;
+    bounds.y1 = action_related ? pos_related.y : pos_info.y;
+    bounds.y2 = pos_info.y+asize.y;
+}
+
+
+/*
+ * Renders the action.
+ */
+void Action::renderAction() {
+    GLog();
+    
+    // suffix
+    string sfx = retina ? "@2x.png" : ".png";
+    
+    // textures
+    textureActionInfo = gl::Texture(loadImage(loadResource("node_action_info"+sfx)));
+    textureActionRelated = gl::Texture(loadImage(loadResource("node_action_related"+sfx)));
+    textureActionClose = gl::Texture(loadImage(loadResource("node_action_close"+sfx)));
 }
 
 

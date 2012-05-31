@@ -207,6 +207,11 @@ void Graph::defaults(Defaults d) {
         (*edge)->defaults(dflts);
     }
     
+    // apply to connections
+    for (ConnectionIt connection = connections.begin(); connection != connections.end(); ++connection) {
+        (*connection)->defaults(dflts);
+    }
+    
 }
 
 /**
@@ -307,6 +312,13 @@ void Graph::update() {
         }
     }
     
+    // connections
+    for (ConnectionIt connection = connections.begin(); connection != connections.end(); ++connection) {
+        
+        // update
+        (*connection)->update();
+    }
+    
     // tooltip / actions
     for (int t = 1; t <= nbtouch; t++) {
         tooltips[t].update();
@@ -338,6 +350,13 @@ void Graph::draw() {
         if ((*edge)->isVisible()) {
             (*edge)->draw();
         }
+    }
+    
+    // connections
+    for (ConnectionIt connection = connections.begin(); connection != connections.end(); ++connection) {
+        
+        // draw
+        (*connection)->draw();
     }
     
     // nodes
@@ -373,12 +392,14 @@ void Graph::reset() {
     DLog();
     
     // clear
+    connections.clear(); 
     edges.clear(); 
     nodes.clear(); 
     
     // reset maps
     nmap.clear();
     emap.clear();
+    cmap.clear();
     
     // zoom
     scale = 1.0;
@@ -394,22 +415,37 @@ void Graph::reset() {
 /**
  * Touch.
  */
-void Graph::touchBegan(Vec2d tpos, int tid) {
+NodePtr Graph::touchBegan(Vec2d tpos, int tid) {
     GLog();
     
     // zoomed
     Vec2d ztpos = (tpos - translate)*(1.0/scale);
     
+    
     // actions
-    bool action = false;
     for (int t = 1; t <= nbtouch; t++) {
         if (actions[t].isActive()) {
-            action = actions[t].action(ztpos);
+            
+            // check
+            if (actions[t].action(ztpos)) {
+                
+                // node
+                NodePtr n = actions[t].node.lock();
+                if (n) {
+                    n->setAction(actions[t].act);
+                }
+                
+                // deactivate actions
+                actions[t].deactivate();
+                
+                // enough for today
+                return n;
+            }
         }
     }
     
     // nodes
-    for (NodeIt node = nodes.begin(); ! action && node != nodes.end(); ++node) {
+    for (NodeIt node = nodes.begin(); node != nodes.end(); ++node) {
         
         // visible
         if ((*node)->isVisible()) {
@@ -441,6 +477,9 @@ void Graph::touchBegan(Vec2d tpos, int tid) {
             }
         }
     }
+    
+    // empty
+    return NodePtr();
 
     
 }
@@ -685,6 +724,37 @@ void Graph::drag(Vec2d d) {
     }
 }
 
+/**
+ * Shift.
+ */
+void Graph::shift(Vec2d d) {
+    
+    // zoom
+    Vec2d zd = d*(1.0/scale);
+    
+    // off
+    vmoff += zd;
+}
+
+
+/**
+ * Calculates the real world coordinates.
+ */
+Vec3d Graph::coordinates(double px, double py, double d) {
+    
+    // coordinates    
+    Vec3d gpos = Vec3d(px,py,0);
+    Vec3d rpos = gpos * scale + Vec3d(translate.x,translate.y,0);
+    
+    // distance
+    rpos.z = d * scale;
+    
+    // back
+    return rpos;
+}
+
+
+
 
 /**
  * Creates a node.
@@ -810,6 +880,55 @@ EdgePtr Graph::getEdge(string nid1, string nid2) {
     // nop
     return EdgePtr();
 }
+
+
+/**
+ * Creates a connection.
+ */
+ConnectionPtr Graph::createConnection(string cid, string type, NodePtr n1, NodePtr n2) {
+    GLog();
+    
+    // connection map
+    cmap.insert(make_pair(cid, connections.size()));
+    
+    // type
+    if (type == connectionRelated) {
+        boost::shared_ptr<Connection> connection(new ConnectionRelated(cid,n1,n2));
+        connection->config(conf);
+        connection->defaults(dflts);
+        connections.push_back(connection);
+        return connection;
+    }
+    else {
+        boost::shared_ptr<Connection> connection(new Connection(cid,n1,n2));
+        connection->config(conf);
+        connection->defaults(dflts);
+        connections.push_back(connection);
+        return connection;
+    }
+    
+}
+
+/**
+ * Gets a connection.
+ */
+ConnectionPtr Graph::getConnection(string nid1, string nid2) {
+    GLog();
+    
+    // find the key
+    map<string,int>::iterator it1 = cmap.find(nid1 + "_connection_" + nid2);
+    if(it1 != cmap.end()) {
+        return ConnectionPtr(connections.at(it1->second));
+    }
+    map<string,int>::iterator it2 = cmap.find(nid2 + "_connection_" + nid1);
+    if(it2 != cmap.end()) {
+        return ConnectionPtr(connections.at(it2->second));
+    }
+    
+    // no connection
+    return ConnectionPtr();
+}
+
 
 /**
  * Removes a node.

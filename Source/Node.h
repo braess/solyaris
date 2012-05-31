@@ -118,11 +118,13 @@ class Node {
     void touched();
     void untouched();
     void tapped();
+    void connect(NodePtr n);
     void renderLabel(string lbl);
     void renderNode();
     void updateType(string t);
     void updateMeta(string m);
     void updateCategory(string c);
+    void setAction(string a);
     bool isActive();
     bool isClosed();
     bool isInactive();
@@ -137,6 +139,7 @@ class Node {
     string meta;
     string type;
     string category;
+    string action;
     NodeWeakPtr sref;
     NodeWeakPtr parent;
     NodeVectorPtr children;

@@ -31,10 +31,12 @@
 }
 
 // Object
-- (id)initData:(NSNumber *)dta_ref type:(NSString *)dta_type label:(NSString *)dta_label thumb:(NSString *)dta_thumb;
+- (id)initData:(int)dta_ ref:(NSNumber *)dta_ref type:(NSString *)dta_type label:(NSString *)dta_label thumb:(NSString *)dta_thumb;
 
 // Properties
+@property int dta;
 @property (nonatomic, retain) NSNumber *ref;
+@property (nonatomic, retain) NSNumber *src;
 @property (nonatomic, retain) NSString *type;
 @property (nonatomic, retain) NSString *label;
 @property (nonatomic, retain) NSString *thumb;

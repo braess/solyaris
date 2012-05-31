@@ -109,6 +109,7 @@ enum {
 
 // Business
 - (void)update;
+- (void)reset;
 - (void)loadThumb:(NSString*)thumb type:(NSString*)type;
 
 @end

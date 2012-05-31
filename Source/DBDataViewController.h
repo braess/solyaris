@@ -41,6 +41,8 @@
 #import "PopularResult.h"
 #import "NowPlaying.h"
 #import "NowPlayingResult.h"
+#import "Similar.h"
+#import "SimilarMovie.h"
 #import "Movie.h"
 #import "Person.h"
 #import "Asset.h"
@@ -65,15 +67,16 @@ enum {
     DBDataSearchResult,
     DBDataNowPlaying,
 	DBDataPopularMovies,
-    DBDataHistory
+    DBDataHistory,
+    DBDataMovieRelated
 };
 
 /*
  * Delegate.
  */
-@protocol SearchResultDelegate <NSObject>
+@protocol DBDataDelegate <NSObject>
 - (void)dbDataSelected:(DBData*)data;
-- (void)dbDataLoadMore:(int)dbdata;
+- (void)dbDataLoadMore:(DBData*)data;
 @end
 
 
@@ -83,7 +86,7 @@ enum {
 @interface DBDataViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     
     // delegate
-	id<SearchResultDelegate>delegate;
+	id<DBDataDelegate>delegate;
     
     // data
     NSMutableArray* _data;
@@ -103,25 +106,25 @@ enum {
     BOOL mode_notfound;
     BOOL mode_loading;
     BOOL mode_error;
-    
-    // type
-    int ddata;
+
 }
 
 // Properties
-@property (assign) id<SearchResultDelegate> delegate;
+@property (assign) id<DBDataDelegate> delegate;
 @property (nonatomic,assign) HeaderView* header;
 
 // Business
-- (void)reset:(int)ddta;
+- (void)reset;
 - (void)update;
 - (void)dbSearchResult:(Search*)search;
 - (void)dbPopularResult:(Popular*)popular more:(BOOL)more;
 - (void)dbNowPlayingResult:(NowPlaying*)nowplaying more:(BOOL)more;
+- (void)dbMovieRelated:(Movie*)movie more:(BOOL)more;
 - (void)dbHistoryResult:(NSArray*)history type:(NSString*)type;
 - (void)dbDataReset;
 - (void)dbDataLoading;
-
+- (void)hideBack:(BOOL)hide;
+- (void)titleFont:(UIFont*)thaFont;
 
 @end
 

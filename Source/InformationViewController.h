@@ -65,7 +65,7 @@ enum {
 @interface InformationMovieView : UIView {
     
     // labels
-    UILabel *_labelName;
+    UILabel *_labelTitle;
     UILabel *_labelTagline;
     UILabel *_labelRuntime;
     UILabel *_labelReleased;

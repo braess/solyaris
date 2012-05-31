@@ -384,6 +384,9 @@
 		cell = [[[ListingCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellListingIdentifier] autorelease];
 	}
     
+    // reset
+    [cell reset];
+    
 	
 	// info
 	DataNode *dta;
@@ -690,6 +693,17 @@
 
 
 /**
+ * Resets the cell.
+ */
+- (void)reset {
+    GLog();
+    
+    // thumb
+    [_thumbImageView reset];
+}
+
+
+/**
  * Updates the cell.
  */
 - (void)update {
@@ -706,6 +720,7 @@
     GLog();
     
     // type
+    [_thumbImageView reset];
     if ([type isEqualToString:typeMovie]) {
         [_thumbImageView placeholderImage:[UIImage imageNamed:@"placeholder_listing_movie.png"]];
     }
