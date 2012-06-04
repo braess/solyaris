@@ -27,6 +27,8 @@
 #import "NoteView.h"
 #import "CacheImageView.h"
 #import "Tracker.h"
+#import "Rater.h"
+
 
 /**
  * Solyaris AppDelegate.
@@ -69,6 +71,9 @@
 		[self update:appVersion];
 	}
     
+    // rater
+    [Rater appLaunched:YES];
+    
     // cinder
     [super applicationDidFinishLaunching:application];
 }
@@ -78,6 +83,9 @@
  */
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     DLog();
+    
+    // rater
+    [Rater appEnteredForeground:YES];
     
     // cinder
     [super applicationWillEnterForeground:application];

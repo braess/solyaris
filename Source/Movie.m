@@ -2,7 +2,7 @@
 //  Movie.m
 //  Solyaris
 //
-//  Created by Beat Raess on 30.5.2012.
+//  Created by Beat Raess on 1.6.2012.
 //  Copyright (c) 2012 Beat Raess. All rights reserved.
 //
 
@@ -16,21 +16,21 @@
 @implementation Movie
 
 @dynamic released;
-@dynamic mid;
 @dynamic category;
+@dynamic mid;
 @dynamic timestamp;
-@dynamic details;
 @dynamic loaded;
+@dynamic details;
 @dynamic imdb;
 @dynamic runtime;
 @dynamic overview;
 @dynamic homepage;
-@dynamic tagline;
 @dynamic title;
+@dynamic tagline;
 @dynamic related;
 @dynamic assets;
+@dynamic similar;
 @dynamic genres;
 @dynamic persons;
-@dynamic similar;
 
 @end

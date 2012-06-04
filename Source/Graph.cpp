@@ -730,7 +730,7 @@ void Graph::drag(Vec2d d) {
 void Graph::shift(Vec2d d) {
     
     // zoom
-    Vec2d zd = d*(1.0/scale);
+    Vec2d zd = d*(1.0/scale)*dpr;
     
     // off
     vmoff += zd;
@@ -748,6 +748,9 @@ Vec3d Graph::coordinates(double px, double py, double d) {
     
     // distance
     rpos.z = d * scale;
+    
+    // retina
+    rpos *= (retina ? 0.5 : 1.0);
     
     // back
     return rpos;

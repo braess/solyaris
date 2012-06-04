@@ -2,7 +2,7 @@
 //  Movie.h
 //  Solyaris
 //
-//  Created by Beat Raess on 30.5.2012.
+//  Created by Beat Raess on 1.6.2012.
 //  Copyright (c) 2012 Beat Raess. All rights reserved.
 //
 
@@ -14,22 +14,22 @@
 @interface Movie : NSManagedObject
 
 @property (nonatomic, retain) NSDate * released;
-@property (nonatomic, retain) NSNumber * mid;
 @property (nonatomic, retain) NSString * category;
+@property (nonatomic, retain) NSNumber * mid;
 @property (nonatomic, retain) NSDate * timestamp;
-@property (nonatomic, retain) NSNumber * details;
 @property (nonatomic, retain) NSNumber * loaded;
+@property (nonatomic, retain) NSNumber * details;
 @property (nonatomic, retain) NSString * imdb;
 @property (nonatomic, retain) NSNumber * runtime;
 @property (nonatomic, retain) NSString * overview;
 @property (nonatomic, retain) NSString * homepage;
-@property (nonatomic, retain) NSString * tagline;
 @property (nonatomic, retain) NSString * title;
+@property (nonatomic, retain) NSString * tagline;
 @property (nonatomic, retain) NSNumber * related;
 @property (nonatomic, retain) NSSet *assets;
+@property (nonatomic, retain) Similar *similar;
 @property (nonatomic, retain) NSSet *genres;
 @property (nonatomic, retain) NSSet *persons;
-@property (nonatomic, retain) Similar *similar;
 @end
 
 @interface Movie (CoreDataGeneratedAccessors)

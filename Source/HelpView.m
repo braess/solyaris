@@ -302,7 +302,7 @@
     _textNode2.frame = CGRectMake(_labelNode2.frame.origin.x, _labelNode2.frame.origin.y+10, _labelNode2.frame.size.width, 45);
     
     _labelNode3.frame = iPad ? CGRectMake(frameSelf.size.width/2.0+135, frameSelf.size.height/2.0+60, 360, 20)
-                             : CGRectMake(frameSelf.size.width/2.0-140, frameSelf.size.height/2.0+25, 240, 20);
+                             : CGRectMake(frameSelf.size.width/2.0-140, frameSelf.size.height/2.0+0, 240, 20);
     _textNode3.frame = CGRectMake(_labelNode3.frame.origin.x, _labelNode3.frame.origin.y+10, _labelNode3.frame.size.width, 45);
     
     _labelNode4.frame = iPad ? CGRectMake(frameSelf.size.width/2.0-50, frameSelf.size.height/2.0+170, 420, 20)

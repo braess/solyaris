@@ -39,6 +39,12 @@
 @implementation DBDataViewController
 
 
+#pragma mark -
+#pragma mark Constants
+
+// constants
+#define kDabaDataScrollDelay      0.45
+
 
 #pragma mark -
 #pragma mark Properties
@@ -381,7 +387,7 @@
     
     // more
     int nb = [_data count];
-    if (nb < [popular.total intValue]) {
+    if ([popular.parsed intValue] < [popular.total intValue]) {
         
         // always more
         DBData *dta = [[DBData alloc] init];
@@ -419,7 +425,7 @@
         [_results insertRowsAtIndexPaths:indexes withRowAnimation:UITableViewRowAnimationNone];
         
         // scroll
-        [self performSelector:@selector(animationScrollResults:) withObject:[NSIndexPath indexPathForRow:MAX(0,current-1) inSection:SectionDBDataResults] afterDelay:0.3];
+        [self performSelector:@selector(animationScrollResults:) withObject:[NSIndexPath indexPathForRow:MAX(0,current-1) inSection:SectionDBDataResults] afterDelay:kDabaDataScrollDelay];
     }
     else {
         [self update];
@@ -496,7 +502,7 @@
     
     // more
     int nb = [_data count];
-    if (nb < [nowplaying.total intValue]) {
+    if ([nowplaying.parsed intValue] < [nowplaying.total intValue]) {
         
         // always more
         DBData *dta = [[DBData alloc] init];
@@ -529,7 +535,7 @@
         [_results insertRowsAtIndexPaths:indexes withRowAnimation:UITableViewRowAnimationNone];
         
         // scroll
-        [self performSelector:@selector(animationScrollResults:) withObject:[NSIndexPath indexPathForRow:MAX(0,current-1) inSection:SectionDBDataResults] afterDelay:0.3];
+        [self performSelector:@selector(animationScrollResults:) withObject:[NSIndexPath indexPathForRow:MAX(0,current-1) inSection:SectionDBDataResults] afterDelay:kDabaDataScrollDelay];
     }
     else {
         [self update];
@@ -705,7 +711,7 @@
     
     // more
     int nb = [_data count];
-    if (nb < [movie.similar.total intValue]) {
+    if ([movie.similar.parsed intValue] < [movie.similar.total intValue]) {
         
         // always more
         DBData *dta = [[DBData alloc] init];
@@ -738,7 +744,7 @@
         [_results insertRowsAtIndexPaths:indexes withRowAnimation:UITableViewRowAnimationNone];
         
         // scroll
-        [self performSelector:@selector(animationScrollResults:) withObject:[NSIndexPath indexPathForRow:MAX(0,current-1) inSection:SectionDBDataResults] afterDelay:0.3];
+        [self performSelector:@selector(animationScrollResults:) withObject:[NSIndexPath indexPathForRow:MAX(0,current-1) inSection:SectionDBDataResults] afterDelay:kDabaDataScrollDelay];
     }
     else {
         [self update];
@@ -773,6 +779,7 @@
  * Scroll results.
  */
 - (void)animationScrollResults:(NSIndexPath *)ip {
+    FLog();
     
     // scroll
     [_results scrollToRowAtIndexPath:ip atScrollPosition:UITableViewScrollPositionTop animated:YES];

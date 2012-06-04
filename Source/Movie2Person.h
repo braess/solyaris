@@ -2,7 +2,7 @@
 //  Movie2Person.h
 //  Solyaris
 //
-//  Created by Beat Raess on 30.5.2012.
+//  Created by Beat Raess on 1.6.2012.
 //  Copyright (c) 2012 Beat Raess. All rights reserved.
 //
 

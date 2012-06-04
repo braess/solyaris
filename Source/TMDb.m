@@ -1327,6 +1327,7 @@
         popular.ident = ident;
         popular.page = [NSNumber numberWithInt:0];
         popular.count = [NSNumber numberWithInt:0];
+        popular.parsed = [NSNumber numberWithInt:0];
         popular.total = [NSNumber numberWithInt:0];
     }
     
@@ -1410,6 +1411,7 @@
     
     // parse result
     int count = 0;
+    int parsed = 0;
     int sort = [popular.count intValue];
     if ([self validResult:json]) {
         
@@ -1421,6 +1423,7 @@
         // results
         NSArray *results = [djson objectForKey:@"results"];
         for (NSDictionary *dresult in results)	{
+            parsed++;
             
             // result data
             PopularResult *popularResult = (PopularResult*)[NSEntityDescription insertNewObjectForEntityForName:@"PopularResult" inManagedObjectContext:managedObjectContext];
@@ -1453,8 +1456,11 @@
         
     }
     
+    // parsed
+    popular.parsed = [NSNumber numberWithInt:[popular.parsed intValue] + parsed];
+    
     // count
-    popular.count = [NSNumber numberWithInt:[popular.count intValue] +count ];
+    popular.count = [NSNumber numberWithInt:[popular.count intValue] + count];
     
     // page
     popular.page = [NSNumber numberWithInt:[popular.page intValue] + 1];
@@ -1505,6 +1511,7 @@
         nowplaying.ident = ident;
         nowplaying.page = [NSNumber numberWithInt:0];
         nowplaying.count = [NSNumber numberWithInt:0];
+        nowplaying.parsed = [NSNumber numberWithInt:0];
         nowplaying.total = [NSNumber numberWithInt:0];
     }
     
@@ -1588,6 +1595,7 @@
     
     // parse result
     int count = 0;
+    int parsed = 0;
     int sort = [nowplaying.count intValue];
     if ([self validResult:json]) {
         
@@ -1599,6 +1607,7 @@
         // results
         NSArray *results = [djson objectForKey:@"results"];
         for (NSDictionary *dresult in results)	{
+            parsed++;
             
             // result data
             NowPlayingResult *nowPlayingResult = (NowPlayingResult*)[NSEntityDescription insertNewObjectForEntityForName:@"NowPlayingResult" inManagedObjectContext:managedObjectContext];
@@ -1631,8 +1640,11 @@
         
     }
     
+    // parsed
+    nowplaying.parsed = [NSNumber numberWithInt:[nowplaying.parsed intValue] + parsed];
+    
     // count
-    nowplaying.count = [NSNumber numberWithInt:[nowplaying.count intValue] +count ];
+    nowplaying.count = [NSNumber numberWithInt:[nowplaying.count intValue] + count];
     
     // page
     nowplaying.page = [NSNumber numberWithInt:[nowplaying.page intValue] + 1];
@@ -2385,6 +2397,7 @@
         similar = (Similar*)[NSEntityDescription insertNewObjectForEntityForName:@"Similar" inManagedObjectContext:managedObjectContext];
         similar.page = [NSNumber numberWithInt:0];
         similar.count = [NSNumber numberWithInt:0];
+        similar.parsed = [NSNumber numberWithInt:0];
         similar.total = [NSNumber numberWithInt:0];
         
         similar.movie = movie;
@@ -2470,6 +2483,7 @@
     
     // parse result
     int count = 0;
+    int parsed = 0;
     int sort = [similar.count intValue];
     if ([self validResult:json]) {
         
@@ -2481,13 +2495,14 @@
         // results
         NSArray *results = [djson objectForKey:@"results"];
         for (NSDictionary *dresult in results)	{
+            parsed++;
             
             // similar data
             SimilarMovie *similarMovie = (SimilarMovie*)[NSEntityDescription insertNewObjectForEntityForName:@"SimilarMovie" inManagedObjectContext:managedObjectContext];
             
             // validate
             if ([self validSimilar:dresult]) {
-                
+
                 // dta
                 NSString *title = [self parseString:[dresult objectForKey:@"original_title"]];
                 if (! [self isEmpty:[dresult objectForKey:@"release_date"]]) {
@@ -2514,6 +2529,9 @@
     
     // related
     movie.related = [NSNumber numberWithBool:YES];
+    
+    // parsed
+    similar.parsed = [NSNumber numberWithInt:[similar.parsed intValue] + parsed];
     
     // count
     similar.count = [NSNumber numberWithInt:[similar.count intValue] + count];
@@ -3454,6 +3472,7 @@
     
     // exclude adult
     if (dresult == NULL 
+        || ! [dresult respondsToSelector:@selector(objectForKey:)] 
         || [[dresult objectForKey:@"adult"] boolValue]) {
         return NO;
     }
@@ -3469,6 +3488,7 @@
     
     // exclude adult
     if (dresult == NULL 
+        || ! [dresult respondsToSelector:@selector(objectForKey:)] 
         || [[dresult objectForKey:@"adult"] boolValue]) {
         return NO;
     }
@@ -3484,6 +3504,7 @@
     
     // exclude adult
     if (dresult == NULL 
+        || ! [dresult respondsToSelector:@selector(objectForKey:)] 
         || [[dresult objectForKey:@"adult"] boolValue]) {
         return NO;
     }
@@ -3499,6 +3520,7 @@
     
     // kosher
     if (dmovie == NULL 
+        || ! [dmovie respondsToSelector:@selector(objectForKey:)] 
         || [[self parseNumber:[dmovie objectForKey:@"id"]] intValue] <= 0
         || [[dmovie objectForKey:@"adult"] boolValue]) {
         return NO;
@@ -3521,7 +3543,9 @@
 - (BOOL)validSimilar:(NSDictionary *)dresult {
     
     // exclude 
-    if (dresult == NULL || [[dresult objectForKey:@"adult"] boolValue]) {
+    if (dresult == NULL 
+        || ! [dresult respondsToSelector:@selector(objectForKey:)] 
+        || [[dresult objectForKey:@"adult"] boolValue]) {
         return NO;
     }
     
@@ -3536,6 +3560,7 @@
     
     // kosher
     if (dperson == NULL 
+        || ! [dperson respondsToSelector:@selector(objectForKey:)] 
         || [[self parseNumber:[dperson objectForKey:@"id"]] intValue] <= 0
         || [[dperson objectForKey:@"adult"] boolValue]) {
         return NO;

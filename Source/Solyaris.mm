@@ -464,7 +464,7 @@ void Solyaris::graphShift(double mx, double my) {
     GLog();
     
     // graph
-    graph.move(Vec2d(mx,my));
+    graph.shift(Vec2d(mx,my));
 }
 
 /**

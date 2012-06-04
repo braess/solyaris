@@ -29,6 +29,7 @@
 #import "SolyarisLocalization.h"
 #import "HelpView.h"
 #import "Tracker.h"
+#import "Rater.h"
 
 
 /**
@@ -94,8 +95,8 @@
 #define kAnimateTimeInformationLoad     0.45f
 #define kAnimateTimeInformationShow     (iPad ? 0.6f : 0.45f)
 #define kAnimateTimeInformationHide     (iPad ? 0.45f : 0.33f)
-#define kAnimateTimeRelatedShow         0.3f
-#define kAnimateTimeRelatedHide         0.3f
+#define kAnimateTimeRelatedShow         0.6f
+#define kAnimateTimeRelatedHide         0.18f
 #define kAnimateTimeSearchShow          0.3f
 #define kAnimateTimeSearchHide          0.3f
 #define kAnimateTimeSettingsShow        0.6f
@@ -994,6 +995,9 @@
 - (void)nodeInformation:(NSString*)nid {
     DLog();
     
+    // rater
+    [Rater userDidSignificantEvent:NO];
+    
     // node
     NodePtr node = solyaris->getNode([nid UTF8String]);
     
@@ -1085,6 +1089,7 @@
         // adjust position
         Vec3d npos = solyaris->nodeCoordinates(node);
         CGPoint offset = [_relatedViewController position:npos.z posx:npos.x posy:npos.y];
+        NSLog(@"offset %f %f",offset.x,offset.y);
         solyaris->graphShift(offset.x,offset.y);
         
         // related
