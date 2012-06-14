@@ -43,7 +43,7 @@
 #pragma mark Constants
 
 // constants
-#define kDabaDataScrollDelay      0.45
+#define kDabaDataScrollDelay      0.45f
 
 
 #pragma mark -

@@ -72,7 +72,7 @@
 	}
     
     // rater
-    [Rater appLaunched:YES];
+    [Rater appLaunched:NO];
     
     // cinder
     [super applicationDidFinishLaunching:application];
