@@ -574,7 +574,7 @@
     GLog();
     
     // thumb
-    NSString *thumb = [NSString stringWithString:@""];
+    NSString *thumb = @"";
     
     // cache
     [managedObjectContext lock];
@@ -603,7 +603,7 @@
     GLog();
     
     // thumb
-    NSString *thumb = [NSString stringWithString:@""];
+    NSString *thumb = @"";
     
     // cache
     [managedObjectContext lock];

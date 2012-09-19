@@ -582,7 +582,7 @@
             }
             
             // thumb
-            NSString *thumb = [NSString stringWithString:@""];
+            NSString *thumb = @"";
             for (Asset *a in movie.assets) {
                 
                 // poster
@@ -606,7 +606,7 @@
         for (Person *person in results) {
             
             // thumb
-            NSString *thumb = [NSString stringWithString:@""];
+            NSString *thumb = @"";
             for (Asset *a in person.assets) {
                 
                 // poster

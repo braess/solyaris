@@ -584,13 +584,6 @@ void Node::unfold() {
         // open child
         if (this->isNodeChild(*child)) {
             
-            // radius & position
-            float rx = Rand::randFloat(radius * nodeUnfoldMin,radius * nodeUnfoldMax) + 0.1;
-            rx *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
-            float ry = Rand::randFloat(radius * nodeUnfoldMin,radius * nodeUnfoldMax) + 0.1;
-            ry *= (Rand::randFloat(1) > 0.5) ? 1.0 : -1.0;
-            Vec2d p = Vec2d(pos.x+rx,pos.y+ry);
-            
             // open & push
             (*child)->open();
             cnodes.push_back(*child);
