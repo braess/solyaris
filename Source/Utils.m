@@ -51,6 +51,19 @@
 }
 
 /**
+ * Detect 4inch iphone5.
+ */
++ (BOOL)is4in {
+    
+    // screen
+    CGRect screen = [[UIScreen mainScreen] bounds];
+    
+    // ratio
+    return (screen.size.height / screen.size.width) > 1.5;
+}
+
+
+/**
  * Detect WiFi.
  */
 + (BOOL)isWiFi {

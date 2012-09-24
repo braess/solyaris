@@ -148,12 +148,12 @@ void Graph::config(Configuration c) {
         
         // hitarea
         harea *= 2;
-        
     }
     
     
     // background
-    string bg = redux ? "bg_graph_redux" : "bg_graph";
+    float rin = (float)max(width,height) / (float)min(width,height);
+    string bg = redux ? (rin > 1.5 ? "Default-568h" : "Default") : "Default-Portrait";
     bg += retina ? "@2x.png" : ".png";
     
     // surface

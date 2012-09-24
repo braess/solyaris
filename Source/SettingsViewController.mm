@@ -92,20 +92,21 @@
 	[super loadView];
 	DLog();
     
-    // window
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-    CGRect wframe = window.frame;
-    float border = (wframe.size.width-vframe.size.width)/2.0;
+    // screen
+    CGRect screen = [[UIScreen mainScreen] bounds];
+    
+    // sizes
+    float border = (screen.size.width-vframe.size.width)/2.0;
     
     // frames
-    CGRect cframe = iPad ? CGRectMake(border, wframe.size.height-vframe.size.height, vframe.size.width, vframe.size.height) : CGRectMake(0, 0, vframe.size.width*2, vframe.size.height);
+    CGRect cframe = iPad ? CGRectMake(border, screen.size.height-vframe.size.height, vframe.size.width, vframe.size.height) : CGRectMake(0, 0, vframe.size.width*2, vframe.size.height);
     CGRect aframe = iPad ? CGRectMake(0, border, 320, vframe.size.height-border) : CGRectMake(vframe.size.width+10, 15, vframe.size.width-20, vframe.size.height-10);
     CGRect pframe = iPad ? CGRectMake(cframe.size.width-320, border, 320, vframe.size.height-border) : CGRectMake(10, 15, vframe.size.width-20, vframe.size.height-10);
     
     CGRect bframe =  CGRectMake(vframe.size.width-44, 5, 44, 44);
     
     // view
-    UIView *sview = [[UIView alloc] initWithFrame:wframe];
+    UIView *sview = [[UIView alloc] initWithFrame:screen];
     sview.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     sview.hidden = YES;
     
@@ -176,6 +177,18 @@
     [_preferencesViewController viewWillAppear:NO];
     
 }
+
+
+/*
+ * Rotation.
+ */
+- (BOOL)shouldAutorotate {
+    return NO;
+}
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return NO;
+}
+
 
 
 

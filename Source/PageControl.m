@@ -45,7 +45,7 @@
 - (id)initWithFrame:(CGRect)frame {
     
     // super
-    if (self == [super initWithFrame:frame]) {
+    if ((self = [super initWithFrame:frame])) {
         
         // self
         self.contentMode = UIViewContentModeRedraw;

@@ -28,7 +28,7 @@
 #import "CacheImageView.h"
 #import "Tracker.h"
 #import "Rater.h"
-
+#import "SolyarisViewController.h"
 
 /**
  * Solyaris AppDelegate.
@@ -76,6 +76,7 @@
     
     // cinder
     [super applicationDidFinishLaunching:application];
+    
 }
 
 /*

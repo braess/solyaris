@@ -187,13 +187,16 @@
     
     // button
     ActionBarButton *barButton = [[ActionBarButton alloc] initWithImage:image selected:selected title:title target:target action:action];
-    _barButton = [barButton retain];
-    [barButton release];
 
     // self
     if ((self = [super initWithCustomView:barButton])) {
-
+        
+        // assign
+        _barButton = [barButton retain];
     }
+    
+    // release & return
+    [barButton release];
     return self;
 }
 

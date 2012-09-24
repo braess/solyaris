@@ -228,11 +228,11 @@
     float fheight = iPad ? kHeaderHeight : 0;
     float cheight = iPad ? (vframe.size.height-kheight) : (landscape ? vframe.size.width-vframe.origin.y-kheight : vframe.size.height-kheight);
     
-    // window
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    // screen
+    CGRect screen = [[UIScreen mainScreen] bounds];
     
     // frames
-    CGRect selfFrame = landscape ? CGRectMake(0,vframe.origin.y,window.frame.size.height,window.frame.size.width-vframe.origin.y) : CGRectMake(0,vframe.origin.y,window.frame.size.width,window.frame.size.height-vframe.origin.y);
+    CGRect selfFrame = landscape ? CGRectMake(0,vframe.origin.y,screen.size.height,screen.size.width-vframe.origin.y) : CGRectMake(0,vframe.origin.y,screen.size.width,screen.size.height-vframe.origin.y);
     CGRect modalFrame = CGRectMake(0,0,selfFrame.size.width,selfFrame.size.height);
     CGRect contentFrame = CGRectMake(0, 0, selfFrame.size.width, cheight);
     CGRect footerFrame = CGRectMake(10+(selfFrame.size.width-vframe.size.width)/2.0,contentFrame.size.height-fheight,vframe.size.width-20,fheight);

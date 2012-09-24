@@ -42,19 +42,22 @@ void Solyaris::launch( const char *title, int argc, char * const argv[] ) {
 void Solyaris::setup() {
     DLog();
     
+    // screen
+    CGRect screen = [[UIScreen mainScreen] bounds];
+    
     // redux
     redux = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? false : true;
     
     // display
     retina = false;
-    dwidth = redux ? 320 : 768;
-    dheight = redux ? 480 : 1024;
+    dwidth = screen.size.width;
+    dheight = screen.size.height;
     
     // retina
     if ([Utils isRetina]) {
         retina = true;
-        dwidth = redux ? 640 : 1536;
-        dheight = redux ? 960 : 2048;
+        dwidth *= 2;
+        dheight *= 2;
     }
 
     

@@ -142,11 +142,11 @@
     // vars
     BOOL landscape = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]);
     
-    // window
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    // screen
+    CGRect screen = [[UIScreen mainScreen] bounds];
     
     // frames
-    CGRect selfFrame = landscape ? CGRectMake(0,0,window.frame.size.height,window.frame.size.width) : CGRectMake(0,0,window.frame.size.width,window.frame.size.height);
+    CGRect selfFrame = landscape ? CGRectMake(0,0,screen.size.height,screen.size.width) : CGRectMake(0,0,screen.size.width,screen.size.height);
     CGRect contentFrame = CGRectMake(MIN(vPos.x,selfFrame.size.width-vframe.size.width-10), MIN(vPos.y,selfFrame.size.height-vframe.size.height-10), vframe.size.width, vframe.size.height);
     if (!iPad) {
         contentFrame = CGRectMake((int)((selfFrame.size.width-vframe.size.width)/2.0), (int)((selfFrame.size.height-vframe.size.height)/2.0), vframe.size.width, vframe.size.height);

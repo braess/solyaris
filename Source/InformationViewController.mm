@@ -150,14 +150,12 @@
 - (void)loadView {
 	[super loadView];
 	DLog();
-
     
-    // window
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    // screen
+    CGRect screen = [[UIScreen mainScreen] bounds];
     
     // frames
-    CGRect windowFrame = window.frame;
-    CGRect contentFrame = CGRectMake(windowFrame.size.width/2.0-vframe.size.width/2.0, windowFrame.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
+    CGRect contentFrame = CGRectMake(screen.size.width/2.0-vframe.size.width/2.0, screen.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
     CGRect headerFrame = CGRectMake(0, 0, contentFrame.size.width, kInformationHeaderHeight);
     CGRect footerFrame = CGRectMake(0, contentFrame.size.height-kInformationFooterHeight, contentFrame.size.width, kInformationFooterHeight);
     CGRect componentFrame = CGRectMake(0, kInformationHeaderHeight, contentFrame.size.width, contentFrame.size.height-kInformationHeaderHeight-kInformationFooterHeight);
@@ -167,7 +165,7 @@
     CGRect navigatorFrame = CGRectMake(kInformationGapInset, 5, 80, kInformationFooterHeight-10);
     
     // view
-    UIView *sview = [[UIView alloc] initWithFrame:windowFrame];
+    UIView *sview = [[UIView alloc] initWithFrame:screen];
     sview.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     sview.hidden = YES;
     
@@ -177,7 +175,7 @@
     
     
     // modal
-    UIView *mView = [[UIView alloc] initWithFrame:windowFrame];
+    UIView *mView = [[UIView alloc] initWithFrame:screen];
     mView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     mView.backgroundColor = [UIColor blackColor];
     mView.opaque = NO;
@@ -906,22 +904,21 @@
 - (void)resizeFull {
     DLog();
     
-    // window
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-    CGRect wframe = window.frame;
-    if ([self.delegate informationOrientationLandscape]) {
-        wframe.size.width = window.frame.size.height;
-        wframe.size.height = window.frame.size.width;
-    }
-
+    // screen
+    CGRect screen = [[UIScreen mainScreen] bounds];
     
     // frame
-    CGRect rframe = wframe;
+    CGRect fSelf = screen;
+    if ([self.delegate informationOrientationLandscape]) {
+        fSelf.size.width = screen.size.height;
+        fSelf.size.height = screen.size.width;
+    }
+
     
     // animate
 	[UIView beginAnimations:@"resize_full" context:nil];
     [UIView setAnimationDuration:kAnimateTimeResizeFull];
-	_contentView.frame = rframe;
+	_contentView.frame = fSelf;
 	[UIView commitAnimations];
     
     // button
@@ -934,21 +931,23 @@
 - (void)resizeDefault {
     GLog();
     
-    // window
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-    CGRect wframe = window.frame;
+    // screen
+    CGRect screen = [[UIScreen mainScreen] bounds];
+    
+    // frame
+    CGRect fSelf = screen;
     if ([self.delegate informationOrientationLandscape]) {
-        wframe.size.width = window.frame.size.height;
-        wframe.size.height = window.frame.size.width;
+        fSelf.size.width = screen.size.height;
+        fSelf.size.height = screen.size.width;
     }
     
     // frame
-    CGRect rframe = CGRectMake(wframe.size.width/2.0-vframe.size.width/2.0, wframe.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
+    CGRect fSmall = CGRectMake(fSelf.size.width/2.0-vframe.size.width/2.0, fSelf.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
     
     // animate
 	[UIView beginAnimations:@"resize_default" context:nil];
     [UIView setAnimationDuration:kAnimateTimeResizeDefault];
-	_contentView.frame = rframe;
+	_contentView.frame = fSmall;
 	[UIView commitAnimations];
     
     // button

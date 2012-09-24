@@ -78,6 +78,7 @@
 	about.opaque = YES;
     about.backgroundColor = [UIColor clearColor];
     about.autoresizingMask = UIViewAutoresizingNone;
+    about.autoresizesSubviews = YES;
     
 	// view
     self.view = about;
@@ -309,13 +310,16 @@
 
 }
 
-/*
- * Rotate is the new black.
- */
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return YES;
-}
 
+/*
+ * Rotate.
+ */
+- (BOOL)shouldAutorotate {
+    return NO;
+}
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return NO;
+}
 
 
 #pragma mark -
@@ -569,6 +573,17 @@
 	
 	// close modal
     [self dismissModalViewControllerAnimated:YES];
+    
+    // fuck iphone
+    if (! iPad) {
+        for (UIView *sv in self.view.subviews) {
+            if ([sv isKindOfClass:[ActionBar class]]) {
+                sv.frame = CGRectMake(0, vframe.size.height-kAboutFooterHeight+10, vframe.size.width, 45);
+                [sv setNeedsLayout];
+            }
+        }
+        [self.view setNeedsLayout];
+    }
     
 }
 

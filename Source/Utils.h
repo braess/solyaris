@@ -28,6 +28,7 @@
  */
 @interface Utils : NSObject
 + (BOOL)isRetina;
++ (BOOL)is4in;
 + (BOOL)isWiFi;
 @end
 

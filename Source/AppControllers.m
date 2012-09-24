@@ -89,8 +89,11 @@
 /*
  * Rotate.
  */
+- (BOOL)shouldAutorotate {
+    return NO;
+}
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-	return YES;
+	return NO;
 }
 
 
@@ -128,6 +131,9 @@
 /*
  * Rotate.
  */
+- (BOOL)shouldAutorotate {
+   return (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad);
+}
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
 	return (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad);
 }

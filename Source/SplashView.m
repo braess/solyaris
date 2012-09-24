@@ -22,7 +22,6 @@
 
 #import "SplashView.h"
 
-
 /**
  * Splash Stack.
  */
@@ -40,7 +39,7 @@
 #pragma mark Constants
 
 // constants
-#define kDelayTimeSplashDismiss             1.5f
+#define kDelayTimeSplashDismiss             0.6f
 #define kAnimateTimeSplashDismiss           1.5f
 
 
@@ -71,11 +70,11 @@
 		_splash.autoresizingMask = UIViewAutoresizingNone;
 		_splash.backgroundColor = [UIColor clearColor];
 		_splash.contentMode = UIViewContentModeTopLeft;
-        
 		
 		// add
 		self.opaque = YES;
 		self.backgroundColor = [UIColor clearColor];
+        self.autoresizingMask = UIViewAutoresizingNone;
 		[self addSubview:_splash];
         
 		// return
@@ -91,24 +90,22 @@
  */
 - (void)layoutSubviews {
     
+    // screen
+    CGRect screen = [[UIScreen mainScreen] bounds];
+    
     // frame
-    CGRect frame = (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad)  ? CGRectMake(0, 0, 768, 1024) : CGRectMake(0, 0, 320, 480);
+    CGRect frame = CGRectMake(0, 0, screen.size.width, screen.size.height);
+    _splash.frame = frame;
+    self.frame = frame;
     
     // ipad
     if ((UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad)) {
         _splash.image = [UIImage imageNamed:@"Default-Portrait.png"];
-        if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
-            frame = CGRectMake(0, 0, 1024, 768);
-            _splash.image = [UIImage imageNamed:@"Default-Landscape.png"];
-        }
     }
     // redux
     else {
-        _splash.image = [UIImage imageNamed:@"Default.png"];
+        _splash.image = (screen.size.height / screen.size.width) > 1.5 ? [UIImage imageNamed:@"Default-568h.png"] : [UIImage imageNamed:@"Default.png"];
     }
-    
-    // self
-    self.frame = frame;
     
 }
 
@@ -119,9 +116,13 @@
 /*
  * Rotate is the new black.
  */
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad);
+- (BOOL)shouldAutorotate {
+    return NO;
 }
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return NO;
+}
+
 
 
 #pragma mark -

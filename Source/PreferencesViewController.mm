@@ -244,6 +244,19 @@
     
 }
 
+/*
+ * Rotation.
+ */
+- (BOOL)shouldAutorotate {
+    return NO;
+}
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return NO;
+}
+
+
+
+
 #pragma mark -
 #pragma mark Actions
 

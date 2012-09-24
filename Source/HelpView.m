@@ -273,67 +273,70 @@
 - (void)layoutSubviews {
     GLog();
     
-    // frames
+    // orientation
     BOOL portrait = UIDeviceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation]);
-    CGRect frameSelf = iPad ? (portrait ? CGRectMake(0, 0, 768, 1024) : CGRectMake(0, 0, 1024, 768)) 
-                            : (portrait ? CGRectMake(0, 0, 320, 480) : CGRectMake(0, 0, 480, 320));
+    
+    // frames
+    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect fSelf = portrait ? CGRectMake(0, 0, screen.size.width, screen.size.height) : CGRectMake(0, 0, screen.size.height, screen.size.width);
+
     
     // self
-    self.frame = frameSelf;
-    _imageHelp.frame = frameSelf;
+    self.frame = fSelf;
+    _imageHelp.frame = fSelf;
     
     // steps
     _labelWelcome.frame = iPad ? CGRectMake(30, 60, 360, 50) 
                                : CGRectMake(10, 50, 320, 50);
     _textWelcome.frame = CGRectMake(_labelWelcome.frame.origin.x, _labelWelcome.frame.origin.y+(iPad?50:45), _labelWelcome.frame.size.width, 120);
     
-    _labelSearch.frame = iPad ? CGRectMake(frameSelf.size.width/2.0+20, 50, 360, 20)
-                              : CGRectMake(frameSelf.size.width/2.0-85, 50, 240, 20);
+    _labelSearch.frame = iPad ? CGRectMake(fSelf.size.width/2.0+20, 50, 360, 20)
+                              : CGRectMake(fSelf.size.width/2.0-85, 50, 240, 20);
     _textSearch.frame = CGRectMake(_labelSearch.frame.origin.x, _labelSearch.frame.origin.y+10, _labelSearch.frame.size.width, 45);
     
-    _labelNode1.frame = iPad ? CGRectMake(frameSelf.size.width/2.0-160, frameSelf.size.height/2.0-205, 360, 20)
-                             : (portrait ? CGRectMake(frameSelf.size.width/2.0-150, frameSelf.size.height/2.0-190, 240, 20) 
-                                         : CGRectMake(frameSelf.size.width/2.0-200, frameSelf.size.height/2.0-75, 240, 20));
+    _labelNode1.frame = iPad ? CGRectMake(fSelf.size.width/2.0-160, fSelf.size.height/2.0-205, 360, 20)
+                             : (portrait ? CGRectMake(fSelf.size.width/2.0-150, fSelf.size.height/2.0-190, 240, 20) 
+                                         : CGRectMake(fSelf.size.width/2.0-200, fSelf.size.height/2.0-75, 240, 20));
     _textNode1.frame = CGRectMake(_labelNode1.frame.origin.x, _labelNode1.frame.origin.y+10, _labelNode1.frame.size.width, 45);
     
-    _labelNode2.frame = iPad ? CGRectMake(frameSelf.size.width/2.0+50, frameSelf.size.height/2.0-160, 360, 20)
-                             : (portrait ? CGRectMake(frameSelf.size.width/2.0-20, frameSelf.size.height/2.0-145, 180, 20) 
-                                         : CGRectMake(frameSelf.size.width/2.0+50, frameSelf.size.height/2.0-105, 180, 20));
+    _labelNode2.frame = iPad ? CGRectMake(fSelf.size.width/2.0+50, fSelf.size.height/2.0-160, 360, 20)
+                             : (portrait ? CGRectMake(fSelf.size.width/2.0-20, fSelf.size.height/2.0-145, 180, 20) 
+                                         : CGRectMake(fSelf.size.width/2.0+50, fSelf.size.height/2.0-105, 180, 20));
     _textNode2.frame = CGRectMake(_labelNode2.frame.origin.x, _labelNode2.frame.origin.y+10, _labelNode2.frame.size.width, 45);
     
-    _labelNode3.frame = iPad ? CGRectMake(frameSelf.size.width/2.0+135, frameSelf.size.height/2.0+60, 360, 20)
-                             : CGRectMake(frameSelf.size.width/2.0-140, frameSelf.size.height/2.0+0, 240, 20);
+    _labelNode3.frame = iPad ? CGRectMake(fSelf.size.width/2.0+135, fSelf.size.height/2.0+60, 360, 20)
+                             : CGRectMake(fSelf.size.width/2.0-140, fSelf.size.height/2.0+0, 240, 20);
     _textNode3.frame = CGRectMake(_labelNode3.frame.origin.x, _labelNode3.frame.origin.y+10, _labelNode3.frame.size.width, 45);
     
-    _labelNode4.frame = iPad ? CGRectMake(frameSelf.size.width/2.0-50, frameSelf.size.height/2.0+170, 420, 20)
-                              : (portrait ? CGRectMake(frameSelf.size.width/2.0-70, frameSelf.size.height/2.0+135, 240, 20) 
-                                         :  CGRectMake(frameSelf.size.width/2.0+10, frameSelf.size.height/2.0+90, 240, 20));
+    _labelNode4.frame = iPad ? CGRectMake(fSelf.size.width/2.0-50, fSelf.size.height/2.0+170, 420, 20)
+                              : (portrait ? CGRectMake(fSelf.size.width/2.0-70, fSelf.size.height/2.0+135, 240, 20) 
+                                         :  CGRectMake(fSelf.size.width/2.0+10, fSelf.size.height/2.0+90, 240, 20));
     _textNode4.frame = CGRectMake(_labelNode4.frame.origin.x, _labelNode4.frame.origin.y+10, _labelNode4.frame.size.width, 45);
     
     
-    _labelApp1.frame = iPad ? CGRectMake(frameSelf.size.width/2.0-210, frameSelf.size.height/2.0+230, 360, 20)
-                            : (portrait ? CGRectMake(frameSelf.size.width/2.0-140, frameSelf.size.height/2.0+85, 240, 20)
-                                        : CGRectMake(frameSelf.size.width/2.0-200, frameSelf.size.height/2.0+85, 240, 20));
+    _labelApp1.frame = iPad ? CGRectMake(fSelf.size.width/2.0-210, fSelf.size.height/2.0+230, 360, 20)
+                            : (portrait ? CGRectMake(fSelf.size.width/2.0-140, fSelf.size.height/2.0+85, 240, 20)
+                                        : CGRectMake(fSelf.size.width/2.0-200, fSelf.size.height/2.0+85, 240, 20));
     _textApp1.frame = CGRectMake(_labelApp1.frame.origin.x, _labelApp1.frame.origin.y+10, _labelApp1.frame.size.width, 45);
     
-    _labelApp2.frame = iPad ? CGRectMake(frameSelf.size.width/2.0-280, frameSelf.size.height/2.0+275, 360, 20)
-                            : (portrait ? CGRectMake(frameSelf.size.width/2.0-130, frameSelf.size.height/2.0-40, 280, 20) 
-                                        : CGRectMake(frameSelf.size.width/2.0-160, frameSelf.size.height/2.0-40, 280, 20));
+    _labelApp2.frame = iPad ? CGRectMake(fSelf.size.width/2.0-280, fSelf.size.height/2.0+275, 360, 20)
+                            : (portrait ? CGRectMake(fSelf.size.width/2.0-130, fSelf.size.height/2.0-40, 280, 20) 
+                                        : CGRectMake(fSelf.size.width/2.0-160, fSelf.size.height/2.0-40, 280, 20));
     _textApp2.frame = CGRectMake(_labelApp2.frame.origin.x, _labelApp2.frame.origin.y+10, _labelApp2.frame.size.width, 45);
     
-    _labelApp3.frame = iPad ? CGRectMake(frameSelf.size.width/2.0-120, frameSelf.size.height/2.0+320, 360, 20)
-                            : (portrait ? CGRectMake(frameSelf.size.width/2.0-40, frameSelf.size.height/2.0-180, 240, 20) 
-                                        : CGRectMake(frameSelf.size.width/2.0+45, frameSelf.size.height/2.0-122, 240, 20));
+    _labelApp3.frame = iPad ? CGRectMake(fSelf.size.width/2.0-120, fSelf.size.height/2.0+320, 360, 20)
+                            : (portrait ? CGRectMake(fSelf.size.width/2.0-40, fSelf.size.height/2.0-180, 240, 20) 
+                                        : CGRectMake(fSelf.size.width/2.0+45, fSelf.size.height/2.0-122, 240, 20));
     _textApp3.frame = CGRectMake(_labelApp3.frame.origin.x, _labelApp3.frame.origin.y+10, _labelApp3.frame.size.width, 45);
     
-    _labelApp4.frame = iPad ? CGRectMake(frameSelf.size.width-260, frameSelf.size.height-60, 220, 20)
-                            : (portrait ? CGRectMake(frameSelf.size.width-240, frameSelf.size.height-60, 240, 20) 
-                                        : CGRectMake(frameSelf.size.width-220, frameSelf.size.height-55, 220, 20));
+    _labelApp4.frame = iPad ? CGRectMake(fSelf.size.width-260, fSelf.size.height-60, 220, 20)
+                            : (portrait ? CGRectMake(fSelf.size.width-240, fSelf.size.height-60, 240, 20) 
+                                        : CGRectMake(fSelf.size.width-220, fSelf.size.height-55, 220, 20));
     _textApp4.frame = CGRectMake(_labelApp4.frame.origin.x, _labelApp4.frame.origin.y+10, _labelApp4.frame.size.width, 45);
     
     
     // page control
-    _pageControl.frame = CGRectMake(0, frameSelf.size.height-25, frameSelf.size.width, 30);
+    _pageControl.frame = CGRectMake(0, fSelf.size.height-25, fSelf.size.width, 30);
     _pageControl.numberOfPages = 4;
     
     
@@ -346,6 +349,9 @@
 /*
  * Rotate is the new black.
  */
+- (BOOL)shouldAutorotate {
+    return YES;
+}
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return YES;
 }

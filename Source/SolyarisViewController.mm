@@ -91,7 +91,7 @@
 
 // constants
 #define kDelayTimeNodeLoad              1.3f
-#define kDelayTimeStartup               3.3f
+#define kDelayTimeStartup               2.1f
 #define kAnimateTimeInformationLoad     0.45f
 #define kAnimateTimeInformationShow     (iPad ? 0.6f : 0.45f)
 #define kAnimateTimeInformationHide     (iPad ? 0.45f : 0.33f)
@@ -101,7 +101,7 @@
 #define kAnimateTimeSearchHide          0.3f
 #define kAnimateTimeSettingsShow        0.6f
 #define kAnimateTimeSettingsHide        0.3f
-#define kOffsetSettings                 480
+#define kOffsetSettings                 (iPad ? 480 : [[UIScreen mainScreen] bounds].size.height)
 #define kAlphaModalInfo                 0.3f
 #define kAlphaModalRelated              0.03f
 #define kAlphaModalSearch               0.03f
@@ -133,6 +133,7 @@
         
         // mode
         mode_settings = NO;
+        mode_splash = YES;
         
         // data
         NSMutableDictionary *dtaNodes = [[NSMutableDictionary alloc] init];
@@ -159,23 +160,33 @@
 	[super loadView];
 	FLog();
     
-    // window
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    // screen
+    CGRect screen = [[UIScreen mainScreen] bounds];
     
     // frames
-    CGRect frame = iPad ? CGRectMake(0, 0, 768, 1024) : CGRectMake(0, 0, 320, 480);
-    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
-        frame = iPad ? CGRectMake(0, 0, 1024, 768) : CGRectMake(0, 0, 480, 320);
-    }
-    CGRect frameSearchBar = CGRectMake(0, 0, frame.size.width, 40);
-    CGRect frameSearch = iPad ? CGRectMake(0, 40, 360,439) : CGRectMake(0, 40, 320,480-40);
-    CGRect frameInformation = iPad ? CGRectMake(0, 0, 580, 624) : CGRectMake(0, 0, 320, 480);
+    CGRect frame = CGRectMake(0, 0, screen.size.width, screen.size.height);
+    CGRect frameSearchBar = CGRectMake(0, 0, screen.size.width, 40);
+    CGRect frameSearch = iPad ? CGRectMake(0, 40, 360,439) : CGRectMake(0, 40, screen.size.width,screen.size.height-40);
+    CGRect frameInformation = iPad ? CGRectMake(0, 0, 580, 624) : CGRectMake(0, 0, screen.size.width, screen.size.height);
     CGRect frameRelated = iPad ? CGRectMake(0, 0, 320, 275) : CGRectMake(0, 0, 280, 275);
-    CGRect frameSettings = iPad ? CGRectMake(0, 0, 708, kOffsetSettings) : CGRectMake(0, 0, 320, kOffsetSettings);
-    CGRect frameSettingsButton = CGRectMake(frame.size.width-44, frame.size.height-44, 44, 44);
+    CGRect frameSettings = iPad ? CGRectMake(0, 0, 708, kOffsetSettings) : CGRectMake(0, 0, screen.size.width, screen.size.height);
+    CGRect frameSettingsButton = CGRectMake(screen.size.width-44, screen.size.height-44, 44, 44);
     
     
-    // view
+    // app window
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    [window setRootViewController:self];
+    
+    // cinder view
+    for (UIView *subview in window.subviews) {
+        if ([subview isKindOfClass:NSClassFromString(@"CinderViewCocoaTouch")]) {
+            _cinderView = (CinderViewCocoaTouch*) [subview retain];
+            break;
+        }
+    }
+    
+    
+    // controller 
     self.view = [[[UIView alloc] initWithFrame:frame] autorelease];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.view.opaque = NO;
@@ -183,6 +194,7 @@
     self.view.userInteractionEnabled = YES;
     self.view.backgroundColor = [UIColor clearColor];
     [window addSubview:self.view];
+    [window bringSubviewToFront:self.view];
     
     
     // background
@@ -256,15 +268,6 @@
     _buttonSettings = [btnSettings retain];
 	[self.view  addSubview:_buttonSettings];
     
-    
-    // fluff cinder view
-    for (UIView *subview in window.subviews) {
-        if ([subview isKindOfClass:NSClassFromString(@"CinderViewCocoaTouch")]) {
-            _cinderView = (CinderViewCocoaTouch*) [subview retain];
-            break;
-        }
-    }
-    
     // pinch gesture recognizer
     UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinched:)];
     [self.view addGestureRecognizer:pinchGesture];
@@ -284,11 +287,7 @@
     [self.view addSubview:splash];
     [self.view bringSubviewToFront:splash];
     [splash dismissSplash];
-    
-    // mode
-    mode_splash = iPad ? NO : YES; // avoids rotation
-    
-    
+
     // notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(activate) name: UIApplicationDidBecomeActiveNotification object:nil];
 
@@ -375,12 +374,7 @@
     
     // help
     [self performSelector:@selector(help) withObject:nil afterDelay:kDelayTimeStartup];
-    
-    // note deprecated
-    Note *deprecated = [Note retrieveNote:noteAppDeprecated];
-    if (deprecated) {
-        // ignore (messes up help view...)
-    }
+
 }
 
 
@@ -412,7 +406,7 @@
         // note
         [_noteView noteSuccess:updated.title message:updated.message];
         [_noteView showNoteAfterDelay:kDelayTimeStartup*1.25];
-        [_noteView dismissNoteAfterDelay:kDelayTimeStartup*1.25+3.9];
+        [_noteView dismissNoteAfterDelay:kDelayTimeStartup*1.25+2.4];
     }
 }
 
@@ -425,11 +419,16 @@
 /*
  * Rotate is the new black.
  */
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    
-    // maybe baby
-    return ! (mode_settings || mode_splash);
+- (NSUInteger)supportedInterfaceOrientations {
+    return mode_splash ? UIInterfaceOrientationMaskPortrait : UIInterfaceOrientationMaskAll;
 }
+- (BOOL)shouldAutorotate {
+    return ! (mode_splash || mode_settings);
+}
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return ! (mode_splash || mode_settings);
+}
+
 
 /*
  * Prepare rotation.
@@ -439,7 +438,7 @@
 
     // hide settings
     if (! iPad) {
-        _buttonSettings.hidden = (UIInterfaceOrientationIsLandscape(toInterfaceOrientation)) ? YES : NO;
+        _buttonSettings.hidden = (toInterfaceOrientation == UIInterfaceOrientationPortrait) ? NO : YES;
     }
 
 }
@@ -449,37 +448,39 @@
  * Prepare rotation animation.
  */
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    
-    // app
-    solyaris->applyDeviceOrientation(toInterfaceOrientation);
  
     // animate cinder
     [UIView beginAnimations:@"flip" context:nil];
     [UIView setAnimationDuration:0]; // animation distorts view
     
+    // screen
+    CGRect screen = [[UIScreen mainScreen] bounds];
+    
     // flip 
     if (toInterfaceOrientation == UIInterfaceOrientationPortrait) {      
         _cinderView.transform = CGAffineTransformIdentity;
         _cinderView.transform = CGAffineTransformMakeRotation(0);
-        _cinderView.bounds = iPad ? CGRectMake(0.0, 0.0, 768, 1024) : CGRectMake(0.0, 0.0, 320, 480);
+        _cinderView.bounds = CGRectMake(0.0, 0.0, screen.size.width, screen.size.height);
     }
     else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {      
         _cinderView.transform = CGAffineTransformIdentity;
         _cinderView.transform = CGAffineTransformMakeRotation(M_PI * 0.5);
-        _cinderView.bounds = iPad ? CGRectMake(0.0, 0.0, 1024, 768) : CGRectMake(0.0, 0.0, 480, 320);
+        _cinderView.bounds = CGRectMake(0.0, 0.0, screen.size.height, screen.size.width);
     }
     else if (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {      
         _cinderView.transform = CGAffineTransformIdentity;
         _cinderView.transform = CGAffineTransformMakeRotation(M_PI);
-        _cinderView.bounds = iPad ? CGRectMake(0.0, 0.0, 768, 1024) : CGRectMake(0.0, 0.0, 320, 480);
+        _cinderView.bounds = CGRectMake(0.0, 0.0, screen.size.width, screen.size.height);
     }
     else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft) {      
         _cinderView.transform = CGAffineTransformIdentity;
         _cinderView.transform = CGAffineTransformMakeRotation(- M_PI * 0.5);
-        _cinderView.bounds = iPad ? CGRectMake(0.0, 0.0, 1024, 768) : CGRectMake(0.0, 0.0, 480, 320);
+        _cinderView.bounds = CGRectMake(0.0, 0.0, screen.size.height, screen.size.width);
     }
     [UIView commitAnimations];
-
+    
+    // app
+    solyaris->applyDeviceOrientation(toInterfaceOrientation);
     
     // resize
     [_searchBarViewController resize];
@@ -1089,7 +1090,6 @@
         // adjust position
         Vec3d npos = solyaris->nodeCoordinates(node);
         CGPoint offset = [_relatedViewController position:npos.z posx:npos.x posy:npos.y];
-        NSLog(@"offset %f %f",offset.x,offset.y);
         solyaris->graphShift(offset.x,offset.y);
         
         // related
@@ -1931,7 +1931,6 @@
     
     // state
     mode_settings = YES;
-    
 	
 	// prepare controllers
 	[_settingsViewController viewWillAppear:YES];
