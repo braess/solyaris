@@ -32,12 +32,15 @@
 - (void)navigateForward;
 @end
 
-
+// Alerts
+enum {
+    HTMLAlertExternal
+};
 
 /**
  * HTMLView.
  */
-@interface HTMLView : UIView <UIWebViewDelegate> {
+@interface HTMLView : UIView <UIWebViewDelegate, UIAlertViewDelegate> {
     
 	// delegate
 	id<HTMLDelegate>delegate;
@@ -47,8 +50,11 @@
     
     // private
     @private
-    NSString *_home;
-    bool loaded;
+    NSMutableString *_home;
+    NSMutableString *_base;
+    NSMutableString *_external;
+    bool _loaded;
+    bool _based;
     
 }
 
@@ -61,6 +67,7 @@
 
 // Methods
 - (void)reset:(NSString*)home;
+- (void)base:(NSString*)base;
 - (void)load;
 - (void)loadURL:(NSString*)url;
 - (void)navigateHome;

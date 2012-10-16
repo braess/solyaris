@@ -275,6 +275,7 @@
     HTMLView *componentIMDb = [[HTMLView alloc] initWithFrame:componentFrame];
     componentIMDb.tag = TagInformationComponentIMDb;
     componentIMDb.hidden = YES;
+    [componentIMDb base:@"imdb"];
     
     // add imdb to content
     _componentIMDb = [componentIMDb retain];
@@ -285,6 +286,7 @@
     HTMLView *componentWikipedia = [[HTMLView alloc] initWithFrame:componentFrame];
     componentWikipedia.tag = TagInformationComponentWikipedia;
     componentWikipedia.hidden = YES;
+    [componentWikipedia base:@"wikipedia"];
     
     // add wikipedia to content
     _componentWikipedia = [componentWikipedia retain];
@@ -462,10 +464,8 @@
  */
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    FLog();
-    
-    // reset
-    [self swapReset];
+     FLog();
+
 }
 
 
@@ -487,6 +487,11 @@
     
     // dismiss
 	if (!mode_loading && delegate != nil && [delegate respondsToSelector:@selector(informationDismiss)]) {
+        
+        // reset
+        [self performSelector:@selector(swapReset) withObject:nil afterDelay:0.6];
+        
+        // dismiss
 		[delegate informationDismiss];
 	}
 }
@@ -975,6 +980,11 @@
     
     // dismiss
 	if (delegate != nil && [delegate respondsToSelector:@selector(informationDismiss)]) {
+        
+        // reset
+        [self performSelector:@selector(swapReset) withObject:nil afterDelay:0.6];
+        
+        // dismiss
 		[delegate informationDismiss];
 	}
 }

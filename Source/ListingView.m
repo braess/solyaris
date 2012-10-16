@@ -607,10 +607,6 @@
     // offsets
     float oxinfo = 5;
     float oxthumb = 0;
-    if (iOS4) {
-        oxinfo = -3;
-        oxthumb = -10;
-    }
     
     // size
     [_labelInfo sizeToFit];

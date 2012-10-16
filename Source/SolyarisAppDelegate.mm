@@ -179,9 +179,6 @@
     
     // synchronize
     [userDefaults synchronize];
-    
-    // check deprecated
-    [self deprecated];
 
 }
 
@@ -212,46 +209,13 @@
     // sync
 	[userDefaults synchronize];
     
-    // check deprecated
-    if (! [self deprecated]) {
-        
-        // note
-        Note *note = [[Note alloc] initNoteWithTitle:NSLocalizedString(@"Updated", @"Updated") message:[NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Solyaris", @"Solyaris"),appVersion ] type:noteTypeSuccess];
-        
-        // store
-        [Note storeNote:note key:noteAppUpdate];
-        [note release];
-    }
+    // note
+    Note *note = [[Note alloc] initNoteWithTitle:NSLocalizedString(@"Updated", @"Updated") message:[NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Solyaris", @"Solyaris"),appVersion ] type:noteTypeSuccess];
+    
+    // store
+    [Note storeNote:note key:noteAppUpdate];
+    [note release];
 
-}
-
-/*
- * Deprecated.
- */
-- (BOOL)deprecated {
-    
-    // ios4
-    if (iOS4) {
-        NSLog(@"Solyaris deprecated iOS4.");
-        
-        // track
-        [Tracker trackEvent:TEventApp action:@"Deprecated" label:@"ios4"];
-        
-        // note
-        Note *note = [[Note alloc] initNoteWithTitle:NULL message:NSLocalizedString(@"Thanks for using Solyaris. Please note that iOS4 is no longer fully supported.", @"Thanks for using Solyaris. Please note that iOS4 is no longer fully supported.") type:noteTypeInfo];
-        
-        // store
-        [Note storeNote:note key:noteAppDeprecated];
-        [note release];
-        
-        // yup
-        return YES;
-        
-    }
-    
-    // nop
-    return NO;
-    
 }
 
 

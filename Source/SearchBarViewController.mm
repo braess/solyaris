@@ -120,9 +120,6 @@
     
     // offset
     float oysbar = 0;
-    if (iOS4) {
-        oysbar = 1;
-    }
     
     // frames
     CGRect bgframe = CGRectMake(0, 0, fwidth, fheight);

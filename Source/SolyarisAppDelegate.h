@@ -35,7 +35,6 @@
 // Business
 - (void)update:(NSString*)appVersion;
 - (void)install:(NSString*)appVersion;
-- (BOOL)deprecated;
 
 // User Defaults
 - (void)resetUserDefaults;

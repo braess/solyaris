@@ -91,5 +91,3 @@
 #define iPad                            (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad)
 #define iPhone                          (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPhone)
 
-// System Version
-#define iOS4    ([[[UIDevice currentDevice] systemVersion] compare:@"5.0" options:NSNumericSearch] == NSOrderedAscending)

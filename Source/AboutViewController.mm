@@ -205,13 +205,11 @@
     }
     
     // add
-    if (! iOS4) {
-        [self.view addSubview:lbTMDb];
-        [self.view addSubview:lbIMDb];
-        [self.view addSubview:lbYouTube];
-        [self.view addSubview:lbWikipedia];
-        [self.view addSubview:lbCinder];
-    }
+    [self.view addSubview:lbTMDb];
+    [self.view addSubview:lbIMDb];
+    [self.view addSubview:lbYouTube];
+    [self.view addSubview:lbWikipedia];
+    [self.view addSubview:lbCinder];
     
     // release
     [lbTMDb release];

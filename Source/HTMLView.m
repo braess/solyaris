@@ -91,6 +91,19 @@
 		// add it
 		[self addSubview:_webView];
         
+        // fields
+        NSMutableString *home = [[NSMutableString alloc] init];
+        _home = [home retain];
+        [home release];
+        
+        NSMutableString *base = [[NSMutableString alloc] init];
+        _base = [base retain];
+        [base release];
+        
+        NSMutableString *external = [[NSMutableString alloc] init];
+        _external = [external retain];
+        [external release];
+        
         // reset
         [self reset:kHTMLViewHome];
         
@@ -109,10 +122,10 @@
 	FLog();
     
     // home sweet home
-    _home = [home retain];
+    [_home setString:home];
     
     // not loaded
-    loaded = NO;
+    _loaded = NO;
 	
 	// load request
     NSBundle *mainBundle = [NSBundle mainBundle];
@@ -124,15 +137,28 @@
 }
 
 /**
+ * Base.
+ */
+- (void)base:(NSString *)base {
+    FLog();
+    
+    // base
+    [_base setString:base];
+    
+    // mode
+    _based = YES;
+}
+
+/**
  * Loads the default home.
  */
 - (void)load {
     FLog();
     
     // check
-    if (! loaded) {
+    if (! _loaded) {
         [self navigateHome];
-        loaded = YES;
+        _loaded = YES;
     }
 }
 
@@ -171,6 +197,7 @@
     [_webView goForward];
 }
 
+
 /**
  * Scroll to top.
  */
@@ -202,8 +229,9 @@
  * Called when the webview finishes loading.
  */
 - (void)webViewDidFinishLoad:(UIWebView *)theWebView {
+    
     // don't miss home
-    if (loaded && [[_webView.request.URL scheme] isEqualToString:@"file"]) {
+    if (_loaded && [[_webView.request.URL scheme] isEqualToString:@"file"]) {
         [self navigateHome];
     }
 
@@ -215,7 +243,41 @@
  * Start Loading Request
  */
 - (BOOL)webView:(UIWebView *)theWebView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-	return YES;
+	
+    // restrict to base
+    if (_based && navigationType == UIWebViewNavigationTypeLinkClicked) {
+        
+        // url
+        NSString *url = [[request URL] absoluteString];
+        
+        // retstrict
+        if (! [[request.URL scheme] isEqualToString:@"file"] && [url rangeOfString:_base].location == NSNotFound) {
+            
+            // external link
+            [_external setString:url];
+            
+            // dispatch
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_current_queue(), ^{
+                
+                // alert
+                UIAlertView *alert = [[UIAlertView alloc]
+                                      initWithTitle:NSLocalizedString(@"Open in Safari?",@"Open in Safari?")
+                                      message:[NSString stringWithFormat:NSLocalizedString(@"External link:\n%@",@"External link:\n%@"), _external]
+                                      delegate:self
+                                      cancelButtonTitle:NSLocalizedString(@"Cancel",@"Cancel")
+                                      otherButtonTitles:NSLocalizedString(@"Open",@"Open"),nil];
+                [alert setTag:HTMLAlertExternal];
+                [alert show];
+                [alert release];
+            });
+            
+            // nop
+            return NO;
+        }
+    }
+    
+    // yes, please
+    return YES;
 }
 
 
@@ -229,6 +291,39 @@
 
 
 
+#pragma mark -
+#pragma mark UIAlertViewDelegate Delegate
+
+/*
+ * Alert view button clicked.
+ */
+- (void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+	FLog();
+	
+	// tag
+	switch ([actionSheet tag]) {
+            
+        // external
+		case HTMLAlertExternal: {
+            
+			// cancel
+			if (buttonIndex == 0) {
+			}
+			// open external
+			else {
+				[[UIApplication sharedApplication] openURL:[NSURL URLWithString:_external]];
+			}
+			break;
+		}
+            
+            // default
+		default: {
+			break;
+		}
+	}
+	
+}
+
 
 
 #pragma mark -
@@ -240,6 +335,11 @@
  */
 - (void)dealloc {	
 	GLog();
+    
+    // fields
+    [_home release];
+    [_base release];
+    [_external release];
 	
 	// release
 	[_webView release];

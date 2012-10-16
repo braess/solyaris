@@ -107,7 +107,7 @@
 		
 		// message
 		UITextView *noteMessage = [[UITextView alloc] initWithFrame:CGRectMake(inset, nvs/2.0, nvs-2*inset, nvs/2)];
-		noteMessage.contentInset = iOS4 ? UIEdgeInsetsMake(-5,0,0,0) : UIEdgeInsetsMake(0,-7,-20,-20);
+		noteMessage.contentInset = UIEdgeInsetsMake(0,-7,-20,-20);
         noteMessage.textAlignment = UITextAlignmentCenter;
         noteMessage.backgroundColor = [UIColor clearColor];
         noteMessage.font = [UIFont fontWithName:@"Helvetica" size:15.0];
