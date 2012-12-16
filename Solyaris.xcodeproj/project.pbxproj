@@ -481,7 +481,6 @@
 		1899F0181578F45E00D838B0 /* Genre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Genre.h; path = Source/Genre.h; sourceTree = "<group>"; };
 		1899F0191578F45E00D838B0 /* Genre.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Genre.m; path = Source/Genre.m; sourceTree = "<group>"; };
 		189EFE72145B4DA3009715B1 /* sample_click.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = sample_click.wav; path = Assets/sample_click.wav; sourceTree = "<group>"; };
-		189EFE76145B5204009715B1 /* Resources.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Resources.h; path = Source/Resources.h; sourceTree = "<group>"; };
 		18A26E64157CADB1006871B2 /* Rater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Rater.h; path = Source/Rater.h; sourceTree = "<group>"; };
 		18A26E65157CADB1006871B2 /* Rater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Rater.m; path = Source/Rater.m; sourceTree = "<group>"; };
 		18A65CD4140EC58E009962D7 /* placeholder_info_movie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = placeholder_info_movie.png; path = Assets/placeholder_info_movie.png; sourceTree = "<group>"; };
@@ -1102,7 +1101,6 @@
 				18AC0220143F2D1D0096259D /* Tooltip.cpp */,
 				181A9F08145ACFBA00ECADF3 /* Action.h */,
 				181A9F05145ACF8000ECADF3 /* Action.cpp */,
-				189EFE76145B5204009715B1 /* Resources.h */,
 			);
 			name = solyaris;
 			sourceTree = "<group>";

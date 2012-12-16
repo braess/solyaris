@@ -78,9 +78,6 @@ Graph::Graph(int w, int h, int o) {
     // background
     bg_portrait = gl::Texture(1,1);
     bg_landscape = gl::Texture(1,1);
-    
-    // sample
-    audioSampleClick = audio::load(loadResource(SAMPLE_CLICK));
 }
 
 
@@ -468,9 +465,6 @@ NodePtr Graph::touchBegan(Vec2d tpos, int tid) {
                 // set the action
                 this->action(tid);
                 
-                // sample
-                this->sample(sampleClick);
-                
                 // have a break
                 break;
                 
@@ -562,9 +556,6 @@ NodePtr Graph::doubleTap(Vec2d tpos, int tid) {
                 
                 // tapped
                 (*node)->tapped();
-                
-                // sample
-                this->sample(sampleClick);
               
                 // return
                 return (*node);
@@ -1064,28 +1055,3 @@ void Graph::action(int tid) {
     }
     
 }
-
-
-/**
- * Sample player.
- */
-void Graph::sample(int s) {
-    
-    // play it again sam
-    switch(s) {
-            // click
-        case sampleClick:
-            try {
-                audio::Output::play(audioSampleClick);
-            }
-            catch (...) {
-                // ignore
-            }
-            break;
-        default:
-            break;
-    }
-
-}
-
-

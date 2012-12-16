@@ -26,8 +26,6 @@
 #include "cinder/gl/Texture.h"
 #include "cinder/ImageIo.h"
 #include "cinder/Rand.h"
-#include "cinder/audio/Output.h"
-#include "cinder/audio/Io.h"
 #include "Node.h"
 #include "Edge.h"
 #include "Connection.h"
@@ -35,7 +33,6 @@
 #include "Action.h"
 #include "Configuration.h"
 #include "Defaults.h"
-#include "Resources.h"
 #include "I18N.h"
 #include <vector>
 #include <map>
@@ -105,7 +102,6 @@ class Graph {
     bool onStage(NodePtr n);
     void tooltip(int tid);
     void action(int tid);
-    void sample(int s);
     
     
     // private
@@ -169,9 +165,6 @@ class Graph {
     // configuration & settings
     Configuration conf;
     Defaults dflts;
-    
-    // samples
-    audio::SourceRef audioSampleClick;
     
     // translations
     I18N translations;
