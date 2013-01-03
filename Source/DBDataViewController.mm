@@ -51,7 +51,7 @@
 
 // accessors
 @synthesize delegate;
-@synthesize header;
+@synthesize header = _header;
 
 
 #pragma mark -
@@ -81,8 +81,8 @@
     
     // header
     HeaderView *hdr = [[HeaderView alloc] initWithFrame:fHeader];
-    header = [hdr retain];
-    [self.view addSubview:header];
+    self.header = hdr;
+    [self.view addSubview:self.header];
     [hdr release];
     
     // results
@@ -760,7 +760,7 @@
     FLog();
     
     // hide
-    header.back = ! hide;
+    self.header.back = ! hide;
 }
 
 /**
@@ -893,13 +893,13 @@
  * Deallocates used memory.
  */
 - (void)dealloc {
-    GLog();
+    FLog();
     
     // data
     [_data release];
     
     // ui
-    [header release];
+    [_header release];
     [_results release];
     [_loader release];
     [_notfound release];

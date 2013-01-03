@@ -35,6 +35,7 @@
 // Business
 - (void)update:(NSString*)appVersion;
 - (void)install:(NSString*)appVersion;
+- (void)launch:(NSString*)appVersion;
 
 // User Defaults
 - (void)resetUserDefaults;

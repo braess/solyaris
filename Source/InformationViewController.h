@@ -104,7 +104,6 @@ enum {
 @protocol InformationDelegate <NSObject>
 - (void)informationDismiss;
 - (void)informationSelected:(NSNumber*)nid type:(NSString*)type;
-- (bool)informationOrientationLandscape;
 @end
 
 

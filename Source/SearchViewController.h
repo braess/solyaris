@@ -29,10 +29,6 @@
 #import <QuartzCore/QuartzCore.h>
 
 
-// Declarations
-@class SearchNavigationController;
-
-
 /*
  * Delegate.
  */
@@ -97,6 +93,7 @@
 - (void)loadedPopular:(Popular*)popular more:(BOOL)more;
 - (void)loadedNowPlaying:(NowPlaying*)nowplaying more:(BOOL)more;
 - (void)loadedHistory:(NSArray*)history type:(NSString *)type;
+- (void)favorites:(NSString *)type;
 - (void)resize;
 - (void)reset;
 

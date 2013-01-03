@@ -44,29 +44,35 @@
 @end
 
 
+/**
+ * Controller Stack.
+ */
+@interface SolyarisViewController (ControllerStack)
+- (void)controllerSettings:(BOOL)show animated:(BOOL)animated;
+- (SettingsViewController*)controllerSettings;
+- (void)controllerSearch:(BOOL)show animated:(BOOL)animated;
+- (SearchViewController*)controllerSearch;
+- (void)controllerRelated:(BOOL)show animated:(BOOL)animated;
+- (RelatedViewController*)controllerRelated;
+- (void)controllerInformation:(BOOL)show animated:(BOOL)animated;
+- (InformationViewController*)controllerInformation;
+@end
+
 
 /**
- * Animation Stack.
+ * Transition Stack.
  */
-@interface SolyarisViewController (AnimationHelpers)
-- (void)animationInformationLoad;
-- (void)animationInformationLoadDone;
-- (void)animationInformationShow;
-- (void)animationInformationShowDone;
-- (void)animationInformationHide;
-- (void)animationInformationHideDone;
-- (void)animationRelatedShow;
-- (void)animationRelatedShowDone;
-- (void)animationRelatedHide;
-- (void)animationRelatedHideDone;
-- (void)animationSettingsShow;
-- (void)animationSettingsShowDone;
-- (void)animationSettingsHide;
-- (void)animationSettingsHideDone;
-- (void)animationSearchShow;
-- (void)animationSearchShowDone;
-- (void)animationSearchHide;
-- (void)animationSearchHideDone;
+@interface SolyarisViewController (TransitionStack)
+- (void)transitionSearch:(SearchViewController*)search animated:(BOOL)animated;
+- (void)transitionSearchDismiss:(SearchViewController*)search animated:(BOOL)animated;
+- (void)transitionSettings:(SettingsViewController*)settings animated:(BOOL)animated;
+- (void)transitionSettingsDismiss:(SettingsViewController*)settings animated:(BOOL)animated;
+- (void)transitionRelated:(RelatedViewController*)related animated:(BOOL)animated;
+- (void)transitionRelatedDismiss:(RelatedViewController*)related animated:(BOOL)animated;
+- (void)transitionInformation:(InformationViewController*)information animated:(BOOL)animated;
+- (void)transitionInformationLoader;
+- (void)transitionInformationLoaded:(InformationViewController*)information animated:(BOOL)animated;
+- (void)transitionInformationDismiss:(InformationViewController*)information animated:(BOOL)animated;
 @end
 
 
@@ -166,10 +172,6 @@
     // frames
     CGRect frame = CGRectMake(0, 0, screen.size.width, screen.size.height);
     CGRect frameSearchBar = CGRectMake(0, 0, screen.size.width, 40);
-    CGRect frameSearch = iPad ? CGRectMake(0, 40, 360,439) : CGRectMake(0, 40, screen.size.width,screen.size.height-40);
-    CGRect frameInformation = iPad ? CGRectMake(0, 0, 580, 624) : CGRectMake(0, 0, screen.size.width, screen.size.height);
-    CGRect frameRelated = iPad ? CGRectMake(0, 0, 320, 275) : CGRectMake(0, 0, 280, 275);
-    CGRect frameSettings = iPad ? CGRectMake(0, 0, 708, kOffsetSettings) : CGRectMake(0, 0, screen.size.width, screen.size.height);
     CGRect frameSettingsButton = CGRectMake(screen.size.width-44, screen.size.height-44, 44, 44);
     
     
@@ -186,7 +188,7 @@
     }
     
     
-    // controller 
+    // view 
     self.view = [[[UIView alloc] initWithFrame:frame] autorelease];
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.view.opaque = NO;
@@ -210,53 +212,11 @@
     // search
     SearchBarViewController *searchBarViewController = [[SearchBarViewController alloc] initWithFrame:frameSearchBar];
     searchBarViewController.delegate = self;
-    [searchBarViewController loadView];
     _searchBarViewController = [searchBarViewController retain];
+    [self addChildViewController:_searchBarViewController];
     [self.view addSubview:_searchBarViewController.view];
     [self.view bringSubviewToFront:_searchBarViewController.view];
     [searchBarViewController release];
-    
-    
-    // search
-    SearchViewController *searchViewController = [[SearchViewController alloc] initWithFrame:frameSearch];
-    searchViewController.delegate = self;
-    searchViewController.view.hidden = YES;
-    
-    _searchViewController = [searchViewController retain];
-    [self.view addSubview:_searchViewController.view];
-    [self.view sendSubviewToBack:_searchViewController.view];
-	[searchViewController release];
-
-    
-    // information
-    InformationViewController *informationViewController = [[InformationViewController alloc] initWithFrame:frameInformation];
-    informationViewController.delegate = self;
-    [informationViewController loadView];
-    _informationViewController = [informationViewController retain];
-    [self.view addSubview:_informationViewController.view];
-    [self.view sendSubviewToBack:_informationViewController.view];
-    [informationViewController release];
-    
-    
-    // related
-    RelatedViewController *relatedViewController = [[RelatedViewController alloc] initWithFrame:frameRelated];
-    relatedViewController.delegate = self;
-    relatedViewController.view.hidden = YES;
-    
-    _relatedViewController = [relatedViewController retain];
-    [self.view addSubview:_relatedViewController.view];
-    [self.view sendSubviewToBack:_relatedViewController.view];
-	[relatedViewController release];
-    
-    
-    // settings
-    SettingsViewController *settingsViewController = [[SettingsViewController alloc] initWithFrame:frameSettings];
-    settingsViewController.delegate = self;
-    [settingsViewController loadView];
-    _settingsViewController = [settingsViewController retain];
-    [self.view  addSubview:_settingsViewController.view];
-    [self.view  sendSubviewToBack:_settingsViewController.view];
-    [settingsViewController release];
     
 
     // button settings
@@ -305,9 +265,7 @@
     FLog();
     
     // track
-    if (_informationViewController.view.hidden && _settingsViewController.view.hidden) {
-        [Tracker trackPageView:@"/graph"];
-    }
+    [Tracker trackPageView:@"/graph"];
     
     // reset api
     [tmdb reset];
@@ -428,7 +386,7 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return ! (mode_splash || mode_settings);
 }
-
+ 
 
 /*
  * Prepare rotation.
@@ -482,27 +440,8 @@
     // app
     solyaris->applyDeviceOrientation(toInterfaceOrientation);
     
-    // resize
-    [_searchBarViewController resize];
-    [_searchViewController resize];
-    [_informationViewController resize];
-    [_relatedViewController resize];
 }
 
-
-/*
- * Cleanup rotation.
- */
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    GLog();
-    
-    // resize
-    [_searchBarViewController resize];
-    [_searchViewController resize];
-    [_informationViewController resize];
-    [_relatedViewController resize];
-    
-}
 
 
 #pragma mark -
@@ -538,11 +477,9 @@
 
 
 
+
 #pragma mark -
 #pragma mark Gestures
-
-
-
 
 /*
  * Pinched.
@@ -566,7 +503,10 @@
     DLog();
     
     // loaded
-    [_searchViewController loadedSearch:result];
+    SearchViewController *searchViewController = [self controllerSearch];
+    if (searchViewController) {
+        [searchViewController loadedSearch:result];
+    }
     
 }
 
@@ -577,7 +517,11 @@
     DLog();
 
     // loaded
-    [_searchViewController loadedPopular:popular more:more];
+    SearchViewController *searchViewController = [self controllerSearch];
+    if (searchViewController) {
+        [searchViewController loadedPopular:popular more:more];
+    }
+
 }
 
 /*
@@ -587,7 +531,11 @@
     DLog();
     
     // loaded
-    [_searchViewController loadedNowPlaying:nowplaying more:more];
+    SearchViewController *searchViewController = [self controllerSearch];
+    if (searchViewController) {
+        [searchViewController loadedNowPlaying:nowplaying more:more];
+    }
+
 }
 
 /*
@@ -597,7 +545,11 @@
     DLog();
     
     // loaded
-    [_searchViewController loadedHistory:history type:type];
+    SearchViewController *searchViewController = [self controllerSearch];
+    if (searchViewController) {
+        [searchViewController loadedHistory:history type:type];
+    }
+
 }
 
 
@@ -802,10 +754,16 @@
     NSArray *nodes = [_dta_nodes objectForKey:[self makeNodeId:movie.mid type:typeMovie]];
     
     // information
-    [_informationViewController informationMovie:movie nodes:nodes];
-    
-    // animate
-    [self animationInformationShow]; 
+    InformationViewController *informationViewController = [self controllerInformation];
+    if (informationViewController) {
+        
+        // info
+        [informationViewController informationMovie:movie nodes:nodes];
+        
+        // transition
+        [self transitionInformationLoaded:informationViewController animated:YES];
+    }
+
 }
 
 /*
@@ -814,8 +772,13 @@
 - (void)loadedMovieRelated:(Movie*)movie more:(BOOL)more {
     DLog();
     
+    // controller
+    RelatedViewController *relatedViewController = [self controllerRelated];
+    
     // loaded
-    [_relatedViewController loadedRelated:movie more:more];
+    if (relatedViewController) {
+        [relatedViewController loadedRelated:movie more:more];
+    }
 }
 
 /*
@@ -828,10 +791,16 @@
     NSArray *nodes = [_dta_nodes objectForKey:[self makeNodeId:person.pid type:typePerson]];
     
     // information
-    [_informationViewController informationPerson:person nodes:nodes];
-    
-    // animate
-    [self animationInformationShow]; 
+    InformationViewController *informationViewController = [self controllerInformation];
+    if (informationViewController) {
+        
+        // info
+        [informationViewController informationPerson:person nodes:nodes];
+        
+        // transition
+        [self transitionInformationLoaded:informationViewController animated:YES];
+    }
+
 }
 
 /*
@@ -1050,8 +1019,8 @@
         [_dta_nodes setObject:nodes forKey:nid];
         [nodes release];
         
-        // loader
-        [self animationInformationLoad];
+        // controller
+        [self controllerInformation:YES animated:YES];
         
         
         // movie
@@ -1087,21 +1056,26 @@
     NodePtr node = solyaris->getNode([nid UTF8String]);
     if (node->isActive()) {
         
-        // adjust position
-        Vec3d npos = solyaris->nodeCoordinates(node);
-        CGPoint offset = [_relatedViewController position:npos.z posx:npos.x posy:npos.y];
-        solyaris->graphShift(offset.x,offset.y);
+        // controller
+        [self controllerRelated:YES animated:YES];
         
-        // related
-        [_relatedViewController reset];
-        [_relatedViewController dataLoading];
-        
-        // query related
-        NSNumber *dbid = [self toDBId:nid];
-        [tmdb movieRelated:dbid more:NO];
-        
-        // show related
-        [self animationRelatedShow];
+        // prepare
+        RelatedViewController *relatedViewController = [self controllerRelated];
+        if (relatedViewController) {
+            
+            // adjust position
+            Vec3d npos = solyaris->nodeCoordinates(node);
+            CGPoint offset = [relatedViewController position:npos.z posx:npos.x posy:npos.y];
+            solyaris->graphShift(offset.x,offset.y);
+            
+            // related
+            [relatedViewController reset];
+            [relatedViewController dataLoading];
+            
+            // query related
+            NSNumber *dbid = [self toDBId:nid];
+            [tmdb movieRelated:dbid more:NO];
+        }
     }
 }
 
@@ -1129,33 +1103,15 @@
 #pragma mark -
 #pragma mark Actions
 
-
 /*
  * Settings.
  */
 - (void)actionSettings:(id)sender {
 	DLog();
 	
-	// animate
-    if (! mode_settings) {
-        
-        // track
-        [Tracker trackPageView:@"/settings"];
-        
-        // show
-        [self animationSettingsShow];
-    }
-    else {
-        
-        // track
-        [Tracker trackPageView:@"/graph"];
-        
-        // hide
-        [self animationSettingsHide];
-    }
+	// controller
+    [self controllerSettings:!mode_settings animated:YES];
 }
-
-
 
 
 
@@ -1173,8 +1129,7 @@
     [_searchBarViewController enable:NO];
     
     // un tab
-    [self animationSearchHide];
-    
+    [self controllerSearch:NO animated:YES];
     
     // node
     NSString *nid = [self makeNodeId:data.ref type:data.type];
@@ -1218,7 +1173,7 @@
     [_searchBarViewController enable:NO];
     
     // hide
-    [self animationSearchHide];
+    [self controllerSearch:NO animated:YES];
 }
 
 
@@ -1234,20 +1189,14 @@
     FLog();
     
     // show
-    [self animationSearchShow];
+    [self controllerSearch:YES animated:YES];
     
-}
-- (void)searchBarChanged:(NSString*)txt {
-    GLog();
-    
-    // reset
-    [_searchViewController searchChanged:txt];
 }
 - (void)searchBarCancel {
     FLog();
     
     // hide
-    [self animationSearchHide];
+    [self controllerSearch:NO animated:YES];
 }
 
 
@@ -1265,9 +1214,11 @@
     // track
     [Tracker trackEvent:TEventSearch action:type label:q];
     
-    // reset
-    [_searchViewController dataLoading];
-    
+    // loading    
+    SearchViewController *searchViewController = [self controllerSearch];
+    if (searchViewController) {
+        [searchViewController dataLoading];
+    }
     
     // api
     if ([type isEqualToString:typePerson]) {
@@ -1285,19 +1236,10 @@
 - (void)popular:(NSString*)type more:(BOOL)more {
     FLog();
     
-    // track
-    [Tracker trackEvent:TEventSearch action:@"Popular" label:type];
-    
-    // loading
-    if (!more) {
-        [_searchViewController dataLoading];
-    }
-    
     // api
     if ([type isEqualToString:typeMovie]) {
         [tmdb popularMovies:more];
     }
-
 }
 
 /*
@@ -1306,19 +1248,10 @@
 - (void)nowPlaying:(NSString*)type more:(BOOL)more {
     FLog();
     
-    // track
-    [Tracker trackEvent:TEventSearch action:@"Now Playing" label:type];
-    
-    // loading
-    if (!more) {
-        [_searchViewController dataLoading];
-    }
-    
     // api
     if ([type isEqualToString:typeMovie]) {
         [tmdb nowPlaying:more];
     }
-    
 }
 
 /*
@@ -1327,12 +1260,6 @@
 - (void)history:(NSString *)type {
     FLog();
     
-    // track
-    [Tracker trackEvent:TEventSearch action:@"History" label:type];
-    
-    // loading
-    [_searchViewController dataLoading];
-    
     // api
     if ([type isEqualToString:typeMovie]) {
         [tmdb historyMovie];
@@ -1340,9 +1267,7 @@
     else if ([type isEqualToString:typePerson]) {
         [tmdb historyPerson];
     }
-    
 }
-
 
 
 /*
@@ -1437,16 +1362,9 @@
     // track
     [Tracker trackPageView:@"/graph"];
     
-    // hide
-    [self animationInformationHide];
-}
+    // controller
+    [self controllerInformation:NO animated:YES];
 
-
-/*
- * Orientation landscape.
- */
-- (bool)informationOrientationLandscape {
-    return (self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft || self.interfaceOrientation == UIInterfaceOrientationLandscapeRight);
 }
 
 
@@ -1461,8 +1379,8 @@
 - (void)relatedSelected:(DBData*)data {
     FLog();
     
-    // hide related
-    [self animationRelatedHide];
+    // controller
+    [self controllerRelated:NO animated:YES];
     
     // source
     NSString *sid = [self makeNodeId:data.src type:typeMovie];
@@ -1527,8 +1445,8 @@
 - (void)relatedClose {
     FLog();
     
-    // hide related
-    [self animationRelatedHide];
+    // controller
+    [self controllerRelated:NO animated:YES];
 }
 
 
@@ -1547,7 +1465,7 @@
     [Tracker trackPageView:@"/graph"];
     
     // hide
-    [self animationSettingsHide];
+    [self actionSettings:self];
 }
 
 /*
@@ -1572,8 +1490,11 @@
     // images
     [CacheImageView clearCache];
     
-    // search
-    [_searchViewController reset];
+    // defaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:udSearchSection];
+    [defaults removeObjectForKey:udSearchType];
+    [defaults synchronize];
     
     // reset 
     [self reset];
@@ -1614,334 +1535,358 @@
 
 
 
+#pragma mark -
+#pragma mark Controllers
+
+/*
+ * Controller search.
+ */
+- (void)controllerSearch:(BOOL)show animated:(BOOL)animated {
+    FLog();
+    
+    // search
+    if (show) {
+        
+        // frames
+        CGRect fSelf = self.view.frame;
+        CGRect frameSearch = iPad ? CGRectMake(0, 40, 360,439) : CGRectMake(0, 40, fSelf.size.width,fSelf.size.height-40);
+        
+        // controller
+        SearchViewController *searchViewController = [[SearchViewController alloc] initWithFrame:frameSearch];
+        searchViewController.delegate = self;
+        
+        // transition
+        [self transitionSearch:searchViewController animated:animated];
+        [searchViewController release];
+    }
+    // dismiss
+    else {
+        
+        // controller
+        SearchViewController *searchViewController = [self controllerSearch];
+        searchViewController.delegate = nil;
+        
+        // transition
+        if (searchViewController) {
+            [self transitionSearchDismiss:searchViewController animated:animated];
+        }
+        
+    }
+}
+- (SearchViewController*)controllerSearch {
+    SearchViewController *searchViewController = nil;
+    for (UIViewController *controller in self.childViewControllers) {
+        if ([controller isKindOfClass:NSClassFromString(@"SearchViewController")]) {
+            searchViewController = (SearchViewController*) controller;
+            break;
+        }
+    }
+    return searchViewController;
+}
+
+
+/*
+ * Controller information.
+ */
+- (void)controllerInformation:(BOOL)show animated:(BOOL)animated {
+    FLog();
+    
+    // information
+    if (show) {
+        
+        // frame
+        CGRect fSelf = self.view.frame;
+        CGRect frameInformation = iPad ? CGRectMake(0, 0, 580, 624) : CGRectMake(0, 0, fSelf.size.width, fSelf.size.height);
+        
+        // information
+        InformationViewController *informationViewController = [[InformationViewController alloc] initWithFrame:frameInformation];
+        informationViewController.delegate = self;
+        
+        // transition
+        [self transitionInformation:informationViewController animated:animated];
+        [informationViewController release];
+    }
+    // dismiss
+    else {
+        
+        // controller
+        InformationViewController *informationViewController = [self controllerInformation];
+        informationViewController.delegate = nil;
+        
+        // transition
+        if (informationViewController) {
+            [self transitionInformationDismiss:informationViewController animated:animated];
+        }
+    }
+}
+- (InformationViewController*)controllerInformation {
+    InformationViewController *informationViewController = nil;
+    for (UIViewController *controller in self.childViewControllers) {
+        if ([controller isKindOfClass:NSClassFromString(@"InformationViewController")]) {
+            informationViewController = (InformationViewController*) controller;
+            break;
+        }
+    }
+    return informationViewController;
+}
+
+/*
+ * Controller settings.
+ */
+- (void)controllerSettings:(BOOL)show animated:(BOOL)animated {
+    FLog();
+    
+    // settings
+    if (show) {
+        
+        // frame
+        CGRect fSelf = self.view.frame;
+        CGRect frameSettings = iPad ? CGRectMake(0, 0, 708, kOffsetSettings) : CGRectMake(0, 0, fSelf.size.width, fSelf.size.height);
+        
+        // settings
+        SettingsViewController *settingsViewController = [[SettingsViewController alloc] initWithFrame:frameSettings];
+        settingsViewController.delegate = self;
+        
+        // transition
+        [self transitionSettings:settingsViewController animated:animated];
+        [settingsViewController release];
+    }
+    // dismiss
+    else {
+        
+        // controller
+        SettingsViewController *settingsViewController = [self controllerSettings];
+        settingsViewController.delegate = nil;
+        
+        // transition
+        if (settingsViewController) {
+            [self transitionSettingsDismiss:settingsViewController animated:animated];
+        }
+    }
+}
+- (SettingsViewController*)controllerSettings {
+    SettingsViewController *settingsViewController = nil;
+    for (UIViewController *controller in self.childViewControllers) {
+        if ([controller isKindOfClass:NSClassFromString(@"SettingsViewController")]) {
+            settingsViewController = (SettingsViewController*) controller;
+            break;
+        }
+    }
+    return settingsViewController;
+}
+
+
+/*
+ * Controller related.
+ */
+- (void)controllerRelated:(BOOL)show animated:(BOOL)animated {
+    FLog();
+    
+    // related
+    if (show) {
+        
+        // frame
+        CGRect frameRelated = iPad ? CGRectMake(0, 0, 320, 275) : CGRectMake(0, 0, 280, 275);
+        
+        // controller
+        RelatedViewController *relatedViewController = [[RelatedViewController alloc] initWithFrame:frameRelated];
+        relatedViewController.delegate = self;
+        
+        // transition
+        [self transitionRelated:relatedViewController animated:animated];
+        [relatedViewController release];
+    }
+    // dismiss
+    else {
+        
+        // controller
+        RelatedViewController *relatedViewController = [self controllerRelated];
+        relatedViewController.delegate = nil;
+        
+        // transition
+        if (relatedViewController) {
+            [self transitionRelatedDismiss:relatedViewController animated:animated];
+        }
+        
+    }
+    
+}
+- (RelatedViewController*)controllerRelated {
+    RelatedViewController *relatedViewController = nil;
+    for (UIViewController *controller in self.childViewControllers) {
+        if ([controller isKindOfClass:NSClassFromString(@"RelatedViewController")]) {
+            relatedViewController = (RelatedViewController*) controller;
+            break;
+        }
+    }
+    return relatedViewController;
+}
+
+
 
 #pragma mark -
-#pragma mark Animations
+#pragma mark Transitions
 
-
-/**
- * Shows the information loader.
+/*
+ * Transition search.
  */
-- (void)animationInformationLoad {
-	GLog();
-	
-    // prepare controllers
-	[_informationViewController viewWillAppear:YES];
-    
-	// prepare views
-    _informationViewController.view.hidden = NO;
-	_informationViewController.modalView.alpha = 0.0f;
-    [self.view bringSubviewToFront:_informationViewController.view];
-    
-	// animate
-	[UIView beginAnimations:@"information_load" context:nil];
-	[UIView setAnimationDuration:kAnimateTimeInformationLoad];
-    _informationViewController.modalView.alpha = kAlphaModalInfo;
-	[UIView commitAnimations];
-    
-	// clean it up
-	[self performSelector:@selector(animationInformationLoadDone) withObject:nil afterDelay:kAnimateTimeInformationLoad];
-}
-- (void)animationInformationLoadDone {
-	GLog();
-    
-    // starts the loader
-    [_informationViewController loading:YES];
-    
-}
-
-
-/**
- * Shows the information.
- */
-- (void)animationInformationShow {
-	GLog();
-    
-    // cancel
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(animationInformationLoad) object:nil];
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(animationInformationLoadDone) object:nil];
-    
-	// offset
-    CGPoint informationCenter = _informationViewController.contentView.center;
-    informationCenter.y += self.view.frame.size.height;
-    _informationViewController.contentView.center = informationCenter;
-
-    informationCenter.y -= self.view.frame.size.height;
-    
-    
-    // prepare controlers
-    [_informationViewController loading:NO];
-    
-    // prepare views
-    _informationViewController.view.hidden = NO;
-    [self.view bringSubviewToFront:_informationViewController.view];
-    
-    
-	// animate
-	[UIView beginAnimations:@"information_show" context:nil];
-	[UIView setAnimationDuration:kAnimateTimeInformationShow];
-    _informationViewController.modalView.alpha = kAlphaModalInfo;
-    _informationViewController.contentView.center = informationCenter;
-	[UIView commitAnimations];
-    
-	// clean it up
-	[self performSelector:@selector(animationInformationShowDone) withObject:nil afterDelay:kAnimateTimeInformationShow];
-}
-- (void)animationInformationShowDone {
-	GLog();
-    
-    // here you are
-    [_informationViewController viewDidAppear:YES];
-    
-}
-
-
-/**
- * Hides the information.
- */
-- (void)animationInformationHide {
-	GLog();
-	
-	// prepare controllers
-	[_informationViewController viewWillDisappear:YES];
-    
-    // calculate centers
-    CGPoint informationCenter = _informationViewController.contentView.center;
-    informationCenter.y += self.view.frame.size.height;
-    
-	// animate
-	[UIView beginAnimations:@"information_hide" context:nil];
-	[UIView setAnimationDuration:kAnimateTimeInformationHide];
-     _informationViewController.modalView.alpha = 0.0f;
-    _informationViewController.contentView.center = informationCenter;
-	[UIView commitAnimations];
-    
-	// clean it up
-	[self performSelector:@selector(animationInformationHideDone) withObject:nil afterDelay:kAnimateTimeInformationHide];
-}
-- (void)animationInformationHideDone {
-	GLog();
-    
-    // view
-	[_informationViewController.view setHidden:YES];
-    [_informationViewController.contentView setHidden:YES];
-    [self.view sendSubviewToBack:_informationViewController.view];
-    
-    // controller
-    [_informationViewController viewDidDisappear:YES];
-    
-    // center
-    CGPoint informationCenter = _informationViewController.contentView.center;
-    informationCenter.y -= self.view.frame.size.height;
-    _informationViewController.contentView.center = informationCenter;
-    
-    // modal
-     _informationViewController.modalView.alpha = 0.0f;
-    
-}
-
-
-/**
- * Shows the search.
- */
-- (void)animationSearchShow {
-	GLog();
+- (void)transitionSearch:(SearchViewController*)search animated:(BOOL)animated {
+    FLog();
     
     // state
     mode_search = YES;
-	
-	// prepare controllers
-	[_searchViewController viewWillAppear:YES];
     
-	// prepare views
-    _searchViewController.view.hidden = NO;
-    [self.view bringSubviewToFront:_searchViewController.view];
+    // controller
+    [self addChildViewController:search];
+    [self.view addSubview:search.view];
+    [self.view bringSubviewToFront:search.view];
     
-    // modal view
-    _searchViewController.modalView.alpha = 0.0f;
+    // prepare
+    search.modalView.alpha = 0.0f;
     
     // content view
-    CGRect contentFrame = _searchViewController.contentView.frame;
+    CGRect contentFrame = search.contentView.frame;
     contentFrame.origin.y = self.view.frame.size.height;
-    _searchViewController.contentView.frame = contentFrame;
+    search.contentView.frame = contentFrame;
     
     contentFrame.origin.y = 0;
     
-	// animate
-	[UIView beginAnimations:@"search_show" context:nil];
-	[UIView setAnimationDuration:kAnimateTimeSearchShow];
-    _searchViewController.modalView.alpha = kAlphaModalSearch;
-    _searchViewController.contentView.frame = contentFrame;
-	[UIView commitAnimations];
-    
-	// clean it up
-	[self performSelector:@selector(animationSearchShowDone) withObject:nil afterDelay:kAnimateTimeSearchShow];
+    // animate
+    [UIView animateWithDuration:animated ? kAnimateTimeSearchShow : 0
+                     animations:^{
+                         search.modalView.alpha = kAlphaModalSearch;
+                         search.contentView.frame = contentFrame;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
 }
-- (void)animationSearchShowDone {
-	GLog();
+- (void)transitionSearchDismiss:(SearchViewController*)search animated:(BOOL)animated {
+    FLog();
     
-    // appeared
-    [_searchViewController viewDidAppear:YES];
-    
-}
-
-
-/**
- * Hides the search.
- */
-- (void)animationSearchHide {
-	GLog();
-	
-	// prepare controllers
-	[_searchViewController viewWillDisappear:YES];
-    
-    // content view
-    CGRect contentFrame = _searchViewController.contentView.frame;
+    // prepare
+    CGRect contentFrame = search.contentView.frame;
     contentFrame.origin.y = self.view.frame.size.height;
     
-	// animate
-	[UIView beginAnimations:@"search_hide" context:nil];
-	[UIView setAnimationDuration:kAnimateTimeSearchHide];
-    _searchViewController.modalView.alpha = 0.0f;
-    _searchViewController.contentView.frame = contentFrame;
-	[UIView commitAnimations];
-    
-	// clean it up
-	[self performSelector:@selector(animationSearchHideDone) withObject:nil afterDelay:kAnimateTimeSearchHide];
+    // animate
+    [search willMoveToParentViewController:nil];
+    [UIView animateWithDuration:animated ? kAnimateTimeSearchHide : 0
+                     animations:^{
+                         search.modalView.alpha = 0.0f;
+                         search.contentView.frame = contentFrame;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         // controller
+                         [search.view removeFromSuperview];
+                         [search removeFromParentViewController];
+                         
+                         // state
+                         mode_search = NO;
+                     }];
 }
-- (void)animationSearchHideDone {
-	GLog();
-    
-    // view
-	[_searchViewController.view setHidden:YES];
-    [self.view sendSubviewToBack:_searchViewController.view];
+
+/*
+ * Transition information.
+ */
+- (void)transitionInformation:(InformationViewController *)information animated:(BOOL)animated {
+    FLog();
     
     // controller
-    [_searchViewController viewDidDisappear:YES];
+    [self addChildViewController:information];
+    [self.view addSubview:information.view];
+    [self.view bringSubviewToFront:information.view];
     
-    // state
-    mode_search = NO;
+    // prepare
+    information.modalView.alpha = 0.0f;
+    information.contentView.hidden = YES;
     
-}
-
-
-
-
-/**
- * Shows the related.
- */
-- (void)animationRelatedShow {
-	GLog();
-    
-    // mode
-    if (mode_animating) {
-        return;
-    }
-    mode_animating = YES;
-    
-    // prepare controllers
-	[_relatedViewController viewWillAppear:YES];
-    
-    // prepare views
-    _relatedViewController.view.hidden = NO;
-    _relatedViewController.modalView.alpha = 0.0f;
-    _relatedViewController.contentView.alpha = 0.0f;
-    [self.view bringSubviewToFront:_relatedViewController.view];
     
     // animate
-	[UIView beginAnimations:@"related_show" context:nil];
-	[UIView setAnimationDuration:kAnimateTimeRelatedShow];
-    _relatedViewController.modalView.alpha = kAlphaModalRelated;
-    _relatedViewController.contentView.alpha = 1.0f;
-	[UIView commitAnimations];
+    [UIView animateWithDuration:animated ? kAnimateTimeInformationLoad : 0
+                     animations:^{
+                         information.modalView.alpha = kAlphaModalInfo;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
     
-    // clean it up
-	[self performSelector:@selector(animationRelatedShowDone) withObject:nil afterDelay:kAnimateTimeRelatedShow];
-
+    // loader
+    [self performSelector:@selector(transitionInformationLoader) withObject:nil afterDelay:animated ? kAnimateTimeInformationLoad : 0];
+    
 }
-- (void)animationRelatedShowDone {
+- (void)transitionInformationLoader {
 	GLog();
     
-    // mode
-    mode_animating = NO;
-    
-    // controller
-    [_relatedViewController viewDidAppear:YES];
-}
-
-
-/**
- * Hides the related.
- */
-- (void)animationRelatedHide {
-	GLog();
-    
-    // mode
-    if (mode_animating || _relatedViewController.view.hidden) {
-        return;
+    // loader
+    InformationViewController *informationViewController = [self controllerInformation];
+    if (informationViewController) {
+        [informationViewController loading:YES];
     }
-    mode_animating = YES;
-	
-	// prepare controllers
-	[_relatedViewController viewWillDisappear:YES];
     
-    // prepare views
-    _relatedViewController.view.hidden = NO;
-    _relatedViewController.modalView.alpha = kAlphaModalRelated;
-    _relatedViewController.contentView.alpha = 1.0f;
-    [self.view bringSubviewToFront:_relatedViewController.view];
+}
+- (void)transitionInformationLoaded:(InformationViewController*)information animated:(BOOL)animated; {
+	FLog();
+    
+    // stop loader
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(transitionInformationLoader) object:nil];
+    [information loading:NO];
+    
+    // prepare
+    CGPoint informationCenter = information.contentView.center;
+    informationCenter.y += self.view.frame.size.height;
+    information.contentView.center = informationCenter;
+    information.contentView.hidden = NO;
+    
+    informationCenter.y -= self.view.frame.size.height;
     
     // animate
-	[UIView beginAnimations:@"related_hide" context:nil];
-	[UIView setAnimationDuration:kAnimateTimeRelatedHide];
-    _relatedViewController.modalView.alpha = 0.0f;
-    _relatedViewController.contentView.alpha = 0.0f;
-	[UIView commitAnimations];
+    [UIView beginAnimations:@"information_show" context:nil];
+    [UIView setAnimationDuration:kAnimateTimeInformationShow];
+    information.modalView.alpha = kAlphaModalInfo;
+    information.contentView.center = informationCenter;
+    [UIView commitAnimations];
     
-    // clean it up
-	[self performSelector:@selector(animationRelatedHideDone) withObject:nil afterDelay:kAnimateTimeRelatedHide];
-    
-
 }
-- (void)animationRelatedHideDone {
-	GLog();
+- (void)transitionInformationDismiss:(InformationViewController *)information animated:(BOOL)animated {
+    FLog();
     
-    // mode
-    mode_animating = NO;
+    // prepare
+    CGPoint informationCenter = information.contentView.center;
+    informationCenter.y += self.view.frame.size.height;
     
-    // view
-	[_relatedViewController.view setHidden:YES];
-    _relatedViewController.modalView.alpha = 0.0f;
-    _relatedViewController.contentView.alpha = 0.0f;
-    [self.view sendSubviewToBack:_relatedViewController.view];
-    
-    // controller
-    [_relatedViewController viewDidDisappear:YES];
+    // animate
+    [information willMoveToParentViewController:nil];
+    [UIView animateWithDuration:animated ? kAnimateTimeInformationHide : 0
+                     animations:^{
+                         information.modalView.alpha = 0.0f;
+                         information.contentView.center = informationCenter;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         // controller
+                         [information.view removeFromSuperview];
+                         [information removeFromParentViewController];
 
+                     }];
 }
 
-
-
-
-/**
- * Shows the settings.
+/*
+ * Transition settings.
  */
-- (void)animationSettingsShow {
-	GLog();
+- (void)transitionSettings:(SettingsViewController*)settings animated:(BOOL)animated {
+    FLog();
     
     // state
     mode_settings = YES;
-	
-	// prepare controllers
-	[_settingsViewController viewWillAppear:YES];
     
-    // prepare views
-    [_settingsViewController.view setHidden:NO];
+    // controller
+    [self addChildViewController:settings];
+    [self.view addSubview:settings.view];
+    [self.view bringSubviewToFront:settings.view];
     
     // calculate centers
-    CGPoint settingsCenter = _settingsViewController.contentView.center;
+    CGPoint settingsCenter = settings.contentView.center;
     settingsCenter.y += kOffsetSettings;
-    _settingsViewController.contentView.center = settingsCenter;
+    settings.contentView.center = settingsCenter;
     settingsCenter.y -= kOffsetSettings;
     
     CGPoint searchCenter = _searchBarViewController.view.center;
@@ -1964,43 +1909,23 @@
     else {
         cinderCenter.y -= kOffsetSettings;
     }
-
     
-    // animate 
-	[UIView beginAnimations:@"settings_show" context:nil];
-	[UIView setAnimationDuration:kAnimateTimeSettingsShow];
-    _settingsViewController.contentView.center = settingsCenter;
-    _searchBarViewController.view.center = searchCenter;
-    _buttonSettings.center = buttonCenter;
-    _cinderView.center = cinderCenter;
-	[UIView commitAnimations];
-
-	// clean it up
-	[self performSelector:@selector(animationSettingsShowDone) withObject:nil afterDelay:kAnimateTimeSettingsShow];
+    // animate
+    [UIView animateWithDuration:animated ? kAnimateTimeSettingsShow : 0
+                     animations:^{
+                         settings.contentView.center = settingsCenter;
+                         _searchBarViewController.view.center = searchCenter;
+                         _buttonSettings.center = buttonCenter;
+                         _cinderView.center = cinderCenter;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
 }
-- (void)animationSettingsShowDone {
-	GLog();
-    
-    // appeared
-    [_settingsViewController viewDidAppear:YES];
-    
-}
-
-
-/**
- * Hides the information.
- */
-- (void)animationSettingsHide {
-	GLog();
-    
-    // state
-    mode_settings = NO;
-	
-	// prepare controllers
-	[_settingsViewController viewWillDisappear:YES];
+- (void)transitionSettingsDismiss:(SettingsViewController *)settings animated:(BOOL)animated {
+    FLog();
     
     // calculate centers
-    CGPoint settingsCenter = _settingsViewController.contentView.center;
+    CGPoint settingsCenter = settings.contentView.center;
     settingsCenter.y += kOffsetSettings;
     
     CGPoint searchCenter = _searchBarViewController.view.center;
@@ -2024,35 +1949,71 @@
         cinderCenter.y += kOffsetSettings;
     }
     
-    // animate 
-	[UIView beginAnimations:@"settings_hide" context:nil];
-	[UIView setAnimationDuration:kAnimateTimeSettingsHide];
-    _settingsViewController.contentView.center = settingsCenter;
-    _searchBarViewController.view.center = searchCenter;
-    _buttonSettings.center = buttonCenter;
-    _cinderView.center = cinderCenter;
-	[UIView commitAnimations];
-    
-    
-	// clean it up
-	[self performSelector:@selector(animationSettingsHideDone) withObject:nil afterDelay:kAnimateTimeSettingsHide];
+    // animate
+    [settings willMoveToParentViewController:nil];
+    [UIView animateWithDuration:animated ? kAnimateTimeSettingsHide : 0
+                     animations:^{
+                         settings.contentView.center = settingsCenter;
+                         _searchBarViewController.view.center = searchCenter;
+                         _buttonSettings.center = buttonCenter;
+                         _cinderView.center = cinderCenter;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         // controller
+                         [settings.view removeFromSuperview];
+                         [settings removeFromParentViewController];
+                         
+                         // state
+                         mode_settings = NO;
+                     }];
 }
-- (void)animationSettingsHideDone {
-	GLog();
-    
-    // view
-    [_settingsViewController.view setHidden:YES];
-    
-    CGPoint settingsCenter = _settingsViewController.contentView.center;
-    settingsCenter.y -= kOffsetSettings;
-    _settingsViewController.contentView.center = settingsCenter;
+
+/*
+ * Transition related.
+ */
+- (void)transitionRelated:(RelatedViewController *)related animated:(BOOL)animated {
+    FLog();
     
     // controller
-    [_settingsViewController viewDidDisappear:YES];
+    [self addChildViewController:related];
+    [self.view addSubview:related.view];
+    [self.view bringSubviewToFront:related.view];
     
+    // prepare
+    related.modalView.alpha = 0.0f;
+    related.contentView.alpha = 0.0f;
+    
+    // animate
+    [UIView animateWithDuration:animated ? kAnimateTimeRelatedShow : 0
+                     animations:^{
+                         related.modalView.alpha = kAlphaModalRelated;
+                         related.contentView.alpha = 1.0f;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
 }
-
-
+- (void)transitionRelatedDismiss:(RelatedViewController *)related animated:(BOOL)animated {
+    FLog();
+    
+    // prepare
+    related.modalView.alpha = kAlphaModalRelated;
+    related.contentView.alpha = 1.0f;
+    
+    // animate
+    [related willMoveToParentViewController:nil];
+    [UIView animateWithDuration:animated ? kAnimateTimeRelatedHide : 0
+                     animations:^{
+                         related.modalView.alpha = 0.0f;
+                         related.contentView.alpha = 0.0f;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         // controller
+                         [related.view removeFromSuperview];
+                         [related removeFromParentViewController];
+                     }];
+}
 
 
 #pragma mark -
@@ -2171,7 +2132,7 @@
 			break;
 		}
             
-            // default
+        // default
 		default:
 			break;
 	}
@@ -2194,10 +2155,6 @@
     // controllers
     [_noteView release];
     [_searchBarViewController release];
-    [_searchViewController release];
-    [_informationViewController release];
-    [_relatedViewController release];
-    [_settingsViewController release];
     
     // data
     [_dta_nodes release];

@@ -167,8 +167,6 @@
         _localizationPopoverController = [locPopoverController retain];
         [locPopoverController release];
     }
-
-    
     [locViewController release];
     [locNavigationController release];
     
@@ -787,7 +785,7 @@
  * Deallocates all used memory.
  */
 - (void)dealloc {
-	GLog();
+	FLog();
     
     // self
 	[_localizationPopoverController release];

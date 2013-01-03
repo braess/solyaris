@@ -62,7 +62,12 @@
 #define udGraphEdgeLength               @"graph_edge_length"	
 #define udSearchTerm                    @"search_term"	
 #define udSearchType                    @"search_type"
-
+#define udSearchSection                 @"search_section"
+#define udvSectionSearch                @"section_search"
+#define udvSectionPopular               @"section_popular"
+#define udvSectionNowPlaying            @"section_nowplaying"
+#define udvSectionFavorites             @"section_favorites"
+#define udvSectionHistory               @"section_history"
 
 // Localization
 #define udLocalizationIMDb              @"localization_imdb"
@@ -86,6 +91,9 @@
 #define triggerAppInstall               @"trigger_app_install"
 #define triggerAppUpdate                @"trigger_app_update"
 
+// Notifications
+#define ntSearchTerm                    @"notification_search_term"
+#define ntvSearchTerm                   @"search_term"
 
 // Flags
 #define iPad                            (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad)

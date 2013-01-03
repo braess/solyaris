@@ -57,8 +57,8 @@
 
 // Properties
 @property (assign) id<HeaderDelegate> delegate;
-@property (nonatomic,assign) UILabel *labelTitle;
-@property (nonatomic,assign) UIButton *buttonBack;
+@property (nonatomic,retain) UILabel *labelTitle;
+@property (nonatomic,retain) UIButton *buttonBack;
 @property BOOL back;
 
 // Actions

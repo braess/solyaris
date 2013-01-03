@@ -52,10 +52,6 @@ enum {
     // controllers
     NoteView *_noteView;
     SearchBarViewController *_searchBarViewController;
-    SearchViewController *_searchViewController;
-    InformationViewController *_informationViewController;
-    RelatedViewController *_relatedViewController;
-    SettingsViewController *_settingsViewController;
     UIButton *_buttonSettings;
     
     // cinder
@@ -69,7 +65,6 @@ enum {
     bool mode_settings;
     bool mode_splash;
     bool mode_search;
-    bool mode_animating;
     
     // data nodes
     NSMutableDictionary *_dta_nodes;

@@ -334,7 +334,7 @@
  * Deallocates all used memory.
  */
 - (void)dealloc {	
-	GLog();
+	FLog();
     
     // fields
     [_home release];

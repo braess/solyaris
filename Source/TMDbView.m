@@ -241,7 +241,7 @@
  * Deallocates all used memory.
  */
 - (void)dealloc {	
-	GLog();
+	FLog();
 	
 	// release
     [_textView release];

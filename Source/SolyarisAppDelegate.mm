@@ -52,7 +52,6 @@
     
     // track
 	[Tracker startTracker];
-    [Tracker trackEvent:TEventUsage action:@"Launch" label:appVersion];
     
     // customize appearance
 	[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
@@ -70,6 +69,10 @@
 	else if (! [appVersion isEqualToString:information_app_version]) {
 		[self update:appVersion];
 	}
+    // launch
+    else {
+        [self launch:appVersion];
+    }
     
     // rater
     [Rater appLaunched:NO];
@@ -96,11 +99,16 @@
 /*
  * App did become active and is now running.
  */
-- (void) applicationDidBecomeActive:(UIApplication *)application {
+- (void)applicationDidBecomeActive:(UIApplication *)application {
     DLog();
     
     // track
 	[Tracker trackEvent:TEventUsage action:@"Active" label:@""];
+    
+    // defaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:udSearchSection];
+    [defaults synchronize];
     
     // cinder
     [super applicationDidBecomeActive:application];
@@ -216,6 +224,15 @@
     [Note storeNote:note key:noteAppUpdate];
     [note release];
 
+}
+
+/**
+ * Launch.
+ */
+- (void)launch:(NSString *)appVersion {
+    
+    // track
+    [Tracker trackEvent:TEventUsage action:@"Launch" label:appVersion];
 }
 
 

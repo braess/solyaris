@@ -108,7 +108,6 @@
     // view
     UIView *sview = [[UIView alloc] initWithFrame:screen];
     sview.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    sview.hidden = YES;
     
     // self
     self.view = sview;
@@ -133,17 +132,20 @@
     // about
     AboutViewController *aboutViewController = [[AboutViewController alloc] initWithFrame:aframe];
     aboutViewController.delegate = self;
-    [aboutViewController loadView];
     _aboutViewController = [aboutViewController retain];
-    [ctView addSubview:_aboutViewController.view];
     [aboutViewController release];
+    
+    [self addChildViewController:_aboutViewController];
+    [ctView addSubview:_aboutViewController.view];
     
     // Preferences
     PreferencesViewController *preferencesViewController = [[PreferencesViewController alloc] initWithFrame:pframe];
     preferencesViewController.delegate = self;
     _preferencesViewController = [preferencesViewController retain];
-    [ctView addSubview:_preferencesViewController.view];
     [preferencesViewController release];
+    
+    [self addChildViewController:_preferencesViewController];
+    [ctView addSubview:_preferencesViewController.view];
     
     // close
     UIButton *btnShut = [UIButton buttonWithType:UIButtonTypeCustom]; 
@@ -162,8 +164,8 @@
     [self.view bringSubviewToFront:_contentView];
     [ctView release];
     
-    
 }
+
 
 /*
  * Prepares the view.
@@ -171,10 +173,7 @@
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	DLog();
-    
-    // reload
-    [_aboutViewController viewWillAppear:NO];
-    [_preferencesViewController viewWillAppear:NO];
+
     
 }
 
@@ -393,7 +392,7 @@
  * Deallocates all used memory.
  */
 - (void)dealloc {
-	GLog();
+	FLog();
     
     // self
 	[_contentView release];

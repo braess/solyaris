@@ -28,7 +28,6 @@
  */
 @protocol SearchBarDelegate <NSObject>
 - (void)searchBarPrepare;
-- (void)searchBarChanged:(NSString*)txt;
 - (void)searchBarCancel;
 - (void)search:(NSString*)q type:(NSString*)type;
 - (void)reset;

@@ -212,6 +212,13 @@
     [self resize];
 }
 
+/*
+ * Prepare rotation animation.
+ */
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [self resize];
+}
+
 
 #pragma mark -
 #pragma mark Business
@@ -331,14 +338,14 @@
  * Changed.
  */
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    
+
     // persist
     [self persistSearchTerm:searchText];
     
-    // search
-    if (delegate && [delegate respondsToSelector:@selector(searchBarChanged:)]) {
-        [delegate searchBarChanged:searchText];
-    }
+    // notify
+    NSMutableDictionary *infoSearch = [NSMutableDictionary dictionary];
+    [infoSearch setObject:searchText forKey:ntvSearchTerm];
+    [[NSNotificationCenter defaultCenter] postNotificationName:ntSearchTerm object:self userInfo:infoSearch];
 }
 
 

@@ -167,7 +167,6 @@
     // view
     UIView *sview = [[UIView alloc] initWithFrame:screen];
     sview.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    sview.hidden = YES;
     
     // view
     self.view = sview;
@@ -304,7 +303,6 @@
     [ctView addSubview:_componentTrailer];
     [componentTrailer release];
 
-    
     
     // footer view
     UIView *footerView = [[UIView alloc] initWithFrame:footerFrame];
@@ -469,6 +467,17 @@
 }
 
 
+/*
+ * Cleanup rotation.
+ */
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    FLog();
+    
+    // resize
+    [self resize];
+    
+}
+
 
 
 #pragma mark -
@@ -514,17 +523,11 @@
     mode_loading = loading;
     if (mode_loading) {
         
-        // hide
-        _contentView.hidden = YES;
-        
         // loader
         [_loader startAnimating];
         _loader.hidden = NO;
     }
     else {
-        
-        // show
-        _contentView.hidden = NO;
         
         // unload
         [_loader stopAnimating];
@@ -909,12 +912,15 @@
 - (void)resizeFull {
     DLog();
     
+    // layout
+    BOOL landscape = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]);
+    
     // screen
     CGRect screen = [[UIScreen mainScreen] bounds];
     
     // frame
     CGRect fSelf = screen;
-    if ([self.delegate informationOrientationLandscape]) {
+    if (landscape) {
         fSelf.size.width = screen.size.height;
         fSelf.size.height = screen.size.width;
     }
@@ -936,12 +942,15 @@
 - (void)resizeDefault {
     GLog();
     
+    // layout
+    BOOL landscape = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]);
+    
     // screen
     CGRect screen = [[UIScreen mainScreen] bounds];
     
     // frame
     CGRect fSelf = screen;
-    if ([self.delegate informationOrientationLandscape]) {
+    if (landscape) {
         fSelf.size.width = screen.size.height;
         fSelf.size.height = screen.size.width;
     }
@@ -1195,8 +1204,11 @@
  * Deallocates all used memory.
  */
 - (void)dealloc {
-	GLog();
+	FLog();
     
+    // ui
+    [_modalView release];
+    [_contentView release];
 
     // actions
     [_actionListing release];

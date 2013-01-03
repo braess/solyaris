@@ -96,6 +96,14 @@
 	return NO;
 }
 
+/*
+ * Dealloc.
+ */
+- (void)dealloc {
+    FLog();
+    [super dealloc];
+}
+
 
 @end
 

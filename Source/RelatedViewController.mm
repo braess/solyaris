@@ -133,6 +133,18 @@
     [self reset];
 }
 
+
+/*
+ * Cleanup rotation.
+ */
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    GLog();
+    
+    // resize
+    [self resize];
+}
+
+
 /**
  * Resize.
  */
@@ -347,7 +359,7 @@
  * Deallocates used memory.
  */
 - (void)dealloc {
-	GLog();
+	FLog();
     
     // ui
     [_modalView release];

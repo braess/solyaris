@@ -33,6 +33,7 @@ enum {
 enum {
 	DashboardNowPlaying,
     DashboardPopular,
+    DashboardFavorites,
     DashboardHistory
 };
 
@@ -50,6 +51,7 @@ enum {
 - (void)dashboardNowPlaying:(NSString*)type;
 - (void)dashboardPopular:(NSString*)type;
 - (void)dashboardHistory:(NSString*)type;
+- (void)dashboardFavorites:(NSString*)type;
 @end
 
 

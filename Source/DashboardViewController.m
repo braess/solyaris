@@ -228,7 +228,7 @@
  * Rows.
  */
 - (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section {
-    return mode_movie ? 3 : 1;
+    return mode_movie ? 4 : 2;
 }
 
 /*
@@ -281,11 +281,18 @@
                 [cell.labelData setText:NSLocalizedString(@"Popular Movies", @"Popular Movies")];
             }
             
+            // favorites
+            if (indx == DashboardFavorites) {
+                
+                // title
+                [cell.labelData setText:NSLocalizedString(@"Favorites", @"Favorites")];
+            }
+            
             // history
             if (indx == DashboardHistory) {
                 
                 // title
-                [cell.labelData setText:[NSString stringWithFormat:@"%@",NSLocalizedString(@"History", @"History")]];
+                [cell.labelData setText:NSLocalizedString(@"History", @"History")];
             }
             
 			
@@ -297,7 +304,6 @@
     // prepare
     [cell disclosure];
     [cell update];
-    
     
     // return
     return cell;
@@ -338,6 +344,15 @@
                 }
             }
             
+            // favorites
+            if (indx == DashboardFavorites) {
+                
+                // delegate
+                if (delegate && [delegate respondsToSelector:@selector(dashboardFavorites:)]) {
+                    [delegate dashboardFavorites:_type];
+                }
+            }
+            
             // history
             if (indx == DashboardHistory) {
                 
@@ -365,7 +380,7 @@
  * Deallocates used memory.
  */
 - (void)dealloc {
-    GLog();
+    FLog();
     
     // ui
     [_tabView release];

@@ -22,7 +22,7 @@
 
 #import "SearchViewController.h"
 #import "SolyarisConstants.h"
-
+#import "Tracker.h"
 
 /*
  * Formatter Stack.
@@ -42,6 +42,13 @@
 - (void)animationFooterHideDone;
 @end
 
+
+/**
+ * Notification Stack.
+ */
+@interface DashboardViewController (Notifications)
+- (void)notificationSearchTerm:(NSNotification*)notification;
+@end
 
 
 
@@ -83,6 +90,12 @@
 		// view
 		vframe = frame;
         
+        // notification
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(notificationSearchTerm:)
+                                                     name:ntSearchTerm
+                                                   object:nil];
+        
 	}
 	return self;
     
@@ -104,7 +117,6 @@
     self.view = sview;
     [sview release];
 
-    
     // modal
     UIView *modalView = [[UIView alloc] initWithFrame:CGRectZero];
     modalView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleHeight;
@@ -182,7 +194,6 @@
     
     // search dashboard
     DashboardViewController *dashboardViewController = [[DashboardViewController alloc] init];
-    [dashboardViewController loadView];
     dashboardViewController.delegate = self;
 	_dashboardViewController = [dashboardViewController retain];
     [dashboardViewController release];
@@ -203,8 +214,8 @@
     [searchNavigationController release];
     
     // add to container
+    [self addChildViewController:_searchNavigationController];
     [_containerView addSubview:_searchNavigationController.view];
-    
     
     // vars
     NSMutableString *strTerm = [[NSMutableString alloc] init];
@@ -214,6 +225,63 @@
     // resize & reset
     [self resize];
     [self reset];
+}
+
+/*
+ * View will appear.
+ */
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    DLog();
+    
+    // defaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    // section
+    NSString *section = [defaults objectForKey:udSearchSection];
+    NSString *type = [defaults objectForKey:udSearchType];
+    type = type ? type : typeMovie;
+    if (section) {
+        
+        // search
+        if ([section isEqualToString:udvSectionSearch] && [_term length] > 0) {
+            if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
+                [self dataLoading];
+                [delegate search:_term type:type];
+            }
+        }
+        else if ([section isEqualToString:udvSectionNowPlaying]) {
+            if (delegate && [delegate respondsToSelector:@selector(nowPlaying:more:)]) {
+                [self dataLoading];
+                [delegate nowPlaying:type more:NO];
+            }
+        }
+        else if ([section isEqualToString:udvSectionPopular]) {
+            if (delegate && [delegate respondsToSelector:@selector(popular:more:)]) {
+                [self dataLoading];
+                [delegate popular:type more:NO];
+            }
+        }
+        else if ([section isEqualToString:udvSectionFavorites]) {
+            [self favorites:type];
+        }
+        else if ([section isEqualToString:udvSectionHistory]) {
+            if (delegate && [delegate respondsToSelector:@selector(history:)]) {
+                [self dataLoading];
+                [delegate history:type];
+            }
+        }
+    }
+}
+
+/*
+ * Cleanup rotation.
+ */
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [self resize];
+}
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    [self resize];
 }
 
 /**
@@ -296,8 +364,6 @@
 
 
 
-
-
 #pragma mark -
 #pragma mark Business
 
@@ -318,7 +384,7 @@
     [self formatTerm];
     
     // pop
-    [_searchNavigationController popToRootViewControllerAnimated:YES];
+    [_searchNavigationController popToRootViewControllerAnimated:NO];
     
     // reset
     [_dbDataViewController dbDataReset];
@@ -334,6 +400,9 @@
     
     // pop
     if ([_searchNavigationController.viewControllers count] > 1) {
+        
+        // section
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:udSearchSection];
         
         // pop
         [_searchNavigationController popToRootViewControllerAnimated:YES];
@@ -377,6 +446,11 @@
 - (void)loadedSearch:(Search *)search {
     FLog();
     
+    // section
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:udvSectionSearch forKey:udSearchSection];
+    [defaults synchronize];
+    
     // result
     [_dbDataViewController dbSearchResult:search];
 }
@@ -386,6 +460,11 @@
  */
 - (void)loadedPopular:(Popular*)popular more:(BOOL)more {
     FLog();
+    
+    // section
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:udvSectionPopular forKey:udSearchSection];
+    [defaults synchronize];
     
     // result
     [_dbDataViewController dbPopularResult:popular more:more];
@@ -398,6 +477,11 @@
 - (void)loadedNowPlaying:(NowPlaying*)nowplaying more:(BOOL)more {
     FLog();
     
+    // section
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:udvSectionNowPlaying forKey:udSearchSection];
+    [defaults synchronize];
+    
     // result
     [_dbDataViewController dbNowPlayingResult:nowplaying more:more];
 }
@@ -408,8 +492,43 @@
 - (void)loadedHistory:(NSArray *)history type:(NSString *)type {
     FLog();
     
+    // section
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:udvSectionHistory forKey:udSearchSection];
+    [defaults synchronize];
+    
     // result
     [_dbDataViewController dbHistoryResult:history type:type];
+}
+
+/**
+ * Favorites.
+ */
+- (void)favorites:(NSString *)type {
+    FLog();
+    
+    // section
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:udvSectionFavorites forKey:udSearchSection];
+    [defaults synchronize];
+    
+}
+
+
+#pragma mark -
+#pragma mark Notifications
+
+/*
+ * Notification search term.
+ */
+- (void)notificationSearchTerm:(NSNotification*)notification {
+    GLog();
+    
+    // term
+    NSString *term = [[notification userInfo] objectForKey:ntvSearchTerm];
+    if (term) {
+        [self searchChanged:term];
+    }
 }
 
 
@@ -422,6 +541,9 @@
  */
 - (void)headerBack {
     FLog();
+    
+    // section
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:udSearchSection];
     
     // pop
     [_searchNavigationController popToRootViewControllerAnimated:YES];
@@ -441,6 +563,12 @@
 - (void)dashboardNowPlaying:(NSString *)type {
     FLog();
     
+    // track
+    [Tracker trackEvent:TEventSearch action:@"Now Playing" label:type];
+    
+    // loading
+    [self dataLoading];
+    
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(nowPlaying:more:)]) {
         [delegate nowPlaying:type more:NO];
@@ -453,6 +581,12 @@
 - (void)dashboardPopular:(NSString *)type {
     FLog();
     
+    // track
+    [Tracker trackEvent:TEventSearch action:@"Popular" label:type];
+    
+    // loading
+    [self dataLoading];
+    
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(popular:more:)]) {
         [delegate popular:type more:NO];
@@ -460,10 +594,29 @@
 }
 
 /*
+ * Dashboard favorites.
+ */
+- (void)dashboardFavorites:(NSString *)type {
+    FLog();
+    
+    // track
+    [Tracker trackEvent:TEventSearch action:@"Favorites" label:type];
+    
+    // favorites
+    [self favorites:type];
+}
+
+/*
  * Dashboard history.
  */
 - (void)dashboardHistory:(NSString *)type {
     FLog();
+    
+    // track
+    [Tracker trackEvent:TEventSearch action:@"History" label:type];
+    
+    // loading
+    [self dataLoading];
     
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(history:)]) {
@@ -650,7 +803,10 @@
  * Deallocates used memory.
  */
 - (void)dealloc {
-	GLog();
+	FLog();
+    
+    // remove
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     // vars
     [_term release];

@@ -421,7 +421,7 @@
  * Deallocates all used memory.
  */
 - (void)dealloc {
-	GLog();
+	FLog();
     
     // alf
     [_sloc release];

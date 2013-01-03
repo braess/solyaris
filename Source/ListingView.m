@@ -54,7 +54,7 @@
 /*
  * Initialize.
  */
-- (id) initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame {
 	GLog();
 	
 	// init UIView
@@ -494,7 +494,7 @@
  * Deallocates all used memory.
  */
 - (void)dealloc {	
-	GLog();
+	FLog();
 	
 	// release
     [_tableView release];

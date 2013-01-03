@@ -123,8 +123,8 @@
     DLog();
     
     // delegate
-    if (delegate && [delegate respondsToSelector:@selector(headerBack)]) {
-        [delegate headerBack];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(headerBack)]) {
+        [self.delegate headerBack];
     }
 }
 

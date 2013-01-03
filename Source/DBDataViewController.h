@@ -95,6 +95,7 @@ enum {
     @private
     
     // ui
+    HeaderView *_header;
     UITableView *_results;
     UIActivityIndicatorView *_loader;
     SearchNotfoundView *_notfound;
@@ -111,7 +112,7 @@ enum {
 
 // Properties
 @property (assign) id<DBDataDelegate> delegate;
-@property (nonatomic,assign) HeaderView* header;
+@property (nonatomic,retain) HeaderView* header;
 
 // Business
 - (void)reset;

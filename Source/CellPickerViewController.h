@@ -50,7 +50,7 @@
 
 // Properties
 @property (assign) id<CellPickerViewDelegate> delegate;
-@property (nonatomic, assign) UIPickerView *picker;
+@property (nonatomic, retain) UIPickerView *picker;
 
 
 

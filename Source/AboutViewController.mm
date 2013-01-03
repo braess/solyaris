@@ -594,7 +594,7 @@
  * Deallocates all used memory.
  */
 - (void)dealloc {
-	GLog();
+	FLog();
 	
 	// duper
     [super dealloc];
