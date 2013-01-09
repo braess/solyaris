@@ -268,7 +268,7 @@
  * Deallocates all used memory.
  */
 - (void)dealloc {	
-	FLog();
+	GLog();
     
     // data
     [_videos release];

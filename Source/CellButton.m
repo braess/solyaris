@@ -83,7 +83,7 @@
 	buttonObj.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     
     // image
-    UIImage *button30 = [UIImage imageNamed:@"app_button_30_lite.png"];
+    UIImage *button30 = [UIImage imageNamed:@"app_button_30.png"];
     if ([button30 respondsToSelector:@selector(resizableImageWithCapInsets:)]) {
         [buttonObj setBackgroundImage:[button30 resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateNormal];
     }

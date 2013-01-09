@@ -6,15 +6,15 @@
 //  Copyright (c) 2012 Beat Raess. All rights reserved.
 //
 
-#import "CellSearch.h"
+#import "CellData.h"
 #import "SolyarisConstants.h"
 
 
 
 /**
- * CellSearch.
+ * CellData.
  */
-@implementation CellSearch
+@implementation CellData
 
 
 #pragma mark -
@@ -57,6 +57,14 @@
         [self.contentView addSubview:_thumbImageView];
         [ciView release];
         
+        // icon
+        UIImageView *icon = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
+        icon.backgroundColor = [UIColor clearColor];
+        
+        _icon = [icon retain];
+        [self.contentView addSubview:_icon];
+        [icon release];
+        
         // disclosure
         UIImageView *discl = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
         discl.backgroundColor = [UIColor clearColor];
@@ -90,6 +98,7 @@
     return self;
 }
 
+
 #pragma mark -
 #pragma mark TableCell Methods
 
@@ -102,27 +111,33 @@
     // cell width
     float cw = self.contentView.frame.size.width-20;
 
-    
     // thumb
     if (mode_thumb) {
         
         // thumb
-        [_thumbImageView setFrame:CGRectMake(0, 0, 32, 44)];
+        int toff = self.contentView.frame.origin.x > 0 ? 4 : 0;
+        [_thumbImageView setFrame:CGRectMake(toff, 0, 32, 44)];
+        [_labelData setFrame:CGRectMake(44, -1, cw-44, kCellDataHeight)];
+    }
+    
+    // icon
+    else if (mode_icon) {
         
-        // label
-        [_labelData setFrame:CGRectMake(40, 0, cw-40, kCellSearchHeight)];
+        // icon
+        [_icon setFrame:CGRectMake(0, 0, 44, 44)];
+        [_labelData setFrame:CGRectMake(44, -1, cw-44, kCellDataHeight)];
     }
     
     // loader
     else if (mode_more) {
         
         // label
-        [_labelData setFrame:CGRectMake(10, 0, cw-44, kCellSearchHeight)];
+        [_labelData setFrame:CGRectMake(10, -1, cw-44, kCellDataHeight)];
     }
     else {
         
         // label
-        [_labelData setFrame:CGRectMake(10, 0, cw, kCellSearchHeight)];
+        [_labelData setFrame:CGRectMake(10, -1, cw, kCellDataHeight)];
     }
     
 }
@@ -147,8 +162,8 @@
     
     // lines
     CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
-	CGContextMoveToPoint(ctx, rect.origin.x, kCellSearchHeight);
-	CGContextAddLineToPoint(ctx, rect.origin.x+rect.size.width, kCellSearchHeight);
+	CGContextMoveToPoint(ctx, rect.origin.x, kCellDataHeight);
+	CGContextAddLineToPoint(ctx, rect.origin.x+rect.size.width, kCellDataHeight);
 	CGContextStrokePath(ctx);
     
 }
@@ -184,6 +199,7 @@
     // mode
     mode_thumb = NO;
     mode_more = NO;
+    mode_icon = NO;
     
     // thumb
     [_thumbImageView reset];
@@ -191,6 +207,7 @@
     // hide
      _thumbImageView.hidden = YES;
     _loader.hidden = YES;
+    _icon.hidden = YES;
     
     // label
     [_labelData setText:@""];
@@ -223,13 +240,40 @@
     
     // type
     if ([type isEqualToString:typeMovie]) {
-        [_thumbImageView placeholderImage:[UIImage imageNamed:@"placeholder_search_movie.png"]];
+        [_thumbImageView placeholderImage:[UIImage imageNamed:@"placeholder_thumb_movie.png"]];
     }
     else {
-        [_thumbImageView placeholderImage:[UIImage imageNamed:@"placeholder_search_person.png"]];
+        [_thumbImageView placeholderImage:[UIImage imageNamed:@"placeholder_thumb_person.png"]];
     }
     [_thumbImageView loadImage:thumb];
 
+}
+- (void)dataThumb:(UIImage*)thumb type:(NSString *)type{
+    
+    // mode
+    mode_thumb = YES;
+    _thumbImageView.hidden = NO;
+    
+    // thumb
+    if (thumb.size.width > 0 && thumb.size.height > 0) {
+        [_thumbImageView dataImage:thumb];
+    }
+    else {
+        [_thumbImageView placeholderImage:[UIImage imageNamed:[type isEqualToString:typePerson] ? @"placeholder_thumb_person.png" : @"placeholder_thumb_movie.png"]];
+    }
+}
+
+/**
+ * Loads the icon.
+ */
+- (void)dataIcon:(UIImage *)icon {
+    
+    // mode
+    mode_icon = YES;
+    _icon.hidden = NO;
+    
+    // icon
+    _icon.image = icon;
 }
 
 /**
@@ -283,6 +327,7 @@
     // release
     [_labelData release];
     [_thumbImageView release];
+    [_icon release];
     [_loader release];
     [_disclosure release];
     [_more release];

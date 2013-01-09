@@ -21,7 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "DashboardViewController.h"
-#import "CellSearch.h"
+#import "CellData.h"
 #import "SolyarisConstants.h"
 
 
@@ -235,7 +235,7 @@
  * Customize the cell height.
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return kCellSearchHeight;
+    return kCellDataHeight;
 }
 
 
@@ -246,12 +246,12 @@
     GLog();
     
     // identifiers
-    static NSString *CellSearchDashboardIdentifier = @"CellSearchDashboard";
+    static NSString *CellIdentifier = @"CellDashboard";
 	
 	// create cell
-	CellSearch *cell = (CellSearch*) [tableView dequeueReusableCellWithIdentifier:CellSearchDashboardIdentifier];
+	CellData *cell = (CellData*) [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 	if (cell == nil) {
-		cell = [[[CellSearch alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellSearchDashboardIdentifier] autorelease];
+		cell = [[[CellData alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
 	}
 	
     // reset
@@ -272,6 +272,9 @@
                 
                 // title
                 [cell.labelData setText:NSLocalizedString(@"Now Playing", @"Now Playing")];
+                
+                // icon
+                [cell dataIcon:[UIImage imageNamed:@"icon_search_now.png"]];
             }
             
             // popular
@@ -279,6 +282,9 @@
                 
                 // title
                 [cell.labelData setText:NSLocalizedString(@"Popular Movies", @"Popular Movies")];
+                
+                // icon
+                [cell dataIcon:[UIImage imageNamed:@"icon_search_popular.png"]];
             }
             
             // favorites
@@ -286,6 +292,9 @@
                 
                 // title
                 [cell.labelData setText:NSLocalizedString(@"Favorites", @"Favorites")];
+                
+                // icon
+                [cell dataIcon:[UIImage imageNamed:@"icon_search_favorites.png"]];
             }
             
             // history
@@ -293,6 +302,9 @@
                 
                 // title
                 [cell.labelData setText:NSLocalizedString(@"History", @"History")];
+                
+                // icon
+                [cell dataIcon:[UIImage imageNamed:@"icon_search_history.png"]];
             }
             
 			

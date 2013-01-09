@@ -36,25 +36,53 @@
  * Init.
  */
 - (id)init {
+    return [self initStyle:ButtonStyleDefault];
+}
+- (id)initStyle:(int)style {
     
     // super
     if ((self = [super init])) {
         
-        // image
-        UIImage *button30 = [UIImage imageNamed:@"app_button_30.png"];
-        if ([button30 respondsToSelector:@selector(resizableImageWithCapInsets:)]) {
-            [self setBackgroundImage:[button30 resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateNormal];
+        // style
+        switch (style) {
+                
+            // lite
+            case ButtonStyleLite: {
+                
+                // image
+                UIImage *button30 = [UIImage imageNamed:@"app_button_30_lite.png"];
+                [self setBackgroundImage:[button30 resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateNormal];
+                
+                // font
+                self.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
+                [self setTitleColor:[UIColor colorWithRed:150.0/255.0 green:150.0/255.0 blue:150.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+                [self setTitleShadowColor:[UIColor colorWithWhite:1 alpha:0.5] forState:UIControlStateNormal];
+                [self setTitleColor:[UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateHighlighted];
+                [self setTitleShadowColor:[UIColor colorWithWhite:0 alpha:0.9] forState:UIControlStateHighlighted];
+                self.titleLabel.shadowOffset = CGSizeMake(-1,-1);
+                
+                // break
+                break;
+            }
+               
+            // default
+            default: {
+                
+                // image
+                UIImage *button30 = [UIImage imageNamed:@"app_button_30.png"];
+                [self setBackgroundImage:[button30 resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateNormal];
+                
+                // font
+                self.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
+                [self setTitleColor:[UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+                [self setTitleShadowColor:[UIColor colorWithWhite:0 alpha:0.9] forState:UIControlStateNormal];
+                self.titleLabel.shadowOffset = CGSizeMake(-1,-1);
+                
+                // break
+                break;
+            }
         }
-        else {
-            [self setBackgroundColor:[UIColor colorWithRed:78.0/255.0 green:78.0/255.0 blue:78.0/255.0 alpha:1.0]];
-            self.layer.cornerRadius = 4;
-        }
-        
-        // font
-        self.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
-        self.titleLabel.textColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
-        self.titleLabel.shadowColor = [UIColor colorWithWhite:0 alpha:0.9];
-        self.titleLabel.shadowOffset = CGSizeMake(-1,-1);
+
     }
     return self;
 }

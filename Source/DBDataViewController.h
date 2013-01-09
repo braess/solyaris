@@ -50,7 +50,7 @@
 #import "HeaderView.h"
 #import "AppButtons.h"
 #import "CacheImageView.h"
-
+#import "DataDelegate.h"
 
 
 // Declarations
@@ -77,13 +77,15 @@ enum {
 @protocol DBDataDelegate <NSObject>
 - (void)dbDataSelected:(DBData*)data;
 - (void)dbDataLoadMore:(DBData*)data;
+@optional
+- (void)dbDataDismiss;
 @end
 
 
 /**
  * DBDataViewController.
  */
-@interface DBDataViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+@interface DBDataViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, DataDelegate, HeaderDelegate> {
     
     // delegate
 	id<DBDataDelegate>delegate;
@@ -102,7 +104,6 @@ enum {
     UIView *_error;
 
     // modes
-    BOOL mode_reset;
     BOOL mode_result;
     BOOL mode_notfound;
     BOOL mode_loading;
@@ -117,15 +118,6 @@ enum {
 // Business
 - (void)reset;
 - (void)update;
-- (void)dbSearchResult:(Search*)search;
-- (void)dbPopularResult:(Popular*)popular more:(BOOL)more;
-- (void)dbNowPlayingResult:(NowPlaying*)nowplaying more:(BOOL)more;
-- (void)dbMovieRelated:(Movie*)movie more:(BOOL)more;
-- (void)dbHistoryResult:(NSArray*)history type:(NSString*)type;
-- (void)dbDataReset;
-- (void)dbDataLoading;
-- (void)hideBack:(BOOL)hide;
-- (void)titleFont:(UIFont*)thaFont;
 
 @end
 

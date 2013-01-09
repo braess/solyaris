@@ -27,7 +27,7 @@
 /*
  * Formatter Stack.
  */
-@interface DashboardViewController (Formatters)
+@interface SearchViewController (Formatters)
 - (void)formatTerm;
 @end
 
@@ -35,7 +35,7 @@
 /**
  * Animation Stack.
  */
-@interface DashboardViewController (Animations)
+@interface SearchViewController (Animations)
 - (void)animationFooterShow;
 - (void)animationFooterShowDone;
 - (void)animationFooterHide;
@@ -46,8 +46,15 @@
 /**
  * Notification Stack.
  */
-@interface DashboardViewController (Notifications)
+@interface SearchViewController (Notifications)
 - (void)notificationSearchTerm:(NSNotification*)notification;
+@end
+
+/**
+ * Gesture Stack.
+ */
+@interface SearchViewController (GestureStack)
+- (void)gestureTap:(UITapGestureRecognizer *)recognizer;
 @end
 
 
@@ -72,6 +79,8 @@
 
 // synthesize
 @synthesize delegate;
+@synthesize dta;
+@synthesize exp;
 @synthesize modalView = _modalView;
 @synthesize contentView = _contentView;
 
@@ -89,6 +98,11 @@
         
 		// view
 		vframe = frame;
+        
+        // vars
+        NSMutableString *strTerm = [[NSMutableString alloc] init];
+        _term = [strTerm retain];
+        [strTerm release];
         
         // notification
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -191,41 +205,44 @@
     [_footerView addSubview:_buttonSearch];
     [buttonSearch release];
     
+    Button *buttonExport = [[Button alloc] init];
+    [buttonExport setTitle:NSLocalizedString(@"Email", @"Email") forState:UIControlStateNormal];
+    [buttonExport addTarget:self action:@selector(actionExport:) forControlEvents:UIControlEventTouchUpInside];
+    [buttonExport setHidden:YES];
+    
+    _buttonExport = [buttonExport retain];
+    [_footerView addSubview:_buttonExport];
+    [buttonExport release];
+    
     
     // search dashboard
     DashboardViewController *dashboardViewController = [[DashboardViewController alloc] init];
     dashboardViewController.delegate = self;
-	_dashboardViewController = [dashboardViewController retain];
-    [dashboardViewController release];
-    
-    
-    // search result
-    DBDataViewController *dbDataViewController = [[DBDataViewController alloc] init];
-    [dbDataViewController loadView];
-    dbDataViewController.delegate = self;
-    dbDataViewController.header.delegate = self;
-	_dbDataViewController = [dbDataViewController retain];
-    [dbDataViewController release];
     
     // navigation controller
-    NavigationController *searchNavigationController = [[NavigationController alloc] initWithRootViewController:_dashboardViewController];
+    NavigationController *searchNavigationController = [[NavigationController alloc] initWithRootViewController:dashboardViewController];
     searchNavigationController.navigationBar.hidden = YES;
     _searchNavigationController = [searchNavigationController retain];
     [searchNavigationController release];
+    [dashboardViewController release];
     
     // add to container
     [self addChildViewController:_searchNavigationController];
     [_containerView addSubview:_searchNavigationController.view];
     
-    // vars
-    NSMutableString *strTerm = [[NSMutableString alloc] init];
-    _term = [strTerm retain];
-    [strTerm release];
+    
+    // gestures
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureTap:)];
+    [tapGesture setNumberOfTapsRequired:1];
+    [tapGesture setDelegate:self];
+    [_modalView addGestureRecognizer:tapGesture];
+    [tapGesture release];
+    
     
     // resize & reset
     [self resize];
-    [self reset];
 }
+
 
 /*
  * View will appear.
@@ -237,6 +254,10 @@
     // defaults
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
+    // reset term
+    NSString *trm = (NSString*) [defaults objectForKey:udSearchTerm];
+    [_term setString:trm?trm:@""];
+    
     // section
     NSString *section = [defaults objectForKey:udSearchSection];
     NSString *type = [defaults objectForKey:udSearchType];
@@ -246,19 +267,18 @@
         // search
         if ([section isEqualToString:udvSectionSearch] && [_term length] > 0) {
             if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
-                [self dataLoading];
                 [delegate search:_term type:type];
             }
         }
         else if ([section isEqualToString:udvSectionNowPlaying]) {
             if (delegate && [delegate respondsToSelector:@selector(nowPlaying:more:)]) {
-                [self dataLoading];
+                [self dbdata];
                 [delegate nowPlaying:type more:NO];
             }
         }
         else if ([section isEqualToString:udvSectionPopular]) {
             if (delegate && [delegate respondsToSelector:@selector(popular:more:)]) {
-                [self dataLoading];
+                [self dbdata];
                 [delegate popular:type more:NO];
             }
         }
@@ -267,7 +287,7 @@
         }
         else if ([section isEqualToString:udvSectionHistory]) {
             if (delegate && [delegate respondsToSelector:@selector(history:)]) {
-                [self dataLoading];
+                [self dbdata];
                 [delegate history:type];
             }
         }
@@ -319,78 +339,104 @@
     // navigation
     _searchNavigationController.view.frame = navigatorFrame;
     
-    
     // footer
     if (iPad) {
         
-        // frames
+        // search
         _buttonSearch.frame = CGRectMake(footerFrame.size.width-75, 7, 75, footerFrame.size.height-10);
         _labelSearch.frame = CGRectMake(0, 4, footerFrame.size.width-85, footerFrame.size.height-10);
+        
+        // export
+        _buttonExport.frame = CGRectMake(footerFrame.size.width-75, 7, 75, footerFrame.size.height-10);
     }
     
-    
 }
-
 
 
 #pragma mark -
-#pragma mark Touch
+#pragma mark Controller
+
+/**
+ * Favorites.
+ */
+- (void)favorites:(NSString*)type {
+    FLog();
+    
+    // section
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:udvSectionFavorites forKey:udSearchSection];
+    [defaults synchronize];
+    
+    // controller
+    FavoritesViewController *favoritesViewController = [[FavoritesViewController alloc] init];
+    favoritesViewController.delegate = self;
+    [favoritesViewController setType:type];
+    
+    // export delegate
+    self.exp = favoritesViewController;
+    
+    // push
+    [_searchNavigationController popToRootViewControllerAnimated:NO];
+    [_searchNavigationController pushViewController:favoritesViewController animated:YES];
+    [favoritesViewController release];
+    
+    // footer
+    _buttonSearch.hidden = YES;
+    _labelSearch.hidden = YES;
+    _buttonExport.hidden = NO;
+    
+}
+
+
+/**
+ * DBData.
+ */
+- (void)dbdata {
+    FLog();
+    
+    // controller
+    DBDataViewController *dbDataViewController = [[DBDataViewController alloc] init];
+    dbDataViewController.delegate = self;
+    [dbDataViewController loadView];
+    
+    // data delgate
+    self.dta = dbDataViewController;
+    
+    // push
+    [_searchNavigationController popToRootViewControllerAnimated:NO];
+    [_searchNavigationController pushViewController:dbDataViewController animated:YES];
+    [dbDataViewController release];
+    
+    // footer
+    [self animationFooterHide];
+    
+}
 
 /*
- * Touches.
+ * Back.
  */
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    // ignore
-}
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    // ignore
-}
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+- (void)back {
+    FLog();
     
-    // you have a point there
-    CGPoint point = [[touches anyObject] locationInView:self.view];
-    if (point.y > _contentView.frame.size.height+60) {
-        
-        // delegate
-        if (delegate && [delegate respondsToSelector:@selector(searchClose)]) {
-            [delegate searchClose];
-        }
-        
-    }
-}
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    // ignore
+    // section
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:udSearchSection];
+    
+    // pop
+    [_searchNavigationController popToRootViewControllerAnimated:YES];
+    
+    // fluff
+    self.dta = nil;
+    self.exp = nil;
+    
+    // footer
+    [self animationFooterShow];
+    
 }
 
 
 
 #pragma mark -
 #pragma mark Business
-
-/**
- * Reset.
- */
-- (void)reset {
-    FLog();
-    
-    // defaults
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    // reset term
-    NSString *trm = (NSString*) [defaults objectForKey:udSearchTerm];
-    [_term setString:trm?trm:@""];
-    
-    // format
-    [self formatTerm];
-    
-    // pop
-    [_searchNavigationController popToRootViewControllerAnimated:NO];
-    
-    // reset
-    [_dbDataViewController dbDataReset];
-    
-}
-
 
 /**
  * Search reset.
@@ -407,9 +453,6 @@
         // pop
         [_searchNavigationController popToRootViewControllerAnimated:YES];
         
-        // reset
-        [_dbDataViewController dbDataReset];
-        
         // footer
         [self animationFooterShow];
     }
@@ -420,24 +463,6 @@
     // format
     [self formatTerm];
 
-}
-
-/**
- * Data loading.
- */
-- (void)dataLoading {
-    FLog();
-    
-    // loading
-    [_dbDataViewController dbDataLoading];
-    
-    // push
-    [_searchNavigationController popToRootViewControllerAnimated:NO];
-    [_searchNavigationController pushViewController:_dbDataViewController animated:YES];
-    
-    // footer
-    [self animationFooterHide];
-    
 }
 
 /**
@@ -452,7 +477,7 @@
     [defaults synchronize];
     
     // result
-    [_dbDataViewController dbSearchResult:search];
+    [dta dataSearch:search];
 }
 
 /**
@@ -467,7 +492,7 @@
     [defaults synchronize];
     
     // result
-    [_dbDataViewController dbPopularResult:popular more:more];
+    [dta dataPopular:popular more:more];
 }
 
 
@@ -483,7 +508,7 @@
     [defaults synchronize];
     
     // result
-    [_dbDataViewController dbNowPlayingResult:nowplaying more:more];
+    [dta dataNowPlaying:nowplaying more:more];
 }
 
 /**
@@ -498,21 +523,9 @@
     [defaults synchronize];
     
     // result
-    [_dbDataViewController dbHistoryResult:history type:type];
+    [dta dataHistory:history type:type];
 }
 
-/**
- * Favorites.
- */
-- (void)favorites:(NSString *)type {
-    FLog();
-    
-    // section
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:udvSectionFavorites forKey:udSearchSection];
-    [defaults synchronize];
-    
-}
 
 
 #pragma mark -
@@ -532,28 +545,6 @@
 }
 
 
-
-#pragma mark -
-#pragma mark Header Delegate
-
-/*
- * Header back.
- */
-- (void)headerBack {
-    FLog();
-    
-    // section
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:udSearchSection];
-    
-    // pop
-    [_searchNavigationController popToRootViewControllerAnimated:YES];
-    
-    // footer
-    [self animationFooterShow];
-    
-}
-
-
 #pragma mark -
 #pragma mark Dashboard Delegate
 
@@ -566,8 +557,8 @@
     // track
     [Tracker trackEvent:TEventSearch action:@"Now Playing" label:type];
     
-    // loading
-    [self dataLoading];
+    // data
+    [self dbdata];
     
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(nowPlaying:more:)]) {
@@ -584,8 +575,8 @@
     // track
     [Tracker trackEvent:TEventSearch action:@"Popular" label:type];
     
-    // loading
-    [self dataLoading];
+    // data
+    [self dbdata];
     
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(popular:more:)]) {
@@ -615,8 +606,8 @@
     // track
     [Tracker trackEvent:TEventSearch action:@"History" label:type];
     
-    // loading
-    [self dataLoading];
+    // data
+    [self dbdata];
     
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(history:)]) {
@@ -638,8 +629,8 @@
     FLog();
     
     // delegate
-    if (delegate && [delegate respondsToSelector:@selector(searchSelected:)]) {
-        [delegate searchSelected:data];
+    if (delegate && [delegate respondsToSelector:@selector(searchSelected:type:)]) {
+        [delegate searchSelected:data.ref type:data.type];
     }
  
 }
@@ -679,7 +670,46 @@
     }
 }
 
+/*
+ * Dismiss.
+ */
+- (void)dbDataDismiss {
+    FLog();
+    [self back];
+}
 
+
+
+#pragma mark -
+#pragma mark Favorites Delegate
+
+/*
+ * Favorite selected.
+ */
+- (void)favoriteSelected:(Favorite*)favorite {
+    FLog();
+    
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(searchSelected:type:)]) {
+        [delegate searchSelected:favorite.dbid type:favorite.type];
+    }
+    
+}
+
+/*
+ * Dismiss.
+ */
+- (void)favoritesDismiss {
+    FLog();
+    
+    // back
+    [self back];
+    
+    // footer
+    _buttonSearch.hidden = NO;
+    _labelSearch.hidden = NO;
+    _buttonExport.hidden = YES;
+}
 
 
 #pragma mark -
@@ -700,6 +730,36 @@
     if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
         [delegate search:_term type:searchType];
     }
+}
+
+/*
+ * Action export.
+ */
+- (void)actionExport:(id)sender {
+    DLog();
+    
+    // delegate
+    if (exp && [exp respondsToSelector:@selector(exportFavorites)]) {
+        [exp exportFavorites];
+    }
+}
+
+
+
+#pragma mark -
+#pragma mark Gestures
+
+/*
+ * Gesture tap.
+ */
+- (void)gestureTap:(UITapGestureRecognizer *)recognizer {
+    FLog();
+    
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(searchClose)]) {
+        [delegate searchClose];
+    }
+    
 }
 
 
@@ -821,11 +881,10 @@
     [_buttonSearch release];
     [_labelSearch release];
     
+    [_buttonExport release];
+    
     // controller
     [_searchNavigationController release];
-    [_dashboardViewController release];
-    [_dbDataViewController release];
-    
 	
 	// release 
     [super dealloc];

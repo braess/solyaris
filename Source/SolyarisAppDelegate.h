@@ -23,19 +23,31 @@
 #import <UIKit/UIKit.h>
 #include "cinder/app/AppNative.h"
 #include "cinder/app/CinderAppDelegateIPhone.h"
-
+#import "SolyarisDataManager.h"
 
 /**
  * Solyaris AppDelegate.
  */
 @interface SolyarisAppDelegate : CinderAppDelegateIPhone {
+    
+    // app
     cinder::app::AppCocoaTouch	*app;
+    
+    // core data
+    SolyarisDataManager *_solyarisDataManager;
+    
+    // private
+    @private
+    UIBackgroundTaskIdentifier bgTaskSave;
 }
 
 // Business
 - (void)update:(NSString*)appVersion;
 - (void)install:(NSString*)appVersion;
 - (void)launch:(NSString*)appVersion;
+
+// Data
+- (SolyarisDataManager*)solyarisDataManager;
 
 // User Defaults
 - (void)resetUserDefaults;

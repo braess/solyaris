@@ -21,7 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "DBDataViewController.h"
-#import "CellSearch.h"
+#import "CellData.h"
 #import "SolyarisConstants.h"
 #import "Tracker.h"
 
@@ -54,6 +54,27 @@
 @synthesize header = _header;
 
 
+/*
+ * Init.
+ */
+- (id)init {
+    GLog();
+    
+    // super
+    if ((self = [super init])) {
+        
+        // data
+        NSMutableArray *dta = [[NSMutableArray alloc] init];
+        _data = [dta retain];
+        [dta release];
+        
+        // loading
+        mode_loading = YES;
+    }
+    return self;
+}
+
+
 #pragma mark -
 #pragma mark View lifecycle
 
@@ -64,11 +85,6 @@
 - (void)loadView {
     [super loadView];
     FLog();
-   
-    // data
-    NSMutableArray *dta = [[NSMutableArray alloc] init];
-    _data = [dta retain];
-    [dta release];
     
     // self
     self.view.backgroundColor = [UIColor clearColor];
@@ -81,6 +97,7 @@
     
     // header
     HeaderView *hdr = [[HeaderView alloc] initWithFrame:fHeader];
+    hdr.delegate = self;
     self.header = hdr;
     [self.view addSubview:self.header];
     [hdr release];
@@ -136,12 +153,18 @@
     [self.view addSubview:_error];
     [error release];
     
-    // reset
-    [self dbDataReset];
-    
 }
 
-
+/*
+ * View appears.
+ */
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    DLog();
+    
+    // update
+    [self update];
+}
 
 
 #pragma mark -
@@ -154,7 +177,6 @@
     GLog();
     
     // reset modes
-    mode_reset = NO;
     mode_loading = NO;
     mode_result = NO;
     mode_notfound = NO;
@@ -162,7 +184,6 @@
     
     // reset data
     [_data removeAllObjects];
-    
     
     // reset ui
     [_loader stopAnimating];
@@ -180,6 +201,9 @@
     
     // loading
     if (mode_loading) {
+        
+        // header
+        [self.header head:NSLocalizedString(@"Loading...", @"Loading...")];
         
         // show results 
         [self.view bringSubviewToFront:_results];
@@ -223,45 +247,14 @@
 }
 
 
-/**
- * Resets the data.
- */
-- (void)dbDataReset {
-    GLog();
-    
-    // check
-    if (! mode_reset) {
-        
-        // reset
-        [self reset];
-        mode_reset = YES;
-        
-        // update
-        [self update];
-    }
-    
-}
 
-
-/**
- * Shows the loader.
- */
-- (void)dbDataLoading {
-    FLog();
-    
-    // title
-    [self.header head:NSLocalizedString(@"Loading...", @"Loading...")];
-    
-    // reset & update
-    [self reset];
-    mode_loading = YES;
-    [self update];
-}
+#pragma mark -
+#pragma mark Delegate
 
 /**
  * Shows the search results.
  */
-- (void)dbSearchResult:(Search *)search {
+- (void)dataSearch:(Search *)search {
     FLog();
     
     // reset
@@ -324,7 +317,7 @@
 /**
  * Shows the popular results.
  */
-- (void)dbPopularResult:(Popular *)popular more:(BOOL)more {
+- (void)dataPopular:(Popular *)popular more:(BOOL)more {
     FLog();
     
     // current
@@ -439,7 +432,7 @@
 /**
  * Shows the now playing results.
  */
-- (void)dbNowPlayingResult:(NowPlaying*)nowplaying more:(BOOL)more {
+- (void)dataNowPlaying:(NowPlaying *)nowplaying more:(BOOL)more {
     FLog();
     
     // current
@@ -549,7 +542,7 @@
 /**
  * Shows the history.
  */
-- (void)dbHistoryResult:(NSArray *)history type:(NSString *)type {
+- (void)dataHistory:(NSArray *)history type:(NSString *)type {
     FLog();
     
     // reset
@@ -647,7 +640,7 @@
 /**
  * Shows the related movies.
  */
-- (void)dbMovieRelated:(Movie *)movie more:(BOOL)more {
+- (void)dataRelated:(Movie *)movie more:(BOOL)more {
     FLog();
     
     // current
@@ -753,21 +746,21 @@
     
 }
 
-/**
- * Hides the back.
+
+
+#pragma mark -
+#pragma mark Header
+
+/*
+ * Header back.
  */
-- (void)hideBack:(BOOL)hide {
+- (void)headerBack {
     FLog();
     
-    // hide
-    self.header.back = ! hide;
-}
-
-/**
- * Sets the title font.
- */
-- (void)titleFont:(UIFont*)thaFont {
-    [self.header.labelTitle setFont:thaFont];
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(dbDataDismiss)]) {
+        [delegate dbDataDismiss];
+    }
 }
 
 
@@ -810,7 +803,7 @@
  * Customize the cell height.
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return kCellSearchHeight;
+    return kCellDataHeight;
 }
 
 
@@ -821,19 +814,19 @@
     GLog();
     
     // identifiers
-    static NSString *CellSearchResultIdentifier = @"CellSearchResult";
+    static NSString *CellIdentifier = @"CellDBData";
 	
 	// create cell
-	CellSearch *cell = (CellSearch*) [tableView dequeueReusableCellWithIdentifier:CellSearchResultIdentifier];
+	CellData *cell = (CellData*) [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 	if (cell == nil) {
-		cell = [[[CellSearch alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellSearchResultIdentifier] autorelease];
+		cell = [[[CellData alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier] autorelease];
 	}	
-    
-    // reset
-    [cell reset];
     
     // data
     DBData *dta = [_data objectAtIndex:indexPath.row];
+    
+    // reset
+    [cell reset];
     
     // cell
     [cell.labelData setText:dta.label];
@@ -862,7 +855,7 @@
     if (dta.more) {
         
         // cell
-        CellSearch *cell = (CellSearch*) [tableView cellForRowAtIndexPath:indexPath];
+        CellData *cell = (CellData*) [tableView cellForRowAtIndexPath:indexPath];
         [cell.labelData setText:NSLocalizedString(@"Loading...", @"Loading...")];
         [cell loading];
         [cell setNeedsLayout];
@@ -1061,7 +1054,6 @@
 	CGContextAddLineToPoint(context, w, 106);
 	CGContextStrokePath(context);
     
-    
 }
 
 
@@ -1089,7 +1081,7 @@
  * Deallocates all used memory.
  */
 - (void)dealloc {
-	FLog();
+	GLog();
     
     // self
     [_labelMessage release];

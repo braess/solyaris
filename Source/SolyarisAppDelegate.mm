@@ -30,6 +30,7 @@
 #import "Rater.h"
 #import "SolyarisViewController.h"
 
+
 /**
  * Solyaris AppDelegate.
  */
@@ -38,7 +39,7 @@
 
 
 #pragma mark -
-#pragma mark Application lifecycle
+#pragma mark Application 
 
 
 /*
@@ -73,6 +74,13 @@
     else {
         [self launch:appVersion];
     }
+    
+    // data manager
+    SolyarisDataManager *solyarisDM = [[SolyarisDataManager alloc] init];
+    _solyarisDataManager = [solyarisDM retain];
+    [solyarisDM release];
+    
+    [_solyarisDataManager setup];
     
     // rater
     [Rater appLaunched:NO];
@@ -134,6 +142,25 @@
 }
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     DLog();
+    
+    // task
+    bgTaskSave = [application beginBackgroundTaskWithExpirationHandler:^{
+        
+        // invalidate task
+        [application endBackgroundTask:bgTaskSave];
+        bgTaskSave = UIBackgroundTaskInvalid;
+    }];
+    
+    // dispatch
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        // save core data
+        [_solyarisDataManager save];
+        
+        // invalidate task
+        [application endBackgroundTask:bgTaskSave];
+        bgTaskSave = UIBackgroundTaskInvalid;
+    });
     
     // cinder
     [super applicationDidEnterBackground:application];
@@ -236,6 +263,14 @@
 }
 
 
+/**
+ * Returns the data manager.
+ */
+- (SolyarisDataManager*)solyarisDataManager {
+    return _solyarisDataManager;
+}
+
+
 
 #pragma mark -
 #pragma mark User Defaults
@@ -330,15 +365,19 @@
 
 
 
-
-
 #pragma mark -
 #pragma mark Memory management
 
 /*
  * Deallocates used memory.
  */
-- (void) dealloc {	
+- (void) dealloc {
+    FLog();
+    
+    // data
+    [_solyarisDataManager release];
+    
+    // super
 	[super dealloc];
 }
 

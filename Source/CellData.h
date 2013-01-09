@@ -11,23 +11,25 @@
 
 
 // Constants
-#define kCellSearchHeight  44.0f
+#define kCellDataHeight  44.0f
 
 
 /**
- * CellSearch.
+ * CellData.
  */
-@interface CellSearch : UITableViewCell {
+@interface CellData : UITableViewCell {
     
     // ui
     UILabel *_labelData;
     CacheImageView *_thumbImageView;
     UIActivityIndicatorView *_loader;
+    UIImageView *_icon;
     UIImageView *_disclosure;
     UIImageView *_more;
     
     // modes
     BOOL mode_thumb;
+    BOOL mode_icon;
     BOOL mode_more;
 }
 
@@ -37,7 +39,9 @@
 // Business
 - (void)reset;
 - (void)update;
+- (void)dataThumb:(UIImage*)thumb type:(NSString*)type;
 - (void)loadThumb:(NSString*)thumb type:(NSString*)type;
+- (void)dataIcon:(UIImage*)icon;
 - (void)more;
 - (void)loading;
 - (void)disclosure;

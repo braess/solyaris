@@ -32,6 +32,10 @@
 @protocol HeaderDelegate <NSObject>
 @optional
 - (void)headerBack;
+- (void)headerEdit;
+- (void)headerEditDone;
+- (void)headerEditCancel;
+- (void)headerAction;
 @end
 
 
@@ -49,20 +53,34 @@
     
     // ui
     UIButton *_buttonBack;
+    UIButton *_buttonEdit;
+    UIButton *_buttonEditDone;
+    UIButton *_buttonEditCancel;
     UILabel *_labelTitle;
     
     // modes
     BOOL mode_back;
+    BOOL mode_edit;
+    BOOL mode_action;
+    BOOL editing;
 }
 
 // Properties
 @property (assign) id<HeaderDelegate> delegate;
 @property (nonatomic,retain) UILabel *labelTitle;
 @property (nonatomic,retain) UIButton *buttonBack;
+@property (nonatomic,retain) UIButton *buttonEdit;
+@property (nonatomic,retain) UIButton *buttonAction;
 @property BOOL back;
+@property BOOL edit;
+@property BOOL action;
 
 // Actions
 - (void)actionBack:(id)sender;
+- (void)actionEdit:(id)sender;
+- (void)actionEditDone:(id)sender;
+- (void)actionEditCancel:(id)sender;
+- (void)actionAction:(id)sender;
 
 // Business
 - (void)head:(NSString*)title;

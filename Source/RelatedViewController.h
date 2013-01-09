@@ -36,7 +36,7 @@
 /**
  * RelatedViewController.
  */
-@interface RelatedViewController : UIViewController <DBDataDelegate> {
+@interface RelatedViewController : UIViewController <DBDataDelegate, UIGestureRecognizerDelegate> {
     
     // delegate
 	id<RelatedDelegate>delegate;
@@ -68,10 +68,8 @@
 - (id)initWithFrame:(CGRect)frame;
 
 // Business
-- (void)dataLoading;
 - (void)loadedRelated:(Movie*)movie more:(BOOL)more;
 - (void)resize;
-- (void)reset;
 - (CGPoint)position:(double)r posx:(double)px posy:(double)py;
 
 // Actions

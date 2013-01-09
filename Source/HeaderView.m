@@ -21,7 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "HeaderView.h"
-
+#import "AppButtons.h"
 
 /**
  * HeaderView.
@@ -35,8 +35,13 @@
 // accessors
 @synthesize delegate;
 @synthesize back = mode_back;
+@synthesize edit = mode_edit;
+@synthesize action = mode_action;
 @synthesize labelTitle = _labelTitle;
 @synthesize buttonBack = _buttonBack;
+@synthesize buttonEdit = _buttonEdit;
+@synthesize buttonAction = _buttonAction;
+
 
 
 #pragma mark -
@@ -55,8 +60,7 @@
         self.opaque = YES;
 		self.backgroundColor = [UIColor clearColor];
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        
-        
+                
         // back
         UIButton *btnBack = [UIButton buttonWithType:UIButtonTypeCustom]; 
         [btnBack setImage:[UIImage imageNamed:@"btn_back.png"] forState:UIControlStateNormal];
@@ -64,6 +68,37 @@
         
         self.buttonBack = btnBack;
         [self addSubview:btnBack];
+        
+        // edit
+        UIButton *btnEdit = [UIButton buttonWithType:UIButtonTypeCustom];
+        [btnEdit setImage:[UIImage imageNamed:@"btn_edit.png"] forState:UIControlStateNormal];
+        [btnEdit addTarget:self action:@selector(actionEdit:) forControlEvents:UIControlEventTouchUpInside];
+        
+        self.buttonEdit = btnEdit;
+        [self addSubview:btnEdit];
+        
+        Button *btnEditDone = [[Button alloc] initStyle:ButtonStyleDefault];
+        [btnEditDone setTitle:NSLocalizedString(@"Done", @"Done") forState:UIControlStateNormal];
+        [btnEditDone addTarget:self action:@selector(actionEditDone:) forControlEvents:UIControlEventTouchUpInside];
+        
+        _buttonEditDone = [btnEditDone retain];
+        [self addSubview:btnEditDone];
+        [btnEditDone release];
+        
+        Button *btnEditCancel = [[Button alloc] initStyle:ButtonStyleLite];
+        [btnEditCancel setTitle:NSLocalizedString(@"Cancel", @"Cancel") forState:UIControlStateNormal];
+        [btnEditCancel addTarget:self action:@selector(actionEditCancel:) forControlEvents:UIControlEventTouchUpInside];
+        
+        _buttonEditCancel = [btnEditCancel retain];
+        [self addSubview:btnEditCancel];
+        [btnEditCancel release];
+        
+        // action
+        UIButton *btnAction = [UIButton buttonWithType:UIButtonTypeCustom];
+        [btnAction addTarget:self action:@selector(actionAction:) forControlEvents:UIControlEventTouchUpInside];
+        
+        self.buttonAction = btnAction;
+        [self addSubview:btnAction];
         
         // title
         UILabel *lblTitle = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -75,14 +110,15 @@
         lblTitle.opaque = YES;
         lblTitle.numberOfLines = 1;
 
-        
         self.labelTitle = lblTitle;
         [self addSubview:lblTitle];
         [lblTitle release];
         
         // default
+        editing = NO;
         mode_back = YES;
-        
+        mode_edit = NO;
+        mode_action = NO;
         
 		// return
 		return self;
@@ -100,13 +136,26 @@
     
     // frames
     CGRect frameBack = mode_back ? CGRectMake(-6, 0, 44, 44) : CGRectZero;
-    CGRect frameTitle = CGRectMake(frameBack.size.width-(mode_back ? 5 : 0), 0, self.frame.size.width-frameBack.size.width, kHeaderHeight);
+    CGRect frameTitle = !editing ? CGRectMake(frameBack.size.width, 0, self.frame.size.width-frameBack.size.width, kHeaderHeight) : CGRectZero;
+    CGRect frameEdit = mode_edit ? CGRectMake(self.frame.size.width-44, 0, 44, 44) : CGRectZero;
+    CGRect frameAction = (mode_action && ! editing) ? CGRectMake(self.frame.size.width-88, 0, 44, 44) : CGRectZero;
+    CGRect frameEditDone = mode_edit ? CGRectMake(self.frame.size.width-80, 7, 80, 30) : CGRectZero;
+    CGRect frameEditCancel = mode_edit ? CGRectMake(0, 7, 80, 30) : CGRectZero;
     
     // button
-    _buttonBack.hidden = ! mode_back;
+    _buttonBack.hidden = ! mode_back || editing;
     _buttonBack.frame = frameBack;
+    _buttonEdit.hidden = ! mode_edit || editing;
+    _buttonEdit.frame = frameEdit;
+    _buttonEditDone.hidden = ! editing;
+    _buttonEditDone.frame = frameEditDone;
+    _buttonEditCancel.hidden = ! editing;
+    _buttonEditCancel.frame = frameEditCancel;
+    _buttonAction.hidden = ! mode_action || editing;
+    _buttonAction.frame = frameAction;
     
     // title
+    _labelTitle.hidden = editing;
     _labelTitle.frame = frameTitle;
     
 }
@@ -128,6 +177,58 @@
     }
 }
 
+/*
+ * Action edit.
+ */
+- (void)actionEdit:(id)sender {
+    DLog();
+    
+    // editing
+    editing = YES;
+    [self setNeedsLayout];
+    
+    // delegate
+    if (self.delegate && [self.delegate respondsToSelector:@selector(headerEdit)]) {
+        [self.delegate headerEdit];
+    }
+}
+- (void)actionEditDone:(id)sender {
+    DLog();
+    
+    // editing
+    editing = NO;
+    [self setNeedsLayout];
+    
+    // delegate
+    if (self.delegate && [self.delegate respondsToSelector:@selector(headerEditDone)]) {
+        [self.delegate headerEditDone];
+    }
+}
+- (void)actionEditCancel:(id)sender {
+    DLog();
+    
+    // editing
+    editing = NO;
+    [self setNeedsLayout];
+    
+    // delegate
+    if (self.delegate && [self.delegate respondsToSelector:@selector(headerEditCancel)]) {
+        [self.delegate headerEditCancel];
+    }
+}
+
+/*
+ * Action.
+ */
+- (void)actionAction:(id)sender {
+    DLog();
+    
+    // delegate
+    if (self.delegate && [self.delegate respondsToSelector:@selector(headerAction)]) {
+        [self.delegate headerAction];
+    }
+}
+
 
 
 #pragma mark -
@@ -142,10 +243,8 @@
 
 
 
-
 #pragma mark -
 #pragma mark Memory Management
-
 
 /*
  * Deallocates all used memory.
@@ -155,6 +254,10 @@
 	
 	// release
     [_buttonBack release];
+    [_buttonEdit release];
+    [_buttonEditDone release];
+    [_buttonEditCancel release];
+    [_buttonAction release];
     [_labelTitle release];
 	
 	// sup

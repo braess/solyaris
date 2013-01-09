@@ -219,6 +219,22 @@
 }
 
 /**
+ * Loads an image.
+ */
+- (void)dataImage:(UIImage*)img {
+    
+    // loaded
+    loading = NO;
+    loaded = YES;
+    
+    // image
+    _imageView.image = img;
+    
+    // show
+    [self animationImageLoaded];
+}
+
+/**
  * Lazyloads an image.
  */
 - (void)lazyloadImage:(NSString *)link {
@@ -340,7 +356,7 @@
  * Loads an image from the linkurl.
  */
 - (void)urlImageLoad {
-    FLog();
+    GLog();
         
     // url
     NSURL *url = [NSURL URLWithString: _link];
@@ -524,7 +540,6 @@
  * Deallocates all used memory.
  */
 - (void)dealloc {
-    
     
     // ui
     [_imageView release];

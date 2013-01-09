@@ -23,12 +23,20 @@
 #import <UIKit/UIKit.h>
 
 
+// Data types
+enum {
+    ButtonStyleDefault,
+    ButtonStyleLite
+};
+
 /**
  * Button.
  */
 @interface Button : UIButton {
     
 }
+- (id)initStyle:(int)style;
+
 @end
 
 

@@ -22,12 +22,18 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "InformationViewController.h"
+#import "SolyarisAppDelegate.h"
 #import "SolyarisConstants.h"
-#import "BlockerView.h"
 #import "DataNode.h"
 #import "Utils.h"
 #import "Tracker.h"
 
+/**
+ * Gesture Stack.
+ */
+@interface InformationViewController (GestureStack)
+- (void)gestureTap:(UITapGestureRecognizer *)recognizer;
+@end
 
 
 /**
@@ -81,8 +87,6 @@
 #define kAnimateTimeResizeDefault	0.3f
 
 
-
-
 #pragma mark -
 #pragma mark Properties
 
@@ -110,6 +114,10 @@
 		// view
 		vframe = frame;
         
+        // data manager
+        SolyarisDataManager *solyarisDM = [(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] solyarisDataManager];
+        _solyarisDataManager = [solyarisDM retain];
+        
         // type
         type_movie = NO;
         type_person = NO;
@@ -133,7 +141,11 @@
         _referenceWikipedia = [[NSMutableString alloc] init];
         _referenceAmazon = [[NSMutableString alloc] init];
         _referenceITunes = [[NSMutableString alloc] init];
-
+        
+        // favorite
+        NSMutableDictionary *favorite = [[NSMutableDictionary alloc] init];
+        _favorite = [favorite retain];
+        [favorite release];
 
 	}
 	return self;
@@ -182,12 +194,6 @@
     _modalView = [mView retain];
     [self.view addSubview:_modalView];
     [mView release];
-    
-    // blocker
-    float safety = 25;
-    BlockerView *bView = [[BlockerView alloc] initWithFrame:CGRectMake(contentFrame.origin.x-safety, contentFrame.origin.y-safety, contentFrame.size.width+2*safety, contentFrame.size.height+2*safety)];
-    [_modalView addSubview:bView];
-    [bView release];
 
 	
 	// content
@@ -238,11 +244,22 @@
         [ctView  addSubview:_buttonClose];
     }
     
+    // button favorite
+    UIButton *btnFavorite = [UIButton buttonWithType:UIButtonTypeCustom];
+    btnFavorite.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+    btnFavorite.frame = CGRectMake(headerFrame.size.width-44-kInformationGapInset+6, headerFrame.size.height-44-kInformationGapOffset+(iPad ? 1 : 10), 44, 44);
+    [btnFavorite setImage:[UIImage imageNamed:@"btn_favorite-off.png"] forState:UIControlStateNormal];
+    [btnFavorite setImage:[UIImage imageNamed:@"btn_favorite-on.png"] forState:UIControlStateSelected];
+    [btnFavorite setImage:[UIImage imageNamed:@"btn_favorite-on.png"] forState:UIControlStateSelected|UIControlStateHighlighted];
+    [btnFavorite addTarget:self action:@selector(actionFavorite:) forControlEvents:UIControlEventTouchUpInside];
+    _buttonFavorite = [btnFavorite retain];
+    [ctView addSubview:_buttonFavorite];
+    
     
     // button trailer
     UIButton *btnTrailer = [UIButton buttonWithType:UIButtonTypeCustom]; 
     btnTrailer.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-    btnTrailer.frame = CGRectMake(headerFrame.size.width-44-kInformationGapInset+6, headerFrame.size.height-44-kInformationGapOffset+(iPad ? 1 : 10), 44, 44);
+    btnTrailer.frame = CGRectMake(headerFrame.size.width-88-kInformationGapInset+6, headerFrame.size.height-44-kInformationGapOffset+(iPad ? 1 : 10), 44, 44);
     [btnTrailer setImage:[UIImage imageNamed:@"btn_trailer.png"] forState:UIControlStateNormal];
     [btnTrailer addTarget:self action:@selector(actionTrailer:) forControlEvents:UIControlEventTouchUpInside];
     _buttonTrailer = [btnTrailer retain];
@@ -435,6 +452,14 @@
     [self.view addSubview:_loader];
     [loader release];
     
+    
+    // gestures
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureTap:)];
+    [tapGesture setNumberOfTapsRequired:1];
+    [tapGesture setDelegate:self];
+    [_modalView addGestureRecognizer:tapGesture];
+    [tapGesture release];
+    
 }
 
 
@@ -476,36 +501,6 @@
     // resize
     [self resize];
     
-}
-
-
-
-#pragma mark -
-#pragma mark Touch
-
-/*
- * Touches.
- */
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    // ignore
-}
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    // ignore
-}
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
-    
-    // dismiss
-	if (!mode_loading && delegate != nil && [delegate respondsToSelector:@selector(informationDismiss)]) {
-        
-        // reset
-        [self performSelector:@selector(swapReset) withObject:nil afterDelay:0.6];
-        
-        // dismiss
-		[delegate informationDismiss];
-	}
-}
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    // ignore
 }
 
 
@@ -561,6 +556,13 @@
 - (void)informationMovie:(Movie*)movie nodes:(NSArray *)nodes {
     FLog();
     
+    // formatter
+    static NSDateFormatter *dateFormatter;
+    if (dateFormatter == nil) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy"];
+    }
+    
     // type
     type_person = NO;
     type_movie = YES;
@@ -583,7 +585,6 @@
     _informationMovieView.hidden = NO;
     
 
-    
     // component listing
     [_componentListing reset:nodes];
     [_actionListing setTitle:NSLocalizedString(@"Cast", @"Cast")];
@@ -604,6 +605,28 @@
         _buttonTrailer.hidden = NO;
     }
     
+    // favorite
+    BOOL fav = [_solyarisDataManager solyarisDataFavorite:typeMovie dbid:movie.mid] ? YES : NO;
+    [_favorite setObject:[NSNumber numberWithBool:fav] forKey:kFav];
+    [_favorite setObject:typeMovie forKey:kFavType];
+    [_favorite setObject:movie.mid forKey:kFavDBID];
+    [_favorite setObject:movie.title forKey:kFavTitle];
+    [_favorite setObject:movie.released ? [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:movie.released]] : @"-" forKey:kFavMeta];
+    [_favorite setObject:_referenceTMDb forKey:kFavLink];
+    
+    // thumb
+    [_favorite setObject:@"" forKey:kFavThumb];
+    for (Asset *a in movie.assets) {
+        if ([a.type isEqualToString:assetPoster] && [a.size isEqualToString:assetSizeThumb]) {
+            [_favorite setObject:a.value forKey:kFavThumb];
+            break;
+        }
+    }
+    
+    // button
+    [_buttonFavorite setSelected:fav];
+    
+    
     // swap listing
     [self swapReset];
     [self swapListing];
@@ -615,6 +638,13 @@
  */
 - (void)informationPerson:(Person*)person nodes:(NSArray *)nodes {
     FLog();
+    
+    // formatter
+    static NSDateFormatter *dateFormatter;
+    if (dateFormatter == nil) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"dd.MM.yyyy"];
+    }
     
     // type
     type_movie = NO;
@@ -650,6 +680,28 @@
     
     // component trailer
     [_componentTrailer reset];
+    
+    
+    // favorite
+    BOOL fav = [_solyarisDataManager solyarisDataFavorite:typePerson dbid:person.pid] ? YES : NO;
+    [_favorite setObject:[NSNumber numberWithBool:fav] forKey:kFav];
+    [_favorite setObject:typePerson forKey:kFavType];
+    [_favorite setObject:person.pid forKey:kFavDBID];
+    [_favorite setObject:person.name forKey:kFavTitle];
+    [_favorite setObject:person.birthday ? [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:person.birthday]] : @"-" forKey:kFavMeta];
+    [_favorite setObject:_referenceTMDb forKey:kFavLink];
+    
+    // thumb
+    [_favorite setObject:@"" forKey:kFavThumb];
+    for (Asset *a in person.assets) {
+        if ([a.type isEqualToString:assetProfile] && [a.size isEqualToString:assetSizeThumb]) {
+            [_favorite setObject:a.value forKey:kFavThumb];
+            break;
+        }
+    }
+    
+    // button
+    [_buttonFavorite setSelected:fav];
     
     // swap listing
     [self swapReset];
@@ -999,7 +1051,47 @@
 }
 
 /*
- * Action Trailer.
+ * Action favorite.
+ */
+- (void)actionFavorite:(id)sender {
+    DLog();
+    
+    // favorite
+    if (! [[_favorite objectForKey:kFav] boolValue]) {
+        
+        // track
+        [Tracker trackEvent:TEventInfo action:@"Favorite" label:@"add"];
+        
+        // data
+        [_solyarisDataManager managerFavoriteAdd:_favorite];
+        
+        // favorite
+        [_favorite setObject:[NSNumber numberWithBool:YES] forKey:kFav];
+        
+        // toggle
+        [_buttonFavorite setSelected:YES];
+    }
+    // defav
+    else {
+        
+        // track
+        [Tracker trackEvent:TEventInfo action:@"Favorite" label:@"remove"];
+        
+        // data
+        [_solyarisDataManager managerFavoriteRemove:_favorite];
+        
+        // favorite
+        [_favorite setObject:[NSNumber numberWithBool:NO] forKey:kFav];
+        
+        // toggle
+        [_buttonFavorite setSelected:NO];
+    }
+    
+}
+
+
+/*
+ * Action trailer.
  */
 - (void)actionTrailer:(id)sender {
 	DLog();
@@ -1057,6 +1149,30 @@
     [referenceActions release];
     
 }
+
+
+
+#pragma mark -
+#pragma mark Gestures
+
+/*
+ * Gesture tap.
+ */
+- (void)gestureTap:(UITapGestureRecognizer *)recognizer {
+    FLog();
+    
+    // dismiss
+	if (!mode_loading && delegate != nil && [delegate respondsToSelector:@selector(informationDismiss)]) {
+        
+        // reset
+        [self performSelector:@selector(swapReset) withObject:nil afterDelay:0.6];
+        
+        // dismiss
+		[delegate informationDismiss];
+	}
+    
+}
+
 
 
 #pragma mark -
@@ -1206,6 +1322,9 @@
 - (void)dealloc {
 	FLog();
     
+    // data
+    [_solyarisDataManager release];
+    
     // ui
     [_modalView release];
     [_contentView release];
@@ -1219,6 +1338,7 @@
     // buttons
     [_buttonResize release];
     [_buttonClose release];
+    [_buttonFavorite release];
     [_buttonTrailer release];
     
     // components
@@ -1239,7 +1359,10 @@
     [_referenceIMDb release]; 
     [_referenceWikipedia release]; 
     [_referenceAmazon release]; 
-    [_referenceITunes release]; 
+    [_referenceITunes release];
+    
+    // favorite
+    [_favorite release];
 	
 	// duper
     [super dealloc];
@@ -1589,6 +1712,7 @@
  * Deallocates all used memory.
  */
 - (void)dealloc {
+    GLog();
     
     // release
     [_labelTitle release];
@@ -1795,6 +1919,7 @@
  * Deallocates all used memory.
  */
 - (void)dealloc {
+    GLog();
     
     // ui
     [_imageProfile release];

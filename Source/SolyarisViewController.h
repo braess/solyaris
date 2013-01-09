@@ -61,10 +61,12 @@ enum {
     // private
     @private
     
-    // modes
-    bool mode_settings;
-    bool mode_splash;
-    bool mode_search;
+    // states
+    bool state_splash;
+    bool state_settings;
+    bool state_search;
+    bool state_info;
+    bool state_related;
     
     // data nodes
     NSMutableDictionary *_dta_nodes;

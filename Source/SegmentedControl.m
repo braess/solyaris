@@ -59,7 +59,7 @@
  * Initialize.
  */
 - (id)initWithTitles:(NSArray*)titles {
-    return [self initWithTitles:titles size:CGSizeMake(120, 32) gap:1 cap:10 image:@"segment.png" selected:@"segment_selected.png" divider:@"segment_divider.png"]; 
+    return [self initWithTitles:titles size:CGSizeMake(116, 32) gap:1 cap:10 image:@"segment.png" selected:@"segment_selected.png" divider:@"segment_divider.png"];
 }
 - (id)initWithTitles:(NSArray*)titles size:(CGSize)size gap:(int)gap cap:(int)cap image:(NSString*)image selected:(NSString*)selected divider:(NSString*)divider {
     GLog();

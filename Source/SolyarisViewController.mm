@@ -137,9 +137,12 @@
         tmdb = [[TMDb alloc] init];
         tmdb.delegate = self;
         
-        // mode
-        mode_settings = NO;
-        mode_splash = YES;
+        // states
+        state_splash = YES;
+        state_settings = NO;
+        state_search = NO;
+        state_info = NO;
+        state_related = NO;
         
         // data
         NSMutableDictionary *dtaNodes = [[NSMutableDictionary alloc] init];
@@ -378,13 +381,13 @@
  * Rotate is the new black.
  */
 - (NSUInteger)supportedInterfaceOrientations {
-    return mode_splash ? UIInterfaceOrientationMaskPortrait : UIInterfaceOrientationMaskAll;
+    return state_splash ? UIInterfaceOrientationMaskPortrait : UIInterfaceOrientationMaskAll;
 }
 - (BOOL)shouldAutorotate {
-    return ! (mode_splash || mode_settings);
+    return ! (state_splash || state_settings);
 }
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return ! (mode_splash || mode_settings);
+    return ! (state_splash || state_settings);
 }
  
 
@@ -654,8 +657,6 @@
 
 }
 
-
-
 /*
  * Loaded person.
  */
@@ -814,7 +815,7 @@
     
     // note
     [_noteView noteInfo:error.errorTitle message:error.errorMessage]; 
-    if (mode_search) {
+    if (state_search) {
         [_noteView offset];
     }
     [_noteView showNote];
@@ -835,7 +836,7 @@
     
     // note
     [_noteView noteGlitch:error.errorTitle message:error.errorMessage]; 
-    if (mode_search) {
+    if (state_search) {
         [_noteView offset];
     }
     [_noteView showNote];
@@ -864,7 +865,7 @@
     
     // note
     [_noteView noteError:error.errorTitle message:error.errorMessage]; 
-    if (mode_search) {
+    if (state_search) {
         [_noteView offset];
     }
     [_noteView showNote];
@@ -1022,21 +1023,14 @@
         // controller
         [self controllerInformation:YES animated:YES];
         
-        
         // movie
         if ([ntype isEqualToString:typeMovie]) {
-            
-            // data
             [tmdb movieData:[self toDBId:pid]];
-            
         }
+        // person
         else {
-            
-            // data
             [tmdb personData:[self toDBId:pid]];
-            
         }
-        
         
     }
     
@@ -1067,10 +1061,6 @@
             Vec3d npos = solyaris->nodeCoordinates(node);
             CGPoint offset = [relatedViewController position:npos.z posx:npos.x posy:npos.y];
             solyaris->graphShift(offset.x,offset.y);
-            
-            // related
-            [relatedViewController reset];
-            [relatedViewController dataLoading];
             
             // query related
             NSNumber *dbid = [self toDBId:nid];
@@ -1110,7 +1100,7 @@
 	DLog();
 	
 	// controller
-    [self controllerSettings:!mode_settings animated:YES];
+    [self controllerSettings:!state_settings animated:YES];
 }
 
 
@@ -1122,7 +1112,7 @@
 /* 
  * Search selected.
  */
-- (void)searchSelected:(DBData*)data {
+- (void)searchSelected:(NSNumber*)dbid type:(NSString*)type {
     FLog();
     
     // disable
@@ -1132,35 +1122,33 @@
     [self controllerSearch:NO animated:YES];
     
     // node
-    NSString *nid = [self makeNodeId:data.ref type:data.type];
+    NSString *nid = [self makeNodeId:dbid type:type];
     NodePtr node = solyaris->getNode([nid UTF8String]);
     if (node == NULL) {
-        node = solyaris->createNode([nid UTF8String],[data.type UTF8String]);
+        node = solyaris->createNode([nid UTF8String],[type UTF8String]);
     }
     
     // active
     if (! (node->isActive() || node->isLoading())) {
         
         // track
-        [Tracker trackEvent:TEventLoad action:@"Search" label:data.type];
+        [Tracker trackEvent:TEventLoad action:@"Search" label:type];
         
         // load
         node->load();
             
         // movie
-        if ([data.type isEqualToString:typeMovie]) {
-            [tmdb movie:data.ref];
+        if ([type isEqualToString:typeMovie]) {
+            [tmdb movie:dbid];
         }
         
         // person
-        if ([data.type isEqualToString:typePerson]) {
-            [tmdb person:data.ref];
+        if ([type isEqualToString:typePerson]) {
+            [tmdb person:dbid];
         }
 
 
     }
-
-
 }
 
 /*
@@ -1212,12 +1200,14 @@
     FLog();
     
     // track
-    [Tracker trackEvent:TEventSearch action:type label:q];
+    if (! [[NSUserDefaults standardUserDefaults] objectForKey:udSearchSection]) {
+        [Tracker trackEvent:TEventSearch action:type label:q];
+    }
     
-    // loading    
+    // data    
     SearchViewController *searchViewController = [self controllerSearch];
     if (searchViewController) {
-        [searchViewController dataLoading];
+        [searchViewController dbdata];
     }
     
     // api
@@ -1530,7 +1520,7 @@
     FLog();
     
     // mode
-    mode_splash = NO;
+    state_splash = NO;
 }
 
 
@@ -1546,6 +1536,13 @@
     
     // search
     if (show) {
+        
+        // state
+        if (state_search) {
+            FLog("state_search");
+            return;
+        }
+        state_search = YES;
         
         // frames
         CGRect fSelf = self.view.frame;
@@ -1571,6 +1568,9 @@
             [self transitionSearchDismiss:searchViewController animated:animated];
         }
         
+        // state
+        state_search = NO;
+        
     }
 }
 - (SearchViewController*)controllerSearch {
@@ -1593,6 +1593,13 @@
     
     // information
     if (show) {
+        
+        // state
+        if (state_info) {
+            FLog("state_info");
+            return;
+        }
+        state_info = YES;
         
         // frame
         CGRect fSelf = self.view.frame;
@@ -1617,6 +1624,9 @@
         if (informationViewController) {
             [self transitionInformationDismiss:informationViewController animated:animated];
         }
+        
+        // state
+        state_info = NO;
     }
 }
 - (InformationViewController*)controllerInformation {
@@ -1638,6 +1648,13 @@
     
     // settings
     if (show) {
+        
+        // state
+        if (state_settings) {
+            FLog("state_settings");
+            return;
+        }
+        state_settings = YES;
         
         // frame
         CGRect fSelf = self.view.frame;
@@ -1662,6 +1679,9 @@
         if (settingsViewController) {
             [self transitionSettingsDismiss:settingsViewController animated:animated];
         }
+        
+        // state
+        state_settings = NO;
     }
 }
 - (SettingsViewController*)controllerSettings {
@@ -1685,6 +1705,13 @@
     // related
     if (show) {
         
+        // state
+        if (state_related) {
+            FLog("state_related");
+            return;
+        }
+        state_related = YES;
+        
         // frame
         CGRect frameRelated = iPad ? CGRectMake(0, 0, 320, 275) : CGRectMake(0, 0, 280, 275);
         
@@ -1707,6 +1734,9 @@
         if (relatedViewController) {
             [self transitionRelatedDismiss:relatedViewController animated:animated];
         }
+        
+        // state
+        state_related = NO;
         
     }
     
@@ -1732,9 +1762,6 @@
  */
 - (void)transitionSearch:(SearchViewController*)search animated:(BOOL)animated {
     FLog();
-    
-    // state
-    mode_search = YES;
     
     // controller
     [self addChildViewController:search];
@@ -1780,8 +1807,6 @@
                          [search.view removeFromSuperview];
                          [search removeFromParentViewController];
                          
-                         // state
-                         mode_search = NO;
                      }];
 }
 
@@ -1875,9 +1900,6 @@
 - (void)transitionSettings:(SettingsViewController*)settings animated:(BOOL)animated {
     FLog();
     
-    // state
-    mode_settings = YES;
-    
     // controller
     [self addChildViewController:settings];
     [self.view addSubview:settings.view];
@@ -1964,8 +1986,6 @@
                          [settings.view removeFromSuperview];
                          [settings removeFromParentViewController];
                          
-                         // state
-                         mode_settings = NO;
                      }];
 }
 

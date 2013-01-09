@@ -23,9 +23,11 @@
 #import <UIKit/UIKit.h>
 #import "AppControllers.h"
 #import "AppButtons.h"
-#import "HeaderView.h"
+#import "DataDelegate.h"
+#import "ExportDelegate.h"
 #import "DashboardViewController.h"
 #import "DBDataViewController.h"
+#import "FavoritesViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
 
@@ -37,7 +39,7 @@
 - (void)popular:(NSString*)type more:(BOOL)more;
 - (void)nowPlaying:(NSString*)type more:(BOOL)more;
 - (void)history:(NSString*)type;
-- (void)searchSelected:(DBData*)data;
+- (void)searchSelected:(NSNumber*)dbid type:(NSString*)type;
 - (void)searchClose;
 @end
 
@@ -45,10 +47,12 @@
 /**
  * SearchTabViewController.
  */
-@interface SearchViewController : UIViewController <HeaderDelegate, DashboardDelegate, DBDataDelegate>  {
+@interface SearchViewController : UIViewController <DashboardDelegate, DBDataDelegate, FavoritesDelegate, UIGestureRecognizerDelegate>  {
     
     // delegate
 	id<SearchDelegate>delegate;
+    id<DataDelegate>dta;
+    id<ExportDelegate>exp;
     
     // private
     @private
@@ -68,17 +72,18 @@
     
     // footer
     Button *_buttonSearch;
+    Button *_buttonExport;
     UILabel *_labelSearch;
     
     // controllers
     NavigationController *_searchNavigationController;
-    DashboardViewController *_dashboardViewController;
-    DBDataViewController *_dbDataViewController;
     
 }
 
 // Properties
 @property (assign) id<SearchDelegate> delegate;
+@property (assign) id<DataDelegate> dta;
+@property (assign) id<ExportDelegate> exp;
 @property (nonatomic, retain) UIView *modalView;
 @property (nonatomic, retain) UIView *contentView;
 
@@ -86,19 +91,22 @@
 // Object Methods
 - (id)initWithFrame:(CGRect)frame;
 
+// Controller
+- (void)dbdata;
+- (void)favorites:(NSString *)type;
+- (void)back;
+
 // Business
 - (void)searchChanged:(NSString*)txt;
-- (void)dataLoading;
 - (void)loadedSearch:(Search*)search;
 - (void)loadedPopular:(Popular*)popular more:(BOOL)more;
 - (void)loadedNowPlaying:(NowPlaying*)nowplaying more:(BOOL)more;
 - (void)loadedHistory:(NSArray*)history type:(NSString *)type;
-- (void)favorites:(NSString *)type;
 - (void)resize;
-- (void)reset;
 
 // Actions
 - (void)actionSearch:(id)sender;
+- (void)actionExport:(id)sender;
 
 @end
 

@@ -49,6 +49,7 @@
 // New Business
 - (void)placeholderImage:(UIImage *)img;
 - (void)loadImage:(NSString*)link;
+- (void)dataImage:(UIImage*)img;
 - (void)lazyloadImage:(NSString*)link;
 - (void)load;
 - (void)cancel;

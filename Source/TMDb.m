@@ -3633,7 +3633,6 @@
 
 /**
  * Returns the managed object context for the application.
- * If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
  */
 - (NSManagedObjectContext *) managedObjectContext {
 	GLog();
@@ -3655,7 +3654,6 @@
 
 /**
  * Returns the managed object model for the application.
- * If the model doesn't already exist, it is created by merging all of the models found in the application bundle.
  */
 - (NSManagedObjectModel *)managedObjectModel {
 	GLog();
@@ -3664,14 +3662,20 @@
     if (managedObjectModel != nil) {
         return managedObjectModel;
     }
-    managedObjectModel = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];    
+    
+    // yomu model
+    NSURL *modelURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"TMDb" ofType:@"momd"]];
+    NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+    managedObjectModel = [mom retain];
+    [mom release];
+    
+    // return
     return managedObjectModel;
 }
 
 
 /**
  * Returns the persistent store coordinator for the application.
- * If the coordinator doesn't already exist, it is created and the application's store added to it.
  */
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
 	GLog();

@@ -31,6 +31,7 @@
 #import "Person.h"
 #import "Asset.h"
 #import "SolyarisLocalization.h"
+#import "SolyarisDataManager.h"
 
 
 // Constants
@@ -110,10 +111,13 @@ enum {
 /**
  * InformationViewController.
  */
-@interface InformationViewController : UIViewController <UIActionSheetDelegate, ListingDelegate, HTMLDelegate> {
+@interface InformationViewController : UIViewController <UIActionSheetDelegate, ListingDelegate, HTMLDelegate, UIGestureRecognizerDelegate> {
     
     // delegate
 	id<InformationDelegate> delegate;
+    
+    // data
+    SolyarisDataManager *_solyarisDataManager;
     
     // ui
     UIView *_modalView;
@@ -137,6 +141,7 @@ enum {
     UIButton *_buttonResize;
     UIButton *_buttonClose;
     UIButton *_buttonTrailer;
+    UIButton *_buttonFavorite;
     
     // loader
     UIActivityIndicatorView *_loader;
@@ -167,7 +172,9 @@ enum {
     NSMutableString *_referenceWikipedia;
     NSMutableString *_referenceAmazon;
     NSMutableString *_referenceITunes;
-
+    
+    // favorite
+    NSMutableDictionary *_favorite;
     
     // modes
     BOOL mode_loading;
@@ -188,6 +195,7 @@ enum {
 // Actions
 - (void)actionResize:(id)sender;
 - (void)actionClose:(id)sender;
+- (void)actionFavorite:(id)sender;
 - (void)actionTrailer:(id)sender;
 
 // Business Methods
@@ -195,7 +203,6 @@ enum {
 - (void)informationMovie:(Movie*)movie nodes:(NSArray*)nodes;
 - (void)informationPerson:(Person*)person nodes:(NSArray*)nodes;
 - (void)loading:(BOOL)loading;
-
 
 @end
 

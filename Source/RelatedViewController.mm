@@ -26,6 +26,14 @@
 
 
 /**
+ * Gesture Stack.
+ */
+@interface RelatedViewController (GestureStack)
+- (void)gestureTap:(UITapGestureRecognizer *)recognizer;
+@end
+
+
+/**
  * RelatedViewController.
  */
 @implementation RelatedViewController
@@ -119,18 +127,24 @@
     // data view
     DBDataViewController *dbDataViewController = [[DBDataViewController alloc] init];
     [dbDataViewController loadView];
-    [dbDataViewController hideBack:YES];
     dbDataViewController.delegate = self;
-    [dbDataViewController titleFont:[UIFont fontWithName:@"Helvetica-Bold" size:15.0]];
+    dbDataViewController.header.back = NO;
+    [dbDataViewController.header.labelTitle setFont:[UIFont fontWithName:@"Helvetica-Bold" size:15.0]];
     
 	_dbDataViewController = [dbDataViewController retain];
     [_containerView addSubview:_dbDataViewController.view];
     [dbDataViewController release];
     
+    // gestures
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureTap:)];
+    [tapGesture setNumberOfTapsRequired:1];
+    [tapGesture setDelegate:self];
+    [_modalView addGestureRecognizer:tapGesture];
+    [tapGesture release];
     
-    // resize & reset
+    
+    // resize
     [self resize];
-    [self reset];
 }
 
 
@@ -182,41 +196,6 @@
 }
 
 
-
-#pragma mark -
-#pragma mark Touch
-
-/*
- * Touches.
- */
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    // ignore
-}
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    // ignore
-}
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
-    
-    // you have a point there
-    CGPoint point = [[touches anyObject] locationInView:self.view];
-    float safety = 20;
-    if (point.y < _contentView.frame.origin.y-safety || point.y > _contentView.frame.origin.y + _contentView.frame.size.height+safety
-        || point.x < _contentView.frame.origin.x-safety || point.x > _contentView.frame.origin.x + _contentView.frame.size.width+safety) {
-        
-        // delegate
-        if (delegate && [delegate respondsToSelector:@selector(relatedClose)]) {
-            [delegate relatedClose];
-        }
-        
-    }
-}
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    // ignore
-}
-
-
-
-
 #pragma mark -
 #pragma mark Business
 
@@ -258,27 +237,6 @@
     
 }
 
-/**
- * Reset.
- */
-- (void)reset {
-    FLog();
-    
-    // reset
-    [_dbDataViewController dbDataReset];
-    
-}
-
-/**
- * Data loading.
- */
-- (void)dataLoading {
-    FLog();
-    
-    // loading
-    [_dbDataViewController dbDataLoading];
-    
-}
 
 /**
  * Loaded related.
@@ -287,7 +245,7 @@
     FLog();
     
     // db data
-    [_dbDataViewController dbMovieRelated:movie more:more];
+    [_dbDataViewController dataRelated:movie more:more];
     
 }
 
@@ -348,6 +306,23 @@
     if (delegate && [delegate respondsToSelector:@selector(relatedClose)]) {
         [delegate relatedClose];
     }
+}
+
+
+#pragma mark -
+#pragma mark Gestures
+
+/*
+ * Gesture tap.
+ */
+- (void)gestureTap:(UITapGestureRecognizer *)recognizer {
+    FLog();
+    
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(relatedClose)]) {
+        [delegate relatedClose];
+    }
+    
 }
 
 

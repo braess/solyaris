@@ -86,6 +86,7 @@
 #define vAppEmail                       @"solyaris@cecinestpasparis.net"	
 #define vAppStoreLink                   @"itms-apps://itunes.apple.com/app/id481963410"
 #define vAppStoreURL                    @"http://itunes.apple.com/app/solyaris-visual-movie-browser/id481963410?mt=8"
+#define vAppSite                        @"http://solyaris.cecinestpasparis.net"
 
 // Triggers
 #define triggerAppInstall               @"trigger_app_install"
