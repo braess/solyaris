@@ -257,6 +257,17 @@
 }
 
 
+/*
+ * View appears.
+ */
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    DLog();
+    
+    // track
+    [Tracker trackView:@"Solyaris"];
+}
+
 
 #pragma mark -
 #pragma mark Application
@@ -266,9 +277,6 @@
  */
 - (void)activate {
     FLog();
-    
-    // track
-    [Tracker trackPageView:@"/graph"];
     
     // reset api
     [tmdb reset];
@@ -1349,9 +1357,6 @@
 - (void)informationDismiss {
     FLog();
     
-    // track
-    [Tracker trackPageView:@"/graph"];
-    
     // controller
     [self controllerInformation:NO animated:YES];
 
@@ -1451,11 +1456,9 @@
 - (void)settingsDismiss {
     FLog();
     
-    // track
-    [Tracker trackPageView:@"/graph"];
-    
     // hide
     [self actionSettings:self];
+    
 }
 
 /*
@@ -1807,6 +1810,9 @@
                          [search.view removeFromSuperview];
                          [search removeFromParentViewController];
                          
+                         // track
+                         [Tracker trackView:@"Solyaris"];
+                         
                      }];
 }
 
@@ -1890,6 +1896,9 @@
                          // controller
                          [information.view removeFromSuperview];
                          [information removeFromParentViewController];
+                         
+                         // track
+                         [Tracker trackView:@"Solyaris"];
 
                      }];
 }
@@ -1986,6 +1995,9 @@
                          [settings.view removeFromSuperview];
                          [settings removeFromParentViewController];
                          
+                         // track
+                         [Tracker trackView:@"Solyaris"];
+                         
                      }];
 }
 
@@ -2032,6 +2044,9 @@
                          // controller
                          [related.view removeFromSuperview];
                          [related removeFromParentViewController];
+                         
+                         // track
+                         [Tracker trackView:@"Solyaris"];
                      }];
 }
 

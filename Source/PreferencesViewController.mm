@@ -237,6 +237,9 @@
 	[super viewWillAppear:animated];
 	DLog();
     
+    // track
+    [Tracker trackView:@"Preferences"];
+    
     // reload
     [self.tableView reloadData];
     
@@ -264,6 +267,9 @@
  */
 - (void)actionHelp:(id)sender {
 	DLog();
+    
+    // Track
+    [Tracker trackEvent:TEventPreferences action:@"Help" label:@""];
     
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(preferencesHelp)]) {

@@ -257,6 +257,9 @@
 - (void)dataSearch:(Search *)search {
     FLog();
     
+    // track
+    [Tracker trackView:[search.type isEqualToString:typePerson] ? @"DBDataSearchPerson": @"DBDataSearchMovie"];
+    
     // reset
     [self reset];
     
@@ -332,6 +335,9 @@
 
     }
     else {
+        
+        // track
+        [Tracker trackView:@"DBDataPopular"];
         
         // reset
         [self reset];
@@ -448,6 +454,9 @@
     }
     else {
         
+        // track
+        [Tracker trackView:@"DBDataNowPlaying"];
+        
         // reset
         [self reset];
     }
@@ -544,6 +553,9 @@
  */
 - (void)dataHistory:(NSArray *)history type:(NSString *)type {
     FLog();
+    
+    // track
+    [Tracker trackView:[type isEqualToString:typePerson] ? @"DBDataHistoryPerson" : @"DBDataHistoryPerson"];
     
     // reset
     [self reset];
@@ -642,6 +654,9 @@
  */
 - (void)dataRelated:(Movie *)movie more:(BOOL)more {
     FLog();
+    
+    // track
+    [Tracker trackView:@"DBDataRelated"];
     
     // current
     int current = [_data count] > 0 ? [_data count]-1 : 0;

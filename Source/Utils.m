@@ -74,9 +74,6 @@
 
     // wifi
     BOOL wifi = (status == ReachableViaWiFi);
-    #ifdef DEBUG    
-    NSLog(@"wifi = %@",(wifi?@"yup":@"nop"));
-    #endif
     
     // return
     return wifi;

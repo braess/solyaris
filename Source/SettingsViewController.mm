@@ -24,7 +24,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "SolyarisAppDelegate.h"
 #import "SolyarisConstants.h"
-
+#import "Tracker.h"
 
 /**
  * Animation Stack.
@@ -174,7 +174,8 @@
 	[super viewWillAppear:animated];
 	DLog();
 
-    
+    // track
+    [Tracker trackView:@"Settings"];
 }
 
 

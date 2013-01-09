@@ -470,6 +470,9 @@
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	DLog();
+    
+    // track
+    [Tracker trackView:@"Information"];
 
 }
 
@@ -724,7 +727,7 @@
     if (! mode_listing) {
         
         // track
-        [Tracker trackPageView:@"/information/listing"];
+        [Tracker trackView:@"InformationListing"];
         
         // reset
         [self swapReset];
@@ -753,7 +756,7 @@
     if (! mode_tmdb) {
         
         // track
-        [Tracker trackPageView:@"/information/tmdb"];
+        [Tracker trackView:@"InformationTMDb"];
         
         // reset
         [self swapReset];
@@ -781,7 +784,7 @@
     if (! mode_imdb) {
         
         // track
-        [Tracker trackPageView:@"/information/imdb"];
+        [Tracker trackView:@"InformationIMDb"];
         
         // reset
         [self swapReset];
@@ -811,7 +814,7 @@
     if (! mode_wikipedia) {
         
         // track
-        [Tracker trackPageView:@"/information/wikipedia"];
+        [Tracker trackView:@"InformationWikipedia"];
         
         // reset
         [self swapReset];
@@ -839,7 +842,7 @@
     FLog();
     
     // track
-    [Tracker trackPageView:@"/information/trailer"];
+    [Tracker trackView:@"InformationTrailer"];
     
     // reset
     [self swapReset];

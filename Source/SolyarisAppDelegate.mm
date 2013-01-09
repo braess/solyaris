@@ -133,9 +133,6 @@
     // track
 	[Tracker trackEvent:TEventUsage action:@"Resign" label:@""];
     
-    // dispatch
-    [Tracker dispatch];
-    
     // cinder
     [super applicationWillResignActive:application];
     
@@ -175,9 +172,6 @@
     
     // track
 	[Tracker trackEvent:TEventUsage action:@"Terminate" label:@""];
-    
-    // dispatch
-    [Tracker dispatch];
     
     // cinder
     [super applicationWillTerminate:application];
@@ -245,11 +239,24 @@
 	[userDefaults synchronize];
     
     // note
-    Note *note = [[Note alloc] initNoteWithTitle:NSLocalizedString(@"Updated", @"Updated") message:[NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Solyaris", @"Solyaris"),appVersion ] type:noteTypeSuccess];
-    
-    // store
-    [Note storeNote:note key:noteAppUpdate];
-    [note release];
+    if (iOS5) {
+        
+        // updated
+        Note *note = [[Note alloc] initNoteWithTitle:NSLocalizedString(@"Updated", @"Updated") message:NSLocalizedString(@"Please note that iOS5 is no longer fully supported.", @"Please note that iOS5 is no longer fully supported.") type:noteTypeInfo];
+        
+        // store
+        [Note storeNote:note key:noteAppDeprecated];
+        [note release];
+    }
+    else {
+        
+        // updated
+        Note *note = [[Note alloc] initNoteWithTitle:NSLocalizedString(@"Updated", @"Updated") message:[NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Solyaris", @"Solyaris"),appVersion ] type:noteTypeSuccess];
+        
+        // store
+        [Note storeNote:note key:noteAppUpdate];
+        [note release];
+    }
 
 }
 
@@ -367,6 +374,17 @@
 
 #pragma mark -
 #pragma mark Memory management
+
+/*
+ * Handles memory warnings.
+ */
+-(void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
+	NSLog(@"Solyaris received memory warning.");
+    
+    // track
+    [Tracker trackError:@"SolyarisAppDelegate" method:@"applicationDidReceiveMemoryWarning" message:@"Memory Warning"];
+    
+}
 
 /*
  * Deallocates used memory.

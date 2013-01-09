@@ -251,6 +251,9 @@
     [super viewWillAppear:animated];
     DLog();
     
+    // track
+    [Tracker trackView:@"Search"];
+    
     // defaults
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     

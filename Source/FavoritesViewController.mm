@@ -85,7 +85,7 @@
     header.edit = YES;
     
     // iphone
-    if (! iPad) {
+    if (! iPad && ! iOS5) {
         header.action = YES;
         [header.buttonAction setImage:[UIImage imageNamed:@"btn_email.png"] forState:UIControlStateNormal];
     }
@@ -127,7 +127,7 @@
     DLog();
     
     // track
-    [Tracker trackPageView:@"Favorites"];
+    [Tracker trackView:[self.type isEqualToString:typePerson] ? @"FavoritesPerson" : @"FavoritesMovie"];
     
     // update
     [self update];

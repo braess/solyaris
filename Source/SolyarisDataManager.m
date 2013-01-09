@@ -200,6 +200,9 @@
     NSError *error = nil;
     if (! [_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:localStoreURL options:localOptions error:&error]) {
         
+        // track
+        [Tracker trackError:@"SolyarisDataManager" method:@"persistentStoreCoordinator" message:@"Core Data Error." error:error];
+        
         // show info
         UIAlertView *alert = [[UIAlertView alloc]
                               initWithTitle:NSLocalizedString(@"Error",@"Error")

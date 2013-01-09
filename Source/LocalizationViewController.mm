@@ -22,7 +22,7 @@
 
 #import "LocalizationViewController.h"
 #import "SolyarisConstants.h"
-
+#import "Tracker.h"
 
 /*
  * Helper Stack.
@@ -109,6 +109,9 @@
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	DLog();
+    
+    // track
+    [Tracker trackView:@"Localization"];
     
     // size
 	self.contentSizeForViewInPopover = CGSizeMake(vframe.size.width, vframe.size.height);

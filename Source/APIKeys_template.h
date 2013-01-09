@@ -25,9 +25,6 @@
 // API Keys: rename this file to APIKeys.h and add your keys.
 //
 
-// Google Analytics
-#define kGoogleAnalytics		@"big-brother-tracking-key"
-
 // TMDb
 #define apiTMDbKey              @"super-secret-tmdb-api-key"
 #define apiTMDbSearchMovie      @"http://api.themoviedb.org/2.1/Movie.search"

@@ -23,7 +23,7 @@
 #import "DashboardViewController.h"
 #import "CellData.h"
 #import "SolyarisConstants.h"
-
+#import "Tracker.h"
 
 
 
@@ -103,6 +103,17 @@
     [segments release];
 
     
+}
+
+/*
+ * View appears.
+ */
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    DLog();
+    
+    // track
+    [Tracker trackView:@"Dashboard"];
 }
 
 

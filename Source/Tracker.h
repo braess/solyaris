@@ -23,25 +23,19 @@
 #import <Foundation/Foundation.h>
 
 
-//  Variables
-enum {
-    TrackerVariables,
-    TrackerVariableDevice,
-	TrackerVariableIOS
-};
-
 // Categories
 #define TEventApp			@"App"
 #define TEventUsage			@"Usage"
 #define TEventSearch        @"Search"
 #define TEventLoad          @"Load"		
 #define TEventAbout         @"About"
-#define TEventInfo          @"Info"
+#define TEventInfo          @"Information"
 #define TEventPreferences   @"Preferences"
 #define TEventSlides        @"Slides"
 #define TEventAPI           @"API"
 #define TEventNode          @"Node"
 #define TEventFavorites     @"Favorites"
+#define TEventError         @"Error"
 
 
 /**
@@ -53,9 +47,10 @@ enum {
 
 // Class Methods
 + (void)startTracker;
-+ (void)stopTracker;
-+ (void)dispatch;
-+ (void)trackPageView:(NSString*)page;
++ (void)trackView:(NSString*)view;
 + (void)trackEvent:(NSString*)category action:(NSString*)action label:(NSString*)label;
++ (void)trackError:(NSString*)cls method:(NSString*)method message:(NSString*)message;
++ (void)trackError:(NSString*)cls method:(NSString*)method message:(NSString*)message error:(NSError*)error;
++ (void)trackError:(NSString*)msg error:(NSError*)error;
 
 @end

@@ -305,7 +305,8 @@
 	[super viewWillAppear:animated];
 	DLog();
 
-
+    // track
+    [Tracker trackView:@"About"];
 }
 
 
@@ -355,7 +356,7 @@
 		[composer addAttachmentData:data mimeType:@"image/png" fileName:@"Solyaris"];
         
 		// show off
-		[self presentModalViewController:composer animated:YES];
+		[[UIApplication sharedApplication].keyWindow.rootViewController presentModalViewController:composer animated:YES];
         
 		// release
 		[composer release];
@@ -405,11 +406,11 @@
             }
             
             // dismiss the tweet composition view controller
-            [self dismissModalViewControllerAnimated:YES];
+            [[UIApplication sharedApplication].keyWindow.rootViewController dismissModalViewControllerAnimated:YES];
         }];
         
         // modal
-        [self presentModalViewController:tweetViewController animated:YES];
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentModalViewController:tweetViewController animated:YES];
     }
 
 }
@@ -464,7 +465,7 @@
 		[composer setSubject:[NSString stringWithFormat:@"[Solyaris] Feedback v%@",[(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefault:udInformationAppVersion]]];
         
 		// show off
-        [self presentModalViewController:composer animated:YES];
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentModalViewController:composer animated:YES];
         
 		// release
 		[composer release];
@@ -485,6 +486,7 @@
         [delegate aboutBack];
     }
 }
+
 
 
 #pragma mark -
@@ -538,9 +540,6 @@
 
 
 
-
-
-
 #pragma mark -
 #pragma mark MFMailComposeViewControllerDelegate Protocol
 
@@ -570,18 +569,7 @@
 	}
 	
 	// close modal
-    [self dismissModalViewControllerAnimated:YES];
-    
-    // fuck iphone
-    if (! iPad) {
-        for (UIView *sv in self.view.subviews) {
-            if ([sv isKindOfClass:[ActionBar class]]) {
-                sv.frame = CGRectMake(0, vframe.size.height-kAboutFooterHeight+10, vframe.size.width, 45);
-                [sv setNeedsLayout];
-            }
-        }
-        [self.view setNeedsLayout];
-    }
+    [[UIApplication sharedApplication].keyWindow.rootViewController dismissModalViewControllerAnimated:YES];
     
 }
 

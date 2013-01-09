@@ -1149,7 +1149,7 @@
             [delegate performSelectorOnMainThread:@selector(apiError:) withObject:apiError waitUntilDone:NO];
         }
         
-        // handle the error
+        // rollback
         NSLog(@"TMDb CoreData Error\n%@\n%@", error, [error userInfo]);
         [managedObjectContext rollback];
         

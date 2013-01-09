@@ -22,6 +22,7 @@
 
 #import "RelatedViewController.h"
 #import "SolyarisConstants.h"
+#import "Tracker.h"
 #import <QuartzCore/QuartzCore.h>
 
 
@@ -145,6 +146,17 @@
     
     // resize
     [self resize];
+}
+
+/*
+ * View appears.
+ */
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    DLog();
+    
+    // track
+    [Tracker trackView:@"Related"];
 }
 
 

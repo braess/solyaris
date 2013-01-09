@@ -21,9 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "Tracker.h"
-#import "APIKeys.h"
-#import "GANTracker.h"
-
+#import "GAI/GAI.h"
 
 
 /**
@@ -31,91 +29,44 @@
  */
 @implementation Tracker
 
-
-#pragma mark -
-#pragma mark Constants
-
-// Dispatch period in seconds
-static const NSInteger kGANDispatchPeriodSec = 30;
-
-
 #pragma mark -
 #pragma mark Class Methods
 
 /**
- * Starts/stops the tracker.
+ * Starts the tracker.
  */
 + (void)startTracker {
-
-    // device
-	NSString *device = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? @"iPad" : @"iPhone";
-	
-	// version
-	NSString *version = [[UIDevice currentDevice] systemVersion];
-	
-    // track
-    #ifndef DEBUG
     
-	// shared tracker
-	[[GANTracker sharedTracker] startTrackerWithAccountID:kGoogleAnalytics
-                                           dispatchPeriod:kGANDispatchPeriodSec
-                                                 delegate:nil];
-    
-    
-	// device variable
-	NSError *error;
-	if (![[GANTracker sharedTracker] setCustomVariableAtIndex:TrackerVariableDevice name:@"device" value:device scope:kGANSessionScope withError:&error]) {
-		NSLog(@"Solyaris error in setting device variable");
-	}
-	
-	// ios variable
-	if (![[GANTracker sharedTracker] setCustomVariableAtIndex:TrackerVariableIOS name:@"ios" value:version scope:kGANSessionScope withError:&error]) {
-		NSLog(@"Solyaris error in setting ios variable");
-	}
-    
-    // debug
+    #ifdef DEBUG
+    NSLog(@"Tracker: Start");
     #else
-    NSLog(@"Tracker: Start %@ %@",device,version);
+    @try {
+        // init
+        [GAI sharedInstance].debug = NO;
+        [GAI sharedInstance].dispatchInterval = 120;
+        [GAI sharedInstance].trackUncaughtExceptions = YES;
+        
+        // tracker
+        [GAI sharedInstance].defaultTracker = [[GAI sharedInstance] trackerWithTrackingId:@"UA-1005717-33"];
+    }
+    @catch (id exception) {
+	}
     #endif
 }
-+ (void)stopTracker {
-	DLog();
-	
-    // stop 
-    #ifndef DEBUG
-	[[GANTracker sharedTracker] stopTracker];
-    #else
-    NSLog(@"Tracker: Stop");
-    #endif
-}
-
 
 /**
- * Dispatch events.
+ * Tracks a view.
  */
-+ (void)dispatch {
-	FLog();
-	
-    // dispatch
-    #ifndef DEBUG
-	[[GANTracker sharedTracker] dispatch];
++ (void)trackView:(NSString*)view {
+    
+    #ifdef DEBUG
+    NSLog(@"Tracker: View %@",view);
     #else
-    NSLog(@"Tracker: Dispatch");
-    #endif
-
-}
-
-
-/**
- * Tracks a page view.
- */
-+ (void)trackPageView:(NSString*)page {
-	
-    // track page view
-    #ifndef DEBUG
-	[[GANTracker sharedTracker] trackPageview:page withError:nil];
-    #else
-    NSLog(@"Tracker: Page %@",page);
+    @try {
+        [[GAI sharedInstance].defaultTracker trackView:view];
+    }
+    @catch (id exception) {
+	}
     #endif
 }
 
@@ -123,13 +74,40 @@ static const NSInteger kGANDispatchPeriodSec = 30;
  * Tracks an event.
  */
 + (void)trackEvent:(NSString*)category action:(NSString*)action label:(NSString*)label {
-	
-    // track event
-    #ifndef DEBUG
-	[[GANTracker sharedTracker] trackEvent:category action:action label:label value:-1 withError:nil];
-    #else
+    
+    #ifdef DEBUG
     NSLog(@"Tracker: Event %@ %@ %@",category,action,label);
+    #else
+    @try {
+        [[GAI sharedInstance].defaultTracker trackEventWithCategory:category withAction:action withLabel:label withValue:nil];
+    }
+    @catch (id exception) {
+	}
     #endif
+}
+
+/**
+ * Track errors.
+ */
++ (void)trackError:(NSString *)cls method:(NSString *)method message:(NSString *)message {
+	[Tracker trackError:[NSString stringWithFormat:@"%@ - %@: %@",cls,method,message] error:nil];
+}
++ (void)trackError:(NSString *)cls method:(NSString *)method message:(NSString *)message error:(NSError *)error {
+	[Tracker trackError:[NSString stringWithFormat:@"%@ - %@: %@",cls,method,message] error:error];
+}
++ (void)trackError:(NSString *)msg error:(NSError *)error {
+    
+#ifdef DEBUG
+    NSLog(@"Tracker: Error %@\n%@",msg,error);
+#else
+    @try {
+        [[GAI sharedInstance].defaultTracker trackException:NO withNSError:error];
+        [[GAI sharedInstance].defaultTracker trackEventWithCategory:TEventError withAction:msg withLabel:[NSString stringWithFormat:@"%@",error != nil ? error : @""] withValue:nil];
+    }
+    @catch (id exception) {
+	}
+#endif
+    
 }
 
 @end
