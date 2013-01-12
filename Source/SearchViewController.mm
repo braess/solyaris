@@ -298,7 +298,7 @@
 }
 
 /*
- * Cleanup rotation.
+ * Rotation.
  */
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     [self resize];

@@ -55,7 +55,7 @@
 #pragma mark Constants
 
 // constants
-#define kAnimateTimeHelpShow            2.4f
+#define kAnimateTimeHelpShow            1.5f
 #define kAnimateTimeHelpDismiss         0.45f
 
 

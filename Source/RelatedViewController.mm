@@ -161,12 +161,12 @@
 
 
 /*
- * Cleanup rotation.
+ * Rotation.
  */
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [self resize];
+}
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    GLog();
-    
-    // resize
     [self resize];
 }
 
