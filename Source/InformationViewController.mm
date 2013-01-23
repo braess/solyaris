@@ -26,6 +26,7 @@
 #import "SolyarisConstants.h"
 #import "DataNode.h"
 #import "Utils.h"
+#import "NSData+Base64.h"
 #import "Tracker.h"
 
 /**
@@ -63,8 +64,20 @@
  * Reference Stack.
  */
 @interface InformationViewController (ReferenceStack)
+- (void)referenceTMDb;
+- (void)referenceIMDb;
+- (void)referenceWikipedia;
 - (void)referenceAmazon;
 - (void)referenceITunes;
+@end
+
+/**
+ * Share Stack.
+ */
+@interface InformationViewController (ShareStack)
+- (void)shareEmail;
+- (void)shareTwitter;
+- (void)shareFacebook;
 @end
 
 
@@ -85,6 +98,16 @@
 // constants
 #define kAnimateTimeResizeFull      0.3f
 #define kAnimateTimeResizeDefault	0.3f
+
+// share
+#define kShareTitle                 @"title"
+#define kShareTagline               @"tagline"
+#define kShareReleased              @"released"
+#define kShareRuntime               @"runtime"
+#define kShareThumb                 @"thumb"
+#define kShareImage                 @"image"
+#define kShareOverview              @"overview"
+#define kShareLink                  @"link"
 
 
 #pragma mark -
@@ -146,6 +169,11 @@
         NSMutableDictionary *favorite = [[NSMutableDictionary alloc] init];
         _favorite = [favorite retain];
         [favorite release];
+        
+        // share
+        NSMutableDictionary *share = [[NSMutableDictionary alloc] init];
+        _share = [share retain];
+        [share release];
 
 	}
 	return self;
@@ -255,11 +283,20 @@
     _buttonFavorite = [btnFavorite retain];
     [ctView addSubview:_buttonFavorite];
     
+    // button share
+    UIButton *btnShare = [UIButton buttonWithType:UIButtonTypeCustom];
+    btnShare.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
+    btnShare.frame = CGRectMake(headerFrame.size.width-88-kInformationGapInset+6, headerFrame.size.height-44-kInformationGapOffset+(iPad ? 1 : 10), 44, 44);
+    [btnShare setImage:[UIImage imageNamed:@"btn_share.png"] forState:UIControlStateNormal];
+    [btnShare addTarget:self action:@selector(actionShare:) forControlEvents:UIControlEventTouchUpInside];
+    _buttonShare = [btnShare retain];
+    [ctView addSubview:_buttonShare];
+    
     
     // button trailer
     UIButton *btnTrailer = [UIButton buttonWithType:UIButtonTypeCustom]; 
     btnTrailer.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-    btnTrailer.frame = CGRectMake(headerFrame.size.width-88-kInformationGapInset+6, headerFrame.size.height-44-kInformationGapOffset+(iPad ? 1 : 10), 44, 44);
+    btnTrailer.frame = CGRectMake(headerFrame.size.width-132-kInformationGapInset+6, headerFrame.size.height-44-kInformationGapOffset+(iPad ? 1 : 10), 44, 44);
     [btnTrailer setImage:[UIImage imageNamed:@"btn_trailer.png"] forState:UIControlStateNormal];
     [btnTrailer addTarget:self action:@selector(actionTrailer:) forControlEvents:UIControlEventTouchUpInside];
     _buttonTrailer = [btnTrailer retain];
@@ -617,18 +654,31 @@
     [_favorite setObject:movie.released ? [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:movie.released]] : @"-" forKey:kFavMeta];
     [_favorite setObject:_referenceTMDb forKey:kFavLink];
     
+    [_buttonFavorite setSelected:fav];
+    
+    // share
+    [_share setObject:movie.title forKey:kShareTitle];
+    [_share setObject:movie.tagline forKey:kShareTagline];
+    [_share setObject:movie.released ? [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:movie.released]] : @"-" forKey:kShareReleased];
+    [_share setObject:movie.runtime ? [NSString stringWithFormat:@"%@m",movie.runtime] : @"-" forKey:kShareRuntime];
+    [_share setObject:movie.overview && movie.description.length > 10 ? movie.overview : @"-" forKey:kShareOverview];
+    [_share setObject:_referenceTMDb forKey:kShareLink];
+    
+    _buttonShare.hidden = NO;
+    
     // thumb
     [_favorite setObject:@"" forKey:kFavThumb];
+    [_share setObject:@"" forKey:kShareThumb];
+    [_share setObject:@"" forKey:kShareImage];
     for (Asset *a in movie.assets) {
         if ([a.type isEqualToString:assetPoster] && [a.size isEqualToString:assetSizeThumb]) {
             [_favorite setObject:a.value forKey:kFavThumb];
-            break;
+            [_share setObject:a.value forKey:kShareThumb];
+        }
+        if ([a.type isEqualToString:assetPoster] && [a.size isEqualToString:assetSizeMid]) {
+            [_share setObject:a.value forKey:kShareImage];
         }
     }
-    
-    // button
-    [_buttonFavorite setSelected:fav];
-    
     
     // swap listing
     [self swapReset];
@@ -665,9 +715,6 @@
     _informationMovieView.hidden = YES;
     _informationPersonView.hidden = NO;
     
-    // trailer
-    _buttonTrailer.hidden = YES;
-    
     // component listing
     [_componentListing reset:nodes];
     [_actionListing setTitle:NSLocalizedString(@"Movies", @"Movies")];
@@ -682,8 +729,11 @@
     [_componentWikipedia reset:_referenceWikipedia];
     
     // component trailer
+    _buttonTrailer.hidden = YES;
     [_componentTrailer reset];
     
+    // share
+    _buttonShare.hidden = YES;
     
     // favorite
     BOOL fav = [_solyarisDataManager solyarisDataFavorite:typePerson dbid:person.pid] ? YES : NO;
@@ -694,6 +744,8 @@
     [_favorite setObject:person.birthday ? [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:person.birthday]] : @"-" forKey:kFavMeta];
     [_favorite setObject:_referenceTMDb forKey:kFavLink];
     
+    [_buttonFavorite setSelected:fav];
+    
     // thumb
     [_favorite setObject:@"" forKey:kFavThumb];
     for (Asset *a in person.assets) {
@@ -702,9 +754,6 @@
             break;
         }
     }
-    
-    // button
-    [_buttonFavorite setSelected:fav];
     
     // swap listing
     [self swapReset];
@@ -1092,6 +1141,35 @@
     
 }
 
+/*
+ * Action share.
+ */
+- (void)actionShare:(id)sender {
+    DLog();
+    
+    // action sheet
+    UIActionSheet *shareAction = [[UIActionSheet alloc]
+                                  initWithTitle:NSLocalizedString(@"Share",@"Share")
+                                  delegate:self
+                                  cancelButtonTitle:nil
+                                  destructiveButtonTitle:nil
+                                  otherButtonTitles:nil];
+    
+    // actions
+    [shareAction addButtonWithTitle:NSLocalizedString(@"Email", @"Email")];
+    [shareAction addButtonWithTitle:NSLocalizedString(@"Twitter", @"Twitter")];
+    if (NSClassFromString(@"SLComposeViewController") != nil && [SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
+        [shareAction addButtonWithTitle:NSLocalizedString(@"Facebook", @"Facebook")];
+    }
+    [shareAction addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel")];
+    shareAction.cancelButtonIndex = shareAction.numberOfButtons-1;
+
+    // show
+    [shareAction setTag:ActionInformationShare];
+    [shareAction showFromRect:_buttonShare.frame inView:self.contentView animated:YES];
+    [shareAction release];
+}
+
 
 /*
  * Action trailer.
@@ -1177,6 +1255,217 @@
 }
 
 
+#pragma mark -
+#pragma mark Share
+
+/*
+ * Share email.
+ */
+- (void)shareEmail {
+    FLog();
+    
+    // track
+    [Tracker trackEvent:TEventInfo action:@"Share" label:@"Email"];
+    
+    // email
+    if ([MailComposeController canSendMail]) {
+        
+        // movie
+        NSString *movie_title = [_share objectForKey:kShareTitle];
+        NSString *movie_tagline = [_share objectForKey:kShareTagline];
+        NSString *movie_released = [_share objectForKey:kShareReleased];
+        NSString *movie_runtime = [_share objectForKey:kShareRuntime];
+        NSString *movie_overview = [_share objectForKey:kShareOverview];
+        NSString *movie_thumb = [_share objectForKey:kShareThumb];
+        NSString *movie_link = [_share objectForKey:kShareLink];
+        
+        // image
+        NSData *movie_image = nil;
+        if (movie_thumb.length > 0) {
+            NSError *error = nil;
+            NSHTTPURLResponse *response;
+            NSURLRequest* request = [NSURLRequest requestWithURL:[NSURL URLWithString:movie_thumb] cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5.0];
+            NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+            if (! error && response != nil && [response statusCode] == 200 && data != nil) {
+               movie_image = UIImagePNGRepresentation([UIImage imageWithData:data]);
+            }
+        }
+        
+        // html
+        NSString *html = [NSString stringWithFormat:
+        @"<div style='max-width:480px;'>"
+        "<table border='0' cellpadding='0' cellspacing='0' style='font-family:Helvetica, Arial, sans-serif; color:#4C4C4C; font-size:14px; line-height:18px; margin:0px; padding:0px;'>"
+        "<tbody>"
+        "<tr><td style='width:%ipx'>$THUMB$</td><td valign='top'>$INFO$</td></tr>"
+        "<tr><td colspan='2' style='padding:10px 0 0 0;'>$OVERVIEW$</td></tr>"
+        "</tbody>"
+        "<tfoot>"
+        "<tr><td colspan='2' style='padding:25px 0 0 0;'>$FOOTER$</td></tr>"
+        "</tfoot>"
+        "</table>"
+        "</div>",movie_image ? 105 : 0];
+        
+        // info
+        NSString *html_info = [NSString stringWithFormat:@"<h1 style='font-size:18px; line-height:18px; margin:0 0 3px 0; padding:12px 0 0 0;'><a href='%@' style='color:#4C4C4C; text-decoration:none;'>%@</a></h1><h2 style='font-size:14px; line-height:18px; font-weight:normal; margin:0 0 9px 0; padding:0;'>%@</h2><p style='padding:0; margin:0;'><span style='display:inline-block; width:80px;'>%@</span>%@<br/><span style='display:inline-block; width:80px;'>%@</span>%@</p>", movie_link, movie_title, movie_tagline, NSLocalizedString(@"Year:", @"Year:"), movie_released, NSLocalizedString(@"Runtime:", @"Runtime:"), movie_runtime];
+        html = [html stringByReplacingOccurrencesOfString:@"$INFO$" withString:html_info];
+        
+        // thumb
+        NSString *html_thumb = movie_image ? [NSString stringWithFormat:@"<img src='data:image/png;base64,%@' width='92' height='auto' style='display:block; margin:0 5px 0 0;'/>",[movie_image base64EncodingWithLineLength:0]] : @"";
+        html = [html stringByReplacingOccurrencesOfString:@"$THUMB$" withString:html_thumb];
+        
+        // overview
+        html = [html stringByReplacingOccurrencesOfString:@"$OVERVIEW$" withString:movie_overview];
+        
+        // footer
+        NSData *icon = UIImagePNGRepresentation([UIImage imageNamed:@"app_icon.png"]);
+        NSString *html_footer = [NSString stringWithFormat:@"<p style='padding:0; margin:0;'><a href='%@' style='color:#4C4C4C; text-decoration:none'><img src='data:image/png;base64,%@' width='45' height='45' style='display:block; float:left; margin:0 8px 0 0;'/><div style='padding:5px 0 0 0;'><span style='font-weight:bold'>%@</span><br/><span>%@</span></div></a></p>",vAppSite,[icon base64EncodingWithLineLength:0],NSLocalizedString(@"Solyaris", @"Solyaris"),NSLocalizedString(@"Visual Movie Browser", @"Visual Movie Browser")];
+        html = [html stringByReplacingOccurrencesOfString:@"$FOOTER$" withString:html_footer];
+        
+        
+        // mail composer
+		MailComposeController *composer = [[MailComposeController alloc] init];
+		composer.mailComposeDelegate = self;
+        
+        // ipad
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            composer.modalPresentationStyle = UIModalPresentationFormSheet;
+            composer.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+        }
+		
+		// subject
+		[composer setSubject:[NSString stringWithFormat:@"[%@] %@",NSLocalizedString(@"Solyaris", @"Solyaris"), movie_title]];
+        
+		// message
+		[composer setMessageBody:html isHTML:YES];
+        
+		// present
+		[[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composer animated:YES completion:nil];
+        
+		// release
+		[composer release];
+    }
+}
+
+/*
+ * Share twitter.
+ */
+- (void)shareTwitter {
+    FLog();
+    
+    // track
+    [Tracker trackEvent:TEventInfo action:@"Share" label:@"Twitter"];
+	
+	// check twitter support
+    if(NSClassFromString(@"TWTweetComposeViewController") != nil) {
+        
+        // movie
+        NSString *movie_title = [_share objectForKey:kShareTitle];
+        NSString *movie_released = [_share objectForKey:kShareReleased];
+        movie_released = (movie_released && movie_released.length > 1) ? [NSString stringWithFormat:@" (%@)",movie_released] : @"";
+        NSString *movie_img = [_share objectForKey:kShareImage];
+        
+        // twitter composition view controller
+        TWTweetComposeViewController *tweetViewController = [[[TWTweetComposeViewController alloc] init] autorelease];
+        
+        // initial text
+        [tweetViewController setInitialText:[NSString stringWithFormat:NSLocalizedString(@"Just found the movie %@%@. \n%@",@"Just found the movie %@. \n%@"),movie_title,movie_released,vAppSite]];
+        
+        // initial image
+        if (movie_img.length > 0) {
+            NSError *error = nil;
+            NSHTTPURLResponse *response;
+            NSURLRequest* request = [NSURLRequest requestWithURL:[NSURL URLWithString:movie_img] cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5.0];
+            NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+            if (! error && response != nil && [response statusCode] == 200 && data != nil) {
+                [tweetViewController addImage:[UIImage imageWithData:data]];
+            }
+        }
+        
+        // completion handler
+        [tweetViewController setCompletionHandler:^(TWTweetComposeViewControllerResult result) {
+            
+            switch (result) {
+                case TWTweetComposeViewControllerResultCancelled:
+                    FLog("Twitter: cancel");
+                    break;
+                case TWTweetComposeViewControllerResultDone:
+                    FLog("Twitter: done");
+                    break;
+                default:
+                    break;
+            }
+            
+            // dismiss the tweet composition view controller
+            [[UIApplication sharedApplication].keyWindow.rootViewController dismissModalViewControllerAnimated:YES];
+        }];
+        
+        // modal
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentModalViewController:tweetViewController animated:YES];
+    }
+}
+
+/*
+ * Share facebook.
+ */
+- (void)shareFacebook {
+    FLog();
+    
+    // track
+    [Tracker trackEvent:TEventInfo action:@"Share" label:@"Facebook"];
+    
+    // check facebook support
+    if (NSClassFromString(@"SLComposeViewController") != nil && [SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
+        
+        // movie
+        NSString *movie_title = [_share objectForKey:kShareTitle];
+        NSString *movie_released = [_share objectForKey:kShareReleased];
+        movie_released = (movie_released && movie_released.length > 1) ? [NSString stringWithFormat:@" (%@)",movie_released] : @"";
+        NSString *movie_img = [_share objectForKey:kShareImage];
+        
+        // composition view controller
+        SLComposeViewController *composeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+        
+        // initial text
+        [composeViewController setInitialText:[NSString stringWithFormat:NSLocalizedString(@"Just found the movie %@%@. \n%@",@"Just found the movie %@. \n%@"),movie_title,movie_released,vAppSite]];
+        
+        // initial image
+        if (movie_img.length > 0) {
+            NSError *error = nil;
+            NSHTTPURLResponse *response;
+            NSURLRequest* request = [NSURLRequest requestWithURL:[NSURL URLWithString:movie_img] cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5.0];
+            NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+            if (! error && response != nil && [response statusCode] == 200 && data != nil) {
+                [composeViewController addImage:[UIImage imageWithData:data]];
+            }
+        }
+        
+        // completion handler
+        SLComposeViewControllerCompletionHandler __block completionHandler=^(SLComposeViewControllerResult result){
+            
+            // dismiss the composition view controller
+            [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
+            
+            // result
+            switch (result) {
+                case SLComposeViewControllerResultCancelled:
+                    FLog("SLCompose: cancel");
+                    break;
+                case SLComposeViewControllerResultDone:
+                    FLog("SLCompose: done");
+                    break;
+                default:
+                    break;
+            }
+            
+        };
+        [composeViewController setCompletionHandler:completionHandler];
+        
+        // modal
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composeViewController animated:YES completion:nil];
+    }
+}
+
+
 
 #pragma mark -
 #pragma mark Reference
@@ -1259,6 +1548,42 @@
 	// tag
 	switch ([actionSheet tag]) {
             
+        // share
+        case ActionInformationShare: {
+            
+            // cancel
+            if (buttonIndex == actionSheet.cancelButtonIndex) {
+                return;
+            }
+            
+            // type
+            switch (buttonIndex) {
+                    
+                // email
+                case 0:
+                    [self shareEmail];
+                    break;
+                    
+                // twitter
+                case 1:
+                    [self shareTwitter];
+                    break;
+                    
+                // facebook
+                case 2:
+                    [self shareFacebook];
+                    break;
+                    
+                // nothing
+                default:
+                    break;
+            }
+
+            
+            // br
+            break;
+        }
+            
         // trailers
 		case ActionInformationTrailers: {
             
@@ -1276,30 +1601,38 @@
         // reference
 		case ActionInformationToolsReference: {
             
-            // TMDb
-			if (buttonIndex == 0) {
-				[self referenceTMDb];
-			} 
-            
-			// IMDb
-			if (buttonIndex == 1) {
-				[self referenceIMDb];
-			} 
-            
-			// Wikipedia
-			if (buttonIndex == 2) {
-				[self referenceWikipedia];
-			} 
-            
-			// Amazon
-			if (buttonIndex == 3) {
-				[self referenceAmazon];
-			} 
-            
-            // iTunes
-			if (buttonIndex == 4) {
-				[self referenceITunes];
-			} 
+            // type
+            switch (buttonIndex) {
+                    
+                // TMDb
+                case 0:
+                    [self referenceTMDb];
+                    break;
+                    
+                // IMDb
+                case 1:
+                    [self referenceIMDb];
+                    break;
+                    
+                // Wikipedia
+                case 2:
+                    [self referenceWikipedia];
+                    break;
+                    
+                // Amazon
+                case 3:
+                    [self referenceWikipedia];
+                    break;
+                    
+                // iTunes
+                case 4:
+                    [self referenceITunes];
+                    break;
+                    
+                // nothing
+                default:
+                    break;
+            }
             
             // kit kat time
 			break;
@@ -1312,7 +1645,40 @@
 		}
 	}
 	
+}
+
+
+#pragma mark -
+#pragma mark MFMailComposeViewControllerDelegate Protocol
+
+/*
+ * Dismisses the email composition interface.
+ */
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
+	FLog();
 	
+	// result
+	switch (result) {
+		case MFMailComposeResultCancelled:
+			FLog("Email: canceled");
+			break;
+		case MFMailComposeResultSaved:
+			FLog("Email: saved");
+			break;
+		case MFMailComposeResultSent:
+			FLog("Email: sent");
+			break;
+		case MFMailComposeResultFailed:
+			FLog("Email: failed");
+			break;
+		default:
+			FLog("Email: not sent");
+			break;
+	}
+	
+	// close modal
+	[[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
+    
 }
 
 
@@ -1343,6 +1709,7 @@
     [_buttonClose release];
     [_buttonFavorite release];
     [_buttonTrailer release];
+    [_buttonShare release];
     
     // components
     [_componentListing release];
@@ -1366,6 +1733,9 @@
     
     // favorite
     [_favorite release];
+    
+    // share
+    [_share release];
 	
 	// duper
     [super dealloc];

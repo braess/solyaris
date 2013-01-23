@@ -296,6 +296,9 @@
 		18EE9937140FFC1E008EE675 /* btn_resize-default.png in Resources */ = {isa = PBXBuildFile; fileRef = 18EE9935140FFC1E008EE675 /* btn_resize-default.png */; };
 		18EE9EFE13C7487B00BA13CF /* README in Resources */ = {isa = PBXBuildFile; fileRef = 18EE9EFD13C7487B00BA13CF /* README */; };
 		18EFCAE1139AB1B2002081B7 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 18EFCAE0139AB1B2002081B7 /* iTunesArtwork */; };
+		18F20B6C16AD726E0041D1FC /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F20B6B16AD726D0041D1FC /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		18F20B7016AD99C90041D1FC /* btn_share.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F20B6E16AD99C90041D1FC /* btn_share.png */; };
+		18F20B7116AD99C90041D1FC /* btn_share@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F20B6F16AD99C90041D1FC /* btn_share@2x.png */; };
 		18F491A7169C6FB4001D3188 /* btn_email.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F491A5169C6FB4001D3188 /* btn_email.png */; };
 		18F491A8169C6FB4001D3188 /* btn_email@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F491A6169C6FB4001D3188 /* btn_email@2x.png */; };
 		18F491AC169C74E6001D3188 /* icon_search_now.png in Resources */ = {isa = PBXBuildFile; fileRef = 18F491AA169C74E6001D3188 /* icon_search_now.png */; };
@@ -707,6 +710,9 @@
 		18EE9935140FFC1E008EE675 /* btn_resize-default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn_resize-default.png"; path = "Assets/btn_resize-default.png"; sourceTree = "<group>"; };
 		18EE9EFD13C7487B00BA13CF /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		18EFCAE0139AB1B2002081B7 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
+		18F20B6B16AD726D0041D1FC /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		18F20B6E16AD99C90041D1FC /* btn_share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_share.png; path = Assets/btn_share.png; sourceTree = "<group>"; };
+		18F20B6F16AD99C90041D1FC /* btn_share@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn_share@2x.png"; path = "Assets/btn_share@2x.png"; sourceTree = "<group>"; };
 		18F491A5169C6FB4001D3188 /* btn_email.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_email.png; path = Assets/btn_email.png; sourceTree = "<group>"; };
 		18F491A6169C6FB4001D3188 /* btn_email@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn_email@2x.png"; path = "Assets/btn_email@2x.png"; sourceTree = "<group>"; };
 		18F491AA169C74E6001D3188 /* icon_search_now.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon_search_now.png; path = Assets/icon_search_now.png; sourceTree = "<group>"; };
@@ -739,6 +745,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18F20B6C16AD726E0041D1FC /* Social.framework in Frameworks */,
 				180F311F155D7D0A00391E97 /* SystemConfiguration.framework in Frameworks */,
 				18AC0287143F5BDB0096259D /* libsqlite3.0.dylib in Frameworks */,
 				18AC0285143F5BA20096259D /* CFNetwork.framework in Frameworks */,
@@ -806,6 +813,8 @@
 		1804C6E313AA277B00417D32 /* buttons */ = {
 			isa = PBXGroup;
 			children = (
+				18F20B6E16AD99C90041D1FC /* btn_share.png */,
+				18F20B6F16AD99C90041D1FC /* btn_share@2x.png */,
 				18F491A5169C6FB4001D3188 /* btn_email.png */,
 				18F491A6169C6FB4001D3188 /* btn_email@2x.png */,
 				180911EE1697310400015C96 /* btn_edit.png */,
@@ -1474,6 +1483,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				18F20B6B16AD726D0041D1FC /* Social.framework */,
 				18AC0286143F5BD90096259D /* libsqlite3.0.dylib */,
 				18AC0284143F5BA10096259D /* CFNetwork.framework */,
 				180F311E155D7D0A00391E97 /* SystemConfiguration.framework */,
@@ -1751,6 +1761,8 @@
 				18F491B7169C7E5E001D3188 /* icon_search_history@2x.png in Resources */,
 				18F491B8169C7E5E001D3188 /* icon_search_popular.png in Resources */,
 				18F491B9169C7E5E001D3188 /* icon_search_popular@2x.png in Resources */,
+				18F20B7016AD99C90041D1FC /* btn_share.png in Resources */,
+				18F20B7116AD99C90041D1FC /* btn_share@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1930,8 +1942,8 @@
 					"-lz",
 				);
 				PRODUCT_NAME = solyaris;
-				PROVISIONING_PROFILE = "3BC6D768-3B41-4005-8399-03DE171DDCBD";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "3BC6D768-3B41-4005-8399-03DE171DDCBD";
+				PROVISIONING_PROFILE = "06D9F999-EC42-4A55-8AC9-A8658CDFDB82";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "06D9F999-EC42-4A55-8AC9-A8658CDFDB82";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = armv7;
 			};

@@ -21,6 +21,9 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import <UIKit/UIKit.h>
+#import <Accounts/Accounts.h>
+#import <Twitter/Twitter.h>
+#import "AppControllers.h"
 #import "CacheImageView.h"
 #import "ActionBar.h"
 #import "ListingView.h"
@@ -56,6 +59,7 @@ enum {
 //  Actions
 enum {
     ActionInformationToolsReference,
+    ActionInformationShare,
     ActionInformationTrailers
 };
 
@@ -111,7 +115,7 @@ enum {
 /**
  * InformationViewController.
  */
-@interface InformationViewController : UIViewController <UIActionSheetDelegate, ListingDelegate, HTMLDelegate, UIGestureRecognizerDelegate> {
+@interface InformationViewController : UIViewController <UIActionSheetDelegate, ListingDelegate, HTMLDelegate, UIGestureRecognizerDelegate, MFMailComposeViewControllerDelegate> {
     
     // delegate
 	id<InformationDelegate> delegate;
@@ -142,6 +146,7 @@ enum {
     UIButton *_buttonClose;
     UIButton *_buttonTrailer;
     UIButton *_buttonFavorite;
+    UIButton *_buttonShare;
     
     // loader
     UIActivityIndicatorView *_loader;
@@ -176,6 +181,9 @@ enum {
     // favorite
     NSMutableDictionary *_favorite;
     
+    // share
+    NSMutableDictionary *_share;
+    
     // modes
     BOOL mode_loading;
     
@@ -197,6 +205,7 @@ enum {
 - (void)actionClose:(id)sender;
 - (void)actionFavorite:(id)sender;
 - (void)actionTrailer:(id)sender;
+- (void)actionShare:(id)sender;
 
 // Business Methods
 - (void)resize;
