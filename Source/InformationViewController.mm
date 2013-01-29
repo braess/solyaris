@@ -1363,12 +1363,13 @@
         NSString *movie_released = [_share objectForKey:kShareReleased];
         movie_released = (movie_released && movie_released.length > 1) ? [NSString stringWithFormat:@" (%@)",movie_released] : @"";
         NSString *movie_img = [_share objectForKey:kShareImage];
+        NSString *movie_link = [_share objectForKey:kShareLink];
         
         // twitter composition view controller
         TWTweetComposeViewController *tweetViewController = [[[TWTweetComposeViewController alloc] init] autorelease];
         
         // initial text
-        [tweetViewController setInitialText:[NSString stringWithFormat:NSLocalizedString(@"Just found the movie %@%@. \n%@",@"Just found the movie %@. \n%@"),movie_title,movie_released,vAppSite]];
+        [tweetViewController setInitialText:[NSString stringWithFormat:NSLocalizedString(@"Just found the movie %@%@. \n%@",@"Just found the movie %@. \n%@"),movie_title,movie_released,movie_link]];
         
         // initial image
         if (movie_img.length > 0) {
@@ -1384,6 +1385,7 @@
         // completion handler
         [tweetViewController setCompletionHandler:^(TWTweetComposeViewControllerResult result) {
             
+            // result
             switch (result) {
                 case TWTweetComposeViewControllerResultCancelled:
                     FLog("Twitter: cancel");
@@ -1421,12 +1423,13 @@
         NSString *movie_released = [_share objectForKey:kShareReleased];
         movie_released = (movie_released && movie_released.length > 1) ? [NSString stringWithFormat:@" (%@)",movie_released] : @"";
         NSString *movie_img = [_share objectForKey:kShareImage];
+        NSString *movie_link = [_share objectForKey:kShareLink];
         
         // composition view controller
         SLComposeViewController *composeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
         
         // initial text
-        [composeViewController setInitialText:[NSString stringWithFormat:NSLocalizedString(@"Just found the movie %@%@. \n%@",@"Just found the movie %@. \n%@"),movie_title,movie_released,vAppSite]];
+        [composeViewController setInitialText:[NSString stringWithFormat:NSLocalizedString(@"Just found the movie %@%@. \n%@",@"Just found the movie %@. \n%@"),movie_title,movie_released,movie_link]];
         
         // initial image
         if (movie_img.length > 0) {
@@ -1442,9 +1445,6 @@
         // completion handler
         SLComposeViewControllerCompletionHandler __block completionHandler=^(SLComposeViewControllerResult result){
             
-            // dismiss the composition view controller
-            [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
-            
             // result
             switch (result) {
                 case SLComposeViewControllerResultCancelled:
@@ -1456,6 +1456,9 @@
                 default:
                     break;
             }
+            
+            // dismiss the composition view controller
+            [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
             
         };
         [composeViewController setCompletionHandler:completionHandler];

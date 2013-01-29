@@ -395,7 +395,7 @@
     return ! (state_splash || state_settings);
 }
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return ! (state_splash || state_settings);
+    return UIInterfaceOrientationIsPortrait(interfaceOrientation) ? ! state_settings : ! (state_splash || state_settings);
 }
  
 
