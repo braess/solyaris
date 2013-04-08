@@ -796,7 +796,6 @@
         
         // style
         self.contentInset = UIEdgeInsetsMake(0,-8,0,-8);
-        self.textAlignment = UITextAlignmentLeft;
         self.backgroundColor = [UIColor clearColor];
         self.font = [UIFont fontWithName:@"Helvetica" size:15.0];
         self.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];

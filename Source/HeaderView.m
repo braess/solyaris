@@ -21,7 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "HeaderView.h"
-#import "AppButtons.h"
+#import "Appearance.h"
 
 /**
  * HeaderView.

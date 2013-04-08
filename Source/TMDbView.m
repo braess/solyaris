@@ -76,7 +76,6 @@
         // text
         UITextView *textView = [[UITextView alloc] initWithFrame:CGRectZero];
         textView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-        textView.textAlignment = UITextAlignmentLeft;
         textView.backgroundColor = [UIColor clearColor];
         textView.font = [UIFont fontWithName:@"Helvetica" size:15.0];
         textView.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];

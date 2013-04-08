@@ -21,11 +21,11 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import <UIKit/UIKit.h>
+#import "Appearance.h"
 #import "CellButton.h"
 #import "CellSwitch.h"
 #import "CellSlider.h"
 #import "LocalizationViewController.h"
-#import "AppControllers.h"
 
 // Constants
 #define kPreferencesHeaderHeight    50.0f

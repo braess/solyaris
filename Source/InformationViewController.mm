@@ -1354,9 +1354,9 @@
     
     // track
     [Tracker trackEvent:TEventInfo action:@"Share" label:@"Twitter"];
-	
-	// check twitter support
-    if(NSClassFromString(@"TWTweetComposeViewController") != nil) {
+    
+    // check twitter support
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
         
         // movie
         NSString *movie_title = [_share objectForKey:kShareTitle];
@@ -1365,11 +1365,11 @@
         NSString *movie_img = [_share objectForKey:kShareImage];
         NSString *movie_link = [_share objectForKey:kShareLink];
         
-        // twitter composition view controller
-        TWTweetComposeViewController *tweetViewController = [[[TWTweetComposeViewController alloc] init] autorelease];
+        // composition view controller
+        SLComposeViewController *composeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
         
         // initial text
-        [tweetViewController setInitialText:[NSString stringWithFormat:NSLocalizedString(@"Just found the movie %@%@. \n%@",@"Just found the movie %@. \n%@"),movie_title,movie_released,movie_link]];
+        [composeViewController setInitialText:[NSString stringWithFormat:NSLocalizedString(@"Just found the movie %@%@. \n%@",@"Just found the movie %@. \n%@"),movie_title,movie_released,movie_link]];
         
         // initial image
         if (movie_img.length > 0) {
@@ -1378,32 +1378,36 @@
             NSURLRequest* request = [NSURLRequest requestWithURL:[NSURL URLWithString:movie_img] cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:5.0];
             NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
             if (! error && response != nil && [response statusCode] == 200 && data != nil) {
-                [tweetViewController addImage:[UIImage imageWithData:data]];
+                [composeViewController addImage:[UIImage imageWithData:data]];
             }
         }
         
+        
         // completion handler
-        [tweetViewController setCompletionHandler:^(TWTweetComposeViewControllerResult result) {
+        SLComposeViewControllerCompletionHandler __block completionHandler=^(SLComposeViewControllerResult result){
+            
+            // dismiss the composition view controller
+            [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
             
             // result
             switch (result) {
-                case TWTweetComposeViewControllerResultCancelled:
-                    FLog("Twitter: cancel");
+                case SLComposeViewControllerResultCancelled:
+                    FLog("SLCompose: cancel");
                     break;
-                case TWTweetComposeViewControllerResultDone:
-                    FLog("Twitter: done");
+                case SLComposeViewControllerResultDone:
+                    FLog("SLCompose: done");
                     break;
                 default:
                     break;
             }
             
-            // dismiss the tweet composition view controller
-            [[UIApplication sharedApplication].keyWindow.rootViewController dismissModalViewControllerAnimated:YES];
-        }];
+        };
+        [composeViewController setCompletionHandler:completionHandler];
         
         // modal
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentModalViewController:tweetViewController animated:YES];
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composeViewController animated:YES completion:nil];
     }
+   
 }
 
 /*

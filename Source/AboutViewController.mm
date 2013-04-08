@@ -131,7 +131,6 @@
 	// description
 	UITextView *txtAbout = [[UITextView alloc] initWithFrame:aframe];
     txtAbout.contentInset = UIEdgeInsetsMake(0,-7,-20,-20);
-    txtAbout.textAlignment = UITextAlignmentLeft;
 	txtAbout.backgroundColor = [UIColor clearColor];
 	txtAbout.font = [UIFont fontWithName:@"Helvetica" size:15.0];
 	txtAbout.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
@@ -356,7 +355,7 @@
 		[composer addAttachmentData:data mimeType:@"image/png" fileName:@"Solyaris"];
         
 		// show off
-		[[UIApplication sharedApplication].keyWindow.rootViewController presentModalViewController:composer animated:YES];
+		[[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composer animated:YES completion:nil];
         
 		// release
 		[composer release];
@@ -377,40 +376,43 @@
     // track
     [Tracker trackEvent:TEventAbout action:@"Twitter" label:[NSString stringWithFormat:@"%@",[(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefault:udInformationAppVersion]]];
     
-
     // check twitter support
-    if(NSClassFromString(@"TWTweetComposeViewController") != nil) {
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
         
-        // twitter composition view controller
-        TWTweetComposeViewController *tweetViewController = [[[TWTweetComposeViewController alloc] init] autorelease];
+        // composition view controller
+        SLComposeViewController *composeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
         
         // initial tweet text
-        [tweetViewController setInitialText:[NSString stringWithFormat:@"%@ %@\n",NSLocalizedString(@"Solyaris iPhone/iPad App. A Visual Movie Browser.",@"Solyaris iPhone/iPad App. A Visual Movie Browser."),vAppStoreURL ]];
+        [composeViewController setInitialText:[NSString stringWithFormat:@"%@ %@\n",NSLocalizedString(@"Solyaris iPhone/iPad App. A Visual Movie Browser.",@"Solyaris iPhone/iPad App. A Visual Movie Browser."),vAppStoreURL ]];
         
         // promo image
         UIImage *pimg = [UIImage imageNamed:@"promo.png"];
-        [tweetViewController addImage:pimg];
+        [composeViewController addImage:pimg];
+        
         
         // completion handler
-        [tweetViewController setCompletionHandler:^(TWTweetComposeViewControllerResult result) {
+        SLComposeViewControllerCompletionHandler __block completionHandler=^(SLComposeViewControllerResult result){
             
+            // dismiss the composition view controller
+            [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
+            
+            // result
             switch (result) {
-                case TWTweetComposeViewControllerResultCancelled:
-                    FLog("Twitter: cancel");
+                case SLComposeViewControllerResultCancelled:
+                    FLog("SLCompose: cancel");
                     break;
-                case TWTweetComposeViewControllerResultDone:
-                    FLog("Twitter: done");
+                case SLComposeViewControllerResultDone:
+                    FLog("SLCompose: done");
                     break;
                 default:
                     break;
             }
             
-            // dismiss the tweet composition view controller
-            [[UIApplication sharedApplication].keyWindow.rootViewController dismissModalViewControllerAnimated:YES];
-        }];
+        };
+        [composeViewController setCompletionHandler:completionHandler];
         
         // modal
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentModalViewController:tweetViewController animated:YES];
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composeViewController animated:YES completion:nil];
     }
 
 }
@@ -465,7 +467,7 @@
 		[composer setSubject:[NSString stringWithFormat:@"[Solyaris] Feedback v%@",[(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefault:udInformationAppVersion]]];
         
 		// show off
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentModalViewController:composer animated:YES];
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composer animated:YES completion:nil];
         
 		// release
 		[composer release];
@@ -569,7 +571,7 @@
 	}
 	
 	// close modal
-    [[UIApplication sharedApplication].keyWindow.rootViewController dismissModalViewControllerAnimated:YES];
+    [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
     
 }
 

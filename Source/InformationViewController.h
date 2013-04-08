@@ -23,9 +23,8 @@
 #import <UIKit/UIKit.h>
 #import <Accounts/Accounts.h>
 #import <Twitter/Twitter.h>
-#import "AppControllers.h"
+#import "Appearance.h"
 #import "CacheImageView.h"
-#import "ActionBar.h"
 #import "ListingView.h"
 #import "HTMLView.h"
 #import "TMDbView.h"

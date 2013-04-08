@@ -156,7 +156,7 @@
 	NSString* typeName = NSStringFromClass([aView class]);
 	if ([typeName compare:@"UISegmentLabel" options:NSLiteralSearch] == NSOrderedSame) {
 		UILabel* label = (UILabel*)aView;
-		[label setTextAlignment:UITextAlignmentCenter];
+		[label setTextAlignment:NSTextAlignmentCenter];
 		[label setFont:[UIFont boldSystemFontOfSize:size]];
 	}
 	NSArray* subs = [aView subviews];

@@ -21,7 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "SolyarisAppDelegate.h"
-#import "AppControllers.h"
+#import "Appearance.h"
 #import "SolyarisConstants.h"
 #import "TMDb.h"
 #import "NoteView.h"
@@ -54,9 +54,8 @@
     // track
 	[Tracker startTracker];
     
-    // customize appearance
-	[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
-    [AppControllers appAppearance];
+    // appearance
+    [Appearance appearance];
     
     // version
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -238,25 +237,12 @@
     // sync
 	[userDefaults synchronize];
     
-    // note
-    if (iOS5) {
-        
-        // updated
-        Note *note = [[Note alloc] initNoteWithTitle:NSLocalizedString(@"Updated", @"Updated") message:NSLocalizedString(@"Please note that iOS5 is no longer fully supported.", @"Please note that iOS5 is no longer fully supported.") type:noteTypeInfo];
-        
-        // store
-        [Note storeNote:note key:noteAppDeprecated];
-        [note release];
-    }
-    else {
-        
-        // updated
-        Note *note = [[Note alloc] initNoteWithTitle:NSLocalizedString(@"Updated", @"Updated") message:[NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Solyaris", @"Solyaris"),appVersion ] type:noteTypeSuccess];
-        
-        // store
-        [Note storeNote:note key:noteAppUpdate];
-        [note release];
-    }
+    // updated
+    Note *note = [[Note alloc] initNoteWithTitle:NSLocalizedString(@"Updated", @"Updated") message:[NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Solyaris", @"Solyaris"),appVersion ] type:noteTypeSuccess];
+    
+    // store
+    [Note storeNote:note key:noteAppUpdate];
+    [note release];
 
 }
 

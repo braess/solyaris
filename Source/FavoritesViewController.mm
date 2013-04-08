@@ -85,7 +85,7 @@
     header.edit = YES;
     
     // iphone
-    if (! iPad && ! iOS5) {
+    if (! iPad) {
         header.action = YES;
         [header.buttonAction setImage:[UIImage imageNamed:@"btn_email.png"] forState:UIControlStateNormal];
     }

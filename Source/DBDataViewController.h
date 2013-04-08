@@ -47,8 +47,8 @@
 #import "Person.h"
 #import "Asset.h"
 #import "DBData.h"
+#import "Appearance.h"
 #import "HeaderView.h"
-#import "AppButtons.h"
 #import "CacheImageView.h"
 #import "DataDelegate.h"
 

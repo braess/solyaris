@@ -971,7 +971,6 @@
         lblMessage.shadowOffset = CGSizeMake(1,1);
         lblMessage.opaque = YES;
         lblMessage.numberOfLines = 2;
-        lblMessage.textAlignment = UITextAlignmentLeft;
         
         self.labelMessage = lblMessage;
         [self addSubview:_labelMessage];
@@ -996,7 +995,6 @@
         lblInfo.shadowOffset = CGSizeMake(1,1);
         lblInfo.opaque = YES;
         lblInfo.numberOfLines = 3;
-        lblInfo.textAlignment = UITextAlignmentLeft;
         
         [lblInfo setText:NSLocalizedString(@"TMDb is a free, user driven movie database. Help expanding their collection by adding any missing movie or person. ➝ themoviedb.org", @"TMDb is a free, user driven movie database. Help expanding their collection by adding any missing movie or person. ➝ themoviedb.org")];
         

@@ -21,8 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import <UIKit/UIKit.h>
-#import "AppControllers.h"
-#import "AppButtons.h"
+#import "Appearance.h"
 #import "DataDelegate.h"
 #import "ExportDelegate.h"
 #import "DashboardViewController.h"

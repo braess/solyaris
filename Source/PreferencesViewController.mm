@@ -22,7 +22,6 @@
 
 #import "PreferencesViewController.h"
 #import "SolyarisConstants.h"
-#import "ActionBar.h"
 #import "Tracker.h"
 
 /*
@@ -326,7 +325,7 @@
             }
             
             // present
-            [self presentModalViewController:_localizationController animated:YES];
+            [self presentViewController:_localizationController animated:YES completion:nil];
 
         }
         
@@ -405,10 +404,11 @@
     FLog();
     
     // dismissed
-    [self dismissModalViewControllerAnimated:YES];
-    
-    // reset frame (apple bug?)
-    [self.view setFrame:vframe];
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+        // reset frame (apple bug?)
+        [self.view setFrame:vframe];
+    }];
     
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(preferencesModal:)]) {

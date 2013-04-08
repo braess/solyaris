@@ -21,11 +21,9 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import <UIKit/UIKit.h>
-#import "AppControllers.h"
+#import "Appearance.h"
 #import <Accounts/Accounts.h>
 #import <Twitter/Twitter.h>
-#import "ActionBar.h"
-#import "AppButtons.h"
 
 
 // Constants

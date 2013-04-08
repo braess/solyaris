@@ -95,7 +95,7 @@
         // title
         UILabel *noteTitle = [[UILabel alloc] initWithFrame:CGRectMake(inset, nvs/2.0-nvs/8, nvs-2*inset, nvs/8)];
         noteTitle.backgroundColor = [UIColor clearColor];
-        noteTitle.textAlignment = UITextAlignmentCenter;
+        noteTitle.textAlignment = NSTextAlignmentCenter;
         noteTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
         noteTitle.textColor = [UIColor whiteColor];
         noteTitle.opaque = YES;
@@ -108,7 +108,7 @@
 		// message
 		UITextView *noteMessage = [[UITextView alloc] initWithFrame:CGRectMake(inset, nvs/2.0, nvs-2*inset, nvs/2)];
 		noteMessage.contentInset = UIEdgeInsetsMake(0,-7,-20,-20);
-        noteMessage.textAlignment = UITextAlignmentCenter;
+        noteMessage.textAlignment = NSTextAlignmentCenter;
         noteMessage.backgroundColor = [UIColor clearColor];
         noteMessage.font = [UIFont fontWithName:@"Helvetica" size:15.0];
         noteMessage.textColor = [UIColor whiteColor];
