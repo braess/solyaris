@@ -66,8 +66,8 @@ Edge::Edge(string ide, NodePtr n1, NodePtr n2) {
     label = "";
     
     // font
-    font = Font("Helvetica",12);
-    loff.set(0,-12);
+    font = Font("Helvetica",13);
+    loff.set(0,-13);
     textureLabel = gl::Texture(1,1);
 }
 
@@ -120,14 +120,15 @@ void Edge::config(Configuration c) {
         retina = confDisplayRetina.boolVal();
     }
     
-    
     // init retina
     if (retina) {
         
-        // fonts
-        font = Font("Helvetica",24);
+        // off
         loff *= 2;
     }
+    
+    // font
+    font = Font("Helvetica",redux ? (retina ? 24 : 12) : (retina ? 26 : 13));
 }
 
 /**
@@ -283,8 +284,7 @@ void Edge::show() {
             || (node2->isActive() && node1->isLoading())) {
             
             // label
-            font = Font("Helvetica-Bold",retina ? 24 : 12);
-            //loff.y = -15;
+            font = Font("Helvetica-Bold",redux ? (retina ? 24 : 12) : (retina ? 26 : 13));
             this->renderLabel(label);
             
             // state

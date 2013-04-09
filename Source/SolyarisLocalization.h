@@ -24,7 +24,6 @@
 
 
 // Defaults
-#define kLocalizedDefaultIMDb        @"imdb_com"
 #define kLocalizedDefaultWikipedia   @"wikipedia_en"
 #define kLocalizedDefaultAmazon      @"amazon_us"
 
@@ -37,7 +36,6 @@
 @interface SolyarisLocalization : NSObject {
     
     // data
-    NSMutableDictionary *_imdb;
     NSMutableDictionary *_wikipedia;
     NSMutableDictionary *_amazon;
 }
@@ -49,13 +47,10 @@
 + (NSString*)translateTMDbJob:(NSString*)job;
 
 // Methods
-- (NSString*)urlIMDbMovie;
-- (NSString*)urlIMDbSearch;
 - (NSString*)urlWikipediaSearch;
 - (NSString*)urlAmazonSearch;
 
 // Methods
-- (NSArray*)propertiesIMDb;
 - (NSArray*)propertiesWikipedia;
 - (NSArray*)propertiesAmazon;
 

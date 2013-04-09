@@ -115,14 +115,12 @@
     
     // title
     if (!iPad) {
-        
-        // label
         UILabel *lblTitle = [[UILabel alloc] initWithFrame:tframe];
         lblTitle.backgroundColor = [UIColor clearColor];
         lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
         lblTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
         lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-        lblTitle.shadowOffset = CGSizeMake(1,1);
+        lblTitle.shadowOffset = CGSizeMake(0,1);
         lblTitle.opaque = YES;
         lblTitle.numberOfLines = 1;
         [lblTitle setText:NSLocalizedString(@"Solyaris",@"Solyaris")];
@@ -136,7 +134,7 @@
 	lblClaim.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
 	lblClaim.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
 	lblClaim.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-	lblClaim.shadowOffset = CGSizeMake(1,1);
+	lblClaim.shadowOffset = CGSizeMake(0,1);
 	lblClaim.opaque = YES;
 	lblClaim.numberOfLines = 1;
 	[lblClaim setText:NSLocalizedString(@"Settings",@"Settings")];
@@ -161,7 +159,6 @@
         // popover
         UIPopoverController *locPopoverController = [[UIPopoverController alloc] initWithContentViewController:_localizationController];
         locPopoverController.popoverBackgroundViewClass = [PopoverBackgroundView class];
-        [locPopoverController setPopoverContentSize:CGSizeMake(locViewController.view.frame.size.width, locViewController.view.frame.size.height)];
         
         _localizationPopoverController = [locPopoverController retain];
         [locPopoverController release];
@@ -686,7 +683,7 @@
         cslider.help =  NSLocalizedString(@"Initial",@"Initial");
         cslider.sliderAccessory.minimumValue = 0;
         cslider.sliderAccessory.maximumValue = 30;
-        cslider.sliderAccessory.value = iPad ? 8 : 5;
+        cslider.sliderAccessory.value = iPad ? 7 : 5;
         
         // preference
         NSString *graphNodeInitial = [self retrievePreference:udGraphNodeInitial];
@@ -717,7 +714,7 @@
         cslider.help =  NSLocalizedString(@"Length",@"Length");
         cslider.sliderAccessory.minimumValue = 180;
         cslider.sliderAccessory.maximumValue = 600;
-        cslider.sliderAccessory.value = iPad ? 480 : 300;
+        cslider.sliderAccessory.value = iPad ? 480 : 320;
         
         
         // preference
@@ -745,7 +742,7 @@
         cbutton.delegate = self;
         cbutton.key = kKeyLocalization;
         cbutton.textLabel.text = NSLocalizedString(@"Localization",@"Localization");
-        cbutton.help = NSLocalizedString(@"IMDb, Wikipedia, Amazon",@"IMDb, Wikipedia, Amazon");
+        cbutton.help = NSLocalizedString(@"Wikipedia, Amazon",@"Wikipedia, Amazon");
         [cbutton.buttonAccessory setTitle:NSLocalizedString(@"Change",@"Change") forState:UIControlStateNormal];
         [cbutton update:YES];
         
@@ -863,7 +860,7 @@
 	CGContextFillRect(context, mrect);
 	
 	// header lines
-	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.42 alpha:1].CGColor);
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.54 alpha:1].CGColor);
 	CGContextMoveToPoint(context, 0, kPreferencesHeaderHeight-1);
 	CGContextAddLineToPoint(context, w, kPreferencesHeaderHeight-1);
 	CGContextStrokePath(context);
@@ -874,7 +871,7 @@
 	CGContextStrokePath(context);
     
     // footer lines
-	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.42 alpha:1].CGColor);
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.54 alpha:1].CGColor);
 	CGContextMoveToPoint(context, 0, h-kPreferencesFooterHeight);
 	CGContextAddLineToPoint(context, w, h-kPreferencesFooterHeight);
 	CGContextStrokePath(context);
@@ -885,26 +882,6 @@
 	CGContextStrokePath(context);
     
     
-}
-
-
-#pragma mark -
-#pragma mark Touch
-
-/*
- * Touches.
- */
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    GLog();
-    // ignore
-}
-
-/*
- * Touches.
- */
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    GLog();
-    // ignore
 }
 
 

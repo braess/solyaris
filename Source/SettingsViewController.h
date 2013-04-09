@@ -39,7 +39,7 @@
 /**
  * SettingsViewController.
  */
-@interface SettingsViewController : UIViewController <PreferencesDelegate, AboutDelegate> {
+@interface SettingsViewController : UIViewController <PreferencesDelegate, AboutDelegate, UIGestureRecognizerDelegate> {
     
     // delegate
 	id<SettingsDelegate> delegate;

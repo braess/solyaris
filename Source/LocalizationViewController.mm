@@ -88,6 +88,9 @@
     self.view.frame = vframe;
     self.view.autoresizingMask = UIViewAutoresizingNone;
     
+    // size
+	self.contentSizeForViewInPopover = CGSizeMake(vframe.size.width, vframe.size.height);
+    
     // modal
     if (! iPad) {
         
@@ -112,9 +115,6 @@
     
     // track
     [Tracker trackView:@"Localization"];
-    
-    // size
-	self.contentSizeForViewInPopover = CGSizeMake(vframe.size.width, vframe.size.height);
     
     // reload
     [self.tableView reloadData];
@@ -167,8 +167,6 @@
         [delegate setLocalization:c.key value:c.pvalue];
     }
      
-	// back
-	//[self.navigationController popViewControllerAnimated:YES];
 }
 
 
@@ -206,7 +204,7 @@
  * Customize the number of rows in the table view.
  */
 - (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section {
-    return 3;
+    return 2;
 }
 
 
@@ -228,61 +226,6 @@
 	if (cell == nil) {
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellLocalizationPickerIdentifier] autorelease];
 	}
-    
-    // imdb
-    if ([indexPath row] == LocalizationIMDb) {
-        
-        // create cell
-		CellPicker *cpicker = (CellPicker*) [tableView dequeueReusableCellWithIdentifier:CellLocalizationPickerIdentifier];
-		if (cpicker == nil) {
-			cpicker = [[[CellPicker alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellLocalizationPickerIdentifier] autorelease];
-		}
-        
-        // current
-        NSString *locIMDb = [self retrieveLocalization:udLocalizationIMDb];
-        locIMDb = locIMDb ? locIMDb : kLocalizedDefaultIMDb;
-		
-
-		// picker values
-        int index = 0;
-        NSArray *properties = [_sloc propertiesIMDb];
-		NSMutableArray *pdata = [[NSMutableArray alloc] init];
-        for (LocalizationProperty *lp in properties) {
-            
-            // picker data
-            PickerData *pd = [[PickerData alloc] initWithIndex:index label:lp.label value:lp.key];
-            [pdata addObject:pd];
-            [pd release];
-            
-            // set cell
-			if ([lp.key isEqualToString:locIMDb]) {
-                cpicker.pindex = index;
-				cpicker.pvalue = lp.key;
-				cpicker.plabel = lp.label;
-			}
-            
-            // index
-            index++;
-
-        }
-
-		
-		// prepare cell
-		cpicker.delegate = self;
-        cpicker.clear = NO;
-		cpicker.key = udLocalizationIMDb;
-		cpicker.label = NSLocalizedString(@"IMDb Site", @"IMDb Site");
-		cpicker.values = pdata;
-        cpicker.textLabel.text = NSLocalizedString(@"IMDb", @"IMDb");
-		[cpicker update:YES];
-		
-		// release
-		[pdata release];
-		
-		// set
-		cell = cpicker;
-        
-    }
     
     // wikipedia
     if ([indexPath row] == LocalizationWikipedia) {

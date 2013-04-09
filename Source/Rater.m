@@ -32,6 +32,7 @@
 #import "Rater.h"
 #import <SystemConfiguration/SCNetworkReachability.h>
 #include <netinet/in.h>
+#import "Tracker.h"
 
 NSString *const kRaterFirstUseDate				= @"kRaterFirstUseDate";
 NSString *const kRaterUseCount					= @"kRaterUseCount";
@@ -362,11 +363,20 @@ NSString *urlReviewIPhone = @"itms-apps://itunes.apple.com/WebObjects/MZStore.wo
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    // version
+    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+    
+    // defaults
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 	
+    // action
 	switch (buttonIndex) {
 		case 0:
 		{
+            // track
+            [Tracker trackEvent:TEventRater action:@"Cancel" label:version];
+            
 			// they don't want to rate it
 			[userDefaults setBool:YES forKey:kRaterDeclinedToRate];
 			[userDefaults synchronize];
@@ -374,15 +384,23 @@ NSString *urlReviewIPhone = @"itms-apps://itunes.apple.com/WebObjects/MZStore.wo
 		}
 		case 1:
 		{
+            // track
+            [Tracker trackEvent:TEventRater action:@"Rate" label:version];
+            
 			// they want to rate it
 			[Rater rateApp];
 			break;
 		}
 		case 2:
+        {
+            // track
+            [Tracker trackEvent:TEventRater action:@"Later" label:version];
+            
 			// remind them later
 			[userDefaults setDouble:[[NSDate date] timeIntervalSince1970] forKey:kRaterReminderRequestDate];
 			[userDefaults synchronize];
 			break;
+        }
 		default:
 			break;
 	}

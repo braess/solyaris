@@ -70,7 +70,6 @@
 #define udvSectionHistory               @"section_history"
 
 // Localization
-#define udLocalizationIMDb              @"localization_imdb"
 #define udLocalizationWikipedia         @"localization_wikipedia"
 #define udLocalizationAmazon            @"localization_amazon"
 
@@ -79,6 +78,8 @@
 #define urlTMDbMovie                    @"http://www.themoviedb.org/movie/"
 #define urlTMDbPerson                   @"http://www.themoviedb.org/person/"
 #define urlTMDbMissing                  @"http://www.themoviedb.org/movie"
+#define urlIMDbMovie                    @"http://www.imdb.com/title/"
+#define urlIMDbSearch                   @"http://www.imdb.com/find?q="
 #define urlITunesSearch                 @"itms://ax.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?term="
 
 

@@ -37,7 +37,6 @@
 
 //  Fields
 enum {
-    LocalizationIMDb,
     LocalizationWikipedia,
     LocalizationAmazon
 };

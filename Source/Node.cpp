@@ -84,8 +84,8 @@ Node::Node(string idn, double x, double y) {
     mass = calcmass();
     
     // inc
-    rincg = 1.5;
-    rincs = 1.8;
+    rincg = 1.8;
+    rincs = 2.4;
     
     // velocity
     velocity.set(0,0);
@@ -109,7 +109,7 @@ Node::Node(string idn, double x, double y) {
     textureGlow = gl::Texture(1,1);
     
     // font
-    font = Font("Helvetica",12);
+    font = Font("Helvetica",13);
     textureLabel = gl::Texture(1,1);
     loff.set(0,5);
 
@@ -164,8 +164,8 @@ void Node::config(Configuration c) {
     
     // init redux
     if (redux) {
-        minr *= 0.75;
-        maxr *= 0.75;
+        minr *= 0.8;
+        maxr *= 0.8;
     }
     
     // init retina
@@ -181,10 +181,12 @@ void Node::config(Configuration c) {
         rincg *= 2;
         rincs *= 2;
         
-        // fonts
-        font = Font("Helvetica",24);
+        // offset
         loff *= 2;
     }
+    
+    // font
+    font = Font("Helvetica",redux ? (retina ? 24 : 12) : (retina ? 26 : 13));
 }
 
 
@@ -194,7 +196,7 @@ void Node::config(Configuration c) {
 void Node::defaults(Defaults d) {
     
     // children
-    initial = redux ? 5 : 8;
+    initial = redux ? 5 : 7;
     Default graphNodeInitial = d.getDefault(dGraphNodeInitial);
     if (graphNodeInitial.isSet()) {
         initial = (int) graphNodeInitial.doubleVal();
@@ -202,7 +204,7 @@ void Node::defaults(Defaults d) {
     
     
     // distance
-    double length = redux ? 300 : 480;
+    double length = redux ? 320 : 480;
     Default graphEdgeLength = d.getDefault(dGraphEdgeLength);
     if (graphEdgeLength.isSet()) {
         length = graphEdgeLength.doubleVal();
@@ -661,7 +663,7 @@ void Node::unload() {
     ctxt = Color(0.75,0.75,0.75);
     
     // font
-    font = Font("Helvetica",retina ? 24 : 12);
+    font = Font("Helvetica",redux ? (retina ? 24 : 12) : (retina ? 26 : 13));
     loff.y = retina ? 10 : 5;
     this->renderLabel(label);
     

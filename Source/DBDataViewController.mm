@@ -143,7 +143,7 @@
     lblError.font = [UIFont fontWithName:@"Helvetica" size:15.0];
     lblError.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
     lblError.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-    lblError.shadowOffset = CGSizeMake(1,1);
+    lblError.shadowOffset = CGSizeMake(0,1);
     [lblError setText:NSLocalizedString(@"Something went wrong.", @"Something went wrong.")];
     
     [error addSubview:lblError];
@@ -968,7 +968,7 @@
         lblMessage.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
         lblMessage.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
         lblMessage.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-        lblMessage.shadowOffset = CGSizeMake(1,1);
+        lblMessage.shadowOffset = CGSizeMake(0,1);
         lblMessage.opaque = YES;
         lblMessage.numberOfLines = 2;
         
@@ -992,7 +992,7 @@
         lblInfo.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         lblInfo.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
         lblInfo.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-        lblInfo.shadowOffset = CGSizeMake(1,1);
+        lblInfo.shadowOffset = CGSizeMake(0,1);
         lblInfo.opaque = YES;
         lblInfo.numberOfLines = 3;
         

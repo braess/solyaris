@@ -204,6 +204,7 @@
     btnReset.frame = brframe;
     btnReset.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
 	[btnReset setImage:[UIImage imageNamed:@"btn_reset.png"] forState:UIControlStateNormal];
+    [btnReset setImage:[UIImage imageNamed:@"btn_reset-high.png"] forState:UIControlStateHighlighted];
 	[btnReset addTarget:self action:@selector(actionReset:) forControlEvents:UIControlEventTouchUpInside];
 	_buttonReset = [btnReset retain];
 	[self.view addSubview:_buttonReset];

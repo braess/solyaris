@@ -37,6 +37,14 @@
 
 
 /**
+ * Gesture Stack.
+ */
+@interface NoteView (GestureStack)
+- (void)gestureTap:(UITapGestureRecognizer *)recognizer;
+@end
+
+
+/**
  * Note View.
  */
 @implementation NoteView
@@ -46,9 +54,9 @@
 #pragma mark Constants
 
 // constants
-#define kNoteOpacity                    0.8f
+#define kNoteOpacity                    0.9f
 #define kAnimateTimeNoteShow            0.21f
-#define kAnimateTimeNoteDismiss         0.21f
+#define kAnimateTimeNoteDismiss         0.18f
 #define kDelayTimeNoteDismiss           4.5f
 
 
@@ -84,9 +92,9 @@
 		note.layer.cornerRadius = 8;
         
         note.layer.shadowColor = [[UIColor blackColor] CGColor];
-        note.layer.shadowOpacity = 0.7;
-        note.layer.shadowRadius = 5.0;
-        note.layer.shadowOffset = CGSizeMake(3.0f, 3.0f);    
+        note.layer.shadowOpacity = 0.45;
+        note.layer.shadowRadius = 4.0;
+        note.layer.shadowOffset = CGSizeMake(0, 0);
         note.layer.shadowPath = [UIBezierPath bezierPathWithRect:note.bounds].CGPath;
         
         _note = [note retain];
@@ -107,7 +115,7 @@
 		
 		// message
 		UITextView *noteMessage = [[UITextView alloc] initWithFrame:CGRectMake(inset, nvs/2.0, nvs-2*inset, nvs/2)];
-		noteMessage.contentInset = UIEdgeInsetsMake(0,-7,-20,-20);
+		noteMessage.contentInset = UIEdgeInsetsMake(0,0,-15,-10);
         noteMessage.textAlignment = NSTextAlignmentCenter;
         noteMessage.backgroundColor = [UIColor clearColor];
         noteMessage.font = [UIFont fontWithName:@"Helvetica" size:15.0];
@@ -118,7 +126,6 @@
         
         _noteMessage = [noteMessage retain];
         [noteMessage release];
-        
         
 		
 		// icon center
@@ -202,6 +209,13 @@
 		// hide
 		self.hidden = YES;
         
+        // gestures
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureTap:)];
+        [tapGesture setNumberOfTapsRequired:1];
+        [tapGesture setDelegate:self];
+        [self addGestureRecognizer:tapGesture];
+        [tapGesture release];
+        
 		// return
 		return self;
 	}
@@ -210,16 +224,18 @@
 	return nil;
 }
 
-
 #pragma mark -
-#pragma mark Touch
+#pragma mark Gestures
 
 /*
- * Touch.
+ * Gesture tap.
  */
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	FLog();
+- (void)gestureTap:(UITapGestureRecognizer *)recognizer {
+    FLog();
+    
+    // dismiss
     [self dismissNoteAfterDelay:0];
+    
 }
 
 

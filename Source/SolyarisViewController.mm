@@ -96,17 +96,17 @@
 #pragma mark Constants
 
 // constants
-#define kDelayTimeNodeLoad              1.3f
-#define kDelayTimeStartup               2.1f
+#define kDelayTimeNodeLoad              1.2f
+#define kDelayTimeStartup               1.2f
 #define kAnimateTimeInformationLoad     0.45f
-#define kAnimateTimeInformationShow     (iPad ? 0.6f : 0.45f)
-#define kAnimateTimeInformationHide     (iPad ? 0.45f : 0.33f)
-#define kAnimateTimeRelatedShow         0.6f
-#define kAnimateTimeRelatedHide         0.18f
-#define kAnimateTimeSearchShow          0.3f
-#define kAnimateTimeSearchHide          0.3f
-#define kAnimateTimeSettingsShow        0.6f
-#define kAnimateTimeSettingsHide        0.3f
+#define kAnimateTimeInformationShow     0.45f
+#define kAnimateTimeInformationHide     0.33f
+#define kAnimateTimeRelatedShow         0.24f
+#define kAnimateTimeRelatedHide         0.12f
+#define kAnimateTimeSearchShow          0.24f
+#define kAnimateTimeSearchHide          0.24f
+#define kAnimateTimeSettingsShow        0.48f
+#define kAnimateTimeSettingsHide        0.24f
 #define kOffsetSettings                 (iPad ? 480 : [[UIScreen mainScreen] bounds].size.height)
 #define kAlphaModalInfo                 0.3f
 #define kAlphaModalRelated              0.03f
@@ -497,6 +497,11 @@
  */
 - (void)pinched:(UIPinchGestureRecognizer *)recognizer {
     GLog();
+    
+    // block
+    if (state_settings) {
+        return;
+    }
     
     // forward to cinder
     solyaris->pinched(recognizer); 
@@ -1524,6 +1529,7 @@
     
     // mode
     state_splash = NO;
+    
 }
 
 
@@ -1783,11 +1789,14 @@
     
     // animate
     [UIView animateWithDuration:animated ? kAnimateTimeSearchShow : 0
+                          delay:0
+                        options:UIViewAnimationCurveEaseOut
                      animations:^{
                          search.modalView.alpha = kAlphaModalSearch;
                          search.contentView.frame = contentFrame;
-                     }
+                        }
                      completion:^(BOOL finished) {
+                         
                      }];
 }
 - (void)transitionSearchDismiss:(SearchViewController*)search animated:(BOOL)animated {
@@ -1800,6 +1809,8 @@
     // animate
     [search willMoveToParentViewController:nil];
     [UIView animateWithDuration:animated ? kAnimateTimeSearchHide : 0
+                          delay:0
+                        options:UIViewAnimationCurveLinear
                      animations:^{
                          search.modalView.alpha = 0.0f;
                          search.contentView.frame = contentFrame;
@@ -1812,7 +1823,6 @@
                          
                          // track
                          [Tracker trackView:@"Solyaris"];
-                         
                      }];
 }
 
@@ -1834,6 +1844,8 @@
     
     // animate
     [UIView animateWithDuration:animated ? kAnimateTimeInformationLoad : 0
+                          delay:0
+                        options:UIViewAnimationCurveLinear
                      animations:^{
                          information.modalView.alpha = kAlphaModalInfo;
                      }
@@ -1870,11 +1882,15 @@
     informationCenter.y -= self.view.frame.size.height;
     
     // animate
-    [UIView beginAnimations:@"information_show" context:nil];
-    [UIView setAnimationDuration:kAnimateTimeInformationShow];
-    information.modalView.alpha = kAlphaModalInfo;
-    information.contentView.center = informationCenter;
-    [UIView commitAnimations];
+    [UIView animateWithDuration:animated ? kAnimateTimeInformationShow : 0
+                          delay:0
+                        options:UIViewAnimationCurveEaseOut
+                     animations:^{
+                         information.modalView.alpha = kAlphaModalInfo;
+                         information.contentView.center = informationCenter;
+                     }
+                     completion:^(BOOL finished) {
+                     }];
     
 }
 - (void)transitionInformationDismiss:(InformationViewController *)information animated:(BOOL)animated {
@@ -1887,6 +1903,8 @@
     // animate
     [information willMoveToParentViewController:nil];
     [UIView animateWithDuration:animated ? kAnimateTimeInformationHide : 0
+                          delay:0
+                        options:UIViewAnimationCurveEaseIn
                      animations:^{
                          information.modalView.alpha = 0.0f;
                          information.contentView.center = informationCenter;
@@ -1943,6 +1961,8 @@
     
     // animate
     [UIView animateWithDuration:animated ? kAnimateTimeSettingsShow : 0
+                          delay:0
+                        options:UIViewAnimationCurveEaseOut
                      animations:^{
                          settings.contentView.center = settingsCenter;
                          _searchBarViewController.view.center = searchCenter;
@@ -1983,6 +2003,8 @@
     // animate
     [settings willMoveToParentViewController:nil];
     [UIView animateWithDuration:animated ? kAnimateTimeSettingsHide : 0
+                          delay:0
+                        options:UIViewAnimationCurveEaseIn
                      animations:^{
                          settings.contentView.center = settingsCenter;
                          _searchBarViewController.view.center = searchCenter;
@@ -2018,6 +2040,8 @@
     
     // animate
     [UIView animateWithDuration:animated ? kAnimateTimeRelatedShow : 0
+                          delay:0
+                        options:UIViewAnimationCurveLinear
                      animations:^{
                          related.modalView.alpha = kAlphaModalRelated;
                          related.contentView.alpha = 1.0f;
@@ -2035,6 +2059,8 @@
     // animate
     [related willMoveToParentViewController:nil];
     [UIView animateWithDuration:animated ? kAnimateTimeRelatedHide : 0
+                          delay:0
+                        options:UIViewAnimationCurveLinear
                      animations:^{
                          related.modalView.alpha = 0.0f;
                          related.contentView.alpha = 0.0f;

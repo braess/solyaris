@@ -98,7 +98,7 @@
 	lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
 	lblTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
 	lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-	lblTitle.shadowOffset = CGSizeMake(1,1);
+	lblTitle.shadowOffset = CGSizeMake(0,1);
 	lblTitle.opaque = YES;
 	lblTitle.numberOfLines = 1;
 	[lblTitle setText:NSLocalizedString(@"Solyaris",@"Solyaris")];
@@ -111,7 +111,7 @@
 	lblClaim.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
 	lblClaim.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
 	lblClaim.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-	lblClaim.shadowOffset = CGSizeMake(1,1);
+	lblClaim.shadowOffset = CGSizeMake(0,1);
 	lblClaim.opaque = YES;
 	lblClaim.numberOfLines = 1;
 	[lblClaim setText:NSLocalizedString(@"Visual Movie Browser",@"Visual Movie Browser")];
@@ -127,7 +127,6 @@
         [self.view addSubview:btnBack];
     }
     
-	
 	// description
 	UITextView *txtAbout = [[UITextView alloc] initWithFrame:aframe];
     txtAbout.contentInset = UIEdgeInsetsMake(0,-7,-20,-20);
@@ -137,7 +136,7 @@
 	txtAbout.opaque = YES;
     txtAbout.userInteractionEnabled = NO;
     txtAbout.editable = NO;
-	[txtAbout setText:NSLocalizedString(@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or people. Expand nodes to gather information about their relationships. Learn about the cast and filmography. \n\nThis app uses the TMDb API but is not endorsed or certified by TMDb. All information provided by TMDb, IMDb, YouTube and Wikipedia. Solyaris is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.",@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or people. Expand nodes to gather information about their relationships. Learn about the cast and filmography. \n\nThis app uses the TMDb API but is not endorsed or certified by TMDb. All information provided by TMDb, IMDb, YouTube and Wikipedia. Solyaris is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.")];
+	[txtAbout setText:NSLocalizedString(@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or people. Expand nodes to gather information about their relationships. Learn about the cast and filmography. \n\nThis app uses the TMDb API but is not endorsed or certified by TMDb. All information provided by TMDb, IMDb, YouTube and Wikipedia. Solyaris is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.",@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or people. Expand nodes to gather information about their relationships. Learn about the cast and filmography. \n\nThis app uses the TMDb API but is not endorsed or certified by TMDb. All information provided by TMDb, IMDb, YouTube and Wikipedia. Solyaris is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.")];
     [self.view addSubview:txtAbout];
 	[txtAbout release];
     
@@ -652,7 +651,7 @@
 	CGContextFillRect(context, mrect);
 	
 	// header lines
-	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.42 alpha:1].CGColor);
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.54 alpha:1].CGColor);
 	CGContextMoveToPoint(context, 0, kAboutHeaderHeight-1);
 	CGContextAddLineToPoint(context, w, kAboutHeaderHeight-1);
 	CGContextStrokePath(context);
@@ -663,7 +662,7 @@
 	CGContextStrokePath(context);
     
     // footer lines
-	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.42 alpha:1].CGColor);
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.54 alpha:1].CGColor);
 	CGContextMoveToPoint(context, 0, h-kAboutFooterHeight);
 	CGContextAddLineToPoint(context, w, h-kAboutFooterHeight);
 	CGContextStrokePath(context);
@@ -676,25 +675,6 @@
     
 }
 
-
-#pragma mark -
-#pragma mark Touch
-
-/*
- * Touches.
- */
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    GLog();
-    // ignore
-}
-
-/*
- * Touches.
- */
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    GLog();
-    // ignore
-}
 
 
 

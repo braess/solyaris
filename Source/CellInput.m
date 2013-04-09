@@ -108,11 +108,11 @@
         //CGContextSetShouldAntialias(ctx, NO);
         
         // background
-        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0 alpha:0.03].CGColor);
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0 alpha:0.025].CGColor);
         CGContextFillRect(ctx, rect);
         
         // lines
-        CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
+        CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.9 alpha:0.96].CGColor);
         CGContextMoveToPoint(ctx, rect.origin.x, 0);
         CGContextAddLineToPoint(ctx, rect.origin.x+rect.size.width, 0);
         CGContextStrokePath(ctx);

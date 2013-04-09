@@ -58,7 +58,7 @@ Graph::Graph(int w, int h, int o) {
     friction = 5.1;
     
     // hitarea
-    harea = 15;
+    harea = 20;
     
     // tooltip / action
     nbtouch = 10;

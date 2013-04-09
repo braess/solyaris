@@ -35,9 +35,6 @@
 // Constants
 #define kLocalizedAmazonSearch       @"/s/field-keywords="
 #define kLocalizedWikipediaSearch    @"/w/index.php?search="
-#define kLocalizedIMDbMovie          @"/title/"
-#define kLocalizedIMDBSearch         @"/find?q="
-
 
 
 #pragma mark -
@@ -106,15 +103,6 @@
     
     // supa
     if ((self = [super init])) {
-        
-        // imdb 
-        _imdb = [[NSMutableDictionary alloc] init];
-        [_imdb setObject:[[[LocalizationProperty alloc] initWithKey:@"imdb_com" value:@"http://www.imdb.com" label:@"www.imdb.com"] autorelease] forKey:@"imdb_com"]; 
-        [_imdb setObject:[[[LocalizationProperty alloc] initWithKey:@"imdb_de" value:@"http://www.imdb.de" label:@"www.imdb.de"] autorelease] forKey:@"imdb_de"]; 
-        [_imdb setObject:[[[LocalizationProperty alloc] initWithKey:@"imdb_es" value:@"http://www.imdb.es" label:@"www.imdb.es"] autorelease] forKey:@"imdb_es"];
-        [_imdb setObject:[[[LocalizationProperty alloc] initWithKey:@"imdb_fr" value:@"http://www.imdb.fr" label:@"www.imdb.fr"] autorelease] forKey:@"imdb_fr"];
-        [_imdb setObject:[[[LocalizationProperty alloc] initWithKey:@"imdb_it" value:@"http://www.imdb.it" label:@"www.imdb.it"] autorelease] forKey:@"imdb_it"];
-        [_imdb setObject:[[[LocalizationProperty alloc] initWithKey:@"imdb_pt" value:@"http://www.imdb.pt" label:@"www.imdb.pt"] autorelease] forKey:@"imdb_pt"];
         
         
         // wikipedia 
@@ -186,39 +174,6 @@
 #pragma mark -
 #pragma mark Methods
 
-/**
- * Returns the localized imdb movie url.
- */
-- (NSString*)urlIMDbMovie {
-    
-    
-    // amazon store
-	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-	NSString *keyIMDb = [userDefaults objectForKey:udLocalizationIMDb];
-    keyIMDb = keyIMDb ? keyIMDb : kLocalizedDefaultIMDb;
-    
-    // return localized property
-    LocalizationProperty *property = [_imdb objectForKey:keyIMDb];
-    return [NSString stringWithFormat:@"%@%@",property.value,kLocalizedIMDbMovie];
-}
-
-/**
- * Returns the localized imdb search url.
- */
-- (NSString*)urlIMDbSearch {
-    
-    
-    // amazon store
-	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-	NSString *keyIMDb = [userDefaults objectForKey:udLocalizationIMDb];
-    keyIMDb = keyIMDb ? keyIMDb : kLocalizedDefaultIMDb;
-    
-    // return localized property
-    LocalizationProperty *property = [_imdb objectForKey:keyIMDb];
-    return [NSString stringWithFormat:@"%@%@",property.value,kLocalizedIMDBSearch];
-    
-}
-
 
 /**
  * Returns the localized wikipedia search url.
@@ -256,10 +211,6 @@
 /**
  * Returns the properties.
  */
-- (NSArray*)propertiesIMDb {
-    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"key" ascending:YES] autorelease];
-    return [[_imdb allValues] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
-}
 - (NSArray*)propertiesWikipedia {
     NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"key" ascending:YES] autorelease];
     return [[_wikipedia allValues] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
@@ -280,7 +231,6 @@
 	GLog();
 	
 	// self
-    [_imdb release];
     [_wikipedia release];
     [_amazon release];
 	

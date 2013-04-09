@@ -189,7 +189,7 @@
     labelSearch.font = [UIFont fontWithName:@"Helvetica" size:15.0];
     labelSearch.textColor = [UIColor colorWithRed:145.0/255.0 green:145.0/255.0 blue:145.0/255.0 alpha:1.0];
     labelSearch.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-    labelSearch.shadowOffset = CGSizeMake(1,1);
+    labelSearch.shadowOffset = CGSizeMake(0,1);
     labelSearch.opaque = YES;
     labelSearch.numberOfLines = 1;
     
@@ -205,7 +205,7 @@
     [_footerView addSubview:_buttonSearch];
     [buttonSearch release];
     
-    Button *buttonExport = [[Button alloc] init];
+    Button *buttonExport = [[Button alloc] initStyle:ButtonStyleLite];
     [buttonExport setTitle:NSLocalizedString(@"Email", @"Email") forState:UIControlStateNormal];
     [buttonExport addTarget:self action:@selector(actionExport:) forControlEvents:UIControlEventTouchUpInside];
     [buttonExport setHidden:YES];
@@ -354,6 +354,27 @@
     }
     
 }
+
+
+#pragma mark -
+#pragma mark Touch
+
+/*
+ * Touches.
+ */
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    GLog();
+    // ignore
+}
+
+/*
+ * Touches.
+ */
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    GLog();
+    // ignore
+}
+
 
 
 #pragma mark -

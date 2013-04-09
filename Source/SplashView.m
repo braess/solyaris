@@ -39,8 +39,8 @@
 #pragma mark Constants
 
 // constants
-#define kDelayTimeSplashDismiss             0.6f
-#define kAnimateTimeSplashDismiss           1.5f
+#define kDelayTimeSplashDismiss             0.3f
+#define kAnimateTimeSplashDismiss           0.9f
 
 
 #pragma mark -

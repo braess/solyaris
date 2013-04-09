@@ -106,7 +106,7 @@
         lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:18.0];
         lblTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
         lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-        lblTitle.shadowOffset = CGSizeMake(1,1);
+        lblTitle.shadowOffset = CGSizeMake(0,1);
         lblTitle.opaque = YES;
         lblTitle.numberOfLines = 1;
 

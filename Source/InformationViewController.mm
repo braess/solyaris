@@ -610,10 +610,10 @@
     // references
     [_referenceTMDb setString:[NSString stringWithFormat:@"%@%i",urlTMDbMovie,[movie.mid intValue]]];
     if (([movie.imdb length] > 0)) {
-        [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",[_sloc urlIMDbMovie],movie.imdb]];
+        [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",urlIMDbMovie,movie.imdb]];
     }
     else {
-        [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",[_sloc urlIMDbSearch],[movie.title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+        [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",urlIMDbSearch,[movie.title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     }
     [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",[_sloc urlWikipediaSearch],[movie.title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",[_sloc urlAmazonSearch],[movie.title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
@@ -705,7 +705,7 @@
     
     // references
     [_referenceTMDb setString:[NSString stringWithFormat:@"%@%i",urlTMDbPerson,[person.pid intValue]]];
-    [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",[_sloc urlIMDbSearch],[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",urlIMDbSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",[_sloc urlWikipediaSearch],[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",[_sloc urlAmazonSearch],[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceITunes setString:[NSString stringWithFormat:@"%@%@",urlITunesSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
@@ -1966,7 +1966,7 @@
         lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:iPad ? 21.0 : 15];
         lblTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
         lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-        lblTitle.shadowOffset = CGSizeMake(1,1);
+        lblTitle.shadowOffset = CGSizeMake(0,1);
         lblTitle.opaque = YES;
         lblTitle.numberOfLines = 1;
         
@@ -2164,7 +2164,7 @@
         lblName.font = [UIFont fontWithName:@"Helvetica-Bold" size:iPad ? 21.0 : 15];
         lblName.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
         lblName.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-        lblName.shadowOffset = CGSizeMake(1,1);
+        lblName.shadowOffset = CGSizeMake(0,1);
         lblName.opaque = YES;
         lblName.numberOfLines = 1;
         

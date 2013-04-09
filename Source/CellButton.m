@@ -96,7 +96,7 @@
     buttonObj.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
     buttonObj.titleLabel.textColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
     buttonObj.titleLabel.shadowColor = [UIColor colorWithWhite:0 alpha:0.9];
-    buttonObj.titleLabel.shadowOffset = CGSizeMake(-1,-1);
+    buttonObj.titleLabel.shadowOffset = CGSizeMake(0,-1);
     
 	[buttonObj setTitle:@"Button" forState:UIControlStateNormal];
     

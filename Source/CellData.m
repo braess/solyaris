@@ -41,7 +41,7 @@
         lblInfo.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
         lblInfo.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
         lblInfo.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-        lblInfo.shadowOffset = CGSizeMake(1,1);
+        lblInfo.shadowOffset = CGSizeMake(0,1);
         lblInfo.opaque = YES;
         lblInfo.numberOfLines = 2;
         

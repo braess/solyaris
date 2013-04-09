@@ -38,7 +38,7 @@
 /**
  * Note View.
  */
-@interface NoteView : UIView {
+@interface NoteView : UIView <UIGestureRecognizerDelegate> {
     
 	// ui
 	UIView *_note;

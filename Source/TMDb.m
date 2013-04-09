@@ -1078,7 +1078,7 @@
         // note
         if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typeMovie 
-                                                        title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable")
+                                                        title:NSLocalizedString(@"TMDb Offline", @"TMDb Offline")
                                                       message:NSLocalizedString(@"Could not search movie. \nPlease try again later.", @"Could not search movie. \nPlease try again later.")] autorelease];
             [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
         }
@@ -1235,7 +1235,7 @@
         // note
         if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typePerson 
-                                                        title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable")
+                                                        title:NSLocalizedString(@"TMDb Offline", @"TMDb Offline")
                                                       message:NSLocalizedString(@"Could not search person. \nPlease try again later.", @"Could not search person. \nPlease try again later.")] autorelease];
             [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
         }
@@ -1397,7 +1397,7 @@
         // note
         if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typeMovie 
-                                                        title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable")
+                                                        title:NSLocalizedString(@"TMDb Offline", @"TMDb Offline")
                                                       message:NSLocalizedString(@"Could not load movies. \nPlease try again later.", @"Could not load movies. \nPlease try again later.")] autorelease];
             [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
         }
@@ -1581,7 +1581,7 @@
         // note
         if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typeMovie 
-                                                        title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable")
+                                                        title:NSLocalizedString(@"TMDb Offline", @"TMDb Offline")
                                                       message:NSLocalizedString(@"Could not load movies. \nPlease try again later.", @"Could not load movies. \nPlease try again later.")] autorelease];
             [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
         }
@@ -1744,7 +1744,7 @@
         // note
         if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typeMovie 
-                                                        title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable") 
+                                                        title:NSLocalizedString(@"TMDb Offline", @"TMDb Offline") 
                                                       message:NSLocalizedString(@"Could not load movie. \nPlease try again later.", @"Could not load movie. \nPlease try again later.")] autorelease];
             [apiError setDataId:mid];
             [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
@@ -1982,7 +1982,7 @@
         // note
         if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typeMovie 
-                                                        title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable") 
+                                                        title:NSLocalizedString(@"TMDb Offline", @"TMDb Offline") 
                                                       message:NSLocalizedString(@"Could not load movie. \nPlease try again later.", @"Could not load movie. \nPlease try again later.")] autorelease];
             [apiError setDataId:movie.mid];
             [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
@@ -2471,7 +2471,7 @@
         // note
         if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typeMovie 
-                                                        title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable")
+                                                        title:NSLocalizedString(@"TMDb Offline", @"TMDb Offline")
                                                       message:NSLocalizedString(@"Could not load movies. \nPlease try again later.", @"Could not load movies. \nPlease try again later.")] autorelease];
             [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
         }
@@ -2640,7 +2640,7 @@
         // note
         if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typePerson 
-                                                        title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable") 
+                                                        title:NSLocalizedString(@"TMDb Offline", @"TMDb Offline") 
                                                       message:NSLocalizedString(@"Could not load person. \nPlease try again later.", @"Could not load person. \nPlease try again later.")] autorelease];
             [apiError setDataId:pid];
             [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];
@@ -2847,7 +2847,7 @@
         // note
         if (delegate && [delegate respondsToSelector:@selector(apiGlitch:)]) {
             APIError *apiError = [[[APIError alloc] initError:typePerson 
-                                                        title:NSLocalizedString(@"TMDb Service Unavailable", @"TMDb Service Unavailable") 
+                                                        title:NSLocalizedString(@"TMDb Offline", @"TMDb Offline") 
                                                       message:NSLocalizedString(@"Could not load person. \nPlease try again later.", @"Could not load person. \nPlease try again later.")] autorelease];
             [apiError setDataId:person.pid];
             [delegate performSelectorOnMainThread:@selector(apiGlitch:) withObject:apiError waitUntilDone:NO];

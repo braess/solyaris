@@ -50,7 +50,7 @@ Tooltip::Tooltip(Vec2d b) {
     ctxt = ColorA(0,0,0,1);
     
     // font
-    font = Font("Helvetica",12);
+    font = Font("Helvetica",13);
     sfont = Font("Helvetica",3);
     size.set(0,0);
     off.set(0,-75);
@@ -85,20 +85,21 @@ void Tooltip::config(Configuration c) {
         retina = confDisplayRetina.boolVal();
     }
     
-    
     // retina stuff
     if (retina) {
         
         // position
         border *= 2;
         
-        // font
-        font = Font("Helvetica",24);
-        sfont = Font("Helvetica",6);
+        // offset
         off *= 2;
         inset *= 2;
         maxed *= 2;
     }
+    
+    // font
+    font = Font("Helvetica",redux ? (retina ? 24 : 12) : (retina ? 26 : 13));
+    sfont = Font("Helvetica",retina ? 6 : 3);
    
 }
 

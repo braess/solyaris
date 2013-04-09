@@ -35,6 +35,7 @@
 #define TEventAPI           @"API"
 #define TEventNode          @"Node"
 #define TEventFavorites     @"Favorites"
+#define TEventRater             @"Rater"
 #define TEventError         @"Error"
 
 

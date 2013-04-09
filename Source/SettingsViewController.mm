@@ -36,6 +36,13 @@
 - (void)animationPreferencesDone;
 @end
 
+/**
+ * Gesture Stack.
+ */
+@interface SettingsViewController (GestureStack)
+- (void)gestureTap:(UITapGestureRecognizer *)recognizer;
+@end
+
 
 /**
  * SettingsViewController.
@@ -124,8 +131,8 @@
     // drop that shadow
     float dx = iPad ? (1024-768) : 0;
 	CAGradientLayer *dropShadow = [[CAGradientLayer alloc] init];
-	dropShadow.frame = CGRectMake(-border-dx, 0, cframe.size.width+2*border+2*dx, 15);
-	dropShadow.colors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:0 alpha:0.5].CGColor,(id)[UIColor colorWithWhite:0 alpha:0.03].CGColor,(id)[UIColor colorWithWhite:0 alpha:0].CGColor,nil];
+	dropShadow.frame = CGRectMake(-border-dx, 0, cframe.size.width+2*border+2*dx, 24);
+	dropShadow.colors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:0 alpha:0.15].CGColor,(id)[UIColor colorWithWhite:0.1 alpha:0.01].CGColor,(id)[UIColor colorWithWhite:0.1 alpha:0].CGColor,nil];
 	[ctView.layer insertSublayer:dropShadow atIndex:0];
     [dropShadow release];
     
@@ -164,6 +171,15 @@
     [self.view bringSubviewToFront:_contentView];
     [ctView release];
     
+    // gestures
+    if (iPad) {
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureTap:)];
+        [tapGesture setNumberOfTapsRequired:1];
+        [tapGesture setDelegate:self];
+        [self.view addGestureRecognizer:tapGesture];
+        [tapGesture release];
+    }
+    
 }
 
 
@@ -190,8 +206,6 @@
 }
 
 
-
-
 #pragma mark -
 #pragma mark Touch
 
@@ -199,12 +213,42 @@
  * Touches.
  */
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    DLog();
+    GLog();
+    // ignore
+}
+
+/*
+ * Touches.
+ */
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    GLog();
+    // ignore
+}
+
+
+#pragma mark -
+#pragma mark Gestures
+
+/*
+ * Gesture tap.
+ */
+- (void)gestureTap:(UITapGestureRecognizer *)recognizer {
+    FLog();
     
     // dismiss
     if (delegate && [delegate respondsToSelector:@selector(settingsDismiss)]) {
         [delegate settingsDismiss];
     }
+    
+}
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    
+    // tapped
+    CGPoint location = [gestureRecognizer locationInView:gestureRecognizer.view];
+    if (location.y < self.view.frame.size.height - vframe.size.height) {
+        return YES;
+    }
+    return NO;
 }
 
 
