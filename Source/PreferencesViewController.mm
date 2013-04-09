@@ -160,8 +160,8 @@
         
         // popover
         UIPopoverController *locPopoverController = [[UIPopoverController alloc] initWithContentViewController:_localizationController];
+        locPopoverController.popoverBackgroundViewClass = [PopoverBackgroundView class];
         [locPopoverController setPopoverContentSize:CGSizeMake(locViewController.view.frame.size.width, locViewController.view.frame.size.height)];
-        locPopoverController.contentViewController.view.alpha = 0.9f;
         
         _localizationPopoverController = [locPopoverController retain];
         [locPopoverController release];
@@ -416,6 +416,7 @@
     }
     
 }
+
 
 
 #pragma mark -

@@ -51,7 +51,7 @@
         self.contentMode = UIViewContentModeRedraw;
         
         self.backgroundColor = [UIColor clearColor];
-        self.inactivePageColor = [UIColor colorWithRed:150.0/255.0 green:150.0/255.0 blue:150.0/255.0 alpha:0.9];
+        self.inactivePageColor = [UIColor colorWithRed:145.0/255.0 green:145.0/255.0 blue:145.0/255.0 alpha:0.9];
         self.activePageColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:0.9];
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         

@@ -187,7 +187,7 @@
     UILabel *labelSearch = [[UILabel alloc] initWithFrame:CGRectZero];
     labelSearch.backgroundColor = [UIColor clearColor];
     labelSearch.font = [UIFont fontWithName:@"Helvetica" size:15.0];
-    labelSearch.textColor = [UIColor colorWithRed:150.0/255.0 green:150.0/255.0 blue:150.0/255.0 alpha:1.0];
+    labelSearch.textColor = [UIColor colorWithRed:145.0/255.0 green:145.0/255.0 blue:145.0/255.0 alpha:1.0];
     labelSearch.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
     labelSearch.shadowOffset = CGSizeMake(1,1);
     labelSearch.opaque = YES;

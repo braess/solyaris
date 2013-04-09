@@ -137,6 +137,18 @@ enum {
 @end
 
 
+/**
+ * PopoverBackgroundView.
+ */
+@interface PopoverBackgroundView : UIPopoverBackgroundView {
+    UIImageView *_popover;
+    UIImageView *_arrow;
+    CGFloat _arrowOffset;
+    UIPopoverArrowDirection _arrowDirection;
+}
+@end
+
+
 
 /**
  * NavigationController.

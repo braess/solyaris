@@ -288,14 +288,14 @@
         
         // fonts
         self.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:12];
-        [self setTitleColor:[UIColor colorWithRed:150.0/255.0 green:150.0/255.0 blue:150.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+        [self setTitleColor:[UIColor colorWithRed:145.0/255.0 green:145.0/255.0 blue:145.0/255.0 alpha:1.0] forState:UIControlStateNormal];
         [self setTitleColor:[UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0] forState:UIControlStateHighlighted];
         [self setTitleColor:[UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0] forState:UIControlStateSelected];
         
-        self.titleLabel.shadowOffset = CGSizeMake(1,1);
+        self.titleLabel.shadowOffset = CGSizeMake(0,1);
         [self setTitleShadowColor:[UIColor colorWithWhite:1 alpha:0.5] forState:UIControlStateNormal];
         [self setTitleShadowColor:[UIColor colorWithWhite:1 alpha:0.5] forState:UIControlStateHighlighted];
-        [self setTitleShadowColor:[UIColor colorWithWhite:1 alpha:0.5] forState:UIControlStateSelected];
+        [self setTitleShadowColor:[UIColor colorWithWhite:1 alpha:0] forState:UIControlStateSelected];
         
 
     }

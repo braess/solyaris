@@ -43,7 +43,7 @@ enum {
 /**
  * Solyaris ViewController.
  */
-@interface SolyarisViewController : UIViewController <UIPopoverControllerDelegate, UIAlertViewDelegate, APIDelegate, SearchBarDelegate, SearchDelegate, InformationDelegate, RelatedDelegate, SettingsDelegate, SplashDelegate> {
+@interface SolyarisViewController : UIViewController <UIAlertViewDelegate, APIDelegate, SearchBarDelegate, SearchDelegate, InformationDelegate, RelatedDelegate, SettingsDelegate, SplashDelegate> {
     
     // app
     Solyaris *solyaris;
