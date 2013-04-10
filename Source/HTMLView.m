@@ -29,72 +29,40 @@
  */
 @implementation HTMLView
 
-#pragma mark -
-#pragma mark Constants
-
-// constants
-#define kHTMLViewPreload	@"preload"
-#define kHTMLViewHome       @"http://www.apple.com"
-
 
 #pragma mark -
-#pragma mark Properties
-
-// synthesize accessors
-@synthesize delegate;
-@synthesize webView = _webView;
-
-
-
-#pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Initialize.
  */
-- (id) initWithFrame:(CGRect)frame {
-	return [self initWithFrame:frame scrolling:YES];
-}
-- (id) initWithFrame:(CGRect)frame scrolling:(BOOL)bounces {
-	GLog();
+- (id)initWithFrame:(CGRect)frame {
 	
 	// init UIView
-    self = [super initWithFrame:frame];
-	
-	// init HTMLView
-    if (self != nil) {
+    if ((self = [super initWithFrame:frame])) {
         
         // view
         self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-        
+        self.backgroundColor = [UIColor whiteColor];
 		
 		// init web view
-		_webView = [ [ UIWebView alloc ] initWithFrame:self.bounds];
-		_webView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-        _webView.scalesPageToFit = YES;
-		_webView.backgroundColor = self.backgroundColor;
-		_webView.delegate = self;
+		UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
+		webView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
+        webView.scalesPageToFit = YES;
+		webView.backgroundColor = [UIColor whiteColor];
+		webView.delegate = self;
 		
-		// bounces
-		if (! bounces) {
-			UIScrollView* sv = nil;
-			for(UIView* v in _webView.subviews){
-				if([v isKindOfClass:[UIScrollView class] ]){
-					sv = (UIScrollView*) v;
-					sv.scrollEnabled = NO;
-					sv.bounces = NO;
-				}
-			}
-		}
-		
-		
-		// add it
+		// retain
+        _webView = [webView retain];
 		[self addSubview:_webView];
+        [webView release];
         
-        // fields
-        NSMutableString *home = [[NSMutableString alloc] init];
-        _home = [home retain];
-        [home release];
+        // loader
+        UIActivityIndicatorView *loader = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        loader.hidden = YES;
+        _loader = [loader retain];
+        [self addSubview:_loader];
+        [loader release];
         
         NSMutableString *base = [[NSMutableString alloc] init];
         _base = [base retain];
@@ -103,98 +71,63 @@
         NSMutableString *external = [[NSMutableString alloc] init];
         _external = [external retain];
         [external release];
-        
-        // reset
-        [self reset:kHTMLViewHome];
-        
     }
     return self; 
 }
 
+/*
+ * Layout.
+ */
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    // frames
+    CGRect fSelf = self.frame;
+    CGRect fWeb = CGRectMake(0, 0, fSelf.size.width, fSelf.size.height);
+    CGPoint cLoader = CGPointMake(fSelf.size.width/2.0, 60);
+    
+    // ui
+    _webView.frame = fWeb;
+    _loader.center = cLoader;
+}
+
+
 
 #pragma mark -
-#pragma mark HTMLView Interface
+#pragma mark Business
 
 /**
  * Reset.
  */
-- (void)reset:(NSString*)home {
+- (void)reset {
 	FLog();
     
-    // home sweet home
-    [_home setString:home];
+    // unload
+    [_webView stringByEvaluatingJavaScriptFromString:@"document.body.innerHTML = \"\";"];
     
     // not loaded
-    _loaded = NO;
-	
-	// load request
-    NSBundle *mainBundle = [NSBundle mainBundle];
-    NSString *resource = [mainBundle pathForResource:kHTMLViewPreload ofType:@"html"];
-	NSURL *appURL = [NSURL fileURLWithPath:resource];
-	NSURLRequest *appReq = [NSURLRequest requestWithURL:appURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:20.0];
-	[_webView loadRequest:appReq];
+    _webView.hidden = YES;
 
 }
 
+
 /**
- * Base.
+ * Loads the url.
  */
-- (void)base:(NSString *)base {
+- (void)load:(NSString *)url base:(NSString *)base {
     FLog();
     
     // base
     [_base setString:base];
     
-    // mode
-    _based = YES;
-}
-
-/**
- * Loads the default home.
- */
-- (void)load {
-    FLog();
+    // load
+    _loaded = NO;
+    _loader.hidden = NO;
+    [_loader startAnimating];
     
-    // check
-    if (! _loaded) {
-        [self navigateHome];
-        _loaded = YES;
-    }
-}
-
-/**
- * Location url.
- */
-- (void)loadURL:(NSString*)url {
-	FLog();
-    
-    // location
-    [_webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.location.href='%@'",url]];
-
-}
-
-
-/**
- * Navigation.
- */
-- (void)navigateHome {
-    FLog();
-    
-    // home sweet home
-    [self loadURL:_home];
-}
-- (void)navigateBack {
-    FLog();
-    
-    // there and back again 
-    [_webView goBack];
-    
-}
-- (void)navigateForward {
-    FLog();
-    
-    // forward ever, backwards never
-    [_webView goForward];
+    // request
+    [_webView stopLoading];
+    [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url] cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:10.0]];
 }
 
 
@@ -226,32 +159,71 @@
 #pragma mark WebView Delegate
 
 /*
- * Called when the webview finishes loading.
+ * Loading finished.
  */
 - (void)webViewDidFinishLoad:(UIWebView *)theWebView {
+    GLog();
     
-    // don't miss home
-    if (_loaded && [[_webView.request.URL scheme] isEqualToString:@"file"]) {
-        [self navigateHome];
+    // loaded
+    if (! _loaded) {
+        _loaded = YES;
+        
+        // stop loader
+        [_loader stopAnimating];
+        _loader.hidden = YES;
+        
+        // show
+        _webView.hidden = NO;
     }
-
+    
 }
 
 
+/*
+ * Loading failed.
+ */
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
+    GLog();
+    
+    // loaded
+    if (! _loaded) {
+        _loaded = YES;
+        
+        // stop loader
+        [_loader stopAnimating];
+        _loader.hidden = YES;
+    }
+    
+    // fatal
+    if (error && (error.code == NSURLErrorNotConnectedToInternet || error.code == NSURLErrorCannotFindHost)) {
+        UIAlertView *alert = [[UIAlertView alloc]
+                              initWithTitle:NSLocalizedString(@"Loading Failed",@"Loading Failed")
+                              message:NSLocalizedString(@"Could not load page. Please try later.",@"Could not load page. Please try later.")
+                              delegate:self
+                              cancelButtonTitle:nil
+                              otherButtonTitles:NSLocalizedString(@"OK",@"OK"),nil];
+        [alert setTag:HTMLAlertFailed];
+        [alert show];
+        [alert release];
+    }
+    
+}
+
 
 /*
- * Start Loading Request
+ * Loading request.
  */
 - (BOOL)webView:(UIWebView *)theWebView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-	
+	GLog();
+    
     // restrict to base
-    if (_based && navigationType == UIWebViewNavigationTypeLinkClicked) {
+    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         
         // url
         NSString *url = [[request URL] absoluteString];
         
-        // retstrict
-        if (! [[request.URL scheme] isEqualToString:@"file"] && [url rangeOfString:_base].location == NSNotFound) {
+        // restrict
+        if ([url rangeOfString:_base].location == NSNotFound) {
             
             // external link
             [_external setString:url];
@@ -282,17 +254,8 @@
 
 
 
-/*
- * Fail Loading With Error.
- */
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-    FLog();
-}
-
-
-
 #pragma mark -
-#pragma mark UIAlertViewDelegate Delegate
+#pragma mark UIAlertViewDelegate
 
 /*
  * Alert view button clicked.
@@ -306,17 +269,16 @@
         // external
 		case HTMLAlertExternal: {
             
-			// cancel
-			if (buttonIndex == 0) {
-			}
 			// open external
-			else {
-				[[UIApplication sharedApplication] openURL:[NSURL URLWithString:_external]];
+			if (buttonIndex != actionSheet.cancelButtonIndex) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:_external]];
 			}
+			
+            // break
 			break;
 		}
             
-            // default
+        // default
 		default: {
 			break;
 		}
@@ -327,8 +289,7 @@
 
 
 #pragma mark -
-#pragma mark Memory Management
-
+#pragma mark Memory
 
 /*
  * Deallocates all used memory.
@@ -337,113 +298,16 @@
 	GLog();
     
     // fields
-    [_home release];
     [_base release];
     [_external release];
 	
 	// release
+    _webView.delegate = nil;
 	[_webView release];
+    [_loader release];
 	
 	// superduper
 	[super dealloc];
 }
-
-
-
-
-@end
-
-
-
-
-/**
- * Action Stack.
- */
-@interface HTMLNavigatorView (ActionStack)
-- (void)actionNavigateBack:(id)sender;
-- (void)actionNavigateForward:(id)sender;
-@end
-
-
-/**
- * HTMLNavigatorView.
- */
-@implementation HTMLNavigatorView
-
-
-
-#pragma mark -
-#pragma mark Properties
-
-// synthesize accessors
-@synthesize delegate;
-
-
-
-#pragma mark -
-#pragma mark Object Methods
-
-/*
- * Initialize.
- */
-- (id) initWithFrame:(CGRect)frame {
-    
-    // self
-	if ((self = [super initWithFrame:frame])) {
-        
-        // self
-        self.backgroundColor = [UIColor clearColor];
-        self.opaque = NO;
-        self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
-        
-        // framed
-        CGRect bframe = CGRectMake(0, 0, 44, 44);
-        float inset = 8;
-        
-        // button back
-        UIButton *btnBack = [UIButton buttonWithType:UIButtonTypeCustom]; 
-        btnBack.frame = CGRectMake(0*(bframe.size.width+inset), bframe.origin.y, bframe.size.width, bframe.size.height);
-        btnBack.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        
-        [btnBack setImage:[UIImage imageNamed:@"btn_navigator-back.png"] forState:UIControlStateNormal];
-        [btnBack addTarget:self action:@selector(actionNavigateBack:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:btnBack];
-        
-        // button forward
-        UIButton *btnForward = [UIButton buttonWithType:UIButtonTypeCustom]; 
-        btnForward.frame = CGRectMake(1*(bframe.size.width+inset), bframe.origin.y, bframe.size.width, bframe.size.height);
-        btnForward.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        
-        [btnForward setImage:[UIImage imageNamed:@"btn_navigator-forward.png"] forState:UIControlStateNormal];
-        [btnForward addTarget:self action:@selector(actionNavigateForward:) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:btnForward];
-    }
-    return self;
-}
-
-
-#pragma mark -
-#pragma mark Actions
-
-/*
- * Navigate.
- */
-- (void)actionNavigateBack:(id)sender {
-    FLog();
-    
-    // delegate
-    if (self.delegate && [delegate respondsToSelector:@selector(navigateBack)]) {
-        [delegate navigateBack];
-    }
-}
-- (void)actionNavigateForward:(id)sender {
-    FLog();
-    
-    // delegate
-    if (self.delegate && [delegate respondsToSelector:@selector(navigateForward)]) {
-        [delegate navigateForward];
-    }
-}
-
 
 @end

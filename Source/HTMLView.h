@@ -23,17 +23,9 @@
 #import <UIKit/UIKit.h>
 
 
-/**
- * HTMLDelegate Protocol.
- */
-@protocol HTMLDelegate <NSObject>
-@optional
-- (void)navigateBack;
-- (void)navigateForward;
-@end
-
 // Alerts
 enum {
+    HTMLAlertFailed,
     HTMLAlertExternal
 };
 
@@ -41,62 +33,24 @@ enum {
  * HTMLView.
  */
 @interface HTMLView : UIView <UIWebViewDelegate, UIAlertViewDelegate> {
-    
-	// delegate
-	id<HTMLDelegate>delegate;
 	
-	// UI
+	// ui
 	UIWebView *_webView;
+    UIActivityIndicatorView *_loader;
     
     // private
     @private
-    NSMutableString *_home;
     NSMutableString *_base;
     NSMutableString *_external;
     bool _loaded;
-    bool _based;
     
 }
-
-// Properties
-@property (assign) id<HTMLDelegate> delegate;
-@property (nonatomic, retain) UIWebView *webView;
-
-// Object Methods
-- (id)initWithFrame:(CGRect)frame scrolling:(BOOL)bounces;
 
 // Methods
-- (void)reset:(NSString*)home;
-- (void)base:(NSString*)base;
-- (void)load;
-- (void)loadURL:(NSString*)url;
-- (void)navigateHome;
-- (void)navigateBack;
-- (void)navigateForward;
+- (void)reset;
+- (void)load:(NSString*)url base:(NSString*)base;
 - (void)scrollTop:(bool)animated;
 - (void)resize;
-
-@end
-
-
-/**
- * HTMLNavigatorView.
- */
-@interface HTMLNavigatorView : UIView {
-    
-	// delegate
-	id<HTMLDelegate>delegate;
-	
-    
-}
-
-// Properties
-@property (assign) id<HTMLDelegate> delegate;
-
-
-// Object Methods
-- (id)initWithFrame:(CGRect)frame;
-
 
 @end
 

@@ -80,6 +80,7 @@
 #define urlTMDbMissing                  @"http://www.themoviedb.org/movie"
 #define urlIMDbMovie                    @"http://www.imdb.com/title/"
 #define urlIMDbSearch                   @"http://www.imdb.com/find?q="
+#define urlRottenTomatoesSearch         @"http://www.rottentomatoes.com/search/?search="
 #define urlITunesSearch                 @"itms://ax.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?term="
 
 

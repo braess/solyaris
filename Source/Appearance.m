@@ -463,13 +463,9 @@
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
         
         [self setTitleColor:[UIColor colorWithRed:145.0/255.0 green:145.0/255.0 blue:145.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-        [self setTitleColor:[UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0]
-                   forState:UIControlStateHighlighted];
-        [self setTitleColor:[UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0]
-                   forState:UIControlStateSelected];
-        [self setTitleColor:[UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0]
-                   forState:UIControlStateReserved];
-        
+        [self setTitleColor:[UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0] forState:UIControlStateHighlighted];
+        [self setTitleColor:[UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0] forState:UIControlStateSelected];
+        [self setTitleColor:[UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0] forState:UIControlStateHighlighted|UIControlStateSelected];
         
         // configure image
         self.imageView.clipsToBounds = YES;

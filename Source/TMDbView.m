@@ -131,10 +131,9 @@
     [_slidesView setSlides:slides];
     [_slidesView setSlidesTitle:title];
     _slidesView.hidden = ! mode_slides;
-
     
     // text
-    [_textView setText:text];
+    [_textView setText:(text && [text length] > 1) ? text : NSLocalizedString(@"No information available.", @"No information available.")];
     
     // layout
     [self layoutSubviews];

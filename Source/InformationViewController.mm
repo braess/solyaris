@@ -45,19 +45,19 @@
 - (void)swapTMDb;
 - (void)swapIMDb;
 - (void)swapWikipedia;
+- (void)swapRottenTomatoes;
 - (void)swapTrailer:(int)vndx;
 - (void)swapReset;
 @end
 
 
 /**
- * Action Stack.
+ * Resize Stack.
  */
-@interface InformationViewController (ActionStack)
+@interface InformationViewController (ResizeStack)
 - (void)resizeFull;
 - (void)resizeDefault;
 - (void)resizeDone;
-- (void)actionToolsReference:(id)sender;
 @end
 
 /**
@@ -67,6 +67,7 @@
 - (void)referenceTMDb;
 - (void)referenceIMDb;
 - (void)referenceWikipedia;
+- (void)referenceRottenTomatoes;
 - (void)referenceAmazon;
 - (void)referenceITunes;
 @end
@@ -121,7 +122,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Init.
@@ -145,25 +146,41 @@
         type_movie = NO;
         type_person = NO;
         
-        // modes
-        mode_listing = NO;
-        mode_tmdb = NO;
-        mode_imdb = NO;
-        mode_wikipedia = NO;
-        mode_trailer = NO;
+        // tab
+        tab = InfoTabUndef;
         
         // screen
         fullscreen = NO;
         
         // localization
-        _sloc = [[SolyarisLocalization alloc] init];
+        SolyarisLocalization *sloc = [[SolyarisLocalization alloc] init];
+        _sloc = [sloc retain];
+        [sloc release];
         
         // fields
-        _referenceTMDb = [[NSMutableString alloc] init];
-        _referenceIMDb = [[NSMutableString alloc] init];
-        _referenceWikipedia = [[NSMutableString alloc] init];
-        _referenceAmazon = [[NSMutableString alloc] init];
-        _referenceITunes = [[NSMutableString alloc] init];
+        NSMutableString *referenceTMDb = [[NSMutableString alloc] init];
+        _referenceTMDb = [referenceTMDb retain];
+        [referenceTMDb release];
+        
+        NSMutableString *referenceIMDb = [[NSMutableString alloc] init];
+        _referenceIMDb = [referenceIMDb retain];
+        [referenceIMDb release];
+        
+        NSMutableString *referenceRottenTomatoes = [[NSMutableString alloc] init];
+        _referenceRottenTomatoes = [referenceRottenTomatoes retain];
+        [referenceRottenTomatoes release];
+        
+        NSMutableString *referenceWikipedia = [[NSMutableString alloc] init];
+        _referenceWikipedia = [referenceWikipedia retain];
+        [referenceWikipedia release];
+        
+        NSMutableString *referenceAmazon = [[NSMutableString alloc] init];
+        _referenceAmazon = [referenceAmazon retain];
+        [referenceAmazon release];
+        
+        NSMutableString *referenceITunes = [[NSMutableString alloc] init];
+        _referenceITunes = [referenceITunes retain];
+        [referenceITunes release];
         
         // favorite
         NSMutableDictionary *favorite = [[NSMutableDictionary alloc] init];
@@ -202,7 +219,6 @@
     CGRect trailerFrame = CGRectMake(kInformationGapInset, kInformationHeaderHeight+kInformationGapInset, contentFrame.size.width-2*kInformationGapInset, contentFrame.size.height-kInformationHeaderHeight-kInformationFooterHeight-2*kInformationGapInset);
     CGRect actionBarFrame = CGRectMake(0, 0, footerFrame.size.width, footerFrame.size.height);
     CGRect toolsFrame = CGRectMake(footerFrame.size.width-kInformationGapInset-80, 5, 80, kInformationFooterHeight-10);
-    CGRect navigatorFrame = CGRectMake(kInformationGapInset, 5, 80, kInformationFooterHeight-10);
     
     // view
     UIView *sview = [[UIView alloc] initWithFrame:screen];
@@ -222,11 +238,9 @@
     _modalView = [mView retain];
     [self.view addSubview:_modalView];
     [mView release];
-
 	
 	// content
     InformationBackgroundView *ctView = [[InformationBackgroundView alloc] initWithFrame:contentFrame];
-    
     
     // header view
     InformationMovieView *nfoMovieView = [[InformationMovieView alloc] initWithFrame:headerFrame];
@@ -237,8 +251,6 @@
     nfoPersonView.tag = TagInformationHeaderPerson;
     nfoPersonView.hidden = YES;
     
-    
-    // add header view to content
     _informationMovieView = [nfoMovieView retain];
     [ctView addSubview:_informationMovieView];
     [nfoMovieView release];
@@ -246,7 +258,6 @@
     _informationPersonView = [nfoPersonView retain];
     [ctView addSubview:_informationPersonView];
     [nfoPersonView release];
-    
     
     // resize
     UIButton *btnResize = [UIButton buttonWithType:UIButtonTypeCustom]; 
@@ -309,50 +320,32 @@
     componentListing.tag = TagInformationComponentListing;
     componentListing.hidden = YES;
     
-    // add listing to content
     _componentListing = [componentListing retain];
     [ctView addSubview:_componentListing];
     [componentListing release];
-    
     
     // component tmdb
 	TMDbView *componentTMDb = [[TMDbView alloc] initWithFrame:componentFrame];
     componentTMDb.tag = TagInformationComponentTMDb;
     
-    // add tmdb to content
     _componentTMDb = [componentTMDb retain];
     [ctView addSubview:_componentTMDb];
     [componentTMDb release];
     
-    // component imdb
-    HTMLView *componentIMDb = [[HTMLView alloc] initWithFrame:componentFrame];
-    componentIMDb.tag = TagInformationComponentIMDb;
-    componentIMDb.hidden = YES;
-    [componentIMDb base:@"imdb"];
-    
-    // add imdb to content
-    _componentIMDb = [componentIMDb retain];
-    [ctView addSubview:_componentIMDb];
-    [componentIMDb release];
-    
-    // component wikipedia
-    HTMLView *componentWikipedia = [[HTMLView alloc] initWithFrame:componentFrame];
-    componentWikipedia.tag = TagInformationComponentWikipedia;
-    componentWikipedia.hidden = YES;
-    [componentWikipedia base:@"wikipedia"];
-    
-    // add wikipedia to content
-    _componentWikipedia = [componentWikipedia retain];
-    [ctView addSubview:_componentWikipedia];
-    [componentWikipedia release];
-    
+    // component html
+    HTMLView *componentHTML = [[HTMLView alloc] initWithFrame:componentFrame];
+    componentHTML.tag = TagInformationComponentHTML;
+    componentHTML.hidden = YES;
+
+    _componentHTML = [componentHTML retain];
+    [ctView addSubview:_componentHTML];
+    [componentHTML release];
     
     // component trailer
     VideoView *componentTrailer = [[VideoView alloc] initWithFrame:trailerFrame];
     componentTrailer.tag = TagInformationComponentTrailer;
     componentTrailer.hidden = YES;
     
-    // add trailer to content
     _componentTrailer = [componentTrailer retain];
     [ctView addSubview:_componentTrailer];
     [componentTrailer release];
@@ -387,7 +380,7 @@
     spacer.width = -10;
     
     
-    // action items
+    // action listing
     ActionBarButtonItem *actionListing = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"tab_listing.png"] 
                                                                            selected:[UIImage imageNamed:@"tab_listing_selected.png"] 
                                                                               title:NSLocalizedString(@"Cast", @"Cast") 
@@ -397,6 +390,7 @@
     _actionListing = [actionListing retain];
     [actionListing release];
     
+    // action tmdb
     ActionBarButtonItem *actionTMDb = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"tab_tmdb.png"] 
                                                                         selected:[UIImage imageNamed:@"tab_tmdb_selected.png"] 
                                                                                   title:NSLocalizedString(@"Info", @"Info")
@@ -406,6 +400,7 @@
     _actionTMDb = [actionTMDb retain];
     [actionTMDb release];
     
+    // action imdb
     ActionBarButtonItem *actionIMDb = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"tab_imdb.png"] 
                                                                         selected:[UIImage imageNamed:@"tab_imdb_selected.png"] 
                                                                            title:NSLocalizedString(@"IMDb", @"IMDb")
@@ -414,62 +409,51 @@
     [actionIMDb setFrame:CGRectMake(0, 0, 80, kInformationFooterHeight)];
     _actionIMDb = [actionIMDb retain];
     [actionIMDb release];
+
     
-    ActionBarButtonItem *actionWikipedia = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"tab_wikipedia.png"] 
-                                                                             selected:[UIImage imageNamed:@"tab_wikipedia_selected.png"] 
-                                                                                title:NSLocalizedString(@"Wikipedia", @"Wikipedia")
+    // action browse
+    ActionBarButtonItem *actionBrowse = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"tab_browse.png"]
+                                                                             selected:[UIImage imageNamed:@"tab_browse_selected.png"] 
+                                                                                title:NSLocalizedString(@"Browse", @"Browse")
                                                                                target:self 
-                                                                               action:@selector(swapWikipedia)];
-    [actionWikipedia setFrame:CGRectMake(0, 0, 80, kInformationFooterHeight)];
-    _actionWikipedia = [actionWikipedia retain];
-    [actionWikipedia release];
+                                                                               action:@selector(actionBrowse:)];
+    [actionBrowse setFrame:CGRectMake(0, 0, 80, kInformationFooterHeight)];
+    _actionBrowse = [actionBrowse retain];
+    [actionBrowse release];
     
     
-    // add action tab bar
-    [abar setItems:[NSArray arrayWithObjects:nspace,itemFlex,_actionListing,spacer,_actionTMDb,spacer,_actionIMDb,spacer,_actionWikipedia,itemFlex,nspace,nil]];
+    // bar
+    [abar setItems:[NSArray arrayWithObjects:nspace,itemFlex,_actionListing,spacer,_actionTMDb,spacer,_actionIMDb,spacer,_actionBrowse,itemFlex,nspace,nil]];
     [footerView addSubview:abar];
     [itemFlex release];
     [spacer release];
     [nspace release];
     [abar release];
     
-    // navigator
-    HTMLNavigatorView *htmlNavigator = [[HTMLNavigatorView alloc] initWithFrame:navigatorFrame];
-    htmlNavigator.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleRightMargin);
-    htmlNavigator.delegate = self;
-    
-    _htmlNavigator = [htmlNavigator retain];
-    [htmlNavigator release];
-    
-    // tools
-    UIView *toolsView = [[UIView alloc] initWithFrame:toolsFrame];
-    toolsView.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin);
-    toolsView.backgroundColor = [UIColor clearColor];
-    
-    // reference
-    UIButton *btnReference = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnReference.frame = CGRectMake(toolsView.frame.size.width-44, 0, 44, 44);
-    btnReference.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-    [btnReference setImage:[UIImage imageNamed:@"btn_reference.png"] forState:UIControlStateNormal];
-    [btnReference addTarget:self action:@selector(actionToolsReference:) forControlEvents:UIControlEventTouchUpInside];
-    [toolsView addSubview:btnReference];
-    
     // ipad
     if (iPad) {
+        // tools
+        UIView *toolsView = [[UIView alloc] initWithFrame:toolsFrame];
+        toolsView.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin);
+        toolsView.backgroundColor = [UIColor clearColor];
         
-        // add navigator to footer
-        [footerView addSubview:_htmlNavigator];
+        // reference
+        UIButton *btnReference = [UIButton buttonWithType:UIButtonTypeCustom];
+        btnReference.frame = CGRectMake(toolsView.frame.size.width-44, 0, 44, 44);
+        btnReference.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
+        [btnReference setImage:[UIImage imageNamed:@"btn_reference.png"] forState:UIControlStateNormal];
+        [btnReference addTarget:self action:@selector(actionReference:) forControlEvents:UIControlEventTouchUpInside];
         
-        // add tools to footer
+        [toolsView addSubview:btnReference];
         [footerView addSubview:toolsView];
+        [toolsView release];
     }
-    [toolsView release];
     
-    // add footer view to content
+    // footer
     [ctView addSubview:footerView];
     [footerView release];
     
-    // add & release content
+    // content
     _contentView = [ctView retain];
     [self.view addSubview:_contentView];
     [self.view bringSubviewToFront:_contentView];
@@ -585,8 +569,7 @@
     // resize components
     [_componentListing resize];
     [_componentTMDb resize];
-    [_componentIMDb resize];
-    [_componentWikipedia resize];
+    [_componentHTML resize];
     [_componentTrailer resize];
 }
 
@@ -616,6 +599,7 @@
         [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",urlIMDbSearch,[movie.title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     }
     [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",[_sloc urlWikipediaSearch],[movie.title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceRottenTomatoes setString:[NSString stringWithFormat:@"%@%@",urlRottenTomatoesSearch,[movie.title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",[_sloc urlAmazonSearch],[movie.title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceITunes setString:[NSString stringWithFormat:@"%@%@",urlITunesSearch,[movie.title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 
@@ -623,7 +607,6 @@
     [_informationMovieView reset:movie];
     _informationPersonView.hidden = YES;
     _informationMovieView.hidden = NO;
-    
 
     // component listing
     [_componentListing reset:nodes];
@@ -632,11 +615,8 @@
     // component tmdb
     [_componentTMDb resetMovie:movie];
     
-    // component imdb
-    [_componentIMDb reset:_referenceIMDb];
-    
-    // component wikipedia
-    [_componentWikipedia reset:_referenceWikipedia];
+    // component html
+    [_componentHTML reset];
     
     // component trailer
     [_componentTrailer resetTrailer:movie];
@@ -661,7 +641,7 @@
     [_share setObject:movie.tagline forKey:kShareTagline];
     [_share setObject:movie.released ? [NSString stringWithFormat:@"%@",[dateFormatter stringFromDate:movie.released]] : @"-" forKey:kShareReleased];
     [_share setObject:movie.runtime ? [NSString stringWithFormat:@"%@m",movie.runtime] : @"-" forKey:kShareRuntime];
-    [_share setObject:movie.overview && movie.description.length > 10 ? movie.overview : @"-" forKey:kShareOverview];
+    [_share setObject:movie.overview && movie.overview.length > 10 ? movie.overview : @"-" forKey:kShareOverview];
     [_share setObject:_referenceTMDb forKey:kShareLink];
     
     _buttonShare.hidden = NO;
@@ -707,6 +687,7 @@
     [_referenceTMDb setString:[NSString stringWithFormat:@"%@%i",urlTMDbPerson,[person.pid intValue]]];
     [_referenceIMDb setString:[NSString stringWithFormat:@"%@%@",urlIMDbSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceWikipedia setString:[NSString stringWithFormat:@"%@%@",[_sloc urlWikipediaSearch],[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+    [_referenceRottenTomatoes setString:[NSString stringWithFormat:@"%@%@",urlRottenTomatoesSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceAmazon setString:[NSString stringWithFormat:@"%@%@",[_sloc urlAmazonSearch],[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     [_referenceITunes setString:[NSString stringWithFormat:@"%@%@",urlITunesSearch,[person.name stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
     
@@ -722,11 +703,8 @@
     // component tmdb
     [_componentTMDb resetPerson:person];
     
-    // component imdb
-    [_componentIMDb reset:_referenceIMDb];
-    
-    // component wikipedia
-    [_componentWikipedia reset:_referenceWikipedia];
+    // component html
+    [_componentHTML reset];
     
     // component trailer
     _buttonTrailer.hidden = YES;
@@ -773,7 +751,7 @@
     FLog();
     
     // change mode
-    if (! mode_listing) {
+    if (tab != InfoTabListing) {
         
         // track
         [Tracker trackView:@"InformationListing"];
@@ -781,8 +759,8 @@
         // reset
         [self swapReset];
         
-        // mode
-        mode_listing = YES;
+        // tab
+        tab = InfoTabListing;
         
         // action
         [_actionListing setSelected:YES];
@@ -802,7 +780,7 @@
     FLog();
     
     // change mode
-    if (! mode_tmdb) {
+    if (tab != InfoTabTMDb) {
         
         // track
         [Tracker trackView:@"InformationTMDb"];
@@ -810,8 +788,8 @@
         // reset
         [self swapReset];
         
-        // mode
-        mode_tmdb = YES;
+        // tab
+        tab = InfoTabTMDb;
         
         // action
         [_actionTMDb setSelected:YES];
@@ -830,7 +808,7 @@
     FLog();
     
     // change mode
-    if (! mode_imdb) {
+    if (tab != InfoTabIMDb) {
         
         // track
         [Tracker trackView:@"InformationIMDb"];
@@ -838,17 +816,45 @@
         // reset
         [self swapReset];
         
-        // mode
-        mode_imdb = YES;
+        // tab
+        tab = InfoTabIMDb;
         
         // action
         [_actionIMDb setSelected:YES];
         
         // component
-        [_componentIMDb load];
-        [_componentIMDb scrollTop:NO];
-        [_componentIMDb setHidden:NO];
-        [_htmlNavigator setHidden:NO];
+        [_componentHTML reset];
+        [_componentHTML load:_referenceIMDb base:@"imdb"];
+        [_componentHTML setHidden:NO];
+        
+    }
+}
+
+/*
+ * Swap Rotten Tomatoes.
+ */
+- (void)swapRottenTomatoes {
+    FLog();
+    
+    // change mode
+    if (tab != InfoTabRottenTomatoes) {
+        
+        // track
+        [Tracker trackView:@"InformationRottenTomatoes"];
+        
+        // reset
+        [self swapReset];
+        
+        // tab
+        tab = InfoTabRottenTomatoes;
+        
+        // action
+        [_actionBrowse setSelected:YES];
+        
+        // component
+        [_componentHTML reset];
+        [_componentHTML load:_referenceRottenTomatoes base:@"rottentomatoes"];
+        [_componentHTML setHidden:NO];
         
     }
 }
@@ -860,7 +866,7 @@
     FLog();
     
     // change mode
-    if (! mode_wikipedia) {
+    if (tab != InfoTabWikipedia) {
         
         // track
         [Tracker trackView:@"InformationWikipedia"];
@@ -868,17 +874,16 @@
         // reset
         [self swapReset];
         
-        // mode
-        mode_wikipedia = YES;
+        // tab
+        tab = InfoTabWikipedia;
         
         // action
-        [_actionWikipedia setSelected:YES];
+        [_actionBrowse setSelected:YES];
         
         // component
-        [_componentWikipedia load];
-        [_componentWikipedia scrollTop:NO];
-        [_componentWikipedia setHidden:NO];
-        [_htmlNavigator setHidden:NO];
+        [_componentHTML reset];
+        [_componentHTML load:_referenceWikipedia base:@"wiki"];
+        [_componentHTML setHidden:NO];
         
     }
 }
@@ -896,8 +901,8 @@
     // reset
     [self swapReset];
     
-    // mode
-    mode_trailer = YES;
+    // tab
+    tab = InfoTabTrailer;
     
     // button
     [_buttonTrailer setSelected:YES];
@@ -905,7 +910,6 @@
     // component
     [_componentTrailer unload];
     [_componentTrailer load:vndx];
-    [_componentTrailer scrollTop:NO];
     [_componentTrailer setHidden:NO];
 }
 
@@ -916,18 +920,14 @@
 - (void)swapReset {
     FLog();
     
-    // reset mode
-    mode_listing = NO;
-    mode_tmdb = NO;
-    mode_imdb = NO;
-    mode_wikipedia = NO;
-    mode_trailer = NO;
+    // reset tab
+    tab = InfoTabUndef;
     
     // actions
     [_actionListing setSelected:NO];
     [_actionTMDb setSelected:NO];
     [_actionIMDb setSelected:NO];
-    [_actionWikipedia setSelected:NO];
+    [_actionBrowse setSelected:NO];
     
     // button
     [_buttonTrailer setSelected:NO];
@@ -935,11 +935,9 @@
     // hide views
     _componentListing.hidden = YES;
     _componentTMDb.hidden = YES;
-    _componentIMDb.hidden = YES;
-    _componentWikipedia.hidden = YES;
+    _componentHTML.hidden = YES;
     _componentTrailer.hidden = YES;
     [_componentTrailer unload];
-    _htmlNavigator.hidden = YES;
     
 }
 
@@ -961,38 +959,6 @@
 
 
 #pragma mark -
-#pragma mark HTML Delegate
-
-/*
- * Navigator.
- */
-- (void)navigateBack {
-    
-    // imdb
-    if (mode_imdb) {
-        [_componentIMDb navigateBack];
-    }
-    
-    // imdb
-    if (mode_wikipedia) {
-        [_componentWikipedia navigateBack];
-    }
-}
-- (void)navigateForward {
-    
-    // imdb
-    if (mode_imdb) {
-        [_componentIMDb navigateForward];
-    }
-    
-    // imdb
-    if (mode_wikipedia) {
-        [_componentWikipedia navigateForward];
-    }
-}
-
-
-#pragma mark -
 #pragma mark Actions
 
 /*
@@ -1001,13 +967,11 @@
 - (void)actionResize:(id)sender {
     FLog();
     
-    // toggle
+    // resize
     if (fullscreen) {
-        // resize
         [self resizeDefault];
     }
     else {
-        // resize
         [self resizeFull];
     }
     fullscreen = ! fullscreen;
@@ -1080,8 +1044,7 @@
     // resize components
     [_componentListing resize];
     [_componentTMDb resize];
-    [_componentIMDb resize];
-    [_componentWikipedia resize];
+    [_componentHTML resize];
     [_componentTrailer resize];
 }
 
@@ -1211,23 +1174,49 @@
 
 
 /*
- * Tools reference.
+ * Action reference.
  */
-- (void)actionToolsReference:(id)sender {
+- (void)actionReference:(id)sender {
     FLog();
     
     // last action hero
     UIActionSheet *referenceActions = [[UIActionSheet alloc]
-                                  initWithTitle:nil
+                                  initWithTitle:NSLocalizedString(@"Open on ...",@"Open on ...")
                                   delegate:self
                                   cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")
                                   destructiveButtonTitle:nil
-                                  otherButtonTitles:NSLocalizedString(@"Open on TMDb",@"Open on TMDb"),NSLocalizedString(@"Open on IMDb",@"Open on IMDb"),NSLocalizedString(@"Open on Wikipedia",@"Open on Wikipedia"),NSLocalizedString(@"Find on Amazon",@"Find on Amazon"),NSLocalizedString(@"Find on iTunes",@"Find on iTunes"),nil];
+                                  otherButtonTitles:NSLocalizedString(@"TMDb",@"TMDb"),NSLocalizedString(@"IMDb",@"IMDb"),NSLocalizedString(@"Wikipedia",@"Wikipedia"),NSLocalizedString(@"Rotten Tomatoes",@"Rotten Tomatoes"),NSLocalizedString(@"Amazon",@"Amazon"),NSLocalizedString(@"iTunes",@"iTunes"),nil];
+    [referenceActions setTag:ActionInformationReference];
+    
     
     // show
-    [referenceActions setTag:ActionInformationToolsReference];
-    [referenceActions showFromRect:CGRectMake(_contentView.frame.origin.x + _contentView.frame.size.width-kInformationGapInset-32, _contentView.frame.origin.y + _contentView.frame.size.height-kInformationGapOffset-(kInformationFooterHeight/2.0), 32, 32) inView:self.view animated:YES];
+    UIView *btn = (UIView*)sender;
+    CGRect pos = [btn convertRect:btn.bounds toView:self.view];
+    [referenceActions showFromRect:pos inView:self.view animated:YES];
     [referenceActions release];
+    
+}
+
+/*
+ * Action browse.
+ */
+- (void)actionBrowse:(id)sender {
+    FLog();
+    
+    // last action hero
+    UIActionSheet *browseActions = [[UIActionSheet alloc]
+                                       initWithTitle:nil
+                                       delegate:self
+                                       cancelButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")
+                                       destructiveButtonTitle:nil
+                                       otherButtonTitles:NSLocalizedString(@"Wikipedia",@"Wikipedia"),NSLocalizedString(@"Rotten Tomatoes",@"Rotten Tomatoes"),nil];
+    [browseActions setTag:ActionInformationBrowse];
+    
+    // show
+    UIView *btn = (UIView*)sender;
+    CGRect pos = [btn convertRect:btn.bounds toView:self.view];
+    [browseActions showFromRect:pos inView:self.view animated:YES];
+    [browseActions release];
     
 }
 
@@ -1517,6 +1506,19 @@
 }
 
 /*
+ * Reference Rotten Tomatoes.
+ */
+- (void)referenceRottenTomatoes {
+    FLog();
+    
+    // track
+    [Tracker trackEvent:TEventInfo action:@"Reference" label:@"RottenTomatoes"];
+    
+    // open
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:_referenceRottenTomatoes]];
+}
+
+/*
  * Reference amazon.
  */
 - (void)referenceAmazon {
@@ -1543,8 +1545,9 @@
 }
 
 
+
 #pragma mark -
-#pragma mark UIActionSheet Delegate
+#pragma mark UIActionSheet
 
 /*
  * Action selected.
@@ -1554,6 +1557,96 @@
 	
 	// tag
 	switch ([actionSheet tag]) {
+            
+        // share
+        case ActionInformationBrowse: {
+            
+            // cancel
+            if (buttonIndex == actionSheet.cancelButtonIndex) {
+                return;
+            }
+            
+            // type
+            switch (buttonIndex) {
+                    
+                // wikipedia
+                case InfoBrowseWikipedia:
+                    [self swapWikipedia];
+                    break;
+                    
+                // rotten tomatoes
+                case InfoBrowseRottenTomatoes:
+                    [self swapRottenTomatoes];
+                    break;
+                    
+                // nothing
+                default:
+                    break;
+            }
+            
+            
+            // br
+            break;
+        }
+            
+        // trailers
+		case ActionInformationTrailers: {
+            
+            // trailer
+            if (buttonIndex < [_componentTrailer.videos count]) {
+                
+                // switch
+                [self swapTrailer:buttonIndex];
+            }
+            
+            // twix
+			break;
+		}
+            
+        // reference
+		case ActionInformationReference: {
+            
+            // type
+            switch (buttonIndex) {
+                    
+                // TMDb
+                case InfoReferenceTMDb:
+                    [self referenceTMDb];
+                    break;
+                    
+                // IMDb
+                case InfoReferenceIMDb:
+                    [self referenceIMDb];
+                    break;
+                    
+                // Wikipedia
+                case InfoReferenceWikipedia:
+                    [self referenceWikipedia];
+                    break;
+                    
+                // Rotten Tomatoes
+                case InfoReferenceRottenTomatoes:
+                    [self referenceRottenTomatoes];
+                    break;
+                    
+                // Amazon
+                case InfoReferenceAmazon:
+                    [self referenceAmazon];
+                    break;
+                    
+                // iTunes
+                case InfoReferenceITunes:
+                    [self referenceITunes];
+                    break;
+                    
+                // nothing
+                default:
+                    break;
+            }
+            
+            // kit kat time
+			break;
+		}
             
         // share
         case ActionInformationShare: {
@@ -1586,64 +1679,9 @@
                     break;
             }
 
-            
             // br
             break;
         }
-            
-        // trailers
-		case ActionInformationTrailers: {
-            
-            // trailer
-            if (buttonIndex < [_componentTrailer.videos count]) {
-                
-                // switch
-                [self swapTrailer:buttonIndex];
-            }
-            
-            // twix
-			break;
-		}
-            
-        // reference
-		case ActionInformationToolsReference: {
-            
-            // type
-            switch (buttonIndex) {
-                    
-                // TMDb
-                case 0:
-                    [self referenceTMDb];
-                    break;
-                    
-                // IMDb
-                case 1:
-                    [self referenceIMDb];
-                    break;
-                    
-                // Wikipedia
-                case 2:
-                    [self referenceWikipedia];
-                    break;
-                    
-                // Amazon
-                case 3:
-                    [self referenceWikipedia];
-                    break;
-                    
-                // iTunes
-                case 4:
-                    [self referenceITunes];
-                    break;
-                    
-                // nothing
-                default:
-                    break;
-            }
-            
-            // kit kat time
-			break;
-		}
             
             
         // default
@@ -1709,7 +1747,7 @@
     [_actionListing release];
     [_actionTMDb release];
     [_actionIMDb release];
-    [_actionWikipedia release];
+    [_actionBrowse release];
     
     // buttons
     [_buttonResize release];
@@ -1721,8 +1759,7 @@
     // components
     [_componentListing release];
     [_componentTMDb release];
-    [_componentIMDb release];
-    [_componentWikipedia release];
+    [_componentHTML release];
     [_componentTrailer release];
     
     // loader
@@ -1733,7 +1770,8 @@
     
     // reference
     [_referenceTMDb release]; 
-    [_referenceIMDb release]; 
+    [_referenceIMDb release];
+    [_referenceRottenTomatoes release];
     [_referenceWikipedia release]; 
     [_referenceAmazon release]; 
     [_referenceITunes release];
@@ -1873,12 +1911,9 @@
         [cTMDb scrollTop:YES];
         
         // imdb
-        HTMLView *cIMDb = (HTMLView*) [self viewWithTag:TagInformationComponentIMDb];
-        [cIMDb scrollTop:YES];
+        HTMLView *cHTML = (HTMLView*) [self viewWithTag:TagInformationComponentHTML];
+        [cHTML scrollTop:YES];
         
-        // wikipedia
-        HTMLView *cWikipedia = (HTMLView*) [self viewWithTag:TagInformationComponentWikipedia];
-        [cWikipedia scrollTop:YES];
     }
 }
 

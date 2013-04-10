@@ -43,23 +43,50 @@
 #define kInformationGapInset            (iPad ? 15.0f : 10.0f)
 
 
-//  Tags
+// Tab
+enum {
+    InfoTabUndef,
+    InfoTabListing,
+    InfoTabTMDb,
+    InfoTabIMDb,
+    InfoTabRottenTomatoes,
+    InfoTabWikipedia,
+    InfoTabTrailer
+};
+
+// Tags
 enum {
     TagInformationHeaderMovie,
     TagInformationHeaderPerson,
 	TagInformationComponentListing,
     TagInformationComponentTMDb,
-    TagInformationComponentIMDb,
-    TagInformationComponentWikipedia,
+    TagInformationComponentHTML,
     TagInformationComponentTrailer,
 	TagInformationFooter
 };
 
-//  Actions
+// Actions
 enum {
-    ActionInformationToolsReference,
+    ActionInformationBrowse,
+    ActionInformationReference,
     ActionInformationShare,
     ActionInformationTrailers
+};
+
+// Browse
+enum {
+    InfoBrowseWikipedia,
+    InfoBrowseRottenTomatoes
+};
+
+// Reference
+enum {
+    InfoReferenceTMDb,
+    InfoReferenceIMDb,
+    InfoReferenceWikipedia,
+    InfoReferenceRottenTomatoes,
+    InfoReferenceAmazon,
+    InfoReferenceITunes
 };
 
 
@@ -114,7 +141,7 @@ enum {
 /**
  * InformationViewController.
  */
-@interface InformationViewController : UIViewController <UIActionSheetDelegate, ListingDelegate, HTMLDelegate, UIGestureRecognizerDelegate, MFMailComposeViewControllerDelegate> {
+@interface InformationViewController : UIViewController <UIActionSheetDelegate, ListingDelegate, UIGestureRecognizerDelegate, MFMailComposeViewControllerDelegate> {
     
     // delegate
 	id<InformationDelegate> delegate;
@@ -127,18 +154,18 @@ enum {
     UIView *_contentView;
     InformationMovieView *_informationMovieView;
     InformationPersonView *_informationPersonView;
+    
+    // components
     ListingView *_componentListing;
     TMDbView *_componentTMDb;
-    HTMLView *_componentIMDb;
-    HTMLView *_componentWikipedia;
-    HTMLNavigatorView *_htmlNavigator;
+    HTMLView *_componentHTML;
     VideoView *_componentTrailer;
     
-    // switch
+    // tabs
     ActionBarButtonItem *_actionListing;
     ActionBarButtonItem *_actionTMDb;
     ActionBarButtonItem *_actionIMDb;
-    ActionBarButtonItem *_actionWikipedia;
+    ActionBarButtonItem *_actionBrowse;
     
     // buttons
     UIButton *_buttonResize;
@@ -158,13 +185,8 @@ enum {
     bool type_movie;
     bool type_person;
     
-    // modes
-    bool mode_listing;
-    bool mode_tmdb;
-    bool mode_imdb;
-    bool mode_wikipedia;
-    bool mode_trailer;
-    
+    // mode
+    int tab;
     bool fullscreen;
     
     // localization
@@ -174,6 +196,7 @@ enum {
     NSMutableString *_referenceTMDb;
     NSMutableString *_referenceIMDb;
     NSMutableString *_referenceWikipedia;
+    NSMutableString *_referenceRottenTomatoes;
     NSMutableString *_referenceAmazon;
     NSMutableString *_referenceITunes;
     
@@ -205,6 +228,8 @@ enum {
 - (void)actionFavorite:(id)sender;
 - (void)actionTrailer:(id)sender;
 - (void)actionShare:(id)sender;
+- (void)actionBrowse:(id)sender;
+- (void)actionReference:(id)sender;
 
 // Business Methods
 - (void)resize;

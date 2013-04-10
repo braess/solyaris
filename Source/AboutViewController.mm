@@ -136,7 +136,7 @@
 	txtAbout.opaque = YES;
     txtAbout.userInteractionEnabled = NO;
     txtAbout.editable = NO;
-	[txtAbout setText:NSLocalizedString(@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or people. Expand nodes to gather information about their relationships. Learn about the cast and filmography. \n\nThis app uses the TMDb API but is not endorsed or certified by TMDb. All information provided by TMDb, IMDb, YouTube and Wikipedia. Solyaris is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.",@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or people. Expand nodes to gather information about their relationships. Learn about the cast and filmography. \n\nThis app uses the TMDb API but is not endorsed or certified by TMDb. All information provided by TMDb, IMDb, YouTube and Wikipedia. Solyaris is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.")];
+	[txtAbout setText:NSLocalizedString(@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or people. Expand nodes to gather information about their relationships. Learn about the cast and filmography. \n\nThis app uses the TMDb API but is not endorsed or certified by TMDb. All information provided by TMDb, IMDb, Rotten Tomatoes, YouTube and Wikipedia. Solyaris is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.",@"Solyaris is an exploration into organic information design to visualise movies, actors, directors and their relationship. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or people. Expand nodes to gather information about their relationships. Learn about the cast and filmography. \n\nThis app uses the TMDb API but is not endorsed or certified by TMDb. All information provided by TMDb, IMDb, Rotten Tomatoes, YouTube and Wikipedia. Solyaris is not responsible for the content, nor the availability or performance of these services.\n\nMade with Cinder.")];
     [self.view addSubview:txtAbout];
 	[txtAbout release];
     
@@ -144,18 +144,6 @@
     LinkButton *lbTMDb = [[LinkButton alloc] initWithFrame:CGRectZero];
     lbTMDb.delegate = self;
     lbTMDb.link = @"http://www.themoviedb.org";
-    
-    LinkButton *lbIMDb = [[LinkButton alloc] initWithFrame:CGRectZero];
-    lbIMDb.delegate = self;
-    lbIMDb.link = @"http://www.imdb.com";
-    
-    LinkButton *lbYouTube = [[LinkButton alloc] initWithFrame:CGRectZero];
-    lbYouTube.delegate = self;
-    lbYouTube.link = @"http://www.youtube.com";
-    
-    LinkButton *lbWikipedia = [[LinkButton alloc] initWithFrame:CGRectZero];
-    lbWikipedia.delegate = self;
-    lbWikipedia.link = @"http://www.wikipedia.org";
     
     LinkButton *lbCinder = [[LinkButton alloc] initWithFrame:CGRectZero];
     lbCinder.delegate = self;
@@ -167,53 +155,35 @@
         
         // localization: de
         if ([[SolyarisLocalization currentLanguage] isEqualToString:kLanguageDE]) {
-            lbTMDb.frame = CGRectMake(219, 232, 46, 20);
-            lbIMDb.frame = CGRectMake(268, 232, 41, 20);
-            lbYouTube.frame = CGRectMake(0, 252, 64, 20);
-            lbWikipedia.frame = CGRectMake(93, 252, 72, 20);
+            lbTMDb.frame = CGRectMake(196, 272, 44, 20);
             lbCinder.frame = CGRectMake(118, 348, 51, 20);
         }
         // localization: en
         else {
-            lbTMDb.frame = CGRectMake(0, 272, 46, 20);
-            lbIMDb.frame = CGRectMake(49, 272, 41, 20);
-            lbYouTube.frame = CGRectMake(92, 272, 65, 20);
-            lbWikipedia.frame = CGRectMake(186, 272, 72, 20);
-            lbCinder.frame = CGRectMake(72, 348, 49, 20);
+            lbTMDb.frame = CGRectMake(0, 272, 44, 20);
+            lbCinder.frame = CGRectMake(72, 368, 49, 20);
         }
     }
     else {
         
         // localization: de
         if ([[SolyarisLocalization currentLanguage] isEqualToString:kLanguageDE]) {
-            lbTMDb.frame = CGRectMake(219, 232, 46, 20);
-            lbIMDb.frame = CGRectMake(0, 253, 41, 20);
-            lbYouTube.frame = CGRectMake(44, 253, 64, 20);
-            lbWikipedia.frame = CGRectMake(137, 253, 72, 20);
-            lbCinder.frame = CGRectMake(118, 348, 51, 20);
+            lbTMDb.frame = CGRectMake(0, 292, 44, 20);
+            lbCinder.frame = CGRectMake(118, 368, 51, 20);
         }
         // localization: en
         else {
-            lbTMDb.frame = CGRectMake(160, 290, 46, 20);
-            lbIMDb.frame = CGRectMake(209, 290, 41, 20);
-            lbYouTube.frame = CGRectMake(0, 310, 65, 20);
-            lbWikipedia.frame = CGRectMake(94, 310, 72, 20);
+            lbTMDb.frame = CGRectMake(122, 252, 44, 20);
             lbCinder.frame = CGRectMake(72, 386, 49, 20);
         }
     }
     
     // add
     [self.view addSubview:lbTMDb];
-    [self.view addSubview:lbIMDb];
-    [self.view addSubview:lbYouTube];
-    [self.view addSubview:lbWikipedia];
     [self.view addSubview:lbCinder];
     
     // release
     [lbTMDb release];
-    [lbIMDb release];
-    [lbYouTube release];
-    [lbWikipedia release];
     [lbCinder release];
     
     

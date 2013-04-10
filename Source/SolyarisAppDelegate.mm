@@ -39,8 +39,7 @@
 
 
 #pragma mark -
-#pragma mark Application 
-
+#pragma mark Application
 
 /*
  * Application launched.
