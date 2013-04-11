@@ -496,7 +496,7 @@
         // frames
         CGRect cframe = self.view.frame;
         CGRect fHeader = CGRectMake(0,0,cframe.size.width,head);
-        CGRect fInfo = CGRectMake(inset,margin,fHeader.size.width-2*inset-5,head-2*margin);
+        CGRect fInfo = CGRectMake(inset,margin,fHeader.size.width-2*inset-10,head-2*margin);
         
         // header
         UIView *header = [[[UIView alloc] initWithFrame:fHeader] autorelease];

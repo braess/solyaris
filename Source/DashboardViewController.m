@@ -212,6 +212,11 @@
         // sync
         [defaults synchronize];
         
+        // notify
+        NSMutableDictionary *infoSearch = [NSMutableDictionary dictionary];
+        [infoSearch setObject:[defaults objectForKey:udSearchType] forKey:ntvSearchType];
+        [[NSNotificationCenter defaultCenter] postNotificationName:ntSearchType object:self userInfo:infoSearch];
+        
         // reset
         [self reset];
         [self update];

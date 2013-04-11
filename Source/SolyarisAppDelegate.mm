@@ -44,7 +44,7 @@
 /*
  * Application launched.
  */
-- (void) applicationDidFinishLaunching:(UIApplication *)application {
+- (void)applicationDidFinishLaunching:(UIApplication *)application {
     
     // launch
 	NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];

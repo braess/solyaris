@@ -97,6 +97,8 @@
 // Notifications
 #define ntSearchTerm                    @"notification_search_term"
 #define ntvSearchTerm                   @"search_term"
+#define ntSearchType                    @"notification_search_type"
+#define ntvSearchType                   @"search_type"
 
 // Flags
 #define iPad                            (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad)

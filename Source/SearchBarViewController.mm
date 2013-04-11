@@ -33,6 +33,14 @@
 @interface SearchBarViewController (SearchTermStack)
 - (void)persistSearchTerm:(NSString*)term;
 - (NSString*)retrieveSearchTerm;
+- (NSString*)retrieveSearchPlaceholder;
+@end
+
+/**
+ * Notification Stack.
+ */
+@interface SearchBarViewController (Notifications)
+- (void)notificationSearchType:(NSNotification*)notification;
 @end
 
 
@@ -73,6 +81,12 @@
         
         // frame
         vframe = frame;
+        
+        // notification
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(notificationSearchType:)
+                                                     name:ntSearchType
+                                                   object:nil];
         
 		// return
 		return self;
@@ -194,6 +208,7 @@
         }
     }
     sBar.text = [self retrieveSearchTerm];
+    sBar.placeholder = [self retrieveSearchPlaceholder];
     self.searchBar = sBar;
 	[self.view addSubview:_searchBar];
 	[sBar release];
@@ -305,6 +320,9 @@
     if (delegate && [delegate respondsToSelector:@selector(searchBarPrepare)]) {
         [delegate searchBarPrepare];
     }
+    
+    // term
+    _searchBar.placeholder = [self retrieveSearchPlaceholder];
     
     // return
     return YES;  
@@ -433,6 +451,22 @@
 }
 
 
+
+#pragma mark -
+#pragma mark Notifications
+
+/*
+ * Notification search type.
+ */
+- (void)notificationSearchType:(NSNotification*)notification {
+    GLog();
+    
+    // type
+    _searchBar.placeholder = [self retrieveSearchPlaceholder];
+}
+
+
+
 #pragma mark -
 #pragma mark SearchTerm
 
@@ -454,6 +488,15 @@
     NSString *trm = (NSString*) [defaults objectForKey:udSearchTerm];
     return trm ? trm : @"";
 }
+- (NSString*)retrieveSearchPlaceholder {
+    
+    // type
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *searchType = (NSString*) [defaults objectForKey:udSearchType];
+    
+    // return
+    return (searchType && [searchType isEqualToString:typePerson]) ? NSLocalizedString(@"Enter person name", @"Enter person name") : NSLocalizedString(@"Enter movie title", @"Enter movie title");
+}
 
 
 
@@ -466,6 +509,9 @@
  */
 - (void)dealloc {
 	GLog();
+    
+    // remove
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     // ui
     [_searchBar release];

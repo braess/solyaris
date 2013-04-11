@@ -48,6 +48,7 @@
  */
 @interface SearchViewController (Notifications)
 - (void)notificationSearchTerm:(NSNotification*)notification;
+- (void)notificationSearchType:(NSNotification*)notification;
 @end
 
 /**
@@ -108,6 +109,10 @@
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(notificationSearchTerm:)
                                                      name:ntSearchTerm
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(notificationSearchType:)
+                                                     name:ntSearchType
                                                    object:nil];
         
 	}
@@ -465,7 +470,7 @@
 /**
  * Search reset.
  */
-- (void)searchChanged:(NSString *)txt {
+- (void)searchChanged:(NSString*)txt {
     GLog();
     
     // pop
@@ -566,6 +571,16 @@
     if (term) {
         [self searchChanged:term];
     }
+}
+
+/*
+ * Notification search type.
+ */
+- (void)notificationSearchType:(NSNotification*)notification {
+    GLog();
+    
+    // term
+    [self formatTerm];
 }
 
 
@@ -797,13 +812,17 @@
  */
 - (void)formatTerm {
     
+    // type
+    NSString *type = [[NSUserDefaults standardUserDefaults] objectForKey:udSearchType];
+    type = type ? type : typeMovie;
+    
     // hint
     if (_term == NULL || [[_term stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] <= 0) {
         [_labelSearch setText:NSLocalizedString(@"Type something to search", @"Type something to search")];
         _buttonSearch.enabled = NO;
     }
     else {
-        [_labelSearch setText:[NSString stringWithFormat:@"%@ «%@»",NSLocalizedString(@"Search", @"Search"),_term]];
+        [_labelSearch setText:[NSString stringWithFormat:@"%@ %@ «%@»",NSLocalizedString(@"Search", @"Search"),[type isEqualToString:typePerson] ? NSLocalizedString(@"Person", @"Person") : NSLocalizedString(@"Movie", @"Movie") ,_term]];
         _buttonSearch.enabled = YES;
     }
 }
