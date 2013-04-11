@@ -266,6 +266,9 @@
     NSString *trm = (NSString*) [defaults objectForKey:udSearchTerm];
     [_term setString:trm?trm:@""];
     
+    // format
+    [self formatTerm];
+    
     // section
     NSString *section = [defaults objectForKey:udSearchSection];
     NSString *type = [defaults objectForKey:udSearchType];

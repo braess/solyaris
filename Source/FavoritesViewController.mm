@@ -486,7 +486,7 @@
 - (UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     
     // header
-    if ([[self.fetched_favorites fetchedObjects] count] <= 0) {
+    if (! mode_editing && [[self.fetched_favorites fetchedObjects] count] <= 0) {
         
         // vars
         float inset = 10;
@@ -527,7 +527,7 @@
  * Header height.
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if ([[self.fetched_favorites fetchedObjects] count] <= 0) {
+    if (! mode_editing && [[self.fetched_favorites fetchedObjects] count] <= 0) {
         return 30;
     }
     return 0;
