@@ -50,7 +50,7 @@
 		webView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
         webView.scalesPageToFit = YES;
 		webView.backgroundColor = [UIColor whiteColor];
-		webView.delegate = self;
+        webView.delegate = self;
 		
 		// retain
         _webView = [webView retain];
@@ -103,13 +103,10 @@
 	FLog();
     
     // unload
-    [_webView stringByEvaluatingJavaScriptFromString:@"document.body.innerHTML = \"\";"];
-    
-    // not loaded
-    _webView.hidden = YES;
-
+    [_webView stopLoading];
+    [_webView setHidden:YES];
+    [_webView stringByEvaluatingJavaScriptFromString:@"document.head.innerHTML = \"\"; document.body.innerHTML = \"\";"];
 }
-
 
 /**
  * Loads the url.
@@ -126,7 +123,6 @@
     [_loader startAnimating];
     
     // request
-    [_webView stopLoading];
     [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url] cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:10.0]];
 }
 
@@ -173,7 +169,7 @@
         _loader.hidden = YES;
         
         // show
-        _webView.hidden = NO;
+        [_webView setHidden:NO];
     }
     
 }
@@ -185,17 +181,14 @@
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     GLog();
     
-    // loaded
-    if (! _loaded) {
-        _loaded = YES;
+    // fatal
+    if (error && (error.code == NSURLErrorNotConnectedToInternet || error.code == NSURLErrorCannotFindHost)) {
         
         // stop loader
         [_loader stopAnimating];
         _loader.hidden = YES;
-    }
-    
-    // fatal
-    if (error && (error.code == NSURLErrorNotConnectedToInternet || error.code == NSURLErrorCannotFindHost)) {
+        
+        // alert
         UIAlertView *alert = [[UIAlertView alloc]
                               initWithTitle:NSLocalizedString(@"Loading Failed",@"Loading Failed")
                               message:NSLocalizedString(@"Could not load page. Please try later.",@"Could not load page. Please try later.")
@@ -303,6 +296,7 @@
 	
 	// release
     _webView.delegate = nil;
+    [_webView stopLoading];
 	[_webView release];
     [_loader release];
 	

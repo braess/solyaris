@@ -173,6 +173,7 @@ enum {
     UIButton *_buttonTrailer;
     UIButton *_buttonFavorite;
     UIButton *_buttonShare;
+    UIButton *_buttonReference;
     
     // loader
     UIActivityIndicatorView *_loader;

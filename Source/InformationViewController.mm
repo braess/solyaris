@@ -218,7 +218,6 @@
     CGRect componentFrame = CGRectMake(0, kInformationHeaderHeight, contentFrame.size.width, contentFrame.size.height-kInformationHeaderHeight-kInformationFooterHeight);
     CGRect trailerFrame = CGRectMake(kInformationGapInset, kInformationHeaderHeight+kInformationGapInset, contentFrame.size.width-2*kInformationGapInset, contentFrame.size.height-kInformationHeaderHeight-kInformationFooterHeight-2*kInformationGapInset);
     CGRect actionBarFrame = CGRectMake(0, 0, footerFrame.size.width, footerFrame.size.height);
-    CGRect toolsFrame = CGRectMake(footerFrame.size.width-kInformationGapInset-80, 5, 80, kInformationFooterHeight-10);
     
     // view
     UIView *sview = [[UIView alloc] initWithFrame:screen];
@@ -283,31 +282,23 @@
         [ctView  addSubview:_buttonClose];
     }
     
+    
     // button favorite
     UIButton *btnFavorite = [UIButton buttonWithType:UIButtonTypeCustom];
     btnFavorite.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
     btnFavorite.frame = CGRectMake(headerFrame.size.width-44-kInformationGapInset+6, headerFrame.size.height-44-kInformationGapOffset+(iPad ? 1 : 10), 44, 44);
-    [btnFavorite setImage:[UIImage imageNamed:@"btn_favorite-off.png"] forState:UIControlStateNormal];
+    [btnFavorite setImage:[UIImage imageNamed:@"btn_favorite.png"] forState:UIControlStateNormal];
     [btnFavorite setImage:[UIImage imageNamed:@"btn_favorite-on.png"] forState:UIControlStateSelected];
     [btnFavorite setImage:[UIImage imageNamed:@"btn_favorite-on.png"] forState:UIControlStateSelected|UIControlStateHighlighted];
     [btnFavorite addTarget:self action:@selector(actionFavorite:) forControlEvents:UIControlEventTouchUpInside];
     _buttonFavorite = [btnFavorite retain];
     [ctView addSubview:_buttonFavorite];
     
-    // button share
-    UIButton *btnShare = [UIButton buttonWithType:UIButtonTypeCustom];
-    btnShare.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-    btnShare.frame = CGRectMake(headerFrame.size.width-88-kInformationGapInset+6, headerFrame.size.height-44-kInformationGapOffset+(iPad ? 1 : 10), 44, 44);
-    [btnShare setImage:[UIImage imageNamed:@"btn_share.png"] forState:UIControlStateNormal];
-    [btnShare addTarget:self action:@selector(actionShare:) forControlEvents:UIControlEventTouchUpInside];
-    _buttonShare = [btnShare retain];
-    [ctView addSubview:_buttonShare];
-    
     
     // button trailer
     UIButton *btnTrailer = [UIButton buttonWithType:UIButtonTypeCustom]; 
     btnTrailer.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-    btnTrailer.frame = CGRectMake(headerFrame.size.width-132-kInformationGapInset+6, headerFrame.size.height-44-kInformationGapOffset+(iPad ? 1 : 10), 44, 44);
+    btnTrailer.frame = CGRectMake(headerFrame.size.width-88-kInformationGapInset+6, headerFrame.size.height-44-kInformationGapOffset+(iPad ? 1 : 10), 44, 44);
     [btnTrailer setImage:[UIImage imageNamed:@"btn_trailer.png"] forState:UIControlStateNormal];
     [btnTrailer addTarget:self action:@selector(actionTrailer:) forControlEvents:UIControlEventTouchUpInside];
     _buttonTrailer = [btnTrailer retain];
@@ -430,23 +421,27 @@
     [nspace release];
     [abar release];
     
+    
+    // share
+    UIButton *btnShare = [UIButton buttonWithType:UIButtonTypeCustom];
+    btnShare.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+    btnShare.frame = CGRectMake(5, footerFrame.size.height/2.0 - 22, 44, 44);
+    [btnShare setImage:[UIImage imageNamed:@"btn_share.png"] forState:UIControlStateNormal];
+    [btnShare addTarget:self action:@selector(actionShare:) forControlEvents:UIControlEventTouchUpInside];
+    _buttonShare = [btnShare retain];
+    
+    // reference
+    UIButton *btnReference = [UIButton buttonWithType:UIButtonTypeCustom];
+    btnReference.frame = CGRectMake(footerFrame.size.width-44-15, footerFrame.size.height/2.0 - 21, 44, 44);
+    btnReference.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+    [btnReference setImage:[UIImage imageNamed:@"btn_reference.png"] forState:UIControlStateNormal];
+    [btnReference addTarget:self action:@selector(actionReference:) forControlEvents:UIControlEventTouchUpInside];
+    _buttonReference = [btnReference retain];
+
     // ipad
     if (iPad) {
-        // tools
-        UIView *toolsView = [[UIView alloc] initWithFrame:toolsFrame];
-        toolsView.autoresizingMask = (UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin);
-        toolsView.backgroundColor = [UIColor clearColor];
-        
-        // reference
-        UIButton *btnReference = [UIButton buttonWithType:UIButtonTypeCustom];
-        btnReference.frame = CGRectMake(toolsView.frame.size.width-44, 0, 44, 44);
-        btnReference.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
-        [btnReference setImage:[UIImage imageNamed:@"btn_reference.png"] forState:UIControlStateNormal];
-        [btnReference addTarget:self action:@selector(actionReference:) forControlEvents:UIControlEventTouchUpInside];
-        
-        [toolsView addSubview:btnReference];
-        [footerView addSubview:toolsView];
-        [toolsView release];
+        [footerView addSubview:_buttonReference];
+        [footerView addSubview:_buttonShare];
     }
     
     // footer
@@ -615,9 +610,6 @@
     // component tmdb
     [_componentTMDb resetMovie:movie];
     
-    // component html
-    [_componentHTML reset];
-    
     // component trailer
     [_componentTrailer resetTrailer:movie];
     _buttonTrailer.hidden = YES;
@@ -702,9 +694,6 @@
     
     // component tmdb
     [_componentTMDb resetPerson:person];
-    
-    // component html
-    [_componentHTML reset];
     
     // component trailer
     _buttonTrailer.hidden = YES;
@@ -1125,11 +1114,14 @@
         [shareAction addButtonWithTitle:NSLocalizedString(@"Facebook", @"Facebook")];
     }
     [shareAction addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel")];
-    shareAction.cancelButtonIndex = shareAction.numberOfButtons-1;
-
-    // show
+    [shareAction setCancelButtonIndex:shareAction.numberOfButtons-1];
     [shareAction setTag:ActionInformationShare];
-    [shareAction showFromRect:_buttonShare.frame inView:self.contentView animated:YES];
+    
+    
+    // show
+    UIView *btn = (UIView*)sender;
+    CGRect pos = [btn convertRect:btn.bounds toView:self.view];
+    [shareAction showFromRect:pos inView:self.view animated:YES];
     [shareAction release];
 }
 
@@ -1755,6 +1747,7 @@
     [_buttonFavorite release];
     [_buttonTrailer release];
     [_buttonShare release];
+    [_buttonReference release];
     
     // components
     [_componentListing release];
@@ -1821,6 +1814,13 @@
         self.autoresizingMask = iPad ? (UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin) : (UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight);
         self.contentMode = UIViewContentModeRedraw; // Thats the one
         
+        // shadow
+        self.layer.shadowOffset = CGSizeMake(0, 0);
+        self.layer.shadowRadius = 4;
+        self.layer.shadowColor = [UIColor blackColor].CGColor;
+        self.layer.shadowOpacity = 0.3;
+        self.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.bounds].CGPath;
+        
         // texture
         UIImage *texture = [UIImage imageNamed:@"bg_content.png"];
         _texture = [texture retain];
@@ -1830,6 +1830,16 @@
 	
 	// self
 	return self;
+}
+
+/*
+ * Layout.
+ */
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    // in the shadow
+    self.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.bounds].CGPath;
 }
 
 
@@ -2023,8 +2033,7 @@
         [lblTagline release];
         
         // property
-        float pwidth = 75;
-        
+        float pwidth = 60;
         
         // released
         UILabel *lblPropReleased = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+(iPad ? 54 : 42), pwidth, 15)];
@@ -2208,8 +2217,7 @@
         [lblName release];
         
         // property
-        float pwidth = 75;
-        
+        float pwidth = 72;
         
         // known movies
         UILabel *lblPropKnownMovies = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y+(iPad ? 39 : 28), pwidth, 15)];
@@ -2223,7 +2231,7 @@
         [self addSubview:lblPropKnownMovies];
         [lblPropKnownMovies release];
         
-        UILabel *lblKnownMovies = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 39 : 28), mframe.size.width-pwidth, 15)];
+        UILabel *lblKnownMovies = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 39 : 28), mframe.size.width-pwidth-8, 15)];
         lblKnownMovies.backgroundColor = [UIColor clearColor];
         lblKnownMovies.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         lblKnownMovies.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
@@ -2247,7 +2255,7 @@
         [self addSubview:lblPropBirthday];
         [lblPropBirthday release];
         
-        UILabel *lblBirthday = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 54 : 43), mframe.size.width-pwidth, 15)];
+        UILabel *lblBirthday = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 54 : 43), mframe.size.width-pwidth-8, 15)];
         lblBirthday.backgroundColor = [UIColor clearColor];
         lblBirthday.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         lblBirthday.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
@@ -2270,7 +2278,7 @@
         [self addSubview:lblPropBirthplace];
         [lblPropBirthplace release];
         
-        UILabel *lblBirthplace = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 69 : 58), mframe.size.width-pwidth, 15)];
+        UILabel *lblBirthplace = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x+pwidth, mframe.origin.y+(iPad ? 69 : 58), mframe.size.width-pwidth-8, 15)];
         lblBirthplace.backgroundColor = [UIColor clearColor];
         lblBirthplace.font = [UIFont fontWithName:@"Helvetica" size:12.0];
         lblBirthplace.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];

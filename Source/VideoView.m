@@ -274,6 +274,7 @@
     [_videos release];
 	
 	// release
+    _webView.delegate = nil;
 	[_webView release];
 	
 	// super
