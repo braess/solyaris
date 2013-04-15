@@ -57,7 +57,7 @@
                                                           [UIFont fontWithName:@"Helvetica" size:20], UITextAttributeFont,
                                                           nil]];
     
-    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:1 forBarMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:0 forBarMetrics:UIBarMetricsDefault];
     [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:-1 forBarMetrics:UIBarMetricsLandscapePhone];
     
     // toolbar

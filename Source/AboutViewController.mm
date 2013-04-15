@@ -352,7 +352,7 @@
         SLComposeViewController *composeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
         
         // initial tweet text
-        [composeViewController setInitialText:[NSString stringWithFormat:@"%@ %@\n",NSLocalizedString(@"Solyaris iPhone/iPad App. A Visual Movie Browser.",@"Solyaris iPhone/iPad App. A Visual Movie Browser."),vAppStoreURL ]];
+        [composeViewController setInitialText:[NSString stringWithFormat:@"%@ %@\n",NSLocalizedString(@"Solyaris - a visual movie browser to find and discover films and explore their connections. ",@"Solyaris - a visual movie browser to find and discover films and explore their connections. "),vAppStoreURL ]];
         
         // promo image
         UIImage *pimg = [UIImage imageNamed:@"promo.png"];
