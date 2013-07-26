@@ -49,6 +49,7 @@
 // Class Methods
 + (void)startTracker;
 + (void)trackView:(NSString*)view;
++ (void)trackEvent:(NSString*)category action:(NSString*)action;
 + (void)trackEvent:(NSString*)category action:(NSString*)action label:(NSString*)label;
 + (void)trackError:(NSString*)cls method:(NSString*)method message:(NSString*)message;
 + (void)trackError:(NSString*)cls method:(NSString*)method message:(NSString*)message error:(NSError*)error;

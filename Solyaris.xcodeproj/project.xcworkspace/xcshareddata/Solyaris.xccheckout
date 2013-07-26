@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>D812B6EC-9F15-46B4-9A85-FB26A02BD4B4</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Solyaris</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>9CC6CE1C-07F4-4578-BF14-D1E3B3A6F415</key>
+		<string>https://github.com/cnpp/Solyaris.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Solyaris.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>9CC6CE1C-07F4-4578-BF14-D1E3B3A6F415</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/cnpp/Solyaris.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>9CC6CE1C-07F4-4578-BF14-D1E3B3A6F415</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>9CC6CE1C-07F4-4578-BF14-D1E3B3A6F415</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Solyaris</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -825,27 +825,22 @@
 - (void)swapRottenTomatoes {
     FLog();
     
-    // change mode
-    if (tab != InfoTabRottenTomatoes) {
-        
-        // track
-        [Tracker trackView:@"InformationRottenTomatoes"];
-        
-        // reset
-        [self swapReset];
-        
-        // tab
-        tab = InfoTabRottenTomatoes;
-        
-        // action
-        [_actionBrowse setSelected:YES];
-        
-        // component
-        [_componentHTML reset];
-        [_componentHTML load:_referenceRottenTomatoes base:@"rottentomatoes"];
-        [_componentHTML setHidden:NO];
-        
-    }
+    // track
+    [Tracker trackView:@"InformationRottenTomatoes"];
+    
+    // reset
+    [self swapReset];
+    
+    // tab
+    tab = InfoTabRottenTomatoes;
+    
+    // action
+    [_actionBrowse setSelected:YES];
+    
+    // component
+    [_componentHTML reset];
+    [_componentHTML load:_referenceRottenTomatoes base:@"rottentomatoes"];
+    [_componentHTML setHidden:NO];
 }
 
 /*
@@ -854,27 +849,22 @@
 - (void)swapWikipedia {
     FLog();
     
-    // change mode
-    if (tab != InfoTabWikipedia) {
-        
-        // track
-        [Tracker trackView:@"InformationWikipedia"];
-        
-        // reset
-        [self swapReset];
-        
-        // tab
-        tab = InfoTabWikipedia;
-        
-        // action
-        [_actionBrowse setSelected:YES];
-        
-        // component
-        [_componentHTML reset];
-        [_componentHTML load:_referenceWikipedia base:@"wiki"];
-        [_componentHTML setHidden:NO];
-        
-    }
+    // track
+    [Tracker trackView:@"InformationWikipedia"];
+    
+    // reset
+    [self swapReset];
+    
+    // tab
+    tab = InfoTabWikipedia;
+    
+    // action
+    [_actionBrowse setSelected:YES];
+    
+    // component
+    [_componentHTML reset];
+    [_componentHTML load:_referenceWikipedia base:@"wiki"];
+    [_componentHTML setHidden:NO];
 }
 
 
@@ -1796,7 +1786,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Initialize.
@@ -1818,7 +1808,7 @@
         self.layer.shadowOffset = CGSizeMake(0, 0);
         self.layer.shadowRadius = 4;
         self.layer.shadowColor = [UIColor blackColor].CGColor;
-        self.layer.shadowOpacity = 0.3;
+        self.layer.shadowOpacity = 0.2;
         self.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.bounds].CGPath;
         
         // texture
@@ -1852,19 +1842,15 @@
 	// vars
 	float w = self.frame.size.width;
 	float h = self.frame.size.height;
-    
-    // rects
     CGRect mrect = CGRectMake(0, 0, w, h);
-    
     
 	// context
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	CGContextClearRect(context, rect);
     CGContextSetShouldAntialias(context, NO);
-    
 	
 	// background
-    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:238.0/255.0 green:238.0/255.0 blue:239.0/255.0 alpha:1.0].CGColor);
+    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0].CGColor);
 	CGContextFillRect(context, mrect);
     
     // texture
@@ -1872,26 +1858,16 @@
     CGContextDrawTiledImage(context,_tsize,_texture.CGImage);
 	
     
-	// header lines
-	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
+	// header
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.9 alpha:1].CGColor);
 	CGContextMoveToPoint(context, 0, kInformationHeaderHeight-1);
 	CGContextAddLineToPoint(context, w, kInformationHeaderHeight-1);
 	CGContextStrokePath(context);
     
-    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:1].CGColor);
-	CGContextMoveToPoint(context, 0, kInformationHeaderHeight);
-	CGContextAddLineToPoint(context, w, kInformationHeaderHeight);
-	CGContextStrokePath(context);
-    
-    // footer lines
-	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
+    // footer
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.9 alpha:1].CGColor);
 	CGContextMoveToPoint(context, 0, h-kInformationFooterHeight);
 	CGContextAddLineToPoint(context, w, h-kInformationFooterHeight);
-	CGContextStrokePath(context);
-    
-    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:1].CGColor);
-	CGContextMoveToPoint(context, 0, h-kInformationFooterHeight+1);
-	CGContextAddLineToPoint(context, w, h-kInformationFooterHeight+1);
 	CGContextStrokePath(context);
      
 }
@@ -1970,7 +1946,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Init.
@@ -2008,7 +1984,7 @@
         UILabel *lblTitle = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y, mframe.size.width, iPad ? 36 : 34)];
         lblTitle.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         lblTitle.backgroundColor = [UIColor clearColor];
-        lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:iPad ? 21.0 : 15];
+        lblTitle.font = [UIFont fontWithName:@"Helvetica" size:iPad ? 21.0 : 15];
         lblTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
         lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
         lblTitle.shadowOffset = CGSizeMake(0,1);
@@ -2168,7 +2144,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Init.
@@ -2205,7 +2181,7 @@
         // name
         UILabel *lblName = [[UILabel alloc] initWithFrame:CGRectMake(mframe.origin.x, mframe.origin.y, mframe.size.width, iPad ? 36 : 34)];
         lblName.backgroundColor = [UIColor clearColor];
-        lblName.font = [UIFont fontWithName:@"Helvetica-Bold" size:iPad ? 21.0 : 15];
+        lblName.font = [UIFont fontWithName:@"Helvetica" size:iPad ? 21.0 : 15];
         lblName.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
         lblName.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
         lblName.shadowOffset = CGSizeMake(0,1);

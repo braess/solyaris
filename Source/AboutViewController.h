@@ -31,9 +31,23 @@
 #define kAboutFooterHeight      55.0
 
 
+// Recommend
+enum {
+	RecommendEmail,
+    RecommendTwitter,
+    RecommendFacebook,
+    RecommendAppStore
+};
+
+// Actions
+enum {
+    AboutActionRecommend,
+	AboutActionFeedback
+};
+
 // Alerts
 enum {
-    AlertAboutAppStore
+    AboutAlertAppStore
 };
 
 
@@ -48,7 +62,7 @@ enum {
 /**
  * AboutViewController.
  */
-@interface AboutViewController : UITableViewController <UIAlertViewDelegate, MFMailComposeViewControllerDelegate, LinkButtonDelegate> {
+@interface AboutViewController : UITableViewController <UIAlertViewDelegate, UIActionSheetDelegate, MFMailComposeViewControllerDelegate> {
     
     // delegate
 	id<AboutDelegate> delegate;
@@ -64,12 +78,10 @@ enum {
 // Properties
 @property (assign) id<AboutDelegate> delegate;
 
-// Action Methods
-- (void)actionEmail:(id)sender;
-- (void)actionTwitter:(id)sender;
-- (void)actionAppStore:(id)sender;
-- (void)actionFeedback:(id)sender;
+// Actions
 - (void)actionBack:(id)sender;
+- (void)actionRecommend:(id)sender;
+- (void)actionFeedback:(id)sender;
 
 @end
 

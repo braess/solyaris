@@ -68,7 +68,7 @@
 @property (nonatomic, retain) UISearchBar *searchBar;
 
 
-// Action Methods
+// Actions
 - (void)actionLogo:(id)sender;
 - (void)actionReset:(id)sender;
 

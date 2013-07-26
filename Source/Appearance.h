@@ -23,6 +23,7 @@
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMailComposeViewController.h>
+#import "iOS6.h"
 
 /**
  * Appearance.
@@ -37,60 +38,19 @@
 @end
 
 
-// Data types
-enum {
-    ButtonStyleDefault,
-    ButtonStyleLite
-};
-
 /**
  * Button.
  */
+enum {
+    ButtonStyleDefault,
+    ButtonStylePrimary
+};
 @interface Button : UIButton {
     
 }
 - (id)initStyle:(int)style;
-
 @end
 
-
-
-/**
- * LinkButtonDelegate Protocol.
- */
-@class LinkButton;
-@protocol LinkButtonDelegate <NSObject>
-- (void)linkButtonTouched:(LinkButton*)lb;
-@optional
-- (void)linkButtonDown:(LinkButton*)lb;
-- (void)linkButtonUp:(LinkButton*)lb;
-@end
-
-
-/**
- * Link Button.
- */
-@interface LinkButton : UIButton {
-    
-    // delegate
-	id<LinkButtonDelegate>delegate;
-    
-    // link
-    NSString *_link;
-    
-    // private
-@private
-    BOOL mode_transparent;
-}
-
-// Properties
-@property (assign) id<LinkButtonDelegate> delegate;
-@property (nonatomic, retain) NSString *link;
-
-// Business
-- (void)transparent:(BOOL)flag;
-
-@end
 
 
 /**
@@ -137,16 +97,67 @@ enum {
 @end
 
 
+
+// caps
+typedef enum {
+    SegmentCapLeft          = 0,
+    SegmentCapMiddle        = 1,
+    SegmentCapRight         = 2,
+    SegmentCapLeftAndRight  = 3
+} SegmentCapLocation;
+
+
 /**
- * PopoverBackgroundView.
+ * SegmentedControlDelegate Protocol.
  */
-@interface PopoverBackgroundView : UIPopoverBackgroundView {
-    UIImageView *_popover;
-    UIImageView *_arrow;
-    CGFloat _arrowOffset;
-    UIPopoverArrowDirection _arrowDirection;
-}
+@protocol SegmentedControlDelegate <NSObject>
+- (void)segmentedControlTouched:(NSUInteger)segmentIndex;
+@optional
+- (void)segmentedControlDown:(NSUInteger)segmentIndex;
 @end
+
+/**
+ * Custom SegmentedControl.
+ */
+@interface SegmentedControl : UIView {
+    
+    // delegate
+	id<SegmentedControlDelegate>delegate;
+    
+    // private
+@private
+    
+    // data
+    NSMutableArray* _buttons;
+}
+
+// Properties
+@property (assign) id<SegmentedControlDelegate> delegate;
+
+
+// Object
+- (id)initWithTitles:(NSArray*)titles;
+- (id)initWithTitles:(NSArray*)titles size:(CGSize)size gap:(int)gap cap:(int)cap image:(NSString*)image selected:(NSString*)selected divider:(NSString*)divider;
+
+// Business
+- (void)select:(int)ndx;
+- (NSArray*)segmentButtons;
+
+@end
+
+
+/**
+ * SegmentedControlItem.
+ */
+@interface SegmentedControlItem : UIButton {
+    
+}
+
+// Object
+- (id)initSegmentedControlItem:(CGSize)size capLocation:(SegmentCapLocation)capLocation capWidth:(NSUInteger)capWidth title:(NSString*)title image:(NSString*)image selected:(NSString*)selected;
+
+@end
+
 
 
 
@@ -154,7 +165,6 @@ enum {
  * NavigationController.
  */
 @interface NavigationController : UINavigationController
-
 @end
 
 
@@ -162,8 +172,15 @@ enum {
  * MailComposeController.
  */
 @interface MailComposeController : MFMailComposeViewController
+@end
+
+/**
+ * PopoverController.
+ */
+@interface PopoverController : UIPopoverController
 
 @end
+
 
 
 

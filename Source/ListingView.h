@@ -29,7 +29,7 @@
 #define kListingCellHeight  36.0f
 #define kListingCellInset   (iPad ? 15.0f : 10.0f)
 #define kListingCellThumb   25.0f
-#define kListingGapHeight   (iPad ? 35.0f : 34.0f)
+#define kListingGapHeight   36
 #define kListingGapOffset   5.0f
 #define kListingGapInset    (iPad ? 15.0f : 10.0f)
 
@@ -90,10 +90,8 @@ enum {
 @interface ListingCell : UITableViewCell {
     
     // ui
-    UILabel *_labelInfo;
-    UILabel *_labelMeta;
     NSString *_type;
-    CacheImageView *_thumbImageView;
+    CacheImageView *_thumb;
     
     // state
     bool loaded;
@@ -101,8 +99,6 @@ enum {
 }
 
 // Properties
-@property (nonatomic,retain) UILabel *labelInfo;
-@property (nonatomic,retain) UILabel *labelMeta;
 @property (nonatomic,retain) NSString *type;
 @property bool loaded;
 @property bool visible;

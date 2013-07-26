@@ -20,11 +20,9 @@
 @interface CellData : UITableViewCell {
     
     // ui
-    UILabel *_labelData;
-    CacheImageView *_thumbImageView;
+    CacheImageView *_thumb;
     UIActivityIndicatorView *_loader;
     UIImageView *_icon;
-    UIImageView *_disclosure;
     UIImageView *_more;
     
     // modes
@@ -32,9 +30,6 @@
     BOOL mode_icon;
     BOOL mode_more;
 }
-
-// Properties
-@property (nonatomic,retain) UILabel *labelData;
 
 // Business
 - (void)reset;

@@ -49,7 +49,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Initialize.
@@ -77,6 +77,7 @@
         tableView.backgroundColor = [UIColor clearColor];
         tableView.opaque = YES;
         tableView.backgroundView = nil;
+        tableView.separatorColor = [UIColor clearColor];
         tableView.sectionHeaderHeight = 0; 
         tableView.sectionFooterHeight = 0;
         
@@ -256,7 +257,7 @@
  * Customize the cell height.
  */
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return kListingCellHeight-1; // compensate anti alias stuff
+    return kListingCellHeight;
 }
 
 /*
@@ -281,7 +282,7 @@
     // label
     UILabel *lblHeader = [[UILabel alloc] initWithFrame:CGRectMake(kListingGapInset, kListingGapOffset, shView.frame.size.width-2*kListingGapInset, kListingGapHeight-kListingGapOffset)];
 	lblHeader.backgroundColor = [UIColor clearColor];
-	lblHeader.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
+	lblHeader.font = [UIFont fontWithName:@"Helvetica" size:15.0];
 	lblHeader.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
 	lblHeader.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
 	lblHeader.shadowOffset = CGSizeMake(0,1);
@@ -320,7 +321,7 @@
     
     // view
     UIView *sfLine = [[UIView alloc] initWithFrame:CGRectMake(kListingGapInset, -1, self.frame.size.width-2*kListingGapInset, 1)];
-    sfLine.backgroundColor = [UIColor colorWithWhite:0.82 alpha:0.6];
+    sfLine.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.6];
     
     // add & release
     [sfView addSubview:sfLine];
@@ -414,8 +415,8 @@
     
     
     // label
-	cell.labelInfo.text = nfo;
-	cell.labelMeta.text = dta.edge.label;
+	cell.textLabel.text = nfo;
+	cell.detailTextLabel.text = dta.edge.label;
     cell.type = dta.type;
     
     // thumb
@@ -525,14 +526,12 @@
 #pragma mark Properties
 
 // accessors
-@synthesize labelInfo=_labelInfo;
-@synthesize labelMeta=_labelMeta;
 @synthesize type=_type;
 @synthesize loaded, visible;
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Init.
@@ -542,11 +541,13 @@
     // init
     if ((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
         
-        // background
+        // self
         self.backgroundColor = [UIColor clearColor];
+        self.contentView.backgroundColor = [UIColor clearColor];
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
+        self.accessoryType = UITableViewCellAccessoryNone;
+        self.editingAccessoryType = UITableViewCellAccessoryNone;
         self.opaque = NO;
-        
-        // intendation
         self.indentationWidth = kListingGapInset;
         self.indentationLevel = 0;
         
@@ -559,34 +560,23 @@
         
         
         // labels
-        UILabel *lblInfo = [[UILabel alloc] initWithFrame:CGRectZero];
-        lblInfo.backgroundColor = [UIColor clearColor];
-        lblInfo.font = [UIFont fontWithName:@"Helvetica" size:15.0];
-        lblInfo.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
-        lblInfo.opaque = YES;
-        lblInfo.numberOfLines = 1;
-        
-        _labelInfo = [lblInfo retain];
-        [self.contentView addSubview: _labelInfo];
-        [lblInfo release];
-        
-        UILabel *lblMeta = [[UILabel alloc] initWithFrame:CGRectZero];
-        lblMeta.backgroundColor = [UIColor clearColor];
-        lblMeta.font = [UIFont fontWithName:@"Helvetica" size:15.0];
-        lblMeta.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
-        lblMeta.opaque = YES;
-        lblMeta.numberOfLines = 1;
-        
-        _labelMeta = [lblMeta retain];
-        [self.contentView addSubview: _labelMeta];
-        [lblMeta release];
-        
+        self.textLabel.backgroundColor = [UIColor clearColor];
+        self.textLabel.font = [UIFont fontWithName:@"Helvetica" size:15.0];
+        self.textLabel.textColor = [UIColor colorWithRed:54.0/255.0 green:54.0/255.0 blue:54.0/255.0 alpha:1.0];
+        self.textLabel.opaque = YES;
+        self.textLabel.numberOfLines = 1;
+
+        self.detailTextLabel.backgroundColor = [UIColor clearColor];
+        self.detailTextLabel.font = [UIFont fontWithName:@"Helvetica" size:15.0];
+        self.detailTextLabel.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
+        self.detailTextLabel.opaque = YES;
+        self.detailTextLabel.numberOfLines = 1;
         
         // thumb
         CacheImageView *ciView = [[CacheImageView alloc] initWithFrame:CGRectZero];
         
-        _thumbImageView = [ciView retain];
-        [self.contentView addSubview:_thumbImageView];
+        _thumb = [ciView retain];
+        [self.contentView addSubview:_thumb];
         [ciView release];
         
         
@@ -606,33 +596,31 @@
     
     // offsets
     float oxinfo = 5;
-    float oxthumb = 0;
     
     // size
-    [_labelInfo sizeToFit];
-    [_labelMeta sizeToFit];
-    
+    [self.textLabel sizeToFit];
+    [self.detailTextLabel sizeToFit];
     
     // thumb
-    [_thumbImageView setFrame:CGRectMake(kListingCellInset+oxthumb, 0, 24, 36)];
+    [_thumb setFrame:CGRectMake(kListingCellInset, 0, 24, 36)];
     
     // adjust labels
     float ml = self.frame.size.width-kListingGapInset-2*kListingCellInset-kListingCellThumb;
     
     // info
-    CGRect finfo = _labelInfo.frame;
+    CGRect finfo = self.textLabel.frame;
     finfo.origin.x = CGRectGetMinX (self.contentView.bounds) + kListingCellInset + oxinfo + kListingCellThumb;
     finfo.origin.y = CGRectGetMinY (self.contentView.bounds) + 9;
     finfo.size.width = MIN(finfo.size.width, ml);
-    [_labelInfo setFrame: finfo];
+    [self.textLabel setFrame: finfo];
     
     // meta
-    CGRect fmeta = _labelMeta.frame;
-    fmeta.origin.x = CGRectGetMaxX (_labelInfo.frame) + 10;
+    CGRect fmeta = self.detailTextLabel .frame;
+    fmeta.origin.x = CGRectGetMaxX (self.textLabel.frame) + 10;
     fmeta.origin.y = CGRectGetMinY (self.contentView.bounds) + 9;
     fmeta.size.width = MIN(fmeta.size.width, ml-(finfo.size.width+10));
-    [_labelMeta setFrame: fmeta];
-    [_labelMeta setHidden:finfo.size.width >= ml ];
+    [self.detailTextLabel  setFrame: fmeta];
+    [self.detailTextLabel  setHidden:finfo.size.width >= ml ];
     
 
     
@@ -643,21 +631,19 @@
  * Draws the cell.
  */
 - (void)drawRect:(CGRect)rect {
-    //[super drawRect:rect];
 	
-    // get the graphics context and clear it
+    // context
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     CGContextClearRect(ctx, rect);
-    //CGContextSetShouldAntialias(ctx, NO);
     
     // background
     CGRect bg = CGRectMake(kListingCellInset, 0, self.frame.size.width-2*kListingCellInset, kListingCellHeight);
-    UIColor *bgc = loaded ? [UIColor colorWithWhite:0 alpha:0.05] : (self.highlighted ? [UIColor colorWithWhite:0 alpha:0.08] : [UIColor colorWithWhite:0 alpha:0.02]);
+    UIColor *bgc = loaded ? [UIColor colorWithWhite:0 alpha:0.05] : (self.highlighted ? [UIColor colorWithWhite:0 alpha:0.06] : [UIColor colorWithWhite:0 alpha:0.015]);
     CGContextSetFillColorWithColor(ctx, bgc.CGColor);
 	CGContextFillRect(ctx, bg);
     
     // lines
-    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
+    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.87 alpha:1].CGColor);
 	CGContextMoveToPoint(ctx, bg.origin.x, 0);
 	CGContextAddLineToPoint(ctx, bg.origin.x+bg.size.width, 0);
 	CGContextStrokePath(ctx);
@@ -695,7 +681,7 @@
     GLog();
     
     // thumb
-    [_thumbImageView reset];
+    [_thumb reset];
 }
 
 
@@ -716,14 +702,14 @@
     GLog();
     
     // type
-    [_thumbImageView reset];
+    [_thumb reset];
     if ([type isEqualToString:typeMovie]) {
-        [_thumbImageView placeholderImage:[UIImage imageNamed:@"placeholder_listing_movie.png"]];
+        [_thumb placeholderImage:[UIImage imageNamed:@"placeholder_listing_movie.png"]];
     }
     else {
-        [_thumbImageView placeholderImage:[UIImage imageNamed:@"placeholder_listing_person.png"]];
+        [_thumb placeholderImage:[UIImage imageNamed:@"placeholder_listing_person.png"]];
     }
-    [_thumbImageView loadImage:thumb];
+    [_thumb loadImage:thumb];
 }
 
 
@@ -738,10 +724,7 @@
 	GLog();
     
     // self
-    [_labelInfo release];
-    [_labelMeta release];
-    [_thumbImageView release];
-
+    [_thumb release];
 
 	// super
     [super dealloc];

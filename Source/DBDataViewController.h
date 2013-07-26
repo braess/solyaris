@@ -132,7 +132,7 @@ enum {
     UILabel *_labelMessage;
     UILabel *_labelInfo;
     UIImageView *_logoTMDb;
-    LinkButton *_linkbuttonTMDb;
+    UIButton *_buttonTMDb;
     
 }
 

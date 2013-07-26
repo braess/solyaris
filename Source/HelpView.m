@@ -22,6 +22,8 @@
 
 #import "HelpView.h"
 #import "SolyarisConstants.h"
+#import "iOS6.h"
+
 
 /**
  * Help Stack.
@@ -55,13 +57,13 @@
 #pragma mark Constants
 
 // constants
-#define kAnimateTimeHelpShow            1.5f
+#define kAnimateTimeHelpShow            0.9f
 #define kAnimateTimeHelpDismiss         0.45f
 
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Initialize.
@@ -80,7 +82,6 @@
 		
         // flags
         animating = NO;
-        
 				
 		// image
 		UIImageView *imageHelp = [[UIImageView alloc] initWithFrame:CGRectZero];
@@ -795,7 +796,7 @@
     if ((self = [super initWithFrame:frame])) {
         
         // style
-        self.contentInset = UIEdgeInsetsMake(0,-8,0,-8);
+        self.contentInset = iOS6 ? UIEdgeInsetsMake(0,-8,0,-8) : UIEdgeInsetsMake(0,-5,0,-5);
         self.backgroundColor = [UIColor clearColor];
         self.font = [UIFont fontWithName:@"Helvetica" size:15.0];
         self.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];

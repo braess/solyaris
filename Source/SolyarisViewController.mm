@@ -108,8 +108,8 @@
 #define kAnimateTimeSettingsShow        0.48f
 #define kAnimateTimeSettingsHide        0.24f
 #define kOffsetSettings                 (iPad ? 480 : [[UIScreen mainScreen] bounds].size.height)
-#define kAlphaModalInfo                 0.3f
-#define kAlphaModalRelated              0.03f
+#define kAlphaModalInfo                 0.15f
+#define kAlphaModalRelated              0.06f
 #define kAlphaModalSearch               0.03f
 
 
@@ -122,7 +122,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /**
  * Init.
@@ -451,6 +451,14 @@
     // app
     solyaris->applyDeviceOrientation(toInterfaceOrientation);
     
+}
+
+
+/*
+ * Status.
+ */
+- (BOOL)prefersStatusBarHidden {
+    return YES;
 }
 
 

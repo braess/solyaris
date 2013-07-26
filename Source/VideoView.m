@@ -47,7 +47,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Initialize.
@@ -56,13 +56,7 @@
 	return [self initWithFrame:frame scrolling:YES];
 }
 - (id)initWithFrame:(CGRect)frame scrolling:(BOOL)bounces {
-	GLog();
-	
-	// init UIView
-    self = [super initWithFrame:frame];
-	
-	// init HTMLView
-    if (self != nil) {
+    if ((self = [super initWithFrame:frame])) {
         
         // view
         self.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);

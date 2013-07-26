@@ -67,7 +67,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Init.
@@ -131,8 +131,8 @@
     // drop that shadow
     float dx = iPad ? (1024-768) : 0;
 	CAGradientLayer *dropShadow = [[CAGradientLayer alloc] init];
-	dropShadow.frame = CGRectMake(-border-dx, 0, cframe.size.width+2*border+2*dx, 24);
-	dropShadow.colors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:0 alpha:0.15].CGColor,(id)[UIColor colorWithWhite:0.1 alpha:0.01].CGColor,(id)[UIColor colorWithWhite:0.1 alpha:0].CGColor,nil];
+	dropShadow.frame = CGRectMake(-border-dx, 0, cframe.size.width+2*border+2*dx, 18);
+	dropShadow.colors = [NSArray arrayWithObjects:(id)[UIColor colorWithWhite:0 alpha:0.09].CGColor,(id)[UIColor colorWithWhite:0.1 alpha:0.01].CGColor,(id)[UIColor colorWithWhite:0.1 alpha:0].CGColor,nil];
 	[ctView.layer insertSublayer:dropShadow atIndex:0];
     [dropShadow release];
     

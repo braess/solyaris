@@ -99,6 +99,7 @@
     UITableView *favorites = [[UITableView alloc] initWithFrame:fContent style:UITableViewStylePlain];
     favorites.delegate = self;
     favorites.dataSource = self;
+    favorites.separatorColor = [UIColor clearColor];
     favorites.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     
     _favorites = [favorites retain];
@@ -556,7 +557,7 @@
     [cell reset];
     
     // label
-    [cell.labelData setText:[favorite.type isEqualToString:typeMovie] ? [NSString stringWithFormat:@"%@ (%@)",favorite.title,favorite.meta] : favorite.title];
+    [cell.textLabel setText:[favorite.type isEqualToString:typeMovie] ? [NSString stringWithFormat:@"%@ (%@)",favorite.title,favorite.meta] : favorite.title];
     
     // thumb
     [cell dataThumb:favorite.thumb type:favorite.type];

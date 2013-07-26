@@ -56,7 +56,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Init.
@@ -84,14 +84,13 @@
  */
 - (void)loadView {
 	[super loadView];
-	DLog();
+	FLog();
     
     // self
     self.view.frame = vframe;
     self.view.autoresizingMask = UIViewAutoresizingNone;
     
-	
-	// remove background for iPhone
+	// background
     self.tableView.scrollEnabled = NO;
 	self.tableView.backgroundColor = [UIColor clearColor];
 	self.tableView.opaque = YES;
@@ -106,8 +105,8 @@
     
     // header
     CGRect hframe = CGRectMake(0, 0, vframe.size.width, kPreferencesHeaderHeight+kPreferencesHeaderGap);
-    CGRect tframe = CGRectMake(0, 5, vframe.size.width-44, 18);
-    CGRect cframe = CGRectMake(0, 23, vframe.size.width-44, 18);
+    CGRect tframe = CGRectMake(0, 3, vframe.size.width-44, 24);
+    CGRect cframe = CGRectMake(0, 21, vframe.size.width-44, 24);
     CGRect abframe = CGRectMake(0, vframe.size.height-kPreferencesFooterHeight+(iPad?5:2), vframe.size.width, 45);
     
     // header view
@@ -117,7 +116,7 @@
     if (!iPad) {
         UILabel *lblTitle = [[UILabel alloc] initWithFrame:tframe];
         lblTitle.backgroundColor = [UIColor clearColor];
-        lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
+        lblTitle.font = [UIFont fontWithName:@"Helvetica" size:18.0];
         lblTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
         lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
         lblTitle.shadowOffset = CGSizeMake(0,1);
@@ -131,7 +130,7 @@
     // claim
 	UILabel *lblClaim = [[UILabel alloc] initWithFrame:cframe];
 	lblClaim.backgroundColor = [UIColor clearColor];
-	lblClaim.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
+	lblClaim.font = [UIFont fontWithName:@"Helvetica" size:18.0];
 	lblClaim.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
 	lblClaim.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
 	lblClaim.shadowOffset = CGSizeMake(0,1);
@@ -157,9 +156,7 @@
     if ((UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
         
         // popover
-        UIPopoverController *locPopoverController = [[UIPopoverController alloc] initWithContentViewController:_localizationController];
-        locPopoverController.popoverBackgroundViewClass = [PopoverBackgroundView class];
-        
+        PopoverController *locPopoverController = [[PopoverController alloc] initWithContentViewController:_localizationController];
         _localizationPopoverController = [locPopoverController retain];
         [locPopoverController release];
     }
@@ -205,8 +202,8 @@
     NSMutableArray *actions = [[NSMutableArray alloc] init];
     [actions addObject:nspace];
     [actions addObject:actionHelp];
-    [actions addObject:itemFlex];
     if (!iPad) {
+        [actions addObject:itemFlex];
         [actions addObject:actionAbout];
     }
     [actions addObject:nspace];
@@ -253,10 +250,8 @@
 
 
 
-
 #pragma mark -
 #pragma mark Actions
-
 
 /*
  * Action Help.
@@ -810,7 +805,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Initialize.
@@ -849,7 +844,6 @@
     // rects
     CGRect mrect = CGRectMake(0, 0, w, h);
     
-    
 	// context
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	CGContextClearRect(context, rect);
@@ -860,25 +854,15 @@
 	CGContextFillRect(context, mrect);
 	
 	// header lines
-	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.54 alpha:1].CGColor);
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.6 alpha:1].CGColor);
 	CGContextMoveToPoint(context, 0, kPreferencesHeaderHeight-1);
 	CGContextAddLineToPoint(context, w, kPreferencesHeaderHeight-1);
 	CGContextStrokePath(context);
     
-    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.5].CGColor);
-	CGContextMoveToPoint(context, 0, kPreferencesHeaderHeight);
-	CGContextAddLineToPoint(context, w, kPreferencesHeaderHeight);
-	CGContextStrokePath(context);
-    
     // footer lines
-	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.54 alpha:1].CGColor);
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.6 alpha:1].CGColor);
 	CGContextMoveToPoint(context, 0, h-kPreferencesFooterHeight);
 	CGContextAddLineToPoint(context, w, h-kPreferencesFooterHeight);
-	CGContextStrokePath(context);
-    
-    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.5].CGColor);
-	CGContextMoveToPoint(context, 0, h-kPreferencesFooterHeight+1);
-	CGContextAddLineToPoint(context, w, h-kPreferencesFooterHeight+1);
 	CGContextStrokePath(context);
     
     

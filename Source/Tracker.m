@@ -73,6 +73,9 @@
 /**
  * Tracks an event.
  */
++ (void)trackEvent:(NSString*)category action:(NSString*)action {
+    [Tracker trackEvent:category action:action label:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]];
+}
 + (void)trackEvent:(NSString*)category action:(NSString*)action label:(NSString*)label {
     
     #ifdef DEBUG

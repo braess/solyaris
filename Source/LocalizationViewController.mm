@@ -46,7 +46,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Init.
@@ -64,6 +64,9 @@
         
         // localization
         _sloc = [[SolyarisLocalization alloc] init];
+        
+        // self
+        self.tableView.separatorColor = [UIColor clearColor];
         
         // disable scroll
         self.tableView.scrollEnabled = NO;

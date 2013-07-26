@@ -378,7 +378,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Initialize.
@@ -394,32 +394,18 @@
         self.autoresizesSubviews = YES;
         self.contentMode = UIViewContentModeRedraw;
         
-        // image view
-        UIImageView *backdrop = [[UIImageView alloc] initWithFrame:CGRectZero];
-        _backdrop = [backdrop retain];
-        [backdrop release];
-        
         // background
-        UIImage *img = [UIImage imageNamed:@"bd_related.png"];
-        if ([img respondsToSelector:@selector(resizableImageWithCapInsets:)]) {
-             self.backgroundColor = [UIColor clearColor];
-            _backdrop.image = [img resizableImageWithCapInsets:UIEdgeInsetsMake(15, 15, 15, 15)];
-            [self addSubview:_backdrop];
-        }
-        else {
-            self.backgroundColor = [UIColor whiteColor];
-            self.layer.cornerRadius = 8;
-            self.layer.cornerRadius = 8;
-            self.layer.shadowColor = [[UIColor blackColor] CGColor];
-            self.layer.shadowOpacity = 0.3;
-            self.layer.shadowRadius = 3.0;
-            self.layer.shadowOffset = CGSizeMake(2.0f, 2.0f);    
-            self.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.bounds].CGPath;
-        }
+        self.backgroundColor = [UIColor whiteColor];
+        self.layer.cornerRadius = 3;
+        self.layer.shadowColor = [[UIColor blackColor] CGColor];
+        self.layer.shadowOpacity = 0.2;
+        self.layer.shadowRadius = 2.0;
+        self.layer.shadowOffset = CGSizeMake(0, 0);
+        self.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.bounds].CGPath;
         
         // line
         UIView *line = [[UIView alloc] initWithFrame:CGRectZero];
-        line.backgroundColor = [UIColor colorWithWhite:0.82 alpha:1];
+        line.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1];
         
         _line = [line retain];
         [self addSubview:_line];
@@ -435,9 +421,7 @@
  * Layout.
  */
 - (void)layoutSubviews {
-    
-    // backdrop
-    _backdrop.frame = CGRectMake(-5, -5, self.frame.size.width+10, self.frame.size.height+10);
+    [super layoutSubviews];
     
     // line
     _line.frame = CGRectMake(10, 44, self.frame.size.width-20, 1);
@@ -458,7 +442,6 @@
     
     // self
     [_line release];
-    [_backdrop release];
 	
 	// release 
     [super dealloc];

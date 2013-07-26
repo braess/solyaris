@@ -23,6 +23,8 @@
 #import "TMDbView.h"
 #import "CacheImageView.h"
 #import "Utils.h"
+#import "iOS6.h"
+
 
 /**
  * Helper Stack.
@@ -39,7 +41,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Initialize.
@@ -78,7 +80,7 @@
         textView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
         textView.backgroundColor = [UIColor clearColor];
         textView.font = [UIFont fontWithName:@"Helvetica" size:15.0];
-        textView.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
+        textView.textColor = [UIColor colorWithRed:54.0/255.0 green:54.0/255.0 blue:54.0/255.0 alpha:1.0];
         textView.opaque = YES;
         textView.userInteractionEnabled = YES;
         textView.editable = NO;
@@ -109,9 +111,14 @@
     [_slidesView resize:CGRectMake(kTMDbGapInset, kTMDbGapInset, sw, sh)];
     
     // text
+    float off = mode_slides ? (iPad ? 15 : 10) : (iPad ? 3 : 3);
     float hslides = mode_slides ? (sh+2*kTMDbGapOffset) : 0;
     float htext = _textView.contentSize.height;
-    _textView.frame = iPad ? CGRectMake(10, hslides+13, self.frame.size.width-30, htext) : CGRectMake(2, hslides+8, self.frame.size.width-4, htext);
+    if (!iOS6) { // @TODO: bug with content ios7 size?
+        [_textView sizeToFit];
+        htext = _textView.frame.size.height * 1.2;
+    }
+    _textView.frame = iPad ? CGRectMake(8, hslides+off, self.frame.size.width-30, htext) : CGRectMake(2, hslides+off, self.frame.size.width-4, htext);
     
     // content size
     self.contentSize = CGSizeMake(self.frame.size.width, hslides+3*kTMDbGapOffset+htext);

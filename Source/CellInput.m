@@ -44,36 +44,47 @@
  * Init cell.
  */
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)identifier {
-	GLog();
-	
-	// init cell
-    self = [super initWithStyle:style reuseIdentifier:identifier];
-    if (self == nil) { 
-        return nil;
+    if ((self = [super initWithStyle:style reuseIdentifier:identifier])) {
+        
+        // self
+        self.backgroundColor = [UIColor clearColor];
+        self.contentView.backgroundColor = [UIColor clearColor];
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
+        self.accessoryType = UITableViewCellAccessoryNone;
+        self.editingAccessoryType = UITableViewCellAccessoryNone;
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+        // labels
+        self.textLabel.font = [UIFont fontWithName:@"Helvetica" size:15.0];
+        self.textLabel.textColor = [UIColor colorWithRed:54.0/255.0 green:54.0/255.0 blue:54.0/255.0 alpha:1.0];
+        self.detailTextLabel.font = [UIFont fontWithName:@"Helvetica" size:15.0];
+        self.detailTextLabel.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
+        
+        // help
+        help = @"";
+        
+        // clear
+        clear = YES;
+
     }
-	
-	// self
-	self.textLabel.font = [UIFont fontWithName:@"Helvetica" size:15.0]; 
-    self.textLabel.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
-    self.detailTextLabel.font = [UIFont fontWithName:@"Helvetica" size:15.0]; 
-    self.detailTextLabel.textColor = [UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0];
-    
-    // help
-    help = @"";
-    
-    // clear
-    clear = YES;
-    
-    // return
     return self;
 }
 
+
 /*
- * Disable highlighting of currently selected cell.
+ * Selected.
  */
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:NO];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
+}
+
+/*
+ * Highlight.
+ */
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+    [super setHighlighted:highlighted animated:NO];
+    [self setNeedsDisplay];
 }
 
 
@@ -85,7 +96,6 @@
 * Updates the cell.
 */
 - (void)update:(BOOL)reset {
-	GLog();
 	self.detailTextLabel.text = help;
 }
 
@@ -100,25 +110,35 @@
  */
 - (void)drawRect:(CGRect)rect {
 	
+    // context
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextClearRect(ctx, rect);
+    
     // clear
     if (clear) {
-        // get the graphics context and clear it
-        CGContextRef ctx = UIGraphicsGetCurrentContext();
-        CGContextClearRect(ctx, rect);
-        //CGContextSetShouldAntialias(ctx, NO);
         
         // background
-        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0 alpha:0.025].CGColor);
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithWhite:0 alpha:0.012].CGColor);
         CGContextFillRect(ctx, rect);
         
         // lines
-        CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.9 alpha:0.96].CGColor);
+        CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:1 alpha:0.5].CGColor);
         CGContextMoveToPoint(ctx, rect.origin.x, 0);
         CGContextAddLineToPoint(ctx, rect.origin.x+rect.size.width, 0);
         CGContextStrokePath(ctx);
     }
     else {
-        [super drawRect:rect];
+        
+        // background
+        UIColor *bgc = self.highlighted ? [UIColor colorWithWhite:0.99 alpha:1] : [UIColor colorWithWhite:1 alpha:1];
+        CGContextSetFillColorWithColor(ctx, bgc.CGColor);
+        CGContextFillRect(ctx, rect);
+        
+        // lines
+        CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithWhite:0.87 alpha:1].CGColor);
+        CGContextMoveToPoint(ctx, rect.origin.x, rect.size.height);
+        CGContextAddLineToPoint(ctx, rect.origin.x+rect.size.width, rect.size.height);
+        CGContextStrokePath(ctx);
     }
     
 }

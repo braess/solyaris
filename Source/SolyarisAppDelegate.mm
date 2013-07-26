@@ -53,9 +53,6 @@
     // track
 	[Tracker startTracker];
     
-    // appearance
-    [Appearance appearance];
-    
     // version
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 	NSString *information_app_version = [userDefaults objectForKey:udInformationAppVersion];
@@ -79,6 +76,9 @@
     [solyarisDM release];
     
     [_solyarisDataManager setup];
+    
+    // appearance
+    [Appearance appearance];
     
     // rater
     [Rater appLaunched:NO];

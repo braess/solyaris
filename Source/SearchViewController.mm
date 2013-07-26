@@ -202,7 +202,7 @@
     [_footerView addSubview:_labelSearch];
     [labelSearch release];
     
-    Button *buttonSearch = [[Button alloc] init];
+    Button *buttonSearch = [[Button alloc] initStyle:ButtonStylePrimary];
     [buttonSearch setTitle:NSLocalizedString(@"Search", @"Search") forState:UIControlStateNormal];
     [buttonSearch addTarget:self action:@selector(actionSearch:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -210,7 +210,7 @@
     [_footerView addSubview:_buttonSearch];
     [buttonSearch release];
     
-    Button *buttonExport = [[Button alloc] initStyle:ButtonStyleLite];
+    Button *buttonExport = [[Button alloc] init];
     [buttonExport setTitle:NSLocalizedString(@"Email", @"Email") forState:UIControlStateNormal];
     [buttonExport addTarget:self action:@selector(actionExport:) forControlEvents:UIControlEventTouchUpInside];
     [buttonExport setHidden:YES];
@@ -950,7 +950,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Initialize.
@@ -1010,12 +1010,12 @@
     CGContextRestoreGState(context);
      
 	// header lines
-    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
+    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.9 alpha:1].CGColor);
 	CGContextMoveToPoint(context, 0, 0);
 	CGContextAddLineToPoint(context, w, 0);
 	CGContextStrokePath(context);
     
-	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.9 alpha:1].CGColor);
 	CGContextMoveToPoint(context, 0, kHeaderHeight-1);
 	CGContextAddLineToPoint(context, w, kHeaderHeight-1);
 	CGContextStrokePath(context);
@@ -1025,12 +1025,12 @@
     if (iPad) {
         
         // footer lines
-        CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
+        CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.9 alpha:1].CGColor);
         CGContextMoveToPoint(context, 0, h-kHeaderHeight+1);
         CGContextAddLineToPoint(context, w, h-kHeaderHeight+1);
         CGContextStrokePath(context);
         
-        CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.82 alpha:1].CGColor);
+        CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.9 alpha:1].CGColor);
         CGContextMoveToPoint(context, 0, h);
         CGContextAddLineToPoint(context, w, h);
         CGContextStrokePath(context);

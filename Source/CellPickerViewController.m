@@ -40,7 +40,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /**
 * Init.
@@ -53,7 +53,7 @@
         
         // view
         UIView *sview = [[UIView alloc] initWithFrame:iPad ? CGRectMake(0,0,320,180) : CGRectMake(0,0,320,436)];
-        sview.backgroundColor = [UIColor lightGrayColor];
+        sview.backgroundColor = [UIColor whiteColor];
         
 		// self
 		self.view = sview;

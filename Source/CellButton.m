@@ -83,20 +83,17 @@
 	buttonObj.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     
     // image
-    UIImage *button30 = [UIImage imageNamed:@"app_button_30.png"];
-    if ([button30 respondsToSelector:@selector(resizableImageWithCapInsets:)]) {
-        [buttonObj setBackgroundImage:[button30 resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateNormal];
-    }
-    else {
-        [buttonObj setBackgroundColor:[UIColor colorWithRed:120.0/255.0 green:120.0/255.0 blue:120.0/255.0 alpha:1.0]];
-        buttonObj.layer.cornerRadius = 4;
-    }
+    UIImage *button30 = [[UIImage imageNamed:@"app_button.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
+    UIImage *button30_high = [[UIImage imageNamed:@"app_button-high.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
+    [buttonObj setBackgroundImage:[button30 resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateNormal];
+    [buttonObj setBackgroundImage:[button30_high resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)] forState:UIControlStateHighlighted];
     
     // font
-    buttonObj.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
-    buttonObj.titleLabel.textColor = [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0];
+    buttonObj.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:14.0];
+    buttonObj.titleLabel.textColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0];
     buttonObj.titleLabel.shadowColor = [UIColor colorWithWhite:0 alpha:0.9];
     buttonObj.titleLabel.shadowOffset = CGSizeMake(0,-1);
+    [buttonObj setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0] forState:UIControlStateNormal];
     
 	[buttonObj setTitle:@"Button" forState:UIControlStateNormal];
     
@@ -114,9 +111,6 @@
     // return
     return self;
 }
-
-
-
 
 
 
@@ -160,7 +154,6 @@
  */
 - (void)dealloc {
 	GLog();
-	//[buttonAccessory release];
     [super dealloc];
 }
 

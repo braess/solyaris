@@ -89,7 +89,7 @@ enum {
 // Properties
 @property (assign) id<PreferencesDelegate> delegate;
 
-// Action Methods
+// Actions
 - (void)actionHelp:(id)sender;
 - (void)actionAbout:(id)sender;
 @end

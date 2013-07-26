@@ -39,107 +39,192 @@
 + (void)appearance {
     FLog();
     
-    // hide statusbar
+    // status
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
     
-    // navigation bar
-    UIImage *navbar44 = [[UIImage imageNamed:@"app_navbar_44.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
-    UIImage *navbar32 = [[UIImage imageNamed:@"app_navbar_32.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
-    UIImage *navbar_shadow = [[UIImage imageNamed:@"app_navbar_shadow.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-    [[UINavigationBar appearance] setBackgroundImage:navbar44 forBarMetrics:UIBarMetricsDefault];
-    [[UINavigationBar appearance] setBackgroundImage:navbar32 forBarMetrics:UIBarMetricsLandscapePhone];
-    [[UINavigationBar appearance] setShadowImage:navbar_shadow];
-    
-    [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                          [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0], UITextAttributeTextColor,
-                                                          [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.8], UITextAttributeTextShadowColor,
-                                                          [NSValue valueWithUIOffset:UIOffsetMake(0, -1)], UITextAttributeTextShadowOffset,
-                                                          [UIFont fontWithName:@"Helvetica" size:20], UITextAttributeFont,
-                                                          nil]];
-    
-    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:0 forBarMetrics:UIBarMetricsDefault];
-    [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:-1 forBarMetrics:UIBarMetricsLandscapePhone];
-    
-    // toolbar
-    UIImage *toolbar44 = [[UIImage imageNamed:@"app_toolbar_44.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 5, 0, 5)];
-    UIImage *toolbar32 = [[UIImage imageNamed:@"app_toolbar_32.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 5, 0, 5)];
-    [[UIToolbar appearance] setBackgroundImage:toolbar44 forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
-    [[UIToolbar appearance] setBackgroundImage:toolbar32 forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsLandscapePhone];
-    
-    // buttons
-    UIImage *button30 = [[UIImage imageNamed:@"app_button_30.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
-    UIImage *button30_high = [[UIImage imageNamed:@"app_button_30-high.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
-    UIImage *button24 = [[UIImage imageNamed:@"app_button_24.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
-    UIImage *button24_high = [[UIImage imageNamed:@"app_button_24-high.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
-    UIImage *button30_lite = [[UIImage imageNamed:@"app_button_30_lite.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
-    UIImage *button30_lite_high = [[UIImage imageNamed:@"app_button_30_lite-high.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
-    UIImage *button24_lite = [[UIImage imageNamed:@"app_button_24_lite.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
-    UIImage *button24_lite_high = [[UIImage imageNamed:@"app_button_24_lite-high.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
-    UIImage *buttonback30 = [[UIImage imageNamed:@"app_button_back_30.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 13, 0, 5)];
-    UIImage *buttonback30_high = [[UIImage imageNamed:@"app_button_back_30-high.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 13, 0, 5)];
-    UIImage *buttonback24 = [[UIImage imageNamed:@"app_button_back_24.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 13, 0, 5)];
-    UIImage *buttonback24_high = [[UIImage imageNamed:@"app_button_back_24-high.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 13, 0, 5)];
-    
-    [[UIBarButtonItem appearance] setBackgroundImage:button30 forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearance] setBackgroundImage:button30_high forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-    
-    [[UIBarButtonItem appearance] setBackgroundImage:button24 forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
-    [[UIBarButtonItem appearance] setBackgroundImage:button24_high forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
-    
-    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:buttonback30 forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:buttonback30_high forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-    
-    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:buttonback24 forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
-    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:buttonback24_high forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
-    
-    [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                          [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0], UITextAttributeTextColor,
-                                                          [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.6], UITextAttributeTextShadowColor,
-                                                          [NSValue valueWithUIOffset:UIOffsetMake(0, -1)], UITextAttributeTextShadowOffset,
-                                                          [UIFont fontWithName:@"Helvetica-Bold" size:12], UITextAttributeFont,
-                                                          nil] forState:UIControlStateNormal];
-    [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                          [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0], UITextAttributeTextColor,
-                                                          [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.6], UITextAttributeTextShadowColor,
-                                                          [NSValue valueWithUIOffset:UIOffsetMake(0, -1)], UITextAttributeTextShadowOffset,
-                                                          [UIFont fontWithName:@"Helvetica-Bold" size:12], UITextAttributeFont,
-                                                          nil] forState:UIControlStateHighlighted];
-    [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                          [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:0.9], UITextAttributeTextColor,
-                                                          nil] forState:UIControlStateDisabled];
-    
-    // search
-    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundImage:button30_lite forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundImage:button30_lite_high forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundImage:button24_lite forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
-    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundImage:button24_lite_high forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
-    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitlePositionAdjustment:UIOffsetMake(0, 1) forBarMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundVerticalPositionAdjustment:1 forBarMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setBackButtonBackgroundVerticalPositionAdjustment:1 forBarMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                                                                 [UIColor colorWithRed:145/255.0 green:145/255.0 blue:145/255.0 alpha:1.0], UITextAttributeTextColor,
-                                                                                                 [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:0.6], UITextAttributeTextShadowColor,
-                                                                                                 [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset,
-                                                                                                 [UIFont fontWithName:@"Helvetica-Bold" size:12], UITextAttributeFont,
-                                                                                                 nil] forState:UIControlStateNormal];
-    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                                                                  [UIColor colorWithRed:145/255.0 green:145/255.0 blue:145/255.0 alpha:1.0], UITextAttributeTextColor,
-                                                                                                  [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:0.6], UITextAttributeTextShadowColor,
-                                                                                                  [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset,
-                                                                                                  [UIFont fontWithName:@"Helvetica-Bold" size:12], UITextAttributeFont,
-                                                                                                  nil] forState:UIControlStateHighlighted];
-    [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                                                                  [UIColor colorWithRed:145/255.0 green:145/255.0 blue:145/255.0 alpha:0.9], UITextAttributeTextColor,
-                                                                                                  [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:0.6], UITextAttributeTextShadowColor,
-                                                                                                  [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset,
-                                                                                                  [UIFont fontWithName:@"Helvetica-Bold" size:12], UITextAttributeFont,
-                                                                                                  nil] forState:UIControlStateDisabled];
-    
-    // popup
-    [[UINavigationBar appearanceWhenContainedIn:[UIPopoverController class], nil] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-    [[UIToolbar appearanceWhenContainedIn:[UIPopoverController class], nil] setBackgroundImage:nil forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
-
+    // ios6
+    if (iOS6) {
+        
+        // navbar
+        UIImage *navbar44 = [[UIImage imageNamed:@"ios6_app_navbar_44.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
+        UIImage *navbar32 = [[UIImage imageNamed:@"ios6_app_navbar_32.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
+        UIImage *navbar_shadow = [[UIImage imageNamed:@"app_navbar_shadow.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+        [[UINavigationBar appearance] setBackgroundImage:navbar44 forBarMetrics:UIBarMetricsDefault];
+        [[UINavigationBar appearance] setBackgroundImage:navbar32 forBarMetrics:UIBarMetricsLandscapePhone];
+        [[UINavigationBar appearance] setShadowImage:navbar_shadow];
+        
+        [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                              [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0], UITextAttributeTextColor,
+                                                              [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.8], UITextAttributeTextShadowColor,
+                                                              [NSValue valueWithUIOffset:UIOffsetMake(0, -1)], UITextAttributeTextShadowOffset,
+                                                              [UIFont fontWithName:@"Helvetica" size:20], UITextAttributeFont,
+                                                              nil]];
+        
+        [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:0 forBarMetrics:UIBarMetricsDefault];
+        [[UINavigationBar appearance] setTitleVerticalPositionAdjustment:-1 forBarMetrics:UIBarMetricsLandscapePhone];
+        
+        
+        // buttons
+        UIImage *transparent = [[[UIImage alloc] init] autorelease];
+        UIImage *button30 = [[UIImage imageNamed:@"ios6_app_button_30.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
+        UIImage *button30_high = [[UIImage imageNamed:@"ios6_app_button_30-high.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
+        UIImage *button24 = [[UIImage imageNamed:@"ios6_app_button_24.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
+        UIImage *button24_high = [[UIImage imageNamed:@"ios6_app_button_24-high.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
+        UIImage *buttonback30 = [[UIImage imageNamed:@"ios6_app_button_back_30.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 13, 0, 5)];
+        UIImage *buttonback30_high = [[UIImage imageNamed:@"ios6_app_button_back_30-high.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 13, 0, 5)];
+        UIImage *buttonback24 = [[UIImage imageNamed:@"ios6_app_button_back_24.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 13, 0, 5)];
+        UIImage *buttonback24_high = [[UIImage imageNamed:@"ios6_app_button_back_24-high.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 13, 0, 5)];
+        
+        [[UIBarButtonItem appearance] setBackgroundImage:button30 forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+        [[UIBarButtonItem appearance] setBackgroundImage:button30_high forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+        
+        [[UIBarButtonItem appearance] setBackgroundImage:button24 forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
+        [[UIBarButtonItem appearance] setBackgroundImage:button24_high forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
+        
+        [[UIBarButtonItem appearance] setBackButtonBackgroundImage:buttonback30 forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+        [[UIBarButtonItem appearance] setBackButtonBackgroundImage:buttonback30_high forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+        
+        [[UIBarButtonItem appearance] setBackButtonBackgroundImage:buttonback24 forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
+        [[UIBarButtonItem appearance] setBackButtonBackgroundImage:buttonback24_high forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
+        
+        [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                              [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0], UITextAttributeTextColor,
+                                                              [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.6], UITextAttributeTextShadowColor,
+                                                              [NSValue valueWithUIOffset:UIOffsetMake(0, -1)], UITextAttributeTextShadowOffset,
+                                                              [UIFont fontWithName:@"Helvetica-Bold" size:12], UITextAttributeFont,
+                                                              nil] forState:UIControlStateNormal];
+        [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                              [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0], UITextAttributeTextColor,
+                                                              [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.6], UITextAttributeTextShadowColor,
+                                                              [NSValue valueWithUIOffset:UIOffsetMake(0, -1)], UITextAttributeTextShadowOffset,
+                                                              [UIFont fontWithName:@"Helvetica-Bold" size:12], UITextAttributeFont,
+                                                              nil] forState:UIControlStateHighlighted];
+        [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                              [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:0.9], UITextAttributeTextColor,
+                                                              nil] forState:UIControlStateDisabled];
+        
+        
+        // search
+        [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundImage:transparent forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+        [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundImage:transparent forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+        [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundImage:transparent forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
+        [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setBackgroundImage:transparent forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
+        [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setBackButtonBackgroundVerticalPositionAdjustment:1 forBarMetrics:UIBarMetricsDefault];
+        [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                                      [UIFont fontWithName:@"Helvetica" size:15], UITextAttributeFont,
+                                                                                                      [UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:1.0], UITextAttributeTextColor,
+                                                                                                      [UIColor clearColor], UITextAttributeTextShadowColor,
+                                                                                                      [NSValue valueWithUIOffset:UIOffsetZero], UITextAttributeTextShadowOffset,
+                                                                                                      nil] forState:UIControlStateNormal];
+        [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                                      [UIFont fontWithName:@"Helvetica" size:15], UITextAttributeFont,
+                                                                                                      [UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:1.0], UITextAttributeTextColor,
+                                                                                                      [UIColor clearColor], UITextAttributeTextShadowColor,
+                                                                                                      [NSValue valueWithUIOffset:UIOffsetZero], UITextAttributeTextShadowOffset,
+                                                                                                      nil] forState:UIControlStateHighlighted];
+        [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                                      [UIFont fontWithName:@"Helvetica" size:15], UITextAttributeFont,
+                                                                                                      [UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:0.9], UITextAttributeTextColor,
+                                                                                                      [UIColor clearColor], UITextAttributeTextShadowColor,
+                                                                                                      [NSValue valueWithUIOffset:UIOffsetZero], UITextAttributeTextShadowOffset,
+                                                                                                      nil] forState:UIControlStateDisabled];
+        
+        
+        // popup
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            
+            // navbar
+            [[UINavigationBar appearanceWhenContainedIn:[UIPopoverController class], nil] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+            
+            // buttons
+            [[UIBarButtonItem appearanceWhenContainedIn:[UIPopoverController class], nil] setBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+            [[UIBarButtonItem appearanceWhenContainedIn:[UIPopoverController class], nil] setBackgroundImage:nil forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+            [[UIBarButtonItem appearanceWhenContainedIn:[UIPopoverController class], nil] setBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
+            [[UIBarButtonItem appearanceWhenContainedIn:[UIPopoverController class], nil] setBackgroundImage:nil forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
+            [[UIBarButtonItem appearanceWhenContainedIn:[UIPopoverController class], nil] setBackButtonBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsLandscapePhone];
+            [[UIBarButtonItem appearanceWhenContainedIn:[UIPopoverController class], nil] setBackButtonBackgroundImage:nil forState:UIControlStateHighlighted barMetrics:UIBarMetricsLandscapePhone];
+        }
+        
+    }
+    // ios7
+    else {
+        
+        
+        // navbar
+        UIImage *navbar = [[UIImage imageNamed:@"app_navbar.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
+        UIImage *navbar_shadow = [[UIImage imageNamed:@"app_navbar_shadow.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+        [[UINavigationBar appearance] setBackgroundImage:navbar forBarMetrics:UIBarMetricsDefault];
+        [[UINavigationBar appearance] setShadowImage:navbar_shadow];
+        
+        [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                              [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0], UITextAttributeTextColor,
+                                                              [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.8], UITextAttributeTextShadowColor,
+                                                              [NSValue valueWithUIOffset:UIOffsetMake(0, -1)], UITextAttributeTextShadowOffset,
+                                                              [UIFont fontWithName:@"Helvetica" size:20], UITextAttributeFont,
+                                                              nil]];
+        
+        // buttons
+        [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                              [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0], UITextAttributeTextColor,
+                                                              [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.6], UITextAttributeTextShadowColor,
+                                                              [NSValue valueWithUIOffset:UIOffsetMake(0, -1)], UITextAttributeTextShadowOffset,
+                                                              [UIFont fontWithName:@"Helvetica" size:15], UITextAttributeFont,
+                                                              nil] forState:UIControlStateNormal];
+        [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                              [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0], UITextAttributeTextColor,
+                                                              [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.6], UITextAttributeTextShadowColor,
+                                                              [NSValue valueWithUIOffset:UIOffsetMake(0, -1)], UITextAttributeTextShadowOffset,
+                                                              [UIFont fontWithName:@"Helvetica" size:15], UITextAttributeFont,
+                                                              nil] forState:UIControlStateHighlighted];
+        [[UIBarButtonItem appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                              [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:0.9], UITextAttributeTextColor,
+                                                              nil] forState:UIControlStateDisabled];
+        
+        // search
+        [[UISearchBar appearance] setBackgroundImage:[[[UIImage alloc] init] autorelease] forBarMetrics:UIBarMetricsDefault];
+        [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                                      [UIFont fontWithName:@"Helvetica" size:15], UITextAttributeFont,
+                                                                                                      [UIColor colorWithRed:120/255.0 green:120/255.0 blue:120/255.0 alpha:1.0], UITextAttributeTextColor,
+                                                                                                      nil] forState:UIControlStateNormal];
+        [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                                      [UIFont fontWithName:@"Helvetica" size:15], UITextAttributeFont,
+                                                                                                      [UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:1.0], UITextAttributeTextColor,
+                                                                                                      nil] forState:UIControlStateHighlighted];
+        [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                                      [UIFont fontWithName:@"Helvetica" size:15], UITextAttributeFont,
+                                                                                                      [UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:1.0], UITextAttributeTextColor,
+                                                                                                      nil] forState:UIControlStateDisabled];
+        [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitlePositionAdjustment:UIOffsetMake(0, 2) forBarMetrics:UIBarMetricsDefault];
+        
+        
+        // controls
+        [[UISwitch appearance] setOnTintColor:[UIColor colorWithRed:78/255.0 green:78/255.0 blue:78/255.0 alpha:1]];
+        [[UISlider appearance] setThumbTintColor:[UIColor colorWithRed:78/255.0 green:78/255.0 blue:78/255.0 alpha:1]];
+        
+        // popup
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            
+            // navbar
+            [[UINavigationBar appearanceWhenContainedIn:[UIPopoverController class], nil] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+            [[UINavigationBar appearanceWhenContainedIn:[UIPopoverController class], nil] setShadowImage:[[[UIImage alloc] init] autorelease]];
+            [[UINavigationBar appearanceWhenContainedIn:[UIPopoverController class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                                                  [UIColor colorWithRed:78/255.0 green:78/255.0 blue:78/255.0 alpha:1.0], UITextAttributeTextColor,
+                                                                                                                  nil]];
+            
+            [[UIBarButtonItem appearanceWhenContainedIn:[UIPopoverController class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                                                  [UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:1], UITextAttributeTextColor,
+                                                                                                                  nil] forState:UIControlStateNormal];
+            [[UIBarButtonItem appearanceWhenContainedIn:[UIPopoverController class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                                                  [UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:1], UITextAttributeTextColor,
+                                                                                                                  nil] forState:UIControlStateHighlighted];
+            [[UIBarButtonItem appearanceWhenContainedIn:[UIPopoverController class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                                                  [UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:0.6], UITextAttributeTextColor,
+                                                                                                                  nil] forState:UIControlStateDisabled];
+        }
+        
+    }
 }
+
 
 @end
 
@@ -166,28 +251,26 @@
     return [self initStyle:ButtonStyleDefault];
 }
 - (id)initStyle:(int)style {
-    
-    // super
     if ((self = [super init])) {
         
         // style
         switch (style) {
                 
-            // lite
-            case ButtonStyleLite: {
+            // primary
+            case ButtonStylePrimary: {
                 
                 // background
-                UIImage *button30 = [[UIImage imageNamed:@"app_button_30_lite.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
-                UIImage *button30_high = [[UIImage imageNamed:@"app_button_30_lite-high.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
+                UIImage *button30 = [[UIImage imageNamed:@"app_button.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
+                UIImage *button30_high = [[UIImage imageNamed:@"app_button-high.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
                 
                 [self setBackgroundImage:button30  forState:UIControlStateNormal];
                 [self setBackgroundImage:button30_high  forState:UIControlStateHighlighted];
                 
                 // font
-                self.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
-                [self setTitleColor:[UIColor colorWithRed:145.0/255.0 green:145.0/255.0 blue:145.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-                [self setTitleShadowColor:[UIColor colorWithWhite:1 alpha:0.6] forState:UIControlStateNormal];
-                self.titleLabel.shadowOffset = CGSizeMake(0,1);
+                self.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:14.0];
+                [self setTitleColor:[UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0] forState:UIControlStateNormal];
+                [self setTitleShadowColor:[UIColor colorWithWhite:0 alpha:0.9] forState:UIControlStateNormal];
+                self.titleLabel.shadowOffset = CGSizeMake(0,-1);
                 
                 // break
                 break;
@@ -196,17 +279,16 @@
             // default
             default: {
                 
-                // image
-                UIImage *button30 = [[UIImage imageNamed:@"app_button_30.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
-                UIImage *button30_high = [[UIImage imageNamed:@"app_button_30-high.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
-                [self setBackgroundImage:button30 forState:UIControlStateNormal];
-                [self setBackgroundImage:button30_high forState:UIControlStateHighlighted];
+                // background
+                UIImage *transparent = [[[UIImage alloc] init] autorelease];
+                [self setBackgroundImage:transparent forState:UIControlStateNormal];
+                [self setBackgroundImage:transparent forState:UIControlStateHighlighted];
+                [self setBackgroundColor:[UIColor clearColor]];
                 
                 // font
-                self.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:12.0];
-                [self setTitleColor:[UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-                [self setTitleShadowColor:[UIColor colorWithWhite:0 alpha:0.6] forState:UIControlStateNormal];
-                self.titleLabel.shadowOffset = CGSizeMake(0,-1);
+                self.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:16.0];
+                [self setTitleColor:[UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:1.0] forState:UIControlStateNormal];
+                [self setTitleColor:[UIColor colorWithRed:76/255.0 green:76/255.0 blue:76/255.0 alpha:1.0] forState:UIControlStateHighlighted];
                 
                 // break
                 break;
@@ -227,135 +309,6 @@
     CGRect sFrame = self.frame;
     sFrame.size.height = 30;
     self.frame = sFrame;
-}
-
-
-@end
-
-
-
-
-#pragma mark -
-#pragma mark LinkButton
-#pragma mark -
-
-
-/*
- * Helper Stack.
- */
-@interface LinkButton (Helpers)
-- (void)buttonTouchUpInside:(UIButton*)b;
-- (void)buttonDown:(UIButton*)b;
-- (void)buttonUp:(UIButton*)b;
-@end
-
-
-/**
- * Link Button.
- */
-@implementation LinkButton
-
-
-#pragma mark -
-#pragma mark Constants
-
-// constants
-#define kAlphaLinkBtn 0.15f
-#define kAlphaLinkBtnActive 0.5f
-
-
-#pragma mark -
-#pragma mark Properties
-
-// accessors
-@synthesize delegate;
-@synthesize link;
-
-
-
-#pragma mark -
-#pragma mark Object
-
-/*
- * Initialize.
- */
-- (id)initWithFrame:(CGRect)frame {
-	GLog();
-    
-	// init UIView
-    self = [super initWithFrame:frame];
-	
-	// init self
-    if (self != nil) {
-		
-		// init
-		self.opaque = YES;
-		self.backgroundColor = [UIColor colorWithRed:121/255.0 green:125/255.0 blue:128/255.0 alpha:kAlphaLinkBtn];
-        
-        // targets and actions
-        [self addTarget:self action:@selector(buttonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
-        [self addTarget:self action:@selector(buttonDown:) forControlEvents:UIControlEventTouchDown];
-        [self addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpInside];
-        [self addTarget:self action:@selector(buttonUp:) forControlEvents:UIControlEventTouchUpOutside];
-        
-        // mode
-        mode_transparent = NO;
-        
-		// return
-		return self;
-	}
-	
-	// nop
-	return nil;
-}
-
-#pragma mark -
-#pragma mark Accessors
-
-/*
- * Transparent.
- */
-- (void)transparent:(BOOL)flag {
-    mode_transparent = flag;
-    self.backgroundColor = mode_transparent ? [UIColor clearColor] : [UIColor colorWithRed:121/255.0 green:125/255.0 blue:128/255.0 alpha:kAlphaLinkBtn];
-}
-
-
-#pragma mark -
-#pragma mark Helpers
-
-/*
- * Don't touch this.
- */
-- (void)buttonTouchUpInside:(UIButton*)b {
-	GLog();
-	
-	// delegate
-	if (delegate != nil && [delegate respondsToSelector:@selector(linkButtonTouched:)]) {
-		[delegate linkButtonTouched:self];
-	}
-}
-- (void)buttonDown:(UIButton*)b {
-	GLog();
-    
-    // state
-    [self setBackgroundColor:[UIColor colorWithRed:121/255.0 green:125/255.0 blue:128/255.0 alpha:kAlphaLinkBtnActive]];
-	
-	// delegate
-	if (delegate != nil && [delegate respondsToSelector:@selector(linkButtonDown:)]) {
-		[delegate linkButtonDown:self];
-	}
-}
-- (void)buttonUp:(UIButton*)b {
-	GLog();
-    
-    // state
-    [self setBackgroundColor:(mode_transparent ? [UIColor clearColor] : [UIColor colorWithRed:121/255.0 green:125/255.0 blue:128/255.0 alpha:kAlphaLinkBtn])];
-	
-	// delegate
-	if (delegate != nil && [delegate respondsToSelector:@selector(linkButtonUp:)]) {
-		[delegate linkButtonUp:self];
-	}
 }
 
 
@@ -505,7 +458,7 @@
     
     // label & button
     self.imageView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    self.titleLabel.frame = CGRectMake(0, (int)(self.frame.size.height/2.0)+8, self.frame.size.width, 12);
+    self.titleLabel.frame = CGRectMake(-5, (int)(self.frame.size.height/2.0)+8, self.frame.size.width+10, 12);
     
 }
 
@@ -566,8 +519,8 @@
     // button
     if (flag) {
         [_barButton setTitleColor:[UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-        [_barButton setTitleColor:[UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0] forState:UIControlStateHighlighted];
-        [_barButton setTitleColor:[UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0] forState:UIControlStateSelected];
+        [_barButton setTitleColor:[UIColor colorWithRed:54.0/255.0 green:54.0/255.0 blue:54.0/255.0 alpha:1.0] forState:UIControlStateHighlighted];
+        [_barButton setTitleColor:[UIColor colorWithRed:54.0/255.0 green:54.0/255.0 blue:54.0/255.0 alpha:1.0] forState:UIControlStateSelected];
     }
 }
 
@@ -607,69 +560,283 @@
 
 
 #pragma mark -
-#pragma mark PopoverBackgroundView
+#pragma mark Implementation SegmentedControl
 #pragma mark -
 
-#define POPOVER_CONTENT_INSET   8
-#define POPOVER_ARROW_WIDTH     35.0
-#define POPOVER_ARROW_HEIGHT    19.0
-
+/*
+ * Helper Stack.
+ */
+@interface SegmentedControl (Helpers)
+- (void)buttonTouchUpInside:(UIButton*)b;
+- (void)buttonTouchDown:(UIButton*)b;
+- (void)buttonTouchOther:(UIButton*)b;
+- (void)selectButton:(UIButton*)b;
+@end
 
 
 /**
- * PopoverBackgroundView.
+ * Custom SegmentedControl.
  */
-@implementation PopoverBackgroundView
+@implementation SegmentedControl
+
+
+#pragma mark -
+#pragma mark Properties
+
+// accessors
+@synthesize delegate;
+
+
+#pragma mark -
+#pragma mark Object
 
 /*
- * Init.
+ * Initialize.
  */
--(id)initWithFrame:(CGRect)frame{
+- (id)initWithTitles:(NSArray*)titles {
+    return [self initWithTitles:titles size:CGSizeMake(116, 32) gap:1 cap:10 image:@"app_segment.png" selected:@"app_segment-selected.png" divider:@"app_segment_divider.png"];
+}
+- (id)initWithTitles:(NSArray*)titles size:(CGSize)size gap:(int)gap cap:(int)cap image:(NSString*)image selected:(NSString*)selected divider:(NSString*)divider {
+    GLog();
     
     // super
-    if (self = [super initWithFrame:frame]) {
+    if ((self = [super init])) {
         
-        // popover
-        UIImageView *popover = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"app_popover.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(49, 46, 49, 45)]];
-        _popover = [popover retain];
-        [self addSubview:_popover];
-        [popover release];
+        // self
+        self.frame = CGRectMake(0, 0, (size.width * titles.count) + (gap * (titles.count - 1)), size.height);
         
-        // arrow
-        UIImageView *arrow = [[UIImageView alloc] init];
-        _arrow = [arrow retain];
-        [self addSubview:_arrow];
-        [arrow release];
+        // buttons
+        NSMutableArray *btns = [[NSMutableArray alloc] init];
+        _buttons = [btns retain];
+        [btns release];
+        
+        // init segments
+        CGFloat offset = 0;
+        for (NSUInteger i = 0 ; i < [titles count] ; i++) {
+            
+            // cap
+            SegmentCapLocation capLocation = SegmentCapMiddle;
+            if (i == 0) {
+                capLocation = SegmentCapLeft;
+            }
+            else if (i == titles.count - 1) {
+                capLocation = SegmentCapRight;
+            }
+            
+            // create segment
+            UIButton* button = [[SegmentedControlItem alloc] initSegmentedControlItem:size capLocation:capLocation capWidth:cap title:[titles objectAtIndex:i] image:image selected:selected];
+            
+            // events
+            [button addTarget:self action:@selector(buttonTouchDown:) forControlEvents:UIControlEventTouchDown];
+            [button addTarget:self action:@selector(buttonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+            [button addTarget:self action:@selector(buttonTouchOther:) forControlEvents:UIControlEventTouchUpOutside];
+            [button addTarget:self action:@selector(buttonTouchOther:) forControlEvents:UIControlEventTouchDragOutside];
+            [button addTarget:self action:@selector(buttonTouchOther:) forControlEvents:UIControlEventTouchDragInside];
+            
+            // add
+            [_buttons addObject:button];
+            
+            
+            // frame
+            button.frame = CGRectMake(offset, 0.0, button.frame.size.width, button.frame.size.height);
+            
+            // subview
+            [self addSubview:button];
+            [button release];
+            
+            // divider
+            if (i != titles.count - 1) {
+                UIImageView* div = [[UIImageView alloc] initWithImage:[UIImage imageNamed:divider]];
+                div.frame = CGRectMake(offset + size.width, 0.0, gap, size.height);
+                div.backgroundColor = [UIColor clearColor];
+                div.contentMode = UIViewContentModeTopLeft;
+                [self addSubview:div];
+                [div release];
+            }
+            
+            // offset
+            offset += (size.width + gap);
+        }
     }
     return self;
 }
 
 
-/*
- * Popover.
+#pragma mark -
+#pragma mark Business
+
+/**
+ * Select.
  */
-- (CGFloat)arrowOffset {
-    return _arrowOffset;
-}
-- (void) setArrowOffset:(CGFloat)arrowOffset {
-    _arrowOffset = arrowOffset;
-}
-- (UIPopoverArrowDirection)arrowDirection {
-    return _arrowDirection;
-}
-- (void)setArrowDirection:(UIPopoverArrowDirection)arrowDirection {
-    _arrowDirection = arrowDirection;
-}
-+(UIEdgeInsets)contentViewInsets{
-    return UIEdgeInsetsMake(POPOVER_CONTENT_INSET, POPOVER_CONTENT_INSET, POPOVER_CONTENT_INSET, POPOVER_CONTENT_INSET);
-}
-+(CGFloat)arrowHeight{
-    return POPOVER_ARROW_HEIGHT;
-}
-+(CGFloat)arrowBase{
-    return POPOVER_ARROW_WIDTH;
+- (void)select:(int)ndx {
+    FLog();
+    [self selectButton:[_buttons objectAtIndex:ndx]];
 }
 
+/**
+ * Returns the segment buttons for customisation.
+ */
+- (NSArray*)segmentButtons {
+    return _buttons;
+}
+
+#pragma mark -
+#pragma mark Helpers
+
+
+/*
+ * Selects a button.
+ */
+- (void)selectButton:(UIButton *)b {
+    GLog();
+    
+    // select
+    for (UIButton* button in _buttons) {
+        
+        // select
+        if (button == b) {
+            button.selected = YES;
+            button.highlighted = button.selected ? NO : YES;
+        }
+        // deselect
+        else {
+            button.selected = NO;
+            button.highlighted = NO;
+        }
+    }
+}
+
+/*
+ * Touch down.
+ */
+- (void)buttonTouchDown:(UIButton*)button {
+    GLog();
+    
+    // select
+    [self selectButton:button];
+    
+    // delegate
+    if ([delegate respondsToSelector:@selector(segmentedControlDown:)]) {
+        [delegate segmentedControlDown:[_buttons indexOfObject:button]];
+    }
+}
+
+/*
+ * Touch up.
+ */
+- (void)buttonTouchUpInside:(UIButton*)button {
+    GLog();
+    
+    // select
+    [self selectButton:button];
+    
+    // delegate
+    if ([delegate respondsToSelector:@selector(segmentedControlTouched:)]) {
+        [delegate segmentedControlTouched:[_buttons indexOfObject:button]];
+    }
+}
+
+/*
+ * Touch other.
+ */
+- (void)buttonTouchOther:(UIButton*)button {
+    GLog();
+    
+    // select
+    [self selectButton:button];
+}
+
+
+
+#pragma mark -
+#pragma mark Memory Management
+
+
+/*
+ * Deallocates all used memory.
+ */
+- (void)dealloc {
+	GLog();
+	
+	// release
+	[_buttons release];
+	
+	// done
+	[super dealloc];
+}
+
+@end
+
+
+
+
+
+/*
+ * Helper Stack.
+ */
+@interface SegmentedControlItem (Helpers)
+-(UIImage*)image:(UIImage*)image withCap:(SegmentCapLocation)location capWidth:(NSUInteger)capWidth buttonWidth:(NSUInteger)buttonWidth;
+@end
+
+/**
+ * SegmentedControlItem.
+ */
+@implementation SegmentedControlItem
+
+
+#pragma mark -
+#pragma mark Object
+
+/*
+ * Initialize.
+ */
+- (id)initSegmentedControlItem:(CGSize)size capLocation:(SegmentCapLocation)capLocation capWidth:(NSUInteger)capWidth title:(NSString*)title image:(NSString*)image selected:(NSString*)selected {
+    GLog();
+    
+    // init
+    if ((self = [super init])) {
+        
+        // self
+        self.frame = CGRectMake(0.0, 0.0, size.width, size.height);
+        
+        // image
+        UIImage* buttonImage = nil;
+        UIImage* buttonSelectedImage = nil;
+        if (capLocation == SegmentCapLeftAndRight) {
+            buttonImage = [[UIImage imageNamed:image] stretchableImageWithLeftCapWidth:capWidth topCapHeight:0.0];
+            buttonSelectedImage = [[UIImage imageNamed:selected] stretchableImageWithLeftCapWidth:capWidth topCapHeight:0.0];
+        }
+        else {
+            buttonImage = [self image:[[UIImage imageNamed:image] stretchableImageWithLeftCapWidth:capWidth topCapHeight:0.0] withCap:capLocation capWidth:capWidth buttonWidth:size.width];
+            buttonSelectedImage = [self image:[[UIImage imageNamed:selected] stretchableImageWithLeftCapWidth:capWidth topCapHeight:0.0] withCap:capLocation capWidth:capWidth buttonWidth:size.width];
+        }
+        
+        // background
+        [self setBackgroundImage:buttonImage forState:UIControlStateNormal];
+        [self setBackgroundImage:buttonSelectedImage forState:UIControlStateHighlighted];
+        [self setBackgroundImage:buttonSelectedImage forState:UIControlStateSelected];
+        self.adjustsImageWhenHighlighted = NO;
+        
+        
+        // title
+        [self setTitle:title forState:UIControlStateNormal];
+        
+        // fonts
+        self.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:14];
+        [self setTitleColor:[UIColor colorWithRed:145.0/255.0 green:145.0/255.0 blue:145.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+        [self setTitleColor:[UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0] forState:UIControlStateHighlighted];
+        [self setTitleColor:[UIColor colorWithRed:90.0/255.0 green:90.0/255.0 blue:90.0/255.0 alpha:1.0] forState:UIControlStateSelected];
+        
+        self.titleLabel.shadowOffset = CGSizeMake(0,1);
+        [self setTitleShadowColor:[UIColor colorWithWhite:1 alpha:0.5] forState:UIControlStateNormal];
+        [self setTitleShadowColor:[UIColor colorWithWhite:1 alpha:0.5] forState:UIControlStateHighlighted];
+        [self setTitleShadowColor:[UIColor colorWithWhite:1 alpha:0] forState:UIControlStateSelected];
+        
+        
+    }
+    return self;
+    
+}
 
 /*
  * Layout.
@@ -677,153 +844,53 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    // vars
-    CGFloat corner = 9;
-    
-    // frames
-    CGRect fPopover = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
-    CGRect fArrow = CGRectMake(0, 0, POPOVER_ARROW_WIDTH, POPOVER_ARROW_HEIGHT);
-    
-    // direction
-    switch (self.arrowDirection) {
-            
-            // up
-        case UIPopoverArrowDirectionUp: {
-            
-            // popover
-            fPopover.origin.y = POPOVER_ARROW_HEIGHT - 2;
-            fPopover.size.height = self.bounds.size.height - POPOVER_ARROW_HEIGHT;
-            
-            // arrow
-            fArrow.origin.x = roundf((self.bounds.size.width - POPOVER_ARROW_WIDTH) / 2 + self.arrowOffset);
-            if (fArrow.origin.x + POPOVER_ARROW_WIDTH > self.bounds.size.width - corner) {
-                fArrow.origin.x -= corner;
-            }
-            if (fArrow.origin.x < corner) {
-                fArrow.origin.x += corner;
-            }
-            
-            // assign arrow
-            _arrow.image = [UIImage imageNamed:@"app_popover_top.png"];
-            
-            // done
-            break;
-        }
-            
-            // down
-        case UIPopoverArrowDirectionDown:{
-            
-            // popover
-            fPopover.size.height = self.bounds.size.height - POPOVER_ARROW_HEIGHT + 2;
-            
-            // arrow
-            fArrow.origin.x = roundf((self.bounds.size.width - POPOVER_ARROW_WIDTH) / 2 + self.arrowOffset);
-            if (fArrow.origin.x + POPOVER_ARROW_WIDTH > self.bounds.size.width - corner) {
-                fArrow.origin.x -= corner;
-            }
-            if (fArrow.origin.x < corner) {
-                fArrow.origin.x += corner;
-            }
-            fArrow.origin.y = fPopover.size.height - 2;
-            
-            // assign arrow
-            _arrow.image = [UIImage imageNamed:@"app_popover_bottom.png"];
-            
-            // break
-            break;
-        }
-            
-            // left
-        case UIPopoverArrowDirectionLeft: {
-            
-            // popover
-            fPopover.origin.x = POPOVER_ARROW_HEIGHT - 2;
-            fPopover.size.width = self.bounds.size.width - POPOVER_ARROW_HEIGHT;
-            
-            // arrow
-            fArrow.origin.y = roundf((self.bounds.size.height - POPOVER_ARROW_WIDTH) / 2 + self.arrowOffset);
-            if (fArrow.origin.y + POPOVER_ARROW_WIDTH > self.bounds.size.height - corner){
-                fArrow.origin.y -= corner;
-            }
-            if (fArrow.origin.y < corner) {
-                fArrow.origin.y += corner;
-            }
-            fArrow.size.width = POPOVER_ARROW_HEIGHT;
-            fArrow.size.height = POPOVER_ARROW_WIDTH;
-            
-            // assign arrow
-            _arrow.image = [UIImage imageNamed:@"app_popover_left.png"];
-            
-            // break
-            break;
-        }
-            
-            // right
-        case UIPopoverArrowDirectionRight: {
-            
-            // popover
-            fPopover.size.width = self.bounds.size.width - POPOVER_ARROW_HEIGHT + 2;
-            
-            // arrow
-            fArrow.origin.x = fPopover.size.width - 2;
-            fArrow.origin.y = roundf((self.bounds.size.height - POPOVER_ARROW_WIDTH) / 2 + self.arrowOffset);
-            if (fArrow.origin.y + POPOVER_ARROW_WIDTH > self.bounds.size.height - corner) {
-                fArrow.origin.y -= corner;
-            }
-            if (fArrow.origin.y < corner) {
-                fArrow.origin.y += corner;
-            }
-            fArrow.size.width = POPOVER_ARROW_HEIGHT;
-            fArrow.size.height = POPOVER_ARROW_WIDTH;
-            
-            // assign arrow
-            _arrow.image = [UIImage imageNamed:@"app_popover_right.png"];
-            
-            // break
-            break;
-        }
-            
-            // no arrows
-        default: {
-            
-            // popover
-            fPopover.size.height = self.bounds.size.height - POPOVER_ARROW_HEIGHT + 2;
-            
-            // assign arrow
-            _arrow.image = nil;
-            
-            // break
-            break;
-        }
-    }
-    
-    // frame
-    _popover.frame = fPopover;
-    _arrow.frame = fArrow;
+    // adjust label
+    CGRect tFrame = self.titleLabel.frame;
+    tFrame.origin.y += 1;
+    self.titleLabel.frame = tFrame;
 }
 
 
 #pragma mark -
-#pragma mark Memory Management
+#pragma mark Helpers
 
 /*
- * Deallocates all used memory.
+ * Generates a custom image.
  */
-- (void)dealloc {
-    GLog();
+-(UIImage*)image:(UIImage*)image withCap:(SegmentCapLocation)location capWidth:(NSUInteger)capWidth buttonWidth:(NSUInteger)buttonWidth {
     
-    // ui
-    [_popover release];
-    [_arrow release];
+    // create image
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(buttonWidth, image.size.height), NO, 0.0);
     
-	// super
-    [super dealloc];
+    if (location == SegmentCapLeft) {
+        // To draw the left cap and not the right, we start at 0, and increase the width of the image by the cap width to push the right cap out of view
+        [image drawInRect:CGRectMake(0, 0, buttonWidth + capWidth, image.size.height)];
+    }
+    else if (location == SegmentCapRight) {
+        // To draw the right cap and not the left, we start at negative the cap width and increase the width of the image by the cap width to push the left cap out of view
+        [image drawInRect:CGRectMake(0.0-capWidth, 0, buttonWidth + capWidth, image.size.height)];
+    }
+    else if (location == SegmentCapMiddle) {
+        // To draw neither cap, we start at negative the cap width and increase the width of the image by both cap widths to push out both caps out of view
+        [image drawInRect:CGRectMake(0.0-capWidth, 0, buttonWidth + (capWidth * 2), image.size.height)];
+    }
+    
+    
+    // result
+    UIImage* resultImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    // return
+    return resultImage;
 }
-
-
 @end
 
 
+
+
+#pragma mark -
+#pragma mark Implementation NavigationController
+#pragma mark -
 
 
 /**
@@ -833,7 +900,7 @@
 
 
 #pragma mark -
-#pragma mark Controller Methods
+#pragma mark Controller
 
 /*
  * Init.
@@ -842,7 +909,10 @@
     GLog();
     
     // init super
-    if ((self = [super initWithRootViewController:rootViewController])) { 
+    if ((self = [super initWithRootViewController:rootViewController])) {
+        
+        // translucent
+        [self.navigationBar setTranslucent:NO];
         
     }
     return self;
@@ -857,6 +927,14 @@
 }
 
 /*
+ * Status.
+ */
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
+
+/*
  * Dealloc.
  */
 - (void)dealloc {
@@ -868,6 +946,12 @@
 @end
 
 
+
+#pragma mark -
+#pragma mark Implementation MailComposeController
+#pragma mark -
+
+
 /**
  * MailComposeController.
  */
@@ -875,7 +959,7 @@
 
 
 #pragma mark -
-#pragma mark Controller Methods
+#pragma mark Controller
 
 /*
  * Init.
@@ -884,8 +968,15 @@
     GLog();
     
     // init super
-    if ((self = [super init])) { 
-        
+    if ((self = [super init])) {
+        if (! iOS6) {
+            
+            // translucent
+            [self.navigationBar setTranslucent:NO];
+            
+            // tint
+            [self.navigationBar setTintColor:[UIColor whiteColor]];
+        }
         
     }
     return self;
@@ -898,6 +989,51 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
 	return YES;
 }
+
+/*
+ * Status.
+ */
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
+
+@end
+
+
+
+#pragma mark -
+#pragma mark Implementation PopoverController
+#pragma mark -
+
+
+/**
+ * PopoverController.
+ */
+@implementation PopoverController
+
+
+#pragma mark -
+#pragma mark Controller
+
+/*
+ * Init.
+ */
+- (id)initWithContentViewController:(UIViewController *)viewController {
+    GLog();
+    
+    // init super
+    if ((self = [super initWithContentViewController:viewController])) {
+        if (! iOS6) {
+            
+            // tint
+            self.contentViewController.view.tintColor = [UIColor colorWithRed:78/255.0 green:78/255.0 blue:78/255.0 alpha:1.0];
+        }
+        
+    }
+    return self;
+}
+
 
 
 @end

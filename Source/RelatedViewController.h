@@ -83,6 +83,5 @@
  */
 @interface RelatedView : UIView {
     UIView *_line;
-    UIImageView *_backdrop;
 }
 @end

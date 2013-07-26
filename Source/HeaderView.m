@@ -45,7 +45,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Init.
@@ -77,7 +77,7 @@
         self.buttonEdit = btnEdit;
         [self addSubview:btnEdit];
         
-        Button *btnEditDone = [[Button alloc] initStyle:ButtonStyleDefault];
+        Button *btnEditDone = [[Button alloc] init];
         [btnEditDone setTitle:NSLocalizedString(@"Done", @"Done") forState:UIControlStateNormal];
         [btnEditDone addTarget:self action:@selector(actionEditDone:) forControlEvents:UIControlEventTouchUpInside];
         
@@ -85,7 +85,7 @@
         [self addSubview:btnEditDone];
         [btnEditDone release];
         
-        Button *btnEditCancel = [[Button alloc] initStyle:ButtonStyleLite];
+        Button *btnEditCancel = [[Button alloc] init];
         [btnEditCancel setTitle:NSLocalizedString(@"Cancel", @"Cancel") forState:UIControlStateNormal];
         [btnEditCancel addTarget:self action:@selector(actionEditCancel:) forControlEvents:UIControlEventTouchUpInside];
         
@@ -103,7 +103,7 @@
         // title
         UILabel *lblTitle = [[UILabel alloc] initWithFrame:CGRectZero];
         lblTitle.backgroundColor = [UIColor clearColor];
-        lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:18.0];
+        lblTitle.font = [UIFont fontWithName:@"Helvetica" size:18.0];
         lblTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
         lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
         lblTitle.shadowOffset = CGSizeMake(0,1);

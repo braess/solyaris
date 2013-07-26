@@ -22,7 +22,8 @@
 
 
 #import <UIKit/UIKit.h>
-#import "SegmentedControl.h"
+#import "Appearance.h"
+
 
 // Sections
 enum {

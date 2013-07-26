@@ -24,7 +24,30 @@
 #import "SolyarisAppDelegate.h"
 #import "SolyarisConstants.h"
 #import "SolyarisLocalization.h"
+#import "Utils.h"
 #import "Tracker.h"
+#import "iOS6.h"
+
+
+/*
+ * Recommend Stack.
+ */
+@interface AboutViewController (RecommendStack)
+- (void)recommendEmail;
+- (void)recommendTwitter;
+- (void)recommendFacebook;
+- (void)recommendWeibo;
+- (void)recommendAppStore;
+@end
+
+/*
+ * Feedback Stack.
+ */
+@interface AboutViewController (FeedbackStack)
+- (void)feedbackSuggestions;
+- (void)feedbackBug;
+@end
+
 
 
 /**
@@ -41,7 +64,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Init.
@@ -87,15 +110,15 @@
     
     // frames
     CGRect bframe = CGRectMake(0, 1, 44, 44);
-    CGRect tframe = iPad ? CGRectMake(0, 5, vframe.size.width, 18) : CGRectMake(44, 5, vframe.size.width-44, 18);
-    CGRect cframe = iPad ? CGRectMake(0, 23, vframe.size.width, 18) : CGRectMake(44, 23, vframe.size.width-44, 18);
+    CGRect tframe = iPad ? CGRectMake(0, 3, vframe.size.width, 24) : CGRectMake(44, 3, vframe.size.width-44, 24);
+    CGRect cframe = iPad ? CGRectMake(0, 21, vframe.size.width, 24) : CGRectMake(44, 21, vframe.size.width-44, 24);
     CGRect aframe = CGRectMake(0, kAboutHeaderHeight+5, vframe.size.width+20, vframe.size.height-kAboutFooterHeight-kAboutHeaderHeight);
     CGRect abframe = CGRectMake(0, vframe.size.height-kAboutFooterHeight+(iPad?5:2), vframe.size.width, 45);
     
     // title
 	UILabel *lblTitle = [[UILabel alloc] initWithFrame:tframe];
 	lblTitle.backgroundColor = [UIColor clearColor];
-	lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
+	lblTitle.font = [UIFont fontWithName:@"Helvetica" size:18.0];
 	lblTitle.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
 	lblTitle.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
 	lblTitle.shadowOffset = CGSizeMake(0,1);
@@ -108,7 +131,7 @@
     // claim
 	UILabel *lblClaim = [[UILabel alloc] initWithFrame:cframe];
 	lblClaim.backgroundColor = [UIColor clearColor];
-	lblClaim.font = [UIFont fontWithName:@"Helvetica-Bold" size:15.0];
+	lblClaim.font = [UIFont fontWithName:@"Helvetica" size:18.0];
 	lblClaim.textColor = [UIColor colorWithRed:76.0/255.0 green:76.0/255.0 blue:76.0/255.0 alpha:1.0];
 	lblClaim.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
 	lblClaim.shadowOffset = CGSizeMake(0,1);
@@ -129,7 +152,7 @@
     
 	// description
 	UITextView *txtAbout = [[UITextView alloc] initWithFrame:aframe];
-    txtAbout.contentInset = UIEdgeInsetsMake(0,-7,-20,-20);
+    txtAbout.contentInset = iOS6 ? UIEdgeInsetsMake(0,-7,-20,-20) : UIEdgeInsetsMake(0, -5, -20, -20);
 	txtAbout.backgroundColor = [UIColor clearColor];
 	txtAbout.font = [UIFont fontWithName:@"Helvetica" size:15.0];
 	txtAbout.textColor = [UIColor colorWithRed:45.0/255.0 green:45.0/255.0 blue:45.0/255.0 alpha:1.0];
@@ -140,62 +163,10 @@
     [self.view addSubview:txtAbout];
 	[txtAbout release];
     
-    // link buttons
-    LinkButton *lbTMDb = [[LinkButton alloc] initWithFrame:CGRectZero];
-    lbTMDb.delegate = self;
-    lbTMDb.link = @"http://www.themoviedb.org";
-    
-    LinkButton *lbCinder = [[LinkButton alloc] initWithFrame:CGRectZero];
-    lbCinder.delegate = self;
-    lbCinder.link = @"http://libcinder.org";
-    
-    
-    // ipad
-    if (iPad) {
-        
-        // localization: de
-        if ([[SolyarisLocalization currentLanguage] isEqualToString:kLanguageDE]) {
-            lbTMDb.frame = CGRectMake(196, 272, 44, 20);
-            lbCinder.frame = CGRectMake(118, 348, 51, 20);
-        }
-        // localization: en
-        else {
-            lbTMDb.frame = CGRectMake(0, 272, 44, 20);
-            lbCinder.frame = CGRectMake(72, 368, 49, 20);
-        }
-    }
-    else {
-        
-        // localization: de
-        if ([[SolyarisLocalization currentLanguage] isEqualToString:kLanguageDE]) {
-            lbTMDb.frame = CGRectMake(0, 292, 44, 20);
-            lbCinder.frame = CGRectMake(118, 368, 51, 20);
-        }
-        // localization: en
-        else {
-            lbTMDb.frame = CGRectMake(122, 252, 44, 20);
-            lbCinder.frame = CGRectMake(72, 386, 49, 20);
-        }
-    }
-    
-    // add
-    [self.view addSubview:lbTMDb];
-    [self.view addSubview:lbCinder];
-    
-    // release
-    [lbTMDb release];
-    [lbCinder release];
-    
     
     // actions
     ActionBar *actionBar = [[ActionBar alloc] initWithFrame:abframe];
-    
-    
-    // flex
-	UIBarButtonItem *itemFlex = [[UIBarButtonItem alloc] 
-                                 initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
-                                 target:nil 
-                                 action:nil];
+
     
     // negative space (weird 12px offset...)
     UIBarButtonItem *nspace = [[UIBarButtonItem alloc] 
@@ -212,51 +183,30 @@
                                                                               action:@selector(actionFeedback:)];
 
     
-    // action email
-    ActionBarButtonItem *actionEmail = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_email.png"] 
-                                                                            title:NSLocalizedString(@"Email", @"Email") 
-                                                                           target:self 
-                                                                           action:@selector(actionEmail:)];
-    
-    // action twitter
-    ActionBarButtonItem *actionTwitter = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_twitter.png"] 
-                                                                              title:NSLocalizedString(@"Twitter", @"Twitter") 
+    // action recommend
+    ActionBarButtonItem *actionRecommend = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_recommend.png"]
+                                                                              title:NSLocalizedString(@"Recommend", @"Recommend") 
                                                                              target:self 
-                                                                             action:@selector(actionTwitter:)];
+                                                                             action:@selector(actionRecommend:)];
     
-    // action app store
-    ActionBarButtonItem *actionAppStore = [[ActionBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"action_appstore.png"] 
-                                                                               title:NSLocalizedString(@"AppStore", @"AppStore")
-                                                                              target:self 
-                                                                              action:@selector(actionAppStore:)];
+
     
     // dark
     [actionFeedback dark:YES];
-    [actionEmail dark:YES];
-    [actionTwitter dark:YES];
-    [actionAppStore dark:YES];
+    [actionRecommend dark:YES];
     
     
     // actions
     NSMutableArray *actions = [[NSMutableArray alloc] init];
     [actions addObject:nspace];
     [actions addObject:actionFeedback];
-    [actions addObject:itemFlex];
-    [actions addObject:actionEmail];
-    if(NSClassFromString(@"TWTweetComposeViewController") != nil) {
-        [actions addObject:actionTwitter];
-    }
-    [actions addObject:actionAppStore];
+    [actions addObject:actionRecommend];
     [actions addObject:nspace];
-
     
     // add & release actions
     [actionBar setItems:actions];
     [actionFeedback release];
-    [actionEmail release];
-    [actionTwitter release];
-    [actionAppStore release];
-    [itemFlex release];
+    [actionRecommend release];
     [nspace release];
     [actions release];
     
@@ -289,38 +239,122 @@
 }
 
 
+
 #pragma mark -
 #pragma mark Actions
 
+/*
+ * Action back.
+ */
+- (void)actionBack:(id)sender  {
+    DLog();
+    
+    // delegate
+    if (delegate && [delegate respondsToSelector:@selector(aboutBack)]) {
+        [delegate aboutBack];
+    }
+}
 
 /*
- * Action Email.
+ * Action feedback.
  */
-- (void)actionEmail:(id)sender {
-	DLog();
+- (void)actionFeedback:(id)sender {
+    FLog();
     
     // track
-    [Tracker trackEvent:TEventAbout action:@"Email" label:[NSString stringWithFormat:@"%@",[(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefault:udInformationAppVersion]]];
+    [Tracker trackEvent:TEventAbout action:@"Feedback"];
+    
+    // action sheet
+    UIActionSheet *recommendAction = [[UIActionSheet alloc]
+                                      initWithTitle:NSLocalizedString(@"Feedback",@"Feedback")
+                                      delegate:self
+                                      cancelButtonTitle:NSLocalizedString(@"Cancel",@"Cancel")
+                                      destructiveButtonTitle:nil
+                                      otherButtonTitles:NSLocalizedString(@"Send Feedback",@"Send Feedback"),NSLocalizedString(@"Report a Bug",@"Report a Bug"),nil];
+    
+    // show
+    [recommendAction setTag:AboutActionFeedback];
+    [recommendAction setActionSheetStyle:UIActionSheetStyleBlackTranslucent];
+    [recommendAction showInView:self.view];
+    [recommendAction release];
+}
 
+/*
+ * Action recommend.
+ */
+- (void)actionRecommend:(id)sender {
+    FLog();
+    
+    // track
+    [Tracker trackEvent:TEventAbout action:@"Recommend"];
+    
+    // services
+    BOOL email = [MailComposeController canSendMail];
+    BOOL twitter = [SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter];
+    BOOL facebook = [SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook];
+    BOOL weibo = [SLComposeViewController isAvailableForServiceType:SLServiceTypeSinaWeibo];
+    
+    // recommend
+    UIActionSheet *recommendAction = [[UIActionSheet alloc] init];
+    [recommendAction setDelegate:self];
+    [recommendAction setTag:AboutActionRecommend];
+    [recommendAction setActionSheetStyle:UIActionSheetStyleBlackTranslucent];
+    [recommendAction setTitle:NSLocalizedString(@"Recommend",@"Recommend")];
+    
+    // services
+    if (email) {
+        [recommendAction addButtonWithTitle:NSLocalizedString(@"Email",@"Email")];
+    }
+    if (twitter) {
+        [recommendAction addButtonWithTitle:NSLocalizedString(@"Twitter",@"Twitter")];
+    }
+    if (facebook) {
+        [recommendAction addButtonWithTitle:NSLocalizedString(@"Facebook",@"Facebook")];
+    }
+    if (weibo) {
+        [recommendAction addButtonWithTitle:NSLocalizedString(@"Sina Weibo",@"Sina Weibo")];
+    }
+    [recommendAction addButtonWithTitle:NSLocalizedString(@"App Store",@"App Store")];
+    [recommendAction addButtonWithTitle:NSLocalizedString(@"Cancel",@"Cancel")];
+    [recommendAction setCancelButtonIndex:recommendAction.numberOfButtons-1];
+    
+    // show
+    [recommendAction showInView:self.view];
+    [recommendAction release];
+}
+
+
+
+#pragma mark -
+#pragma mark Recommend
+
+/*
+ * Recommend Email.
+ */
+- (void)recommendEmail {
+	FLog();
+    
+    // track
+    [Tracker trackEvent:TEventAbout action:@"Email"];
 	
 	// check mail support
 	if ([MailComposeController canSendMail]) {
         
-        // mail composer
+		// mail composer
 		MailComposeController *composer = [[MailComposeController alloc] init];
 		composer.mailComposeDelegate = self;
         composer.modalPresentationStyle = UIModalPresentationFormSheet;
 		
 		// subject
-		[composer setSubject:[NSString stringWithFormat:@"Solyaris iPhone/iPad App"]];
+        [composer setSubject:NSLocalizedString(@"Solyaris iPhone/iPad App", @"Solyaris iPhone/iPad App")];
         
 		// message
-        NSString *message = [NSString stringWithFormat:@"%@\n%@",NSLocalizedString(@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or people. Expand nodes to gather information about their relationships. Learn about the cast and filmography.\n\n\n--- Solyaris\nVisual Movie Browser",@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or people. Expand nodes to gather information about their relationships. Learn about the cast and filmography.\n\n\n--- Solyaris\nVisual Movie Browser"),vAppStoreURL];
+		NSString *message = [NSString stringWithFormat:@"%@\n%@",NSLocalizedString(@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or people. Expand nodes to gather information about their relationships. Learn about the cast and filmography.\n\n\nSolyaris\nVisual Movie Browser",@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or people. Expand nodes to gather information about their relationships. Learn about the cast and filmography.\n\n\nSolyaris\nVisual Movie Browser"),vAppStoreURL];
 		[composer setMessageBody:message isHTML:NO];
-		
-		// promo image
-		UIImage *pimg = [UIImage imageNamed:@"promo.png"];
-		NSData *data = UIImagePNGRepresentation(pimg);
+        
+        // image
+		UIImage *img = [UIImage imageNamed:@"asset_promo.png"];
+		NSData *data = UIImagePNGRepresentation(img);
 		[composer addAttachmentData:data mimeType:@"image/png" fileName:@"Solyaris"];
         
 		// show off
@@ -330,37 +364,33 @@
 		[composer release];
         
 	}
-	else {
-		
-		
-	}
+    
 }
 
 /*
- * Action Twitter.
+ * Recommend Twitter.
  */
-- (void)actionTwitter:(id)sender {
-	DLog();
+- (void)recommendTwitter {
+	FLog();
     
     // track
-    [Tracker trackEvent:TEventAbout action:@"Twitter" label:[NSString stringWithFormat:@"%@",[(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefault:udInformationAppVersion]]];
-    
-    // check twitter support
+    [Tracker trackEvent:TEventAbout action:@"Twitter"];
+	
+	// check twitter support
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
         
         // composition view controller
         SLComposeViewController *composeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
         
-        // initial tweet text
-        [composeViewController setInitialText:[NSString stringWithFormat:@"%@ %@\n",NSLocalizedString(@"Solyaris - a visual movie browser to find and discover films and explore their connections. ",@"Solyaris - a visual movie browser to find and discover films and explore their connections. "),vAppStoreURL ]];
+        // initial text
+        [composeViewController setInitialText:[NSString stringWithFormat:@"%@ %@\n",NSLocalizedString(@"Solyaris - a visual movie browser to find and discover films and explore their connections. ",@"Solyaris - a visual movie browser to find and discover films and explore their connections. "),vAppStoreURL]];
         
-        // promo image
-        UIImage *pimg = [UIImage imageNamed:@"promo.png"];
-        [composeViewController addImage:pimg];
+        // image
+        [composeViewController addImage:[UIImage imageNamed:@"asset_promo.png"]];
         
         
         // completion handler
-        SLComposeViewControllerCompletionHandler __block completionHandler=^(SLComposeViewControllerResult result){
+        [composeViewController setCompletionHandler:^(SLComposeViewControllerResult result) {
             
             // dismiss the composition view controller
             [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
@@ -377,53 +407,141 @@
                     break;
             }
             
-        };
-        [composeViewController setCompletionHandler:completionHandler];
+        }];
         
         // modal
         [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composeViewController animated:YES completion:nil];
     }
-
 }
 
 /*
- * Action AppStore.
+ * Recommend Facebook.
  */
-- (void)actionAppStore:(id)sender {
+- (void)recommendFacebook {
+	FLog();
+    
+    // track
+    [Tracker trackEvent:TEventAbout action:@"Facebook"];
+	
+	// check facebook support
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
+        
+        // composition view controller
+        SLComposeViewController *composeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+        
+        // initial text
+        [composeViewController setInitialText:[NSString stringWithFormat:@"%@\n%@",NSLocalizedString(@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or people. Expand nodes to gather information about their relationships. Learn about the cast and filmography.\n\n\nSolyaris\nVisual Movie Browser",@"Solyaris is a visual movie browser to find and discover films, actors or directors and explore their connections. \n\nSearch the entire Open Movie Database (TMDb) collection for movies or people. Expand nodes to gather information about their relationships. Learn about the cast and filmography.\n\n\nSolyaris\nVisual Movie Browser"),vAppStoreURL]];
+        
+        // image
+        [composeViewController addImage:[UIImage imageNamed:@"asset_promo.png"]];
+        
+        // completion handler
+        [composeViewController setCompletionHandler:^(SLComposeViewControllerResult result) {
+            
+            // result
+            switch (result) {
+                case SLComposeViewControllerResultCancelled:
+                    FLog("SLCompose: cancel");
+                    break;
+                case SLComposeViewControllerResultDone:
+                    FLog("SLCompose: done");
+                    break;
+                default:
+                    break;
+            }
+        }];
+        
+        // modal
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composeViewController animated:YES completion:nil];
+    }
+}
+
+/*
+ * Recommend Weibo.
+ */
+- (void)recommendWeibo {
+	FLog();
+    
+    // track
+    [Tracker trackEvent:TEventAbout action:@"Weibo"];
+	
+	// check twitter support
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeSinaWeibo]) {
+        
+        // composition view controller
+        SLComposeViewController *composeViewController = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeSinaWeibo];
+        
+        // initial text
+        [composeViewController setInitialText:[NSString stringWithFormat:@"%@ %@\n",NSLocalizedString(@"Solyaris - a visual movie browser to find and discover films and explore their connections. ",@"Solyaris - a visual movie browser to find and discover films and explore their connections. "),vAppStoreURL]];
+        
+        // image
+        [composeViewController addImage:[UIImage imageNamed:@"asset_promo.png"]];
+        
+        
+        // completion handler
+        [composeViewController setCompletionHandler:^(SLComposeViewControllerResult result) {
+            
+            // dismiss the composition view controller
+            [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
+            
+            // result
+            switch (result) {
+                case SLComposeViewControllerResultCancelled:
+                    FLog("SLCompose: cancel");
+                    break;
+                case SLComposeViewControllerResultDone:
+                    FLog("SLCompose: done");
+                    break;
+                default:
+                    break;
+            }
+            
+        }];
+        
+        // modal
+        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composeViewController animated:YES completion:nil];
+    }
+}
+
+/*
+ * Recommend App Store.
+ */
+- (void)recommendAppStore {
 	DLog();
     
     // track
-    [Tracker trackEvent:TEventAbout action:@"AppStore" label:[NSString stringWithFormat:@"%@",[(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefault:udInformationAppVersion]]];
+    [Tracker trackEvent:TEventAbout action:@"AppStore"];
 	
 	// show info
 	UIAlertView *alert = [[UIAlertView alloc]
-						  initWithTitle:NSLocalizedString(@"AppStore",@"AppStore")
+						  initWithTitle:NSLocalizedString(@"App Store",@"App Store")
 						  message:NSLocalizedString(@"Thank you for rating Solyaris or writing a nice review.",@"Thank you for rating Solyaris or writing a nice review.")
-						  delegate:self 
+						  delegate:self
 						  cancelButtonTitle:NSLocalizedString(@"Maybe later",@"Maybe later")
 						  otherButtonTitles:NSLocalizedString(@"Visit",@"Visit"),nil];
-	[alert setTag:AlertAboutAppStore];
-	[alert show];    
+	[alert setTag:AboutAlertAppStore];
+	[alert show];
 	[alert release];
     
 }
 
 
+
+#pragma mark -
+#pragma mark Feedback
+
 /*
- * Action Feedback.
+ * Feedback suggestions.
  */
-- (void)actionFeedback:(id)sender {
-	DLog();
+- (void)feedbackSuggestions {
+    DLog();
     
     // track
-    [Tracker trackEvent:TEventAbout action:@"Feedback" label:[NSString stringWithFormat:@"%@",[(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefault:udInformationAppVersion]]];
-	
+    [Tracker trackEvent:TEventAbout action:@"Suggestions"];
+    
 	// check mail support
-	if (! [MailComposeController canSendMail]) {
+	if ([MailComposeController canSendMail]) {
         
-	}
-	else {
-		
 		// mail composer
 		MailComposeController *composer = [[MailComposeController alloc] init];
 		composer.mailComposeDelegate = self;
@@ -433,46 +551,118 @@
 		[composer setToRecipients:[[[NSArray alloc] initWithObjects:vAppEmail,nil] autorelease]];
 		
 		// subject
-		[composer setSubject:[NSString stringWithFormat:@"[Solyaris] Feedback v%@",[(SolyarisAppDelegate*)[[UIApplication sharedApplication] delegate] getUserDefault:udInformationAppVersion]]];
+		[composer setSubject:[NSString stringWithFormat:@"[Solyaris] Feedback v%@",[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]]];
         
 		// show off
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composer animated:YES completion:nil];
+		[[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composer animated:YES completion:nil];
         
 		// release
 		[composer release];
-
-		
+        
 	}
 }
 
-
 /*
- * Action back.
+ * Feedback bug.
  */
-- (void)actionBack:(id)sender  {
+- (void)feedbackBug {
     DLog();
     
-    // delegate
-    if (delegate && [delegate respondsToSelector:@selector(aboutBack)]) {
-        [delegate aboutBack];
-    }
+    // track
+    [Tracker trackEvent:TEventAbout action:@"Bug"];
+    
+	
+	// check mail support
+	if ([MailComposeController canSendMail]) {
+        
+		// mail composer
+		MailComposeController *composer = [[MailComposeController alloc] init];
+		composer.mailComposeDelegate = self;
+        composer.modalPresentationStyle = UIModalPresentationFormSheet;
+		
+		// subject
+		[composer setToRecipients:[[[NSArray alloc] initWithObjects:vAppEmail,nil] autorelease]];
+		
+		// subject
+		[composer setSubject:[NSString stringWithFormat:@"[Solyaris] Bug v%@",[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]]];
+        
+        // message
+        NSString *msg = [NSString stringWithFormat:@"%@\n\n\n\n---\nSystem\niOS: %@\nDevice: %@\nDisplay: %@",NSLocalizedString(@"Sorry that Solyaris is not working as expected - please describe the problem and steps involved to reproduce the bug.", @"Sorry that Solyaris is not working as expected - please describe the problem and steps involved to reproduce the bug."),[[UIDevice currentDevice] systemVersion],[[UIDevice currentDevice] model], [Utils isRetina] ? @"Retina" : @"Default"];
+        [composer setMessageBody:msg isHTML:NO];
+        
+		// show
+		[[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composer animated:YES completion:nil];
+        
+		// release
+		[composer release];
+        
+	}
 }
 
 
 
 #pragma mark -
-#pragma mark LinkButton Delegate
+#pragma mark UIActionSheet
 
 /*
- * LinkButton.
+ * Action selected.
  */
-- (void)linkButtonTouched:(LinkButton *)lb {
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
 	FLog();
-    
-    // open
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:lb.link]];
+	
+	// tag
+	switch ([actionSheet tag]) {
+            
+        // recommend
+		case AboutActionRecommend: {
+            FLog("AboutActionRecommend");
+            
+            // action
+            if (buttonIndex != actionSheet.cancelButtonIndex) {
+                
+                // service
+                NSString *service = [actionSheet buttonTitleAtIndex:buttonIndex];
+                if ([service isEqualToString:@"Email"] || [service isEqualToString:@"E-Mail"] || [service isEqualToString:@"E-mail"]) {
+                    [self recommendEmail];
+                }
+                else if ([service isEqualToString:@"Twitter"]) {
+                    [self recommendTwitter];
+                }
+                else if ([service isEqualToString:@"Facebook"]) {
+                    [self recommendFacebook];
+                }
+                else if ([service isEqualToString:@"Sina Weibo"]) {
+                    [self recommendWeibo];
+                }
+                else if ([service isEqualToString:@"App Store"]) {
+                    [self recommendAppStore];
+                }
+            }
+			break;
+		}
+            
+        // feedback
+		case AboutActionFeedback: {
+            FLog("AboutActionFeedback");
+            
+			// suggestions
+			if (buttonIndex == 0) {
+				[self feedbackSuggestions];
+			}
+			// bug
+			if (buttonIndex == 1) {
+				[self feedbackBug];
+			}
+			break;
+		}
+            
+            // default
+		default: {
+			break;
+		}
+	}
+	
 }
-
 
 
 
@@ -489,14 +679,11 @@
 	switch ([actionSheet tag]) {
             
         // App Store
-		case AlertAboutAppStore: {
+		case AboutAlertAppStore: {
             
-			// cancel
-			if (buttonIndex == 0) {
-			}
-			// visit app store
-			else {
-				[[UIApplication sharedApplication] openURL:[NSURL URLWithString:vAppStoreLink]];
+			// visit
+			if (buttonIndex != actionSheet.cancelButtonIndex) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:vAppStoreLink]];
 			}
 			break;
 		}
@@ -571,7 +758,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Initialize.
@@ -621,25 +808,15 @@
 	CGContextFillRect(context, mrect);
 	
 	// header lines
-	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.54 alpha:1].CGColor);
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.6 alpha:1].CGColor);
 	CGContextMoveToPoint(context, 0, kAboutHeaderHeight-1);
 	CGContextAddLineToPoint(context, w, kAboutHeaderHeight-1);
 	CGContextStrokePath(context);
     
-    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.5].CGColor);
-	CGContextMoveToPoint(context, 0, kAboutHeaderHeight);
-	CGContextAddLineToPoint(context, w, kAboutHeaderHeight);
-	CGContextStrokePath(context);
-    
     // footer lines
-	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.54 alpha:1].CGColor);
+	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.6 alpha:1].CGColor);
 	CGContextMoveToPoint(context, 0, h-kAboutFooterHeight);
 	CGContextAddLineToPoint(context, w, h-kAboutFooterHeight);
-	CGContextStrokePath(context);
-    
-    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.5].CGColor);
-	CGContextMoveToPoint(context, 0, h-kAboutFooterHeight+1);
-	CGContextAddLineToPoint(context, w, h-kAboutFooterHeight+1);
 	CGContextStrokePath(context);
     
     

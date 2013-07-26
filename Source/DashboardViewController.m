@@ -67,6 +67,8 @@
     dashboard.delegate = self;
     dashboard.dataSource = self;
     dashboard.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    dashboard.separatorColor = [UIColor clearColor];
+    dashboard.scrollEnabled = NO;
     
     _dashboard = [dashboard retain];
     [self.view addSubview:_dashboard];
@@ -287,7 +289,7 @@
             if (indx == DashboardNowPlaying) {
                 
                 // title
-                [cell.labelData setText:NSLocalizedString(@"Now Playing", @"Now Playing")];
+                [cell.textLabel setText:NSLocalizedString(@"Now Playing", @"Now Playing")];
                 
                 // icon
                 [cell dataIcon:[UIImage imageNamed:@"icon_search_now.png"]];
@@ -297,7 +299,7 @@
             if (indx == DashboardPopular) {
                 
                 // title
-                [cell.labelData setText:NSLocalizedString(@"Popular Movies", @"Popular Movies")];
+                [cell.textLabel setText:NSLocalizedString(@"Popular Movies", @"Popular Movies")];
                 
                 // icon
                 [cell dataIcon:[UIImage imageNamed:@"icon_search_popular.png"]];
@@ -307,7 +309,7 @@
             if (indx == DashboardFavorites) {
                 
                 // title
-                [cell.labelData setText:NSLocalizedString(@"Favorites", @"Favorites")];
+                [cell.textLabel setText:NSLocalizedString(@"Favorites", @"Favorites")];
                 
                 // icon
                 [cell dataIcon:[UIImage imageNamed:@"icon_search_favorites.png"]];
@@ -317,7 +319,7 @@
             if (indx == DashboardHistory) {
                 
                 // title
-                [cell.labelData setText:NSLocalizedString(@"History", @"History")];
+                [cell.textLabel setText:NSLocalizedString(@"History", @"History")];
                 
                 // icon
                 [cell dataIcon:[UIImage imageNamed:@"icon_search_history.png"]];

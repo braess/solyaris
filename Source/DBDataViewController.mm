@@ -107,6 +107,7 @@
     results.delegate = self;
     results.dataSource = self;
     results.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    results.separatorColor = [UIColor clearColor];
     results.hidden = YES;
     
     _results = [results retain];
@@ -844,7 +845,7 @@
     [cell reset];
     
     // cell
-    [cell.labelData setText:dta.label];
+    [cell.textLabel setText:dta.label];
     if (dta.more) {
         [cell more];
     }
@@ -871,7 +872,7 @@
         
         // cell
         CellData *cell = (CellData*) [tableView cellForRowAtIndexPath:indexPath];
-        [cell.labelData setText:NSLocalizedString(@"Loading...", @"Loading...")];
+        [cell.textLabel setText:NSLocalizedString(@"Loading...", @"Loading...")];
         [cell loading];
         [cell setNeedsLayout];
         
@@ -942,7 +943,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /*
  * Initialize.
@@ -1003,14 +1004,13 @@
         [lblInfo release];
         
         // linkbutton
-        LinkButton *lbTMDb = [[LinkButton alloc] initWithFrame:CGRectZero];
-        [lbTMDb transparent:YES]; 
-        [lbTMDb addTarget:self action:@selector(actionTMDb:) forControlEvents:UIControlEventTouchUpInside];
+        UIButton *btnTMDB = [UIButton buttonWithType:UIButtonTypeCustom];
+        btnTMDB.backgroundColor = [UIColor clearColor];
+        [btnTMDB addTarget:self action:@selector(actionTMDb:) forControlEvents:UIControlEventTouchUpInside];
         
         
-        _linkbuttonTMDb = [lbTMDb retain];
-        [self addSubview:_linkbuttonTMDb];
-        [lbTMDb release];
+        _buttonTMDb = [btnTMDB retain];
+        [self addSubview:_buttonTMDb];
         
         
 	}
@@ -1030,7 +1030,7 @@
     
     // tmdb
     _logoTMDb.frame = CGRectMake(0,45,45,60);
-    _linkbuttonTMDb.frame = CGRectMake(0, 44, self.frame.size.width, 60);
+    _buttonTMDb.frame = CGRectMake(0, 44, self.frame.size.width, 60);
 }
 
 
@@ -1100,7 +1100,7 @@
     [_labelMessage release];
     [_labelInfo release];
     [_logoTMDb release];
-    [_linkbuttonTMDb release];
+    [_buttonTMDb release];
 	
 	// super
     [super dealloc];

@@ -24,7 +24,7 @@
 #import "SearchBarViewController.h"
 #import "SolyarisConstants.h"
 #import "Tracker.h"
-
+#import "iOS6.h"
 
 
 /**
@@ -69,7 +69,7 @@
 
 
 #pragma mark -
-#pragma mark Object Methods
+#pragma mark Object
 
 /**
  * Init.
@@ -132,12 +132,10 @@
     float iwidth = 44;
     float iheight = 44;
     
-    // offset
-    float oysbar = 0;
     
     // frames
     CGRect bgframe = CGRectMake(0, 0, fwidth, fheight);
-    CGRect sbframe = CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0)+oysbar, swidth, sheight);
+    CGRect sbframe = CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0)-1, swidth, sheight);
     CGRect lframe = CGRectMake(border, ((fheight-lheight)/2.0), lwidth, lheight);
     CGRect ltframe = CGRectMake(border+lwidth+inset, inset+1, twidth, theight);
     CGRect lcframe = CGRectMake(border+lwidth+inset, inset+theight-1, twidth, theight);
@@ -156,7 +154,7 @@
     UIButton *btnLogo = [UIButton buttonWithType:UIButtonTypeCustom]; 
     btnLogo.autoresizingMask = UIViewAutoresizingNone;
 	btnLogo.frame = lframe;
-	[btnLogo setImage:[UIImage imageNamed:@"logo_solyaris.png"] forState:UIControlStateNormal];
+	[btnLogo setImage:[UIImage imageNamed:@"app_fav.png"] forState:UIControlStateNormal];
     if (iPad) {
         [btnLogo addTarget:self action:@selector(actionLogo:) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -195,20 +193,25 @@
     // search bar
     UISearchBar *sBar = [[UISearchBar alloc] initWithFrame:sbframe];
     sBar.autoresizingMask = iPad ? (UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin) : (UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin);
-    sBar.barStyle = UIBarStyleBlackTranslucent;
+    sBar.barStyle = UIBarStyleDefault;
     sBar.alpha = kAlphaSearch;
     sBar.showsCancelButton = NO;
     sBar.autocorrectionType = UITextAutocorrectionTypeNo;
     sBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
     sBar.delegate = self;
-    for (UIView *subview in sBar.subviews) {
-        if ([subview isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
-            [subview removeFromSuperview];
-            break;
-        }
-    }
     sBar.text = [self retrieveSearchTerm];
     sBar.placeholder = [self retrieveSearchPlaceholder];
+    if (iOS6) {
+        sBar.barStyle = UIBarStyleBlackTranslucent;
+        for (UIView *subview in sBar.subviews) {
+            if ([subview isKindOfClass:NSClassFromString(@"UISearchBarBackground")]) {
+                [subview removeFromSuperview];
+                break;
+            }
+        }
+    }
+    
+    
     self.searchBar = sBar;
 	[self.view addSubview:_searchBar];
 	[sBar release];
