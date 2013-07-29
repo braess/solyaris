@@ -651,15 +651,26 @@
  */
 + (void)clearCache {
     DLog();
-    
-    // path
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-	NSString *storePath = [[TMDb applicationCachesDirectory] stringByAppendingPathComponent:kTMDbStore];
-	
-	// remove existing db
-	if ([fileManager fileExistsAtPath:storePath]) {
-		[fileManager removeItemAtPath:storePath error:NULL];
-	}
+    @try {
+        // path
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSString *storePath = [[TMDb applicationCachesDirectory] stringByAppendingPathComponent:kTMDbStore];
+        NSString *storeSHM = [NSString stringWithFormat:@"%@-shm",storePath];
+        NSString *storeWAL = [NSString stringWithFormat:@"%@-wal",storePath];
+        
+        // remove existing db
+        if ([fileManager fileExistsAtPath:storePath]) {
+            [fileManager removeItemAtPath:storePath error:NULL];
+        }
+        if ([fileManager fileExistsAtPath:storeSHM]) {
+            [fileManager removeItemAtPath:storeSHM error:NULL];
+        }
+        if ([fileManager fileExistsAtPath:storeWAL]) {
+            [fileManager removeItemAtPath:storeWAL error:NULL];
+        }
+    }
+    @catch (id exception) {
+    }
 }
 - (void)resetCache {
     DLog();
