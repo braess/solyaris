@@ -113,11 +113,17 @@
 /**
  * SearchView.
  */
+enum {
+	SearchViewDefault,
+    SearchViewFooter
+};
 @interface SearchView : UIView {
     @private
     UIImage *_texture;
     CGRect _tsize;
+    int _type;
 }
+- (id)initWithFrame:(CGRect)frame type:(int)type;
 @end
 
 

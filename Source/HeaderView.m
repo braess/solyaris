@@ -54,7 +54,7 @@
     GLog();
     
 	// super
-    if ((self = [super initWithFrame:CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, kHeaderHeight)])) {
+    if ((self = [super initWithFrame:CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height)])) {
         
         // self
         self.opaque = YES;
@@ -136,7 +136,7 @@
     
     // frames
     CGRect frameBack = mode_back ? CGRectMake(-6, 0, 44, 44) : CGRectZero;
-    CGRect frameTitle = !editing ? CGRectMake(frameBack.size.width, 0, self.frame.size.width-frameBack.size.width, kHeaderHeight) : CGRectZero;
+    CGRect frameTitle = !editing ? CGRectMake(frameBack.size.width, 0, self.frame.size.width-frameBack.size.width, self.frame.size.height) : CGRectZero;
     CGRect frameEdit = mode_edit ? CGRectMake(self.frame.size.width-44, 0, 44, 44) : CGRectZero;
     CGRect frameAction = (mode_action && ! editing) ? CGRectMake(self.frame.size.width-88, 0, 44, 44) : CGRectZero;
     CGRect frameEditDone = mode_edit ? CGRectMake(self.frame.size.width-80, 7, 80, 30) : CGRectZero;

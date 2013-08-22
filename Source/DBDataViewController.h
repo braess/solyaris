@@ -71,6 +71,11 @@ enum {
     DBDataMovieRelated
 };
 
+enum {
+	DBDataViewDefault,
+    DBDataViewPlain
+};
+
 /*
  * Delegate.
  */
@@ -108,8 +113,14 @@ enum {
     BOOL mode_notfound;
     BOOL mode_loading;
     BOOL mode_error;
+    
+    // type
+    int _type;
 
 }
+
+// Object
+- (id)init:(int)type;
 
 // Properties
 @property (assign) id<DBDataDelegate> delegate;

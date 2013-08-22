@@ -46,8 +46,8 @@ Connection::Connection(string idc, NodePtr n1, NodePtr n2) {
     selected = false;
     
     // color
-    cstroke = Color(0.75,0.75,0.75);
-    cstrokes = Color(0.6,0.6,0.6);
+    cstroke = Color(0.78,0.78,0.78);
+    cstrokes = Color(0.63,0.63,0.63);
     
     // size
     s = 1.0;

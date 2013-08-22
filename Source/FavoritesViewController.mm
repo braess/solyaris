@@ -9,6 +9,7 @@
 #import "FavoritesViewController.h"
 #import "SolyarisAppDelegate.h"
 #import "SolyarisConstants.h"
+#import "SearchViewController.h"
 #import "CellData.h"
 #import "Tracker.h"
 
@@ -75,9 +76,16 @@
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.view.autoresizesSubviews = YES;
     
+    
     // frames
-    CGRect fHeader = CGRectMake(0, 0, self.view.frame.size.width, kHeaderHeight);
-    CGRect fContent = CGRectMake(0, kHeaderHeight, self.view.frame.size.width, self.view.frame.size.height-kHeaderHeight);
+    CGRect fSelf = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    CGRect fHeader = CGRectMake(0, 0, self.view.frame.size.width, 44);
+    CGRect fContent = CGRectMake(0, 44, self.view.frame.size.width, self.view.frame.size.height-44);
+    
+    // background
+    UIView *bg = [[SearchView alloc] initWithFrame:fSelf type:SearchViewDefault];
+    [self.view addSubview:bg];
+    [bg release];
     
     // header
     HeaderView *header = [[HeaderView alloc] initWithFrame:fHeader];

@@ -22,8 +22,6 @@
 
 #import <UIKit/UIKit.h>
 
-// Constants
-#define kHeaderHeight    44.0f
 
 
 /**

@@ -65,6 +65,8 @@
 		182C673A152347FB0048E895 /* placeholder_info_person@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 182C6736152347FB0048E895 /* placeholder_info_person@2x.png */; };
 		182C673B152347FB0048E895 /* placeholder_thumb_movie@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 182C6737152347FB0048E895 /* placeholder_thumb_movie@2x.png */; };
 		182C673C152347FB0048E895 /* placeholder_thumb_person@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 182C6738152347FB0048E895 /* placeholder_thumb_person@2x.png */; };
+		1834D56517B26A7D00FFBFC6 /* Icon-40.png in Resources */ = {isa = PBXBuildFile; fileRef = 1834D56317B26A7D00FFBFC6 /* Icon-40.png */; };
+		1834D56617B26A7D00FFBFC6 /* Icon-40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1834D56417B26A7D00FFBFC6 /* Icon-40@2x.png */; };
 		1841428417131D760048C295 /* ios6_app_button_24-high.png in Resources */ = {isa = PBXBuildFile; fileRef = 1841426217131D760048C295 /* ios6_app_button_24-high.png */; };
 		1841428517131D760048C295 /* ios6_app_button_24-high@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1841426317131D760048C295 /* ios6_app_button_24-high@2x.png */; };
 		1841428817131D760048C295 /* ios6_app_button_30-high.png in Resources */ = {isa = PBXBuildFile; fileRef = 1841426617131D760048C295 /* ios6_app_button_30-high.png */; };
@@ -396,6 +398,8 @@
 		182C6736152347FB0048E895 /* placeholder_info_person@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "placeholder_info_person@2x.png"; path = "Assets/placeholder_info_person@2x.png"; sourceTree = "<group>"; };
 		182C6737152347FB0048E895 /* placeholder_thumb_movie@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "placeholder_thumb_movie@2x.png"; path = "Assets/placeholder_thumb_movie@2x.png"; sourceTree = "<group>"; };
 		182C6738152347FB0048E895 /* placeholder_thumb_person@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "placeholder_thumb_person@2x.png"; path = "Assets/placeholder_thumb_person@2x.png"; sourceTree = "<group>"; };
+		1834D56317B26A7D00FFBFC6 /* Icon-40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-40.png"; path = "Resources/Icons/Icon-40.png"; sourceTree = "<group>"; };
+		1834D56417B26A7D00FFBFC6 /* Icon-40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-40@2x.png"; path = "Resources/Icons/Icon-40@2x.png"; sourceTree = "<group>"; };
 		1841426217131D760048C295 /* ios6_app_button_24-high.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ios6_app_button_24-high.png"; path = "Assets/ios6_app_button_24-high.png"; sourceTree = "<group>"; };
 		1841426317131D760048C295 /* ios6_app_button_24-high@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ios6_app_button_24-high@2x.png"; path = "Assets/ios6_app_button_24-high@2x.png"; sourceTree = "<group>"; };
 		1841426617131D760048C295 /* ios6_app_button_30-high.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ios6_app_button_30-high.png"; path = "Assets/ios6_app_button_30-high.png"; sourceTree = "<group>"; };
@@ -1376,6 +1380,8 @@
 				1899D44F178B2EFF00A44269 /* Icon@2x.png */,
 				181C2725178CAD1E006B0B44 /* Icon-60.png */,
 				181C2726178CAD1E006B0B44 /* Icon-60@2x.png */,
+				1834D56317B26A7D00FFBFC6 /* Icon-40.png */,
+				1834D56417B26A7D00FFBFC6 /* Icon-40@2x.png */,
 				1899D448178B2EFF00A44269 /* Icon-72.png */,
 				1899D449178B2EFF00A44269 /* Icon-72@2x.png */,
 				181C2727178CAD1E006B0B44 /* Icon-76.png */,
@@ -1511,6 +1517,11 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0500;
+				TargetAttributes = {
+					1D6058900D05DD3D006BFB54 = {
+						DevelopmentTeam = UCUP73YHHX;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Solyaris" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1642,6 +1653,7 @@
 				188A56E615542B5600ACD98B /* placeholder_listing_person.png in Resources */,
 				1899D453178B2EFF00A44269 /* Icon-72@2x.png in Resources */,
 				188A56E715542B5600ACD98B /* placeholder_listing_person@2x.png in Resources */,
+				1834D56517B26A7D00FFBFC6 /* Icon-40.png in Resources */,
 				18AEF30F155AB3D40053666E /* node_movie_core_creativity.png in Resources */,
 				1899D468178B2F7300A44269 /* Default.png in Resources */,
 				18AEF310155AB3D40053666E /* node_movie_core_creativity@2x.png in Resources */,
@@ -1742,6 +1754,7 @@
 				1841428E17131D760048C295 /* ios6_app_navbar_32.png in Resources */,
 				1841428F17131D760048C295 /* ios6_app_navbar_32@2x.png in Resources */,
 				1841429017131D760048C295 /* ios6_app_navbar_44.png in Resources */,
+				1834D56617B26A7D00FFBFC6 /* Icon-40@2x.png in Resources */,
 				1841429117131D760048C295 /* ios6_app_navbar_44@2x.png in Resources */,
 				1841429217131D760048C295 /* app_navbar_shadow.png in Resources */,
 				1841429317131D760048C295 /* app_navbar_shadow@2x.png in Resources */,
@@ -1866,7 +1879,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Beat Raess (536TB5YWPC)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Beat Raess (536TB5YWPC)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -1890,8 +1903,8 @@
 					"-lz",
 				);
 				PRODUCT_NAME = solyaris;
-				PROVISIONING_PROFILE = "020B540A-AE5D-415D-B2BF-F6A53DB074AB";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "5CF5DADA-8015-4763-B2EB-3308A77FC8E4";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5CF5DADA-8015-4763-B2EB-3308A77FC8E4";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = armv7;
 			};
@@ -1901,8 +1914,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Beat Raess";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Beat Raess";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Beat Raess (UCUP73YHHX)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Beat Raess (UCUP73YHHX)";
 				COPY_PHASE_STRIP = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1924,8 +1937,8 @@
 					"-lz",
 				);
 				PRODUCT_NAME = solyaris;
-				PROVISIONING_PROFILE = "3BC6D768-3B41-4005-8399-03DE171DDCBD";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "3BC6D768-3B41-4005-8399-03DE171DDCBD";
+				PROVISIONING_PROFILE = "F01EBE5D-63ED-4230-8B3B-A63B31A87AE4";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "F01EBE5D-63ED-4230-8B3B-A63B31A87AE4";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = armv7;
 			};

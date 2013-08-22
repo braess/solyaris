@@ -22,6 +22,7 @@
 
 #import "DBDataViewController.h"
 #import "CellData.h"
+#import "SearchViewController.h"
 #import "SolyarisConstants.h"
 #import "Tracker.h"
 
@@ -58,6 +59,9 @@
  * Init.
  */
 - (id)init {
+    return [self init:DBDataViewDefault];
+}
+- (id)init:(int)type {
     GLog();
     
     // super
@@ -70,6 +74,9 @@
         
         // loading
         mode_loading = YES;
+        
+        // type
+        _type = type;
     }
     return self;
 }
@@ -92,8 +99,16 @@
     self.view.autoresizesSubviews = YES;
     
     // frames
-    CGRect fHeader = CGRectMake(0, 0, self.view.frame.size.width, kHeaderHeight);
-    CGRect fContent = CGRectMake(0, kHeaderHeight, self.view.frame.size.width, self.view.frame.size.height-kHeaderHeight);
+    CGRect fSelf = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    CGRect fHeader = CGRectMake(0, 0, self.view.frame.size.width, 44);
+    CGRect fContent = CGRectMake(0, 44, self.view.frame.size.width, self.view.frame.size.height-44);
+    
+    // background
+    if (_type == DBDataViewDefault) {
+        UIView *bg = [[SearchView alloc] initWithFrame:fSelf type:SearchViewDefault];
+        [self.view addSubview:bg];
+        [bg release];
+    }
     
     // header
     HeaderView *hdr = [[HeaderView alloc] initWithFrame:fHeader];
@@ -213,7 +228,7 @@
         
         // loader
         [_loader startAnimating];
-        _loader.center = CGPointMake(self.view.frame.size.width/2.0,kHeaderHeight+24);
+        _loader.center = CGPointMake(self.view.frame.size.width/2.0,44+24);
         [self.view bringSubviewToFront:_loader];
         _loader.hidden = NO;
     }

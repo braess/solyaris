@@ -147,7 +147,7 @@
     [modalView release];
     
     // content view
-    UIView *contentView = [[SearchView alloc] initWithFrame:CGRectZero];
+    UIView *contentView = [[SearchView alloc] initWithFrame:CGRectZero type:iPad ? SearchViewFooter : SearchViewDefault];
     _contentView = [contentView retain];
     [self.view addSubview:_contentView];
     [contentView release];
@@ -324,7 +324,7 @@
     // vars
     BOOL landscape = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]);
     float kheight = iPad ? (landscape ? 59 : 0) : (landscape ? 162 : 216);
-    float fheight = iPad ? kHeaderHeight : 0;
+    float fheight = iPad ? 44 : 0;
     float cheight = iPad ? (vframe.size.height-kheight) : (landscape ? vframe.size.width-vframe.origin.y-kheight : vframe.size.height-kheight);
     
     // screen
@@ -955,7 +955,7 @@
 /*
  * Initialize.
  */
-- (id)initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame type:(int)type {
 	GLog();
 	
 	// init self
@@ -966,7 +966,10 @@
 		self.backgroundColor = [UIColor whiteColor];
         self.autoresizesSubviews = YES;
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        self.contentMode = UIViewContentModeRedraw; 
+        self.contentMode = UIViewContentModeRedraw;
+        
+        // type
+        _type = type;
         
         // texture
         UIImage *texture = [UIImage imageNamed:@"bg_content.png"];
@@ -993,7 +996,6 @@
     // rects
     CGRect mrect = CGRectMake(0, 0, w, h);
     
-    
 	// context
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	CGContextClearRect(context, rect);
@@ -1016,25 +1018,23 @@
 	CGContextStrokePath(context);
     
 	CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.9 alpha:1].CGColor);
-	CGContextMoveToPoint(context, 0, kHeaderHeight-1);
-	CGContextAddLineToPoint(context, w, kHeaderHeight-1);
+	CGContextMoveToPoint(context, 0, 44-1);
+	CGContextAddLineToPoint(context, w, 44-1);
 	CGContextStrokePath(context);
 
-    
-    // ipad footr
-    if (iPad) {
+    // footer
+    if (_type == SearchViewFooter) {
         
         // footer lines
         CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.9 alpha:1].CGColor);
-        CGContextMoveToPoint(context, 0, h-kHeaderHeight+1);
-        CGContextAddLineToPoint(context, w, h-kHeaderHeight+1);
+        CGContextMoveToPoint(context, 0, h-43);
+        CGContextAddLineToPoint(context, w, h-43);
         CGContextStrokePath(context);
         
         CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.9 alpha:1].CGColor);
         CGContextMoveToPoint(context, 0, h);
         CGContextAddLineToPoint(context, w, h);
         CGContextStrokePath(context);
-        
         
     }
     

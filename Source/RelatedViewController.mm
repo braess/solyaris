@@ -126,7 +126,7 @@
     
     
     // data view
-    DBDataViewController *dbDataViewController = [[DBDataViewController alloc] init];
+    DBDataViewController *dbDataViewController = [[DBDataViewController alloc] init:DBDataViewPlain];
     [dbDataViewController loadView];
     dbDataViewController.delegate = self;
     dbDataViewController.header.back = NO;

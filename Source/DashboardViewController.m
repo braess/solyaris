@@ -23,6 +23,7 @@
 #import "DashboardViewController.h"
 #import "CellData.h"
 #import "SolyarisConstants.h"
+#import "SearchViewController.h"
 #import "Tracker.h"
 
 
@@ -55,28 +56,24 @@
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     self.view.autoresizesSubviews = YES;
     
-    
     // vars
     NSMutableString *strType = [[NSMutableString alloc] init];
     _type = [strType retain];
     [strType release];
     
+    // frames
+    CGRect fSelf = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    CGRect fHeader = CGRectMake(0, 0, self.view.frame.size.width, 44);
+    CGRect fContent = CGRectMake(0, 44, self.view.frame.size.width, self.view.frame.size.height-44);
     
-    // dashboard
-    UITableView *dashboard = [[UITableView alloc] initWithFrame:CGRectMake(0, 44, self.view.frame.size.width,  self.view.frame.size.height-44) style:UITableViewStylePlain];
-    dashboard.delegate = self;
-    dashboard.dataSource = self;
-    dashboard.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-    dashboard.separatorColor = [UIColor clearColor];
-    dashboard.scrollEnabled = NO;
-    
-    _dashboard = [dashboard retain];
-    [self.view addSubview:_dashboard];
-    [dashboard release];
+    // background
+    UIView *bg = [[SearchView alloc] initWithFrame:fSelf type:SearchViewDefault];
+    [self.view addSubview:bg];
+    [bg release];
     
     
     // tab
-    UIView *tabView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
+    UIView *tabView = [[UIView alloc] initWithFrame:fHeader];
     tabView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     tabView.backgroundColor = [UIColor clearColor];
     
@@ -92,6 +89,18 @@
     segFrame.origin.x = (_tabView.frame.size.width-segFrame.size.width)/2.0;
     segFrame.origin.y = 6;
     segments.frame = segFrame;
+    
+    // dashboard
+    UITableView *dashboard = [[UITableView alloc] initWithFrame:fContent style:UITableViewStylePlain];
+    dashboard.delegate = self;
+    dashboard.dataSource = self;
+    dashboard.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    dashboard.separatorColor = [UIColor clearColor];
+    dashboard.scrollEnabled = NO;
+    
+    _dashboard = [dashboard retain];
+    [self.view addSubview:_dashboard];
+    [dashboard release];
     
     
     // reset
