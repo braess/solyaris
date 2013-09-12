@@ -358,7 +358,8 @@
 		[composer addAttachmentData:data mimeType:@"image/png" fileName:@"Solyaris"];
         
 		// show off
-		[[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composer animated:YES completion:nil];
+        UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+		[presenter presentViewController:composer animated:YES completion:nil];
         
 		// release
 		[composer release];
@@ -393,7 +394,8 @@
         [composeViewController setCompletionHandler:^(SLComposeViewControllerResult result) {
             
             // dismiss the composition view controller
-            [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
+            UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+            [presenter dismissViewControllerAnimated:YES completion:nil];
             
             // result
             switch (result) {
@@ -410,7 +412,8 @@
         }];
         
         // modal
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composeViewController animated:YES completion:nil];
+        UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+        [presenter presentViewController:composeViewController animated:YES completion:nil];
     }
 }
 
@@ -452,7 +455,8 @@
         }];
         
         // modal
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composeViewController animated:YES completion:nil];
+        UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+        [presenter presentViewController:composeViewController animated:YES completion:nil];
     }
 }
 
@@ -482,7 +486,8 @@
         [composeViewController setCompletionHandler:^(SLComposeViewControllerResult result) {
             
             // dismiss the composition view controller
-            [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
+            UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+            [presenter dismissViewControllerAnimated:YES completion:nil];
             
             // result
             switch (result) {
@@ -499,7 +504,8 @@
         }];
         
         // modal
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composeViewController animated:YES completion:nil];
+        UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+        [presenter presentViewController:composeViewController animated:YES completion:nil];
     }
 }
 
@@ -554,7 +560,8 @@
 		[composer setSubject:[NSString stringWithFormat:@"[Solyaris] Feedback v%@",[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]]];
         
 		// show off
-		[[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composer animated:YES completion:nil];
+        UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+		[presenter presentViewController:composer animated:YES completion:nil];
         
 		// release
 		[composer release];
@@ -591,7 +598,8 @@
         [composer setMessageBody:msg isHTML:NO];
         
 		// show
-		[[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composer animated:YES completion:nil];
+        UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+		[presenter presentViewController:composer animated:YES completion:nil];
         
 		// release
 		[composer release];
@@ -727,7 +735,8 @@
 	}
 	
 	// close modal
-    [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
+    UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+    [presenter dismissViewControllerAnimated:YES completion:nil];
     
 }
 

@@ -211,8 +211,16 @@
     // screen
     CGRect screen = [[UIScreen mainScreen] bounds];
     
+    // frame
+    CGRect fSelf = screen;
+    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+        fSelf.size.width = screen.size.height;
+        fSelf.size.height = screen.size.width;
+    }
+
+    
     // frames
-    CGRect contentFrame = CGRectMake(screen.size.width/2.0-vframe.size.width/2.0, screen.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
+    CGRect contentFrame = CGRectMake(fSelf.size.width/2.0-vframe.size.width/2.0, fSelf.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
     CGRect headerFrame = CGRectMake(0, 0, contentFrame.size.width, kInformationHeaderHeight);
     CGRect footerFrame = CGRectMake(0, contentFrame.size.height-kInformationFooterHeight, contentFrame.size.width, kInformationFooterHeight);
     CGRect componentFrame = CGRectMake(0, kInformationHeaderHeight, contentFrame.size.width, contentFrame.size.height-kInformationHeaderHeight-kInformationFooterHeight);
@@ -220,7 +228,7 @@
     CGRect actionBarFrame = CGRectMake(0, 0, footerFrame.size.width, footerFrame.size.height);
     
     // view
-    UIView *sview = [[UIView alloc] initWithFrame:screen];
+    UIView *sview = [[UIView alloc] initWithFrame:fSelf];
     sview.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     
     // view
@@ -229,7 +237,7 @@
     
     
     // modal
-    UIView *mView = [[UIView alloc] initWithFrame:screen];
+    UIView *mView = [[UIView alloc] initWithFrame:fSelf];
     mView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     mView.backgroundColor = [UIColor blackColor];
     mView.opaque = NO;
@@ -1310,7 +1318,8 @@
 		[composer setMessageBody:html isHTML:YES];
         
 		// present
-		[[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composer animated:YES completion:nil];
+        UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+		[presenter presentViewController:composer animated:YES completion:nil];
         
 		// release
 		[composer release];
@@ -1358,7 +1367,8 @@
         SLComposeViewControllerCompletionHandler __block completionHandler=^(SLComposeViewControllerResult result){
             
             // dismiss the composition view controller
-            [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
+            UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+            [presenter dismissViewControllerAnimated:YES completion:nil];
             
             // result
             switch (result) {
@@ -1376,7 +1386,8 @@
         [composeViewController setCompletionHandler:completionHandler];
         
         // modal
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composeViewController animated:YES completion:nil];
+        UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+        [presenter presentViewController:composeViewController animated:YES completion:nil];
     }
    
 }
@@ -1391,7 +1402,7 @@
     [Tracker trackEvent:TEventInfo action:@"Share" label:@"Facebook"];
     
     // check facebook support
-    if (NSClassFromString(@"SLComposeViewController") != nil && [SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
         
         // movie
         NSString *movie_title = [_share objectForKey:kShareTitle];
@@ -1433,13 +1444,15 @@
             }
             
             // dismiss the composition view controller
-            [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
+            UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+            [presenter dismissViewControllerAnimated:YES completion:nil];
             
         };
         [composeViewController setCompletionHandler:completionHandler];
         
         // modal
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composeViewController animated:YES completion:nil];
+        UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+        [presenter presentViewController:composeViewController animated:YES completion:nil];
     }
 }
 
@@ -1704,7 +1717,8 @@
 	}
 	
 	// close modal
-	[[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
+    UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+	[presenter dismissViewControllerAnimated:YES completion:nil];
     
 }
 

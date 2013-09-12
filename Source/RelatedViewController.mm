@@ -396,7 +396,7 @@
         
         // background
         self.backgroundColor = [UIColor whiteColor];
-        self.layer.cornerRadius = 3;
+        self.layer.cornerRadius = 5;
         self.layer.shadowColor = [[UIColor blackColor] CGColor];
         self.layer.shadowOpacity = 0.2;
         self.layer.shadowRadius = 2.0;

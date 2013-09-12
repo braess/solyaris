@@ -237,7 +237,8 @@
 		[composer setMessageBody:html_export isHTML:YES];
         
 		// present
-		[[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:composer animated:YES completion:nil];
+        UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+		[presenter presentViewController:composer animated:YES completion:nil];
         
 		// release
 		[composer release];
@@ -351,7 +352,8 @@
 	}
 	
 	// close modal
-	[[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:YES completion:nil];
+    UIViewController *presenter = (! iOS6) ? self : [UIApplication sharedApplication].keyWindow.rootViewController;
+	[presenter dismissViewControllerAnimated:YES completion:nil];
     
 }
 

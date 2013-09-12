@@ -406,9 +406,7 @@
     FLog();
 
     // hide settings
-    if (! iPad) {
-        _buttonSettings.hidden = (toInterfaceOrientation == UIInterfaceOrientationPortrait) ? NO : YES;
-    }
+    _buttonSettings.hidden = (toInterfaceOrientation == UIInterfaceOrientationPortrait) ? NO : YES;
 
 }
 
@@ -1853,7 +1851,7 @@
     // animate
     [UIView animateWithDuration:animated ? kAnimateTimeInformationLoad : 0
                           delay:0
-                        options:UIViewAnimationCurveLinear
+                        options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          information.modalView.alpha = kAlphaModalInfo;
                      }

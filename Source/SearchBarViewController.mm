@@ -135,7 +135,7 @@
     
     // frames
     CGRect bgframe = CGRectMake(0, 0, fwidth, fheight);
-    CGRect sbframe = CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0)-1, swidth, sheight);
+    CGRect sbframe = CGRectMake(fwidth*0.5-swidth*0.5, ((fheight-sheight)/2.0), swidth, sheight);
     CGRect lframe = CGRectMake(border, ((fheight-lheight)/2.0), lwidth, lheight);
     CGRect ltframe = CGRectMake(border+lwidth+inset, inset+1, twidth, theight);
     CGRect lcframe = CGRectMake(border+lwidth+inset, inset+theight-1, twidth, theight);
