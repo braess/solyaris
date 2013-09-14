@@ -54,9 +54,9 @@ Edge::Edge(string ide, NodePtr n1, NodePtr n2) {
     pos.set(0,0);
     
     // color
-    cstroke = Color(0.88,0.88,0.88);
-    cstrokea = Color(0.88,0.88,0.88);
-    cstrokes = Color(0.78,0.78,0.78);
+    cstroke = Color(0.90,0.90,0.90);
+    cstrokea = Color(0.90,0.90,0.90);
+    cstrokes = Color(0.81,0.81,0.81);
     
     ctxt = Color(0.5,0.5,0.5);
     ctxta = Color(0.5,0.5,0.5);

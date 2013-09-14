@@ -406,7 +406,7 @@
     FLog();
 
     // hide settings
-    _buttonSettings.hidden = (toInterfaceOrientation == UIInterfaceOrientationPortrait) ? NO : YES;
+    _buttonSettings.hidden = UIInterfaceOrientationIsPortrait(toInterfaceOrientation) ? NO : YES;
 
 }
 

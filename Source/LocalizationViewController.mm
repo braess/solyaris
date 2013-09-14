@@ -90,6 +90,7 @@
     // self
     self.view.frame = vframe;
     self.view.autoresizingMask = UIViewAutoresizingNone;
+    self.view.backgroundColor = [UIColor whiteColor];
     
     // size
 	self.contentSizeForViewInPopover = CGSizeMake(vframe.size.width, vframe.size.height);
