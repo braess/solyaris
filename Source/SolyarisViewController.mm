@@ -35,12 +35,13 @@
 /**
  * Helper Stack.
  */
-@interface SolyarisViewController (Animations)
+@interface SolyarisViewController (Helpers)
 - (NSString*)makeNodeId:(NSNumber*)nid type:(NSString*)type;
 - (NSString*)makeEdgeId:(NSString*)pid to:(NSString*)cid;
 - (NSString*)makeConnectionId:(NSString*)sid to:(NSString*)nid;
 - (NSNumber*)toDBId:(NSString*)nid;
 - (void)randomTagline;
+- (CGRect)frameSelf;
 @end
 
 
@@ -406,7 +407,7 @@
     FLog();
 
     // hide settings
-    _buttonSettings.hidden = UIInterfaceOrientationIsPortrait(toInterfaceOrientation) ? NO : YES;
+    _buttonSettings.hidden = (toInterfaceOrientation == UIInterfaceOrientationPortrait) ? NO : YES;
 
 }
 
@@ -1560,8 +1561,8 @@
         state_search = YES;
         
         // frames
-        CGRect fSelf = self.view.frame;
-        CGRect frameSearch = iPad ? CGRectMake(0, 40, 360,439) : CGRectMake(0, 40, fSelf.size.width,fSelf.size.height-40);
+        CGRect fSelf = [self frameSelf];
+        CGRect frameSearch = iPad ? CGRectMake(0, 40, 360,439) : CGRectMake(0, 40, 320,MAX(fSelf.size.width,fSelf.size.height)-40);
         
         // controller
         SearchViewController *searchViewController = [[SearchViewController alloc] initWithFrame:frameSearch];
@@ -1617,7 +1618,7 @@
         state_info = YES;
         
         // frame
-        CGRect fSelf = self.view.frame;
+        CGRect fSelf = [self frameSelf];
         CGRect frameInformation = iPad ? CGRectMake(0, 0, 580, 624) : CGRectMake(0, 0, fSelf.size.width, fSelf.size.height);
         
         // information
@@ -1672,7 +1673,7 @@
         state_settings = YES;
         
         // frame
-        CGRect fSelf = self.view.frame;
+        CGRect fSelf = [self frameSelf];
         CGRect frameSettings = iPad ? CGRectMake(0, 0, 708, kOffsetSettings) : CGRectMake(0, 0, fSelf.size.width, fSelf.size.height);
         
         // settings
@@ -1784,11 +1785,12 @@
     [self.view bringSubviewToFront:search.view];
     
     // prepare
+    CGRect fSelf = [self frameSelf];
     search.modalView.alpha = 0.0f;
     
     // content view
     CGRect contentFrame = search.contentView.frame;
-    contentFrame.origin.y = self.view.frame.size.height;
+    contentFrame.origin.y = fSelf.size.height;
     search.contentView.frame = contentFrame;
     
     contentFrame.origin.y = 0;
@@ -1809,8 +1811,9 @@
     FLog();
     
     // prepare
+    CGRect fSelf = [self frameSelf];
     CGRect contentFrame = search.contentView.frame;
-    contentFrame.origin.y = self.view.frame.size.height;
+    contentFrame.origin.y = fSelf.size.height;
     
     // animate
     [search willMoveToParentViewController:nil];
@@ -1880,12 +1883,13 @@
     [information loading:NO];
     
     // prepare
+    CGRect fSelf = [self frameSelf];
     CGPoint informationCenter = information.contentView.center;
-    informationCenter.y += self.view.frame.size.height;
+    informationCenter.y += fSelf.size.height;
     information.contentView.center = informationCenter;
     information.contentView.hidden = NO;
     
-    informationCenter.y -= self.view.frame.size.height;
+    informationCenter.y -= fSelf.size.height;
     
     // animate
     [UIView animateWithDuration:animated ? kAnimateTimeInformationShow : 0
@@ -1903,8 +1907,9 @@
     FLog();
     
     // prepare
+    CGRect fSelf = [self frameSelf];
     CGPoint informationCenter = information.contentView.center;
-    informationCenter.y += self.view.frame.size.height;
+    informationCenter.y += fSelf.size.height;
     
     // animate
     [information willMoveToParentViewController:nil];
@@ -2170,6 +2175,18 @@
     [_searchBarViewController claim:tagline];
 }
 
+/*
+ * Frame self.
+ */
+- (CGRect)frameSelf {
+    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect fSelf = screen;
+    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
+        fSelf.size.width = screen.size.height;
+        fSelf.size.height = screen.size.width;
+    }
+    return fSelf;
+}
 
 
 

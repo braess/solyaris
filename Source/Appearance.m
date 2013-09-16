@@ -155,7 +155,7 @@
         UIImage *navbar_shadow = [[UIImage imageNamed:@"app_navbar_shadow.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
         [[UINavigationBar appearance] setBackgroundImage:navbar forBarMetrics:UIBarMetricsDefault];
         [[UINavigationBar appearance] setShadowImage:navbar_shadow];
-        
+        [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
         [[UINavigationBar appearance] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                               [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0], UITextAttributeTextColor,
                                                               [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.8], UITextAttributeTextShadowColor,
@@ -207,6 +207,7 @@
             // navbar
             [[UINavigationBar appearanceWhenContainedIn:[UIPopoverController class], nil] setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
             [[UINavigationBar appearanceWhenContainedIn:[UIPopoverController class], nil] setShadowImage:[[[UIImage alloc] init] autorelease]];
+            [[UINavigationBar appearanceWhenContainedIn:[UIPopoverController class], nil] setTintColor:[UIColor colorWithRed:78/255.0 green:78/255.0 blue:78/255.0 alpha:1.0]];
             [[UINavigationBar appearanceWhenContainedIn:[UIPopoverController class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                                                                                   [UIColor colorWithRed:78/255.0 green:78/255.0 blue:78/255.0 alpha:1.0], UITextAttributeTextColor,
                                                                                                                   nil]];
@@ -1024,11 +1025,6 @@
     
     // init super
     if ((self = [super initWithContentViewController:viewController])) {
-        if (! iOS6) {
-            
-            // tint
-            self.contentViewController.view.tintColor = [UIColor colorWithRed:78/255.0 green:78/255.0 blue:78/255.0 alpha:1.0];
-        }
         
     }
     return self;

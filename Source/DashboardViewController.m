@@ -96,7 +96,7 @@
     dashboard.dataSource = self;
     dashboard.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     dashboard.separatorColor = [UIColor clearColor];
-    dashboard.scrollEnabled = NO;
+    dashboard.scrollEnabled = ! iPad;
     
     _dashboard = [dashboard retain];
     [self.view addSubview:_dashboard];

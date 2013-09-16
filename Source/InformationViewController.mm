@@ -217,7 +217,6 @@
         fSelf.size.width = screen.size.height;
         fSelf.size.height = screen.size.width;
     }
-
     
     // frames
     CGRect contentFrame = CGRectMake(fSelf.size.width/2.0-vframe.size.width/2.0, fSelf.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);

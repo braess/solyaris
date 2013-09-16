@@ -329,7 +329,6 @@ void Graph::update() {
  */
 void Graph::draw() {
     
-    
     // background
     gl::color( ColorA(1.0f, 1.0f, 1.0f, 1.0f) ); // alpha channel
     gl::draw(portrait ? bg_portrait : bg_landscape);
@@ -338,7 +337,6 @@ void Graph::draw() {
     gl::pushMatrices();
     gl::translate(translate);
     gl::scale(Vec2d(scale,scale));
-    
     
     // edges
     for (EdgeIt edge = edges.begin(); edge != edges.end(); ++edge) {

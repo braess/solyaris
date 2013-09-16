@@ -46,7 +46,7 @@ Tooltip::Tooltip(Vec2d b) {
     bounds = b;
     
     // color
-    cbg = ColorA(0.9,0.9,0.9,0.9);
+    cbg = ColorA(0.93,0.93,0.93,0.9);
     ctxt = ColorA(0,0,0,1);
     
     // font
