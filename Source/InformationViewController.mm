@@ -649,7 +649,7 @@
     [_favorite setObject:@"" forKey:kFavThumb];
     [_share setObject:@"" forKey:kShareThumb];
     [_share setObject:@"" forKey:kShareImage];
-    for (Asset *a in movie.assets) {
+    for (Asset *a in movie.asts) {
         if ([a.type isEqualToString:assetPoster] && [a.size isEqualToString:assetSizeThumb]) {
             [_favorite setObject:a.value forKey:kFavThumb];
             [_share setObject:a.value forKey:kShareThumb];
@@ -722,7 +722,7 @@
     
     // thumb
     [_favorite setObject:@"" forKey:kFavThumb];
-    for (Asset *a in person.assets) {
+    for (Asset *a in person.asts) {
         if ([a.type isEqualToString:assetProfile] && [a.size isEqualToString:assetSizeThumb]) {
             [_favorite setObject:a.value forKey:kFavThumb];
             break;
@@ -2096,7 +2096,7 @@
     // poset
     NSString *poster = @"";
     NSString *posterSize = [NSString stringWithFormat:@"%@",((iPad && [Utils isRetina]) ? assetSizeMid : assetSizeThumb)];
-    for (Asset *a in movie.assets) {
+    for (Asset *a in movie.asts) {
         
         // poster
         if ([a.type isEqualToString:assetPoster] && [a.size isEqualToString:posterSize]) { 
@@ -2304,7 +2304,7 @@
     
     // profile
     NSString *profile = @"";
-    for (Asset *a in person.assets) {
+    for (Asset *a in person.asts) {
         
         // profile
         if ([a.type isEqualToString:assetProfile] && [a.size isEqualToString:assetSizeMid]) {

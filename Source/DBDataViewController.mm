@@ -604,7 +604,7 @@
             
             // thumb
             NSString *thumb = @"";
-            for (Asset *a in movie.assets) {
+            for (Asset *a in movie.asts) {
                 
                 // poster
                 if ([a.type isEqualToString:assetPoster] && [a.size isEqualToString:assetSizeThumb]) { 
@@ -628,7 +628,7 @@
             
             // thumb
             NSString *thumb = @"";
-            for (Asset *a in person.assets) {
+            for (Asset *a in person.asts) {
                 
                 // poster
                 if ([a.type isEqualToString:assetProfile] && [a.size isEqualToString:assetSizeThumb]) { 

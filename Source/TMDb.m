@@ -582,7 +582,7 @@
     if (movie != NULL) {
         
         // assets
-        for (Asset *asset in movie.assets) {
+        for (Asset *asset in movie.asts) {
             if ([asset.type isEqualToString:assetPoster] && [asset.size isEqualToString:assetSizeThumb]) {
                 thumb = [NSString stringWithString:(asset.value ? [NSString stringWithString:asset.value] : @"")];
                 break;
@@ -611,7 +611,7 @@
     if (person != NULL) {
         
         // assets
-        for (Asset *asset in person.assets) {
+        for (Asset *asset in person.asts) {
             if ([asset.type isEqualToString:assetProfile] && [asset.size isEqualToString:assetSizeThumb]) {
                 thumb = [NSString stringWithString:(asset.value ? [NSString stringWithString:asset.value] : @"")];
                 break;
@@ -1823,7 +1823,7 @@
         poster_thumb.value = [self parseImage:[djson objectForKey:@"poster_path"] type:apiTMDbPosterThumb];
         poster_thumb.sort = [NSNumber numberWithInt:-1];
         poster_thumb.movie = movie;
-        [movie addAssetsObject:poster_thumb];
+        [movie addAstsObject:poster_thumb];
         
         // poster mid
         Asset *poster_mid = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
@@ -1833,7 +1833,7 @@
         poster_mid.value = [self parseImage:[djson objectForKey:@"poster_path"] type:apiTMDbPosterMid];
         poster_mid.sort = [NSNumber numberWithInt:-1];
         poster_mid.movie = movie;
-        [movie addAssetsObject:poster_mid];
+        [movie addAstsObject:poster_mid];
         
         // poster original
         Asset *poster_original = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
@@ -1843,7 +1843,7 @@
         poster_original.value = [self parseImage:[djson objectForKey:@"poster_path"] type:apiTMDbPosterOriginal];
         poster_original.sort = [NSNumber numberWithInt:-1];
         poster_original.movie = movie;
-        [movie addAssetsObject:poster_original];
+        [movie addAstsObject:poster_original];
         
         
         // genres
@@ -2067,7 +2067,7 @@
                     profile.value = [self parseImage:[dperson objectForKey:@"profile_path"] type:apiTMDbProfileThumb];
                     profile.sort = [NSNumber numberWithInt:-1];
                     profile.person = person;
-                    [person addAssetsObject:profile];
+                    [person addAstsObject:profile];
                     
                     // defaults
                     person.loaded = NO;
@@ -2290,7 +2290,7 @@
         backdrop_mid.value = [self parseImage:[dbackdrop objectForKey:@"file_path"] type:apiTMDbBackdropMid];
         backdrop_mid.sort = [NSNumber numberWithInt:bdcount++];
         backdrop_mid.movie = movie;
-        [movie addAssetsObject:backdrop_mid];
+        [movie addAstsObject:backdrop_mid];
         
         // backdrop med
         Asset *backdrop_med = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
@@ -2300,7 +2300,7 @@
         backdrop_med.value = [self parseImage:[dbackdrop objectForKey:@"file_path"] type:apiTMDbBackdropMed];
         backdrop_med.sort = [NSNumber numberWithInt:bdcount++];
         backdrop_med.movie = movie;
-        [movie addAssetsObject:backdrop_med];
+        [movie addAstsObject:backdrop_med];
         
         // backdrop original
         Asset *backdrop_original = (Asset*)[NSEntityDescription insertNewObjectForEntityForName:@"Asset" inManagedObjectContext:managedObjectContext];
@@ -2310,7 +2310,7 @@
         backdrop_original.value = [self parseImage:[dbackdrop objectForKey:@"file_path"] type:apiTMDbBackdropOriginal];
         backdrop_original.sort = [NSNumber numberWithInt:bdcount++];
         backdrop_original.movie = movie;
-        [movie addAssetsObject:backdrop_original];
+        [movie addAstsObject:backdrop_original];
     }
     
     // return
@@ -2381,7 +2381,7 @@
         trailer.value = [self parseString:[dyoutube objectForKey:@"source"]];
         trailer.sort = [NSNumber numberWithInt:tcount++];
         trailer.movie = movie;
-        [movie addAssetsObject:trailer];
+        [movie addAstsObject:trailer];
 
     }
     
@@ -2715,7 +2715,7 @@
         profile_thumb.value = [self parseImage:[djson objectForKey:@"profile_path"] type:apiTMDbProfileThumb];
         profile_thumb.sort = [NSNumber numberWithInt:-1];
         profile_thumb.person = person;
-        [person addAssetsObject:profile_thumb];
+        [person addAstsObject:profile_thumb];
         
         
         // profile mid
@@ -2726,7 +2726,7 @@
         profile_mid.value = [self parseImage:[djson objectForKey:@"profile_path"] type:apiTMDbProfileMid];
         profile_mid.sort = [NSNumber numberWithInt:-1];
         profile_mid.person = person;
-        [person addAssetsObject:profile_mid];
+        [person addAstsObject:profile_mid];
         
         
         // profile original
@@ -2737,7 +2737,7 @@
         profile_original.value = [self parseImage:[djson objectForKey:@"profile_path"] type:apiTMDbProfileOriginal];
         profile_original.sort = [NSNumber numberWithInt:-1];
         profile_original.person = person;
-        [person addAssetsObject:profile_original];
+        [person addAstsObject:profile_original];
         
         // credits
         person = [self queryPersonCredits:person retry:YES];
@@ -2919,7 +2919,7 @@
                     poster.value = [self parseImage:[dmovie objectForKey:@"poster_path"] type:apiTMDbPosterThumb];
                     poster.sort = [NSNumber numberWithInt:-1];
                     poster.movie = movie;
-                    [movie addAssetsObject:poster];
+                    [movie addAstsObject:poster];
                     
                     // defaults
                     movie.loaded = [NSNumber numberWithBool:NO];

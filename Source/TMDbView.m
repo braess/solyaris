@@ -160,7 +160,7 @@
     
     // sort
 	NSSortDescriptor *sorter = [[NSSortDescriptor alloc] initWithKey:@"sort" ascending:TRUE];
-	NSArray *assets = [[movie.assets allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sorter]];
+	NSArray *assets = [[movie.asts allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sorter]];
 	[sorter release];
     
     // flags

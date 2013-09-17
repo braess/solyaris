@@ -22,6 +22,9 @@
 
 #import "Tracker.h"
 #import "GAI/GAI.h"
+#import "GAI/GAI.h"
+#import "GAI/GAIDictionaryBuilder.h"
+#import "Gai/GAIFields.h"
 
 
 /**
@@ -42,8 +45,7 @@
     #else
     @try {
         // init
-        [GAI sharedInstance].debug = NO;
-        [GAI sharedInstance].dispatchInterval = 120;
+        [GAI sharedInstance].dispatchInterval = 60;
         [GAI sharedInstance].trackUncaughtExceptions = YES;
         
         // tracker
@@ -63,7 +65,9 @@
     NSLog(@"Tracker: View %@",view);
     #else
     @try {
-        [[GAI sharedInstance].defaultTracker trackView:view];
+        id tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:kGAIScreenName value:view];
+        [tracker send:[[GAIDictionaryBuilder createAppView] build]];
     }
     @catch (id exception) {
 	}
@@ -82,7 +86,11 @@
     NSLog(@"Tracker: Event %@ %@ %@",category,action,label);
     #else
     @try {
-        [[GAI sharedInstance].defaultTracker trackEventWithCategory:category withAction:action withLabel:label withValue:nil];
+        id tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker send:[[GAIDictionaryBuilder createEventWithCategory:category
+                                                              action:action
+                                                               label:label
+                                                               value:nil] build]];
     }
     @catch (id exception) {
 	}
@@ -99,18 +107,19 @@
 	[Tracker trackError:[NSString stringWithFormat:@"%@ - %@: %@",cls,method,message] error:error];
 }
 + (void)trackError:(NSString *)msg error:(NSError *)error {
-    
-#ifdef DEBUG
+    #ifdef DEBUG
     NSLog(@"Tracker: Error %@\n%@",msg,error);
-#else
+    #else
     @try {
-        [[GAI sharedInstance].defaultTracker trackException:NO withNSError:error];
-        [[GAI sharedInstance].defaultTracker trackEventWithCategory:TEventError withAction:msg withLabel:[NSString stringWithFormat:@"%@",error != nil ? error : @""] withValue:nil];
+        id tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker send:[[GAIDictionaryBuilder createEventWithCategory:TEventError
+                                                              action:msg
+                                                               label:[NSString stringWithFormat:@"%@",error != nil ? error : @""]
+                                                               value:nil] build]];
     }
     @catch (id exception) {
 	}
-#endif
-    
+    #endif
 }
 
 @end

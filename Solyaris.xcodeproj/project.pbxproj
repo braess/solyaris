@@ -172,21 +172,6 @@
 		1899D469178B2F7300A44269 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1899D462178B2F7300A44269 /* Default@2x.png */; };
 		1899D46E178B2FD300A44269 /* Solyaris.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1899D46A178B2FD300A44269 /* Solyaris.xcdatamodeld */; };
 		1899D46F178B2FD300A44269 /* TMDb.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1899D46C178B2FD300A44269 /* TMDb.xcdatamodeld */; };
-		1899EFF61578F45C00D838B0 /* Movie.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899EFF51578F45C00D838B0 /* Movie.m */; };
-		1899EFF91578F45D00D838B0 /* NowPlayingResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899EFF81578F45D00D838B0 /* NowPlayingResult.m */; };
-		1899EFFC1578F45D00D838B0 /* NowPlaying.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899EFFB1578F45D00D838B0 /* NowPlaying.m */; };
-		1899EFFF1578F45D00D838B0 /* Similar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899EFFE1578F45D00D838B0 /* Similar.m */; };
-		1899F0021578F45D00D838B0 /* Movie2Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899F0011578F45D00D838B0 /* Movie2Person.m */; };
-		1899F0051578F45D00D838B0 /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899F0041578F45D00D838B0 /* Search.m */; };
-		1899F0081578F45D00D838B0 /* Popular.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899F0071578F45D00D838B0 /* Popular.m */; };
-		1899F00B1578F45D00D838B0 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899F00A1578F45D00D838B0 /* SearchResult.m */; };
-		1899F00E1578F45E00D838B0 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899F00D1578F45E00D838B0 /* Person.m */; };
-		1899F0111578F45E00D838B0 /* Asset.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899F0101578F45E00D838B0 /* Asset.m */; };
-		1899F0141578F45E00D838B0 /* PopularResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899F0131578F45E00D838B0 /* PopularResult.m */; };
-		1899F0171578F45E00D838B0 /* SimilarMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899F0161578F45E00D838B0 /* SimilarMovie.m */; };
-		1899F01A1578F45E00D838B0 /* Genre.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899F0191578F45E00D838B0 /* Genre.m */; };
-		189A815E169D930A0065C5A7 /* libGoogleAnalytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 189A815C169D930A0065C5A7 /* libGoogleAnalytics.a */; };
-		189A815F169D930A0065C5A7 /* libGoogleAnalytics_debug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 189A815D169D930A0065C5A7 /* libGoogleAnalytics_debug.a */; };
 		18A26E66157CADB1006871B2 /* Rater.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A26E65157CADB1006871B2 /* Rater.m */; };
 		18A65CD8140EC58E009962D7 /* placeholder_info_movie.png in Resources */ = {isa = PBXBuildFile; fileRef = 18A65CD4140EC58E009962D7 /* placeholder_info_movie.png */; };
 		18A65CD9140EC58E009962D7 /* placeholder_info_person.png in Resources */ = {isa = PBXBuildFile; fileRef = 18A65CD5140EC58E009962D7 /* placeholder_info_person.png */; };
@@ -272,6 +257,20 @@
 		18AEF336155ACA110053666E /* DataCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AEF335155ACA110053666E /* DataCounter.m */; };
 		18B05244154FDE4000DF1600 /* btn_tmdb.png in Resources */ = {isa = PBXBuildFile; fileRef = 18B05242154FDE4000DF1600 /* btn_tmdb.png */; };
 		18B05245154FDE4000DF1600 /* btn_tmdb@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18B05243154FDE4000DF1600 /* btn_tmdb@2x.png */; };
+		18B3D39F17E8A06A000DA4F0 /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B3D39E17E8A06A000DA4F0 /* libGoogleAnalyticsServices.a */; };
+		18B3D3A217E8A18F000DA4F0 /* SearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B3D3A117E8A18F000DA4F0 /* SearchResult.m */; };
+		18B3D3A517E8A190000DA4F0 /* SimilarMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B3D3A417E8A190000DA4F0 /* SimilarMovie.m */; };
+		18B3D3A817E8A190000DA4F0 /* Movie2Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B3D3A717E8A190000DA4F0 /* Movie2Person.m */; };
+		18B3D3AB17E8A190000DA4F0 /* Search.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B3D3AA17E8A190000DA4F0 /* Search.m */; };
+		18B3D3AE17E8A190000DA4F0 /* Asset.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B3D3AD17E8A190000DA4F0 /* Asset.m */; };
+		18B3D3B117E8A190000DA4F0 /* NowPlayingResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B3D3B017E8A190000DA4F0 /* NowPlayingResult.m */; };
+		18B3D3B417E8A190000DA4F0 /* PopularResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B3D3B317E8A190000DA4F0 /* PopularResult.m */; };
+		18B3D3B717E8A191000DA4F0 /* Similar.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B3D3B617E8A191000DA4F0 /* Similar.m */; };
+		18B3D3BA17E8A191000DA4F0 /* Movie.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B3D3B917E8A191000DA4F0 /* Movie.m */; };
+		18B3D3BD17E8A191000DA4F0 /* Genre.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B3D3BC17E8A191000DA4F0 /* Genre.m */; };
+		18B3D3C017E8A191000DA4F0 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B3D3BF17E8A191000DA4F0 /* Person.m */; };
+		18B3D3C317E8A191000DA4F0 /* NowPlaying.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B3D3C217E8A191000DA4F0 /* NowPlaying.m */; };
+		18B3D3C617E8A191000DA4F0 /* Popular.m in Sources */ = {isa = PBXBuildFile; fileRef = 18B3D3C517E8A191000DA4F0 /* Popular.m */; };
 		18B6ABC314A37F2400461849 /* btn_trailer.png in Resources */ = {isa = PBXBuildFile; fileRef = 18B6ABC214A37F2400461849 /* btn_trailer.png */; };
 		18BEF5EB1433B6B6003314FE /* app_fav.png in Resources */ = {isa = PBXBuildFile; fileRef = 18BEF5EA1433B6B6003314FE /* app_fav.png */; };
 		18CE92FB169B10AD0020575A /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CE92FA169B10AD0020575A /* NSData+Base64.m */; };
@@ -522,39 +521,6 @@
 		1899D46D178B2FD300A44269 /* TMDb.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TMDb.xcdatamodel; sourceTree = "<group>"; };
 		1899D470178B302300A44269 /* Solyaris_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Solyaris_Prefix.pch; path = Resources/Solyaris_Prefix.pch; sourceTree = "<group>"; };
 		1899D471178B302300A44269 /* Solyaris-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Solyaris-Info.plist"; path = "Resources/Solyaris-Info.plist"; sourceTree = "<group>"; };
-		1899EFF41578F45C00D838B0 /* Movie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Movie.h; path = Source/Movie.h; sourceTree = "<group>"; };
-		1899EFF51578F45C00D838B0 /* Movie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Movie.m; path = Source/Movie.m; sourceTree = "<group>"; };
-		1899EFF71578F45D00D838B0 /* NowPlayingResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NowPlayingResult.h; path = Source/NowPlayingResult.h; sourceTree = "<group>"; };
-		1899EFF81578F45D00D838B0 /* NowPlayingResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NowPlayingResult.m; path = Source/NowPlayingResult.m; sourceTree = "<group>"; };
-		1899EFFA1578F45D00D838B0 /* NowPlaying.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NowPlaying.h; path = Source/NowPlaying.h; sourceTree = "<group>"; };
-		1899EFFB1578F45D00D838B0 /* NowPlaying.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NowPlaying.m; path = Source/NowPlaying.m; sourceTree = "<group>"; };
-		1899EFFD1578F45D00D838B0 /* Similar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Similar.h; path = Source/Similar.h; sourceTree = "<group>"; };
-		1899EFFE1578F45D00D838B0 /* Similar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Similar.m; path = Source/Similar.m; sourceTree = "<group>"; };
-		1899F0001578F45D00D838B0 /* Movie2Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Movie2Person.h; path = Source/Movie2Person.h; sourceTree = "<group>"; };
-		1899F0011578F45D00D838B0 /* Movie2Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Movie2Person.m; path = Source/Movie2Person.m; sourceTree = "<group>"; };
-		1899F0031578F45D00D838B0 /* Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Search.h; path = Source/Search.h; sourceTree = "<group>"; };
-		1899F0041578F45D00D838B0 /* Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Search.m; path = Source/Search.m; sourceTree = "<group>"; };
-		1899F0061578F45D00D838B0 /* Popular.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Popular.h; path = Source/Popular.h; sourceTree = "<group>"; };
-		1899F0071578F45D00D838B0 /* Popular.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Popular.m; path = Source/Popular.m; sourceTree = "<group>"; };
-		1899F0091578F45D00D838B0 /* SearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchResult.h; path = Source/SearchResult.h; sourceTree = "<group>"; };
-		1899F00A1578F45D00D838B0 /* SearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchResult.m; path = Source/SearchResult.m; sourceTree = "<group>"; };
-		1899F00C1578F45E00D838B0 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Person.h; path = Source/Person.h; sourceTree = "<group>"; };
-		1899F00D1578F45E00D838B0 /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Person.m; path = Source/Person.m; sourceTree = "<group>"; };
-		1899F00F1578F45E00D838B0 /* Asset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Asset.h; path = Source/Asset.h; sourceTree = "<group>"; };
-		1899F0101578F45E00D838B0 /* Asset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Asset.m; path = Source/Asset.m; sourceTree = "<group>"; };
-		1899F0121578F45E00D838B0 /* PopularResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PopularResult.h; path = Source/PopularResult.h; sourceTree = "<group>"; };
-		1899F0131578F45E00D838B0 /* PopularResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PopularResult.m; path = Source/PopularResult.m; sourceTree = "<group>"; };
-		1899F0151578F45E00D838B0 /* SimilarMovie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimilarMovie.h; path = Source/SimilarMovie.h; sourceTree = "<group>"; };
-		1899F0161578F45E00D838B0 /* SimilarMovie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SimilarMovie.m; path = Source/SimilarMovie.m; sourceTree = "<group>"; };
-		1899F0181578F45E00D838B0 /* Genre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Genre.h; path = Source/Genre.h; sourceTree = "<group>"; };
-		1899F0191578F45E00D838B0 /* Genre.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Genre.m; path = Source/Genre.m; sourceTree = "<group>"; };
-		189A8157169D930A0065C5A7 /* GAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAI.h; sourceTree = "<group>"; };
-		189A8158169D930A0065C5A7 /* GAITrackedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITrackedViewController.h; sourceTree = "<group>"; };
-		189A8159169D930A0065C5A7 /* GAITracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITracker.h; sourceTree = "<group>"; };
-		189A815A169D930A0065C5A7 /* GAITransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITransaction.h; sourceTree = "<group>"; };
-		189A815B169D930A0065C5A7 /* GAITransactionItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITransactionItem.h; sourceTree = "<group>"; };
-		189A815C169D930A0065C5A7 /* libGoogleAnalytics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAnalytics.a; sourceTree = "<group>"; };
-		189A815D169D930A0065C5A7 /* libGoogleAnalytics_debug.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAnalytics_debug.a; sourceTree = "<group>"; };
 		18A26E64157CADB1006871B2 /* Rater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Rater.h; path = Source/Rater.h; sourceTree = "<group>"; };
 		18A26E65157CADB1006871B2 /* Rater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Rater.m; path = Source/Rater.m; sourceTree = "<group>"; };
 		18A65CD4140EC58E009962D7 /* placeholder_info_movie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = placeholder_info_movie.png; path = Assets/placeholder_info_movie.png; sourceTree = "<group>"; };
@@ -687,6 +653,39 @@
 		18AEF335155ACA110053666E /* DataCounter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataCounter.m; path = Source/DataCounter.m; sourceTree = "<group>"; };
 		18B05242154FDE4000DF1600 /* btn_tmdb.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_tmdb.png; path = Assets/btn_tmdb.png; sourceTree = "<group>"; };
 		18B05243154FDE4000DF1600 /* btn_tmdb@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn_tmdb@2x.png"; path = "Assets/btn_tmdb@2x.png"; sourceTree = "<group>"; };
+		18B3D39817E8A06A000DA4F0 /* GAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAI.h; sourceTree = "<group>"; };
+		18B3D39917E8A06A000DA4F0 /* GAIDictionaryBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIDictionaryBuilder.h; sourceTree = "<group>"; };
+		18B3D39A17E8A06A000DA4F0 /* GAIFields.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIFields.h; sourceTree = "<group>"; };
+		18B3D39B17E8A06A000DA4F0 /* GAILogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAILogger.h; sourceTree = "<group>"; };
+		18B3D39C17E8A06A000DA4F0 /* GAITrackedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITrackedViewController.h; sourceTree = "<group>"; };
+		18B3D39D17E8A06A000DA4F0 /* GAITracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAITracker.h; sourceTree = "<group>"; };
+		18B3D39E17E8A06A000DA4F0 /* libGoogleAnalyticsServices.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAnalyticsServices.a; sourceTree = "<group>"; };
+		18B3D3A017E8A18F000DA4F0 /* SearchResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchResult.h; path = Source/SearchResult.h; sourceTree = "<group>"; };
+		18B3D3A117E8A18F000DA4F0 /* SearchResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SearchResult.m; path = Source/SearchResult.m; sourceTree = "<group>"; };
+		18B3D3A317E8A190000DA4F0 /* SimilarMovie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimilarMovie.h; path = Source/SimilarMovie.h; sourceTree = "<group>"; };
+		18B3D3A417E8A190000DA4F0 /* SimilarMovie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SimilarMovie.m; path = Source/SimilarMovie.m; sourceTree = "<group>"; };
+		18B3D3A617E8A190000DA4F0 /* Movie2Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Movie2Person.h; path = Source/Movie2Person.h; sourceTree = "<group>"; };
+		18B3D3A717E8A190000DA4F0 /* Movie2Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Movie2Person.m; path = Source/Movie2Person.m; sourceTree = "<group>"; };
+		18B3D3A917E8A190000DA4F0 /* Search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Search.h; path = Source/Search.h; sourceTree = "<group>"; };
+		18B3D3AA17E8A190000DA4F0 /* Search.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Search.m; path = Source/Search.m; sourceTree = "<group>"; };
+		18B3D3AC17E8A190000DA4F0 /* Asset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Asset.h; path = Source/Asset.h; sourceTree = "<group>"; };
+		18B3D3AD17E8A190000DA4F0 /* Asset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Asset.m; path = Source/Asset.m; sourceTree = "<group>"; };
+		18B3D3AF17E8A190000DA4F0 /* NowPlayingResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NowPlayingResult.h; path = Source/NowPlayingResult.h; sourceTree = "<group>"; };
+		18B3D3B017E8A190000DA4F0 /* NowPlayingResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NowPlayingResult.m; path = Source/NowPlayingResult.m; sourceTree = "<group>"; };
+		18B3D3B217E8A190000DA4F0 /* PopularResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PopularResult.h; path = Source/PopularResult.h; sourceTree = "<group>"; };
+		18B3D3B317E8A190000DA4F0 /* PopularResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PopularResult.m; path = Source/PopularResult.m; sourceTree = "<group>"; };
+		18B3D3B517E8A191000DA4F0 /* Similar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Similar.h; path = Source/Similar.h; sourceTree = "<group>"; };
+		18B3D3B617E8A191000DA4F0 /* Similar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Similar.m; path = Source/Similar.m; sourceTree = "<group>"; };
+		18B3D3B817E8A191000DA4F0 /* Movie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Movie.h; path = Source/Movie.h; sourceTree = "<group>"; };
+		18B3D3B917E8A191000DA4F0 /* Movie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Movie.m; path = Source/Movie.m; sourceTree = "<group>"; };
+		18B3D3BB17E8A191000DA4F0 /* Genre.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Genre.h; path = Source/Genre.h; sourceTree = "<group>"; };
+		18B3D3BC17E8A191000DA4F0 /* Genre.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Genre.m; path = Source/Genre.m; sourceTree = "<group>"; };
+		18B3D3BE17E8A191000DA4F0 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Person.h; path = Source/Person.h; sourceTree = "<group>"; };
+		18B3D3BF17E8A191000DA4F0 /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Person.m; path = Source/Person.m; sourceTree = "<group>"; };
+		18B3D3C117E8A191000DA4F0 /* NowPlaying.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NowPlaying.h; path = Source/NowPlaying.h; sourceTree = "<group>"; };
+		18B3D3C217E8A191000DA4F0 /* NowPlaying.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NowPlaying.m; path = Source/NowPlaying.m; sourceTree = "<group>"; };
+		18B3D3C417E8A191000DA4F0 /* Popular.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Popular.h; path = Source/Popular.h; sourceTree = "<group>"; };
+		18B3D3C517E8A191000DA4F0 /* Popular.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Popular.m; path = Source/Popular.m; sourceTree = "<group>"; };
 		18B6ABC214A37F2400461849 /* btn_trailer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_trailer.png; path = Assets/btn_trailer.png; sourceTree = "<group>"; };
 		18BEF5EA1433B6B6003314FE /* app_fav.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = app_fav.png; path = Assets/app_fav.png; sourceTree = "<group>"; };
 		18C42BF61491173E00DA48B3 /* APIKeys_template.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APIKeys_template.h; path = Source/APIKeys_template.h; sourceTree = "<group>"; };
@@ -771,12 +770,11 @@
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */,
 				28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */,
+				18B3D39F17E8A06A000DA4F0 /* libGoogleAnalyticsServices.a in Frameworks */,
 				00CFDF6B1138442D0091E310 /* CoreGraphics.framework in Frameworks */,
 				C727C02E121B400300192073 /* CoreVideo.framework in Frameworks */,
 				C7FB19D6124BC0D70045AFD2 /* AudioToolbox.framework in Frameworks */,
 				C7FB19D6124BC0D70045AFD3 /* CoreText.framework in Frameworks */,
-				189A815E169D930A0065C5A7 /* libGoogleAnalytics.a in Frameworks */,
-				189A815F169D930A0065C5A7 /* libGoogleAnalytics_debug.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1048,13 +1046,13 @@
 		189A8156169D930A0065C5A7 /* GAI */ = {
 			isa = PBXGroup;
 			children = (
-				189A8157169D930A0065C5A7 /* GAI.h */,
-				189A8158169D930A0065C5A7 /* GAITrackedViewController.h */,
-				189A8159169D930A0065C5A7 /* GAITracker.h */,
-				189A815A169D930A0065C5A7 /* GAITransaction.h */,
-				189A815B169D930A0065C5A7 /* GAITransactionItem.h */,
-				189A815C169D930A0065C5A7 /* libGoogleAnalytics.a */,
-				189A815D169D930A0065C5A7 /* libGoogleAnalytics_debug.a */,
+				18B3D39817E8A06A000DA4F0 /* GAI.h */,
+				18B3D39917E8A06A000DA4F0 /* GAIDictionaryBuilder.h */,
+				18B3D39A17E8A06A000DA4F0 /* GAIFields.h */,
+				18B3D39B17E8A06A000DA4F0 /* GAILogger.h */,
+				18B3D39C17E8A06A000DA4F0 /* GAITrackedViewController.h */,
+				18B3D39D17E8A06A000DA4F0 /* GAITracker.h */,
+				18B3D39E17E8A06A000DA4F0 /* libGoogleAnalyticsServices.a */,
 			);
 			name = GAI;
 			path = Source/GAI;
@@ -1130,32 +1128,32 @@
 		18AC0257143F2D680096259D /* model */ = {
 			isa = PBXGroup;
 			children = (
-				1899F0181578F45E00D838B0 /* Genre.h */,
-				1899F0191578F45E00D838B0 /* Genre.m */,
-				1899F0151578F45E00D838B0 /* SimilarMovie.h */,
-				1899F0161578F45E00D838B0 /* SimilarMovie.m */,
-				1899F0121578F45E00D838B0 /* PopularResult.h */,
-				1899F0131578F45E00D838B0 /* PopularResult.m */,
-				1899F00F1578F45E00D838B0 /* Asset.h */,
-				1899F0101578F45E00D838B0 /* Asset.m */,
-				1899F00C1578F45E00D838B0 /* Person.h */,
-				1899F00D1578F45E00D838B0 /* Person.m */,
-				1899F0091578F45D00D838B0 /* SearchResult.h */,
-				1899F00A1578F45D00D838B0 /* SearchResult.m */,
-				1899F0061578F45D00D838B0 /* Popular.h */,
-				1899F0071578F45D00D838B0 /* Popular.m */,
-				1899F0031578F45D00D838B0 /* Search.h */,
-				1899F0041578F45D00D838B0 /* Search.m */,
-				1899F0001578F45D00D838B0 /* Movie2Person.h */,
-				1899F0011578F45D00D838B0 /* Movie2Person.m */,
-				1899EFFD1578F45D00D838B0 /* Similar.h */,
-				1899EFFE1578F45D00D838B0 /* Similar.m */,
-				1899EFFA1578F45D00D838B0 /* NowPlaying.h */,
-				1899EFFB1578F45D00D838B0 /* NowPlaying.m */,
-				1899EFF71578F45D00D838B0 /* NowPlayingResult.h */,
-				1899EFF81578F45D00D838B0 /* NowPlayingResult.m */,
-				1899EFF41578F45C00D838B0 /* Movie.h */,
-				1899EFF51578F45C00D838B0 /* Movie.m */,
+				18B3D3C417E8A191000DA4F0 /* Popular.h */,
+				18B3D3C517E8A191000DA4F0 /* Popular.m */,
+				18B3D3C117E8A191000DA4F0 /* NowPlaying.h */,
+				18B3D3C217E8A191000DA4F0 /* NowPlaying.m */,
+				18B3D3BE17E8A191000DA4F0 /* Person.h */,
+				18B3D3BF17E8A191000DA4F0 /* Person.m */,
+				18B3D3BB17E8A191000DA4F0 /* Genre.h */,
+				18B3D3BC17E8A191000DA4F0 /* Genre.m */,
+				18B3D3B817E8A191000DA4F0 /* Movie.h */,
+				18B3D3B917E8A191000DA4F0 /* Movie.m */,
+				18B3D3B517E8A191000DA4F0 /* Similar.h */,
+				18B3D3B617E8A191000DA4F0 /* Similar.m */,
+				18B3D3B217E8A190000DA4F0 /* PopularResult.h */,
+				18B3D3B317E8A190000DA4F0 /* PopularResult.m */,
+				18B3D3AF17E8A190000DA4F0 /* NowPlayingResult.h */,
+				18B3D3B017E8A190000DA4F0 /* NowPlayingResult.m */,
+				18B3D3AC17E8A190000DA4F0 /* Asset.h */,
+				18B3D3AD17E8A190000DA4F0 /* Asset.m */,
+				18B3D3A917E8A190000DA4F0 /* Search.h */,
+				18B3D3AA17E8A190000DA4F0 /* Search.m */,
+				18B3D3A617E8A190000DA4F0 /* Movie2Person.h */,
+				18B3D3A717E8A190000DA4F0 /* Movie2Person.m */,
+				18B3D3A317E8A190000DA4F0 /* SimilarMovie.h */,
+				18B3D3A417E8A190000DA4F0 /* SimilarMovie.m */,
+				18B3D3A017E8A18F000DA4F0 /* SearchResult.h */,
+				18B3D3A117E8A18F000DA4F0 /* SearchResult.m */,
 			);
 			name = model;
 			sourceTree = "<group>";
@@ -1777,12 +1775,16 @@
 				18AC022E143F2D1D0096259D /* Edge.cpp in Sources */,
 				18AC022F143F2D1D0096259D /* Graph.cpp in Sources */,
 				18AC0230143F2D1D0096259D /* Defaults.cpp in Sources */,
+				18B3D3B117E8A190000DA4F0 /* NowPlayingResult.m in Sources */,
 				18AC0231143F2D1D0096259D /* HTMLView.m in Sources */,
 				18AC0232143F2D1D0096259D /* SolyarisViewController.mm in Sources */,
 				18AC0233143F2D1D0096259D /* InformationViewController.mm in Sources */,
 				18AC0234143F2D1D0096259D /* ListingView.m in Sources */,
+				18B3D3A817E8A190000DA4F0 /* Movie2Person.m in Sources */,
+				18B3D3AB17E8A190000DA4F0 /* Search.m in Sources */,
 				18AC0237143F2D1D0096259D /* Node.cpp in Sources */,
 				18AC0239143F2D1D0096259D /* PreferencesViewController.mm in Sources */,
+				18B3D3A517E8A190000DA4F0 /* SimilarMovie.m in Sources */,
 				18AC023A143F2D1D0096259D /* NSObject+SBJson.m in Sources */,
 				18AC023B143F2D1D0096259D /* SBJsonParser.m in Sources */,
 				18AC023C143F2D1D0096259D /* SBJsonStreamParser.m in Sources */,
@@ -1790,9 +1792,11 @@
 				18AC023E143F2D1D0096259D /* SBJsonStreamParserAdapter.m in Sources */,
 				18AC023F143F2D1D0096259D /* SBJsonStreamParserState.m in Sources */,
 				18AC0240143F2D1D0096259D /* SBJsonStreamWriter.m in Sources */,
+				18B3D3A217E8A18F000DA4F0 /* SearchResult.m in Sources */,
 				18AC0241143F2D1D0096259D /* SBJsonStreamWriterAccumulator.m in Sources */,
 				18AC0242143F2D1D0096259D /* SBJsonStreamWriterState.m in Sources */,
 				18AC0243143F2D1D0096259D /* SBJsonTokeniser.m in Sources */,
+				18B3D3C017E8A191000DA4F0 /* Person.m in Sources */,
 				18AC0244143F2D1D0096259D /* SBJsonUTF8Stream.m in Sources */,
 				18AC0245143F2D1D0096259D /* SBJsonWriter.m in Sources */,
 				18AC0248143F2D1D0096259D /* DBDataViewController.mm in Sources */,
@@ -1802,6 +1806,7 @@
 				18AC024C143F2D1D0096259D /* Solyaris.mm in Sources */,
 				18AC024D143F2D1D0096259D /* SplashView.m in Sources */,
 				18AC024E143F2D1D0096259D /* TMDb.m in Sources */,
+				18B3D3B417E8A190000DA4F0 /* PopularResult.m in Sources */,
 				18AC024F143F2D1D0096259D /* TMDbView.m in Sources */,
 				18AC0250143F2D1D0096259D /* Tooltip.cpp in Sources */,
 				18AC0265143F31AF0096259D /* SolyarisAppDelegate.mm in Sources */,
@@ -1821,31 +1826,24 @@
 				186B5BEF1552EF74006E746F /* CellData.m in Sources */,
 				186B5BF21552F132006E746F /* DashboardViewController.m in Sources */,
 				186B5BF515530BA0006E746F /* HeaderView.m in Sources */,
+				18B3D3C317E8A191000DA4F0 /* NowPlaying.m in Sources */,
 				188A56D8155408B700ACD98B /* Appearance.m in Sources */,
 				188682C91557E0CC00223CDB /* DBData.m in Sources */,
 				18AEF336155ACA110053666E /* DataCounter.m in Sources */,
+				18B3D3B717E8A191000DA4F0 /* Similar.m in Sources */,
 				1885FC75156133E300E001B5 /* PageControl.m in Sources */,
+				18B3D3BD17E8A191000DA4F0 /* Genre.m in Sources */,
 				188AAF2A1575147100481D72 /* RelatedViewController.mm in Sources */,
 				18883FB8157644F00093018C /* Connection.cpp in Sources */,
-				1899EFF61578F45C00D838B0 /* Movie.m in Sources */,
-				1899EFF91578F45D00D838B0 /* NowPlayingResult.m in Sources */,
-				1899EFFC1578F45D00D838B0 /* NowPlaying.m in Sources */,
-				1899EFFF1578F45D00D838B0 /* Similar.m in Sources */,
 				1899D46E178B2FD300A44269 /* Solyaris.xcdatamodeld in Sources */,
-				1899F0021578F45D00D838B0 /* Movie2Person.m in Sources */,
-				1899F0051578F45D00D838B0 /* Search.m in Sources */,
-				1899F0081578F45D00D838B0 /* Popular.m in Sources */,
-				1899F00B1578F45D00D838B0 /* SearchResult.m in Sources */,
 				1899D46F178B2FD300A44269 /* TMDb.xcdatamodeld in Sources */,
-				1899F00E1578F45E00D838B0 /* Person.m in Sources */,
-				1899F0111578F45E00D838B0 /* Asset.m in Sources */,
-				1899F0141578F45E00D838B0 /* PopularResult.m in Sources */,
-				1899F0171578F45E00D838B0 /* SimilarMovie.m in Sources */,
-				1899F01A1578F45E00D838B0 /* Genre.m in Sources */,
 				18A26E66157CADB1006871B2 /* Rater.m in Sources */,
 				1819B5F01695A85800A69FD9 /* SolyarisDataManager.m in Sources */,
 				1819B5FA1695B09D00A69FD9 /* ImageToDataTransformer.m in Sources */,
 				185EC82D1696D45B00EC87EF /* FavoritesViewController.mm in Sources */,
+				18B3D3C617E8A191000DA4F0 /* Popular.m in Sources */,
+				18B3D3BA17E8A191000DA4F0 /* Movie.m in Sources */,
+				18B3D3AE17E8A190000DA4F0 /* Asset.m in Sources */,
 				18CE92FB169B10AD0020575A /* NSData+Base64.m in Sources */,
 				180295E9169B2CB300DCD93A /* Favorite.m in Sources */,
 			);
@@ -1885,7 +1883,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Source/GAI\"",
+					/Users/cnpp/Develop/ios/Solyaris/Solyaris/Source/GAI,
 				);
 				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
 					"\"$(CINDER_PATH)/lib/libcinder-iphone_d.a\"",
@@ -1920,7 +1918,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Source/GAI\"",
+					/Users/cnpp/Develop/ios/Solyaris/Solyaris/Source/GAI,
 				);
 				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
 					"\"$(CINDER_PATH)/lib/libcinder-iphone_d.a\"",
@@ -1931,8 +1929,8 @@
 					"-lz",
 				);
 				PRODUCT_NAME = solyaris;
-				PROVISIONING_PROFILE = "C0AAD588-177D-404C-86EE-E17F7FEC803C";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C0AAD588-177D-404C-86EE-E17F7FEC803C";
+				PROVISIONING_PROFILE = "F01EBE5D-63ED-4230-8B3B-A63B31A87AE4";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "F01EBE5D-63ED-4230-8B3B-A63B31A87AE4";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = armv7;
 			};

@@ -2,8 +2,8 @@
 //  Person.m
 //  Solyaris
 //
-//  Created by Beat Raess on 1.6.2012.
-//  Copyright (c) 2012 Beat Raess. All rights reserved.
+//  Created by CNPP on 17.09.13.
+//
 //
 
 #import "Person.h"
@@ -24,6 +24,6 @@
 @dynamic name;
 @dynamic birthplace;
 @dynamic movies;
-@dynamic assets;
+@dynamic asts;
 
 @end

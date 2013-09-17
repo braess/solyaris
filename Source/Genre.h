@@ -2,8 +2,8 @@
 //  Genre.h
 //  Solyaris
 //
-//  Created by Beat Raess on 1.6.2012.
-//  Copyright (c) 2012 Beat Raess. All rights reserved.
+//  Created by CNPP on 17.09.13.
+//
 //
 
 #import <Foundation/Foundation.h>
@@ -24,4 +24,5 @@
 - (void)removeMoviesObject:(Movie *)value;
 - (void)addMovies:(NSSet *)values;
 - (void)removeMovies:(NSSet *)values;
+
 @end

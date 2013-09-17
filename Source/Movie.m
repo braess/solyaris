@@ -2,8 +2,8 @@
 //  Movie.m
 //  Solyaris
 //
-//  Created by Beat Raess on 1.6.2012.
-//  Copyright (c) 2012 Beat Raess. All rights reserved.
+//  Created by CNPP on 17.09.13.
+//
 //
 
 #import "Movie.h"
@@ -23,12 +23,12 @@
 @dynamic details;
 @dynamic imdb;
 @dynamic runtime;
+@dynamic title;
 @dynamic overview;
 @dynamic homepage;
-@dynamic title;
 @dynamic tagline;
 @dynamic related;
-@dynamic assets;
+@dynamic asts;
 @dynamic similar;
 @dynamic genres;
 @dynamic persons;

@@ -2,8 +2,8 @@
 //  Person.h
 //  Solyaris
 //
-//  Created by Beat Raess on 1.6.2012.
-//  Copyright (c) 2012 Beat Raess. All rights reserved.
+//  Created by CNPP on 17.09.13.
+//
 //
 
 #import <Foundation/Foundation.h>
@@ -24,7 +24,7 @@
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * birthplace;
 @property (nonatomic, retain) NSSet *movies;
-@property (nonatomic, retain) NSSet *assets;
+@property (nonatomic, retain) NSSet *asts;
 @end
 
 @interface Person (CoreDataGeneratedAccessors)
@@ -33,8 +33,10 @@
 - (void)removeMoviesObject:(Movie2Person *)value;
 - (void)addMovies:(NSSet *)values;
 - (void)removeMovies:(NSSet *)values;
-- (void)addAssetsObject:(Asset *)value;
-- (void)removeAssetsObject:(Asset *)value;
-- (void)addAssets:(NSSet *)values;
-- (void)removeAssets:(NSSet *)values;
+
+- (void)addAstsObject:(Asset *)value;
+- (void)removeAstsObject:(Asset *)value;
+- (void)addAsts:(NSSet *)values;
+- (void)removeAsts:(NSSet *)values;
+
 @end

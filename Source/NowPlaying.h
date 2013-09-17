@@ -2,8 +2,8 @@
 //  NowPlaying.h
 //  Solyaris
 //
-//  Created by Beat Raess on 1.6.2012.
-//  Copyright (c) 2012 Beat Raess. All rights reserved.
+//  Created by CNPP on 17.09.13.
+//
 //
 
 #import <Foundation/Foundation.h>
@@ -13,12 +13,12 @@
 
 @interface NowPlaying : NSManagedObject
 
-@property (nonatomic, retain) NSString * ident;
+@property (nonatomic, retain) NSNumber * parsed;
 @property (nonatomic, retain) NSNumber * count;
+@property (nonatomic, retain) NSString * ident;
 @property (nonatomic, retain) NSString * type;
 @property (nonatomic, retain) NSNumber * total;
 @property (nonatomic, retain) NSNumber * page;
-@property (nonatomic, retain) NSNumber * parsed;
 @property (nonatomic, retain) NSSet *results;
 @end
 
@@ -28,4 +28,5 @@
 - (void)removeResultsObject:(NowPlayingResult *)value;
 - (void)addResults:(NSSet *)values;
 - (void)removeResults:(NSSet *)values;
+
 @end
