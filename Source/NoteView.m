@@ -54,7 +54,7 @@
 #pragma mark Constants
 
 // constants
-#define kNoteOpacity                    0.9f
+#define kNoteOpacity                    0.85f
 #define kAnimateTimeNoteShow            0.21f
 #define kAnimateTimeNoteDismiss         0.18f
 #define kDelayTimeNoteDismiss           4.5f
