@@ -1883,7 +1883,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/cnpp/Develop/ios/Solyaris/Solyaris/Source/GAI,
+					/Users/braess/Develop/iOS/Solyaris/project/Source/GAI,
 				);
 				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
 					"\"$(CINDER_PATH)/lib/libcinder-iphone_d.a\"",
@@ -1894,8 +1894,8 @@
 					"-lz",
 				);
 				PRODUCT_NAME = solyaris;
-				PROVISIONING_PROFILE = "5CF5DADA-8015-4763-B2EB-3308A77FC8E4";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5CF5DADA-8015-4763-B2EB-3308A77FC8E4";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "9E97A85D-251A-47CA-9B40-871754AA541F";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = armv7;
 			};
@@ -1918,7 +1918,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/Users/cnpp/Develop/ios/Solyaris/Solyaris/Source/GAI,
+					/Users/braess/Develop/iOS/Solyaris/project/Source/GAI,
 				);
 				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
 					"\"$(CINDER_PATH)/lib/libcinder-iphone_d.a\"",
@@ -1929,8 +1929,8 @@
 					"-lz",
 				);
 				PRODUCT_NAME = solyaris;
-				PROVISIONING_PROFILE = "C0AAD588-177D-404C-86EE-E17F7FEC803C";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C0AAD588-177D-404C-86EE-E17F7FEC803C";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "DB3C8651-5D03-4BF9-8037-76F3D2120DAB";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = armv7;
 			};
