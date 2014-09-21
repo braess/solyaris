@@ -24,7 +24,7 @@
 #import "SolyarisAppDelegate.h"
 #import "SolyarisConstants.h"
 #import "SolyarisLocalization.h"
-#import "Utils.h"
+#import "Device.h"
 #import "Tracker.h"
 
 
@@ -593,7 +593,7 @@
 		[composer setSubject:[NSString stringWithFormat:@"[Solyaris] Bug v%@",[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]]];
         
         // message
-        NSString *msg = [NSString stringWithFormat:@"%@\n\n\n\n---\nSystem\niOS: %@\nDevice: %@\nDisplay: %@",NSLocalizedString(@"Sorry that Solyaris is not working as expected - please describe the problem and steps involved to reproduce the bug.", @"Sorry that Solyaris is not working as expected - please describe the problem and steps involved to reproduce the bug."),[[UIDevice currentDevice] systemVersion],[[UIDevice currentDevice] model], [Utils isRetina] ? @"Retina" : @"Default"];
+        NSString *msg = [NSString stringWithFormat:@"%@\n\n\n\n---\nSystem\niOS: %@\nDevice: %@\nDisplay: %@",NSLocalizedString(@"Sorry that Solyaris is not working as expected - please describe the problem and steps involved to reproduce the bug.", @"Sorry that Solyaris is not working as expected - please describe the problem and steps involved to reproduce the bug."),[[UIDevice currentDevice] systemVersion],[[UIDevice currentDevice] model], [Device retina] ? @"Retina" : @"Default"];
         [composer setMessageBody:msg isHTML:NO];
         
 		// show

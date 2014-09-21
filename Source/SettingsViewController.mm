@@ -24,6 +24,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "SolyarisAppDelegate.h"
 #import "SolyarisConstants.h"
+#import "Device.h"
 #import "Tracker.h"
 
 /**
@@ -100,7 +101,7 @@
 	DLog();
     
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen];
     
     // sizes
     float border = (screen.size.width-vframe.size.width)/2.0;

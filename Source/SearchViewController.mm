@@ -22,6 +22,7 @@
 
 #import "SearchViewController.h"
 #import "SolyarisConstants.h"
+#import "Device.h"
 #import "Tracker.h"
 
 /*
@@ -328,10 +329,10 @@
     float cheight = iPad ? (vframe.size.height-kheight) : (landscape ? vframe.size.width-vframe.origin.y-kheight : vframe.size.height-kheight);
     
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen];
     
     // frames
-    CGRect selfFrame = landscape ? CGRectMake(0,vframe.origin.y,screen.size.height,screen.size.width-vframe.origin.y) : CGRectMake(0,vframe.origin.y,screen.size.width,screen.size.height-vframe.origin.y);
+    CGRect selfFrame = CGRectMake(0, vframe.origin.y, screen.size.width, screen.size.height-vframe.origin.y);
     CGRect modalFrame = CGRectMake(0,0,selfFrame.size.width,selfFrame.size.height);
     CGRect contentFrame = CGRectMake(0, 0, selfFrame.size.width, cheight);
     CGRect footerFrame = CGRectMake(10+(selfFrame.size.width-vframe.size.width)/2.0,contentFrame.size.height-fheight,vframe.size.width-20,fheight);

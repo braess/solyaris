@@ -23,6 +23,7 @@
 #import "RelatedViewController.h"
 #import "SolyarisConstants.h"
 #import "Tracker.h"
+#import "Device.h"
 #import <QuartzCore/QuartzCore.h>
 
 
@@ -181,10 +182,10 @@
     BOOL landscape = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]);
     
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen];
     
     // frames
-    CGRect selfFrame = landscape ? CGRectMake(0,0,screen.size.height,screen.size.width) : CGRectMake(0,0,screen.size.width,screen.size.height);
+    CGRect selfFrame = screen;
     CGRect contentFrame = CGRectMake(MIN(vPos.x,selfFrame.size.width-vframe.size.width-10), MIN(vPos.y,selfFrame.size.height-vframe.size.height-10), vframe.size.width, vframe.size.height);
     if (!iPad) {
         contentFrame = CGRectMake((int)((selfFrame.size.width-vframe.size.width)/2.0), (int)((selfFrame.size.height-vframe.size.height)/2.0), vframe.size.width, vframe.size.height);

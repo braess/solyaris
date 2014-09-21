@@ -22,6 +22,7 @@
 
 #import "HelpView.h"
 #import "SolyarisConstants.h"
+#import "Device.h"
 
 
 /**
@@ -277,8 +278,8 @@
     BOOL portrait = UIDeviceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation]);
     
     // frames
-    CGRect screen = [[UIScreen mainScreen] bounds];
-    CGRect fSelf = portrait ? CGRectMake(0, 0, screen.size.width, screen.size.height) : CGRectMake(0, 0, screen.size.height, screen.size.width);
+    CGRect screen = [Device screen];
+    CGRect fSelf = screen;
 
     
     // self

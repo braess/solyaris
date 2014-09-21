@@ -21,6 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "SplashView.h"
+#import "Device.h"
 
 /**
  * Splash Stack.
@@ -91,7 +92,7 @@
 - (void)layoutSubviews {
     
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen];
     
     // frame
     CGRect frame = CGRectMake(0, 0, screen.size.width, screen.size.height);

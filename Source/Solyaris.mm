@@ -21,7 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #include "Solyaris.h"
-#include "Utils.h"
+#include "Device.h"
 
 #pragma mark -
 #pragma mark Cinder
@@ -43,7 +43,7 @@ void Solyaris::setup() {
     DLog();
     
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen];
     
     // redux
     redux = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? false : true;
@@ -54,7 +54,7 @@ void Solyaris::setup() {
     dheight = screen.size.height;
     
     // retina
-    if ([Utils isRetina]) {
+    if ([Device retina]) {
         retina = true;
         dwidth *= 2;
         dheight *= 2;

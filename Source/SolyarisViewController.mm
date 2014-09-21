@@ -28,6 +28,7 @@
 #import "SolyarisConstants.h"
 #import "SolyarisLocalization.h"
 #import "HelpView.h"
+#import "Device.h"
 #import "Tracker.h"
 #import "Rater.h"
 
@@ -41,7 +42,6 @@
 - (NSString*)makeConnectionId:(NSString*)sid to:(NSString*)nid;
 - (NSNumber*)toDBId:(NSString*)nid;
 - (void)randomTagline;
-- (CGRect)frameSelf;
 @end
 
 
@@ -171,7 +171,7 @@
 	FLog();
     
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen];
     
     // frames
     CGRect frame = CGRectMake(0, 0, screen.size.width, screen.size.height);
@@ -422,7 +422,7 @@
     [UIView setAnimationDuration:0]; // animation distorts view
     
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen];
     
     // flip 
     if (toInterfaceOrientation == UIInterfaceOrientationPortrait) {      
@@ -1561,7 +1561,7 @@
         state_search = YES;
         
         // frames
-        CGRect fSelf = [self frameSelf];
+        CGRect fSelf = [Device screen];
         CGRect frameSearch = iPad ? CGRectMake(0, 40, 360,439) : CGRectMake(0, 40, 320,MAX(fSelf.size.width,fSelf.size.height)-40);
         
         // controller
@@ -1618,7 +1618,7 @@
         state_info = YES;
         
         // frame
-        CGRect fSelf = [self frameSelf];
+        CGRect fSelf = [Device screen];
         CGRect frameInformation = iPad ? CGRectMake(0, 0, 580, 624) : CGRectMake(0, 0, fSelf.size.width, fSelf.size.height);
         
         // information
@@ -1673,7 +1673,7 @@
         state_settings = YES;
         
         // frame
-        CGRect fSelf = [self frameSelf];
+        CGRect fSelf = [Device screen];
         CGRect frameSettings = iPad ? CGRectMake(0, 0, 708, kOffsetSettings) : CGRectMake(0, 0, fSelf.size.width, fSelf.size.height);
         
         // settings
@@ -1785,7 +1785,7 @@
     [self.view bringSubviewToFront:search.view];
     
     // prepare
-    CGRect fSelf = [self frameSelf];
+    CGRect fSelf = [Device screen];
     search.modalView.alpha = 0.0f;
     
     // content view
@@ -1811,7 +1811,7 @@
     FLog();
     
     // prepare
-    CGRect fSelf = [self frameSelf];
+    CGRect fSelf = [Device screen];
     CGRect contentFrame = search.contentView.frame;
     contentFrame.origin.y = fSelf.size.height;
     
@@ -1883,7 +1883,7 @@
     [information loading:NO];
     
     // prepare
-    CGRect fSelf = [self frameSelf];
+    CGRect fSelf = [Device screen];
     CGPoint informationCenter = information.contentView.center;
     informationCenter.y += fSelf.size.height;
     information.contentView.center = informationCenter;
@@ -1907,7 +1907,7 @@
     FLog();
     
     // prepare
-    CGRect fSelf = [self frameSelf];
+    CGRect fSelf = [Device screen];
     CGPoint informationCenter = information.contentView.center;
     informationCenter.y += fSelf.size.height;
     
@@ -2173,19 +2173,6 @@
     
     // set
     [_searchBarViewController claim:tagline];
-}
-
-/*
- * Frame self.
- */
-- (CGRect)frameSelf {
-    CGRect screen = [[UIScreen mainScreen] bounds];
-    CGRect fSelf = screen;
-    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
-        fSelf.size.width = screen.size.height;
-        fSelf.size.height = screen.size.width;
-    }
-    return fSelf;
 }
 
 

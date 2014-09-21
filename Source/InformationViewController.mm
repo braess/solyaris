@@ -28,6 +28,7 @@
 #import "Utils.h"
 #import "NSData+Base64.h"
 #import "Tracker.h"
+#import "Device.h"
 
 /**
  * Gesture Stack.
@@ -209,14 +210,10 @@
 	DLog();
     
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen];
     
     // frame
     CGRect fSelf = screen;
-    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
-        fSelf.size.width = screen.size.height;
-        fSelf.size.height = screen.size.width;
-    }
     
     // frames
     CGRect contentFrame = CGRectMake(fSelf.size.width/2.0-vframe.size.width/2.0, fSelf.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
@@ -966,20 +963,12 @@
 - (void)resizeFull {
     DLog();
     
-    // layout
-    BOOL landscape = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]);
-    
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen];
     
     // frame
     CGRect fSelf = screen;
-    if (landscape) {
-        fSelf.size.width = screen.size.height;
-        fSelf.size.height = screen.size.width;
-    }
 
-    
     // animate
 	[UIView beginAnimations:@"resize_full" context:nil];
     [UIView setAnimationDuration:kAnimateTimeResizeFull];
@@ -996,18 +985,11 @@
 - (void)resizeDefault {
     GLog();
     
-    // layout
-    BOOL landscape = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]);
-    
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen];
     
     // frame
     CGRect fSelf = screen;
-    if (landscape) {
-        fSelf.size.width = screen.size.height;
-        fSelf.size.height = screen.size.width;
-    }
     
     // frame
     CGRect fSmall = CGRectMake(fSelf.size.width/2.0-vframe.size.width/2.0, fSelf.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
@@ -2095,7 +2077,7 @@
     
     // poset
     NSString *poster = @"";
-    NSString *posterSize = [NSString stringWithFormat:@"%@",((iPad && [Utils isRetina]) ? assetSizeMid : assetSizeThumb)];
+    NSString *posterSize = [NSString stringWithFormat:@"%@",((iPad && [Device retina]) ? assetSizeMid : assetSizeThumb)];
     for (Asset *a in movie.asts) {
         
         // poster
