@@ -22,7 +22,6 @@
 
 #import "HelpView.h"
 #import "SolyarisConstants.h"
-#import "iOS6.h"
 
 
 /**

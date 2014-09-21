@@ -320,6 +320,7 @@
 		18FED097178D8C7400F3E010 /* app_navbar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18FED095178D8C7400F3E010 /* app_navbar@2x.png */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		244EE24419CF110400DEDACE /* Device.m in Sources */ = {isa = PBXBuildFile; fileRef = 244EE24319CF110400DEDACE /* Device.m */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		C725DFFE121DAC7F00FA186B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C727C02B121B400300192073 /* CoreMedia.framework */; settings = {ATTRIBUTES = (Required, ); }; };
@@ -500,7 +501,6 @@
 		188C6DF9154ABAC80033B942 /* app_segment@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app_segment@2x.png"; path = "Assets/app_segment@2x.png"; sourceTree = "<group>"; };
 		1892F0E915778AA3002AA93D /* btn_close_plain.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = btn_close_plain.png; path = Assets/btn_close_plain.png; sourceTree = "<group>"; };
 		1892F0EA15778AA3002AA93D /* btn_close_plain@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn_close_plain@2x.png"; path = "Assets/btn_close_plain@2x.png"; sourceTree = "<group>"; };
-		1899D447178B2D4B00A44269 /* iOS6.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = iOS6.h; path = Source/iOS6.h; sourceTree = "<group>"; };
 		1899D448178B2EFF00A44269 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "Resources/Icons/Icon-72.png"; sourceTree = "<group>"; };
 		1899D449178B2EFF00A44269 /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72@2x.png"; path = "Resources/Icons/Icon-72@2x.png"; sourceTree = "<group>"; };
 		1899D44A178B2EFF00A44269 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50.png"; path = "Resources/Icons/Icon-Small-50.png"; sourceTree = "<group>"; };
@@ -742,6 +742,8 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* solyaris.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = solyaris.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		244EE24219CF110400DEDACE /* Device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Device.h; path = Source/Device.h; sourceTree = "<group>"; };
+		244EE24319CF110400DEDACE /* Device.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Device.m; path = Source/Device.m; sourceTree = "<group>"; };
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		C725E000121DAC8F00FA186B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -1038,7 +1040,8 @@
 				18A26E65157CADB1006871B2 /* Rater.m */,
 				187F5DBA1522EBE70003226F /* Utils.h */,
 				187F5DBB1522EBE70003226F /* Utils.m */,
-				1899D447178B2D4B00A44269 /* iOS6.h */,
+				244EE24219CF110400DEDACE /* Device.h */,
+				244EE24319CF110400DEDACE /* Device.m */,
 			);
 			name = global;
 			sourceTree = "<group>";
@@ -1838,6 +1841,7 @@
 				1899D46E178B2FD300A44269 /* Solyaris.xcdatamodeld in Sources */,
 				1899D46F178B2FD300A44269 /* TMDb.xcdatamodeld in Sources */,
 				18A26E66157CADB1006871B2 /* Rater.m in Sources */,
+				244EE24419CF110400DEDACE /* Device.m in Sources */,
 				1819B5F01695A85800A69FD9 /* SolyarisDataManager.m in Sources */,
 				1819B5FA1695B09D00A69FD9 /* ImageToDataTransformer.m in Sources */,
 				185EC82D1696D45B00EC87EF /* FavoritesViewController.mm in Sources */,

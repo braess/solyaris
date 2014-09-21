@@ -24,7 +24,6 @@
 #import "SearchBarViewController.h"
 #import "SolyarisConstants.h"
 #import "Tracker.h"
-#import "iOS6.h"
 
 
 /**

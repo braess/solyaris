@@ -23,7 +23,7 @@
 #import "TMDbView.h"
 #import "CacheImageView.h"
 #import "Utils.h"
-#import "iOS6.h"
+#import "SolyarisConstants.h"
 
 
 /**

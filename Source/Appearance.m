@@ -21,7 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "Appearance.h"
-
+#import "SolyarisConstants.h"
 
 
 #pragma mark -
