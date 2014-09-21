@@ -416,36 +416,44 @@
  * Prepare rotation animation.
  */
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
- 
-    // animate cinder
-    [UIView beginAnimations:@"flip" context:nil];
-    [UIView setAnimationDuration:0]; // animation distorts view
     
     // screen
     CGRect screen = [Device screen];
     
-    // flip 
-    if (toInterfaceOrientation == UIInterfaceOrientationPortrait) {      
-        _cinderView.transform = CGAffineTransformIdentity;
-        _cinderView.transform = CGAffineTransformMakeRotation(0);
-        _cinderView.bounds = CGRectMake(0.0, 0.0, screen.size.width, screen.size.height);
+    // flip
+    if (iOS7) {
+        
+        // animate cinder
+        [UIView beginAnimations:@"flip" context:nil];
+        [UIView setAnimationDuration:0]; // animation distorts view
+        
+        // transform
+        _cinderView.bounds = screen;
+        if (toInterfaceOrientation == UIInterfaceOrientationPortrait) {
+            _cinderView.transform = CGAffineTransformIdentity;
+            _cinderView.transform = CGAffineTransformMakeRotation(0);
+        }
+        else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {
+            _cinderView.transform = CGAffineTransformIdentity;
+            _cinderView.transform = CGAffineTransformMakeRotation(M_PI * 0.5);
+        }
+        else if (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {
+            _cinderView.transform = CGAffineTransformIdentity;
+            _cinderView.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+        else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
+            _cinderView.transform = CGAffineTransformIdentity;
+            _cinderView.transform = CGAffineTransformMakeRotation(- M_PI * 0.5);
+        }
+        
+        // make it so
+        [UIView commitAnimations];
     }
-    else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {      
-        _cinderView.transform = CGAffineTransformIdentity;
-        _cinderView.transform = CGAffineTransformMakeRotation(M_PI * 0.5);
-        _cinderView.bounds = CGRectMake(0.0, 0.0, screen.size.height, screen.size.width);
+    else {
+        
+        // reframe
+        _cinderView.frame = screen;
     }
-    else if (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {      
-        _cinderView.transform = CGAffineTransformIdentity;
-        _cinderView.transform = CGAffineTransformMakeRotation(M_PI);
-        _cinderView.bounds = CGRectMake(0.0, 0.0, screen.size.width, screen.size.height);
-    }
-    else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft) {      
-        _cinderView.transform = CGAffineTransformIdentity;
-        _cinderView.transform = CGAffineTransformMakeRotation(- M_PI * 0.5);
-        _cinderView.bounds = CGRectMake(0.0, 0.0, screen.size.height, screen.size.width);
-    }
-    [UIView commitAnimations];
     
     // app
     solyaris->applyDeviceOrientation(toInterfaceOrientation);
