@@ -10,29 +10,29 @@
 	<string>Solyaris</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>BB4F86E1-9ABB-4705-8F6E-9BD2056A23DE</key>
+		<key>198E1C9CAE8F3AA55A5ACFF23B974A68011D61B9</key>
 		<string>https://github.com/braess/solyaris.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>Solyaris.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>BB4F86E1-9ABB-4705-8F6E-9BD2056A23DE</key>
+		<key>198E1C9CAE8F3AA55A5ACFF23B974A68011D61B9</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/braess/solyaris.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>BB4F86E1-9ABB-4705-8F6E-9BD2056A23DE</string>
+	<string>198E1C9CAE8F3AA55A5ACFF23B974A68011D61B9</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>BB4F86E1-9ABB-4705-8F6E-9BD2056A23DE</string>
+			<string>198E1C9CAE8F3AA55A5ACFF23B974A68011D61B9</string>
 			<key>IDESourceControlWCCName</key>
 			<string>project</string>
 		</dict>
