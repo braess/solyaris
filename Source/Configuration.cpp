@@ -55,6 +55,25 @@ Config Configuration::getConfiguration(string key) {
     return Config();
 }
 
+string Configuration::sfx(float dpr) {
+    string sfx;
+    switch ((int)dpr) {
+        case 2: {
+            sfx = "@2x.png";
+            break;
+        }
+        case 3: {
+            sfx = "@2x.png"; // @todo: update resources
+            break;
+        }
+        default: {
+            sfx = ".png";
+            break;
+        }
+    }
+    return sfx;
+}
+
 
 
 #pragma mark -

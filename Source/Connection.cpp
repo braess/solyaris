@@ -36,7 +36,7 @@ Connection::Connection(string idc, NodePtr n1, NodePtr n2) {
     // fields
     cid = idc;
     redux = false;
-    retina = false;
+    dpr = 1.0;
     
     // nodes
     wnode1 = NodeWeakPtr(n1);
@@ -84,16 +84,13 @@ void Connection::config(Configuration c) {
         redux = confDeviceRedux.boolVal();
     }
     
-    // display retina
-    retina = false;
-    Config confDisplayRetina = c.getConfiguration(cDisplayRetina);
-    if (confDisplayRetina.isSet()) {
-        retina = confDisplayRetina.boolVal();
-    }
+    // resolution
+    Config confDisplayResolution = c.getConfiguration(cDisplayResolution);
+    dpr = confDisplayResolution.floatVal();
     
     // size
-    s = retina ? 2.0 : 1.0;
-    d = retina ? 8.0 : 4.0;
+    s = 1.0 * dpr;
+    d = 4.0 * dpr;
     
 }
 

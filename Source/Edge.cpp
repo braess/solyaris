@@ -39,7 +39,7 @@ Edge::Edge(string ide, NodePtr n1, NodePtr n2) {
     stiffness = 0.6;
     damping = 0.9;
     redux = false;
-    retina = false;
+    dpr = 1.0;
     
     // nodes
     wnode1 = NodeWeakPtr(n1);
@@ -113,22 +113,15 @@ void Edge::config(Configuration c) {
         redux = confDeviceRedux.boolVal();
     }
     
-    // display retina
-    retina = false;
-    Config confDisplayRetina = c.getConfiguration(cDisplayRetina);
-    if (confDisplayRetina.isSet()) {
-        retina = confDisplayRetina.boolVal();
-    }
+    // resolution
+    Config confDisplayResolution = c.getConfiguration(cDisplayResolution);
+    dpr = confDisplayResolution.floatVal();
     
-    // init retina
-    if (retina) {
-        
-        // off
-        loff *= 2;
-    }
+    // off
+    loff *= dpr;
     
     // font
-    font = Font("Helvetica",redux ? (retina ? 24 : 12) : (retina ? 26 : 13));
+    font = Font("Helvetica",redux ? (12 * dpr) : (13 * dpr));
 }
 
 /**
@@ -144,9 +137,7 @@ void Edge::defaults(Defaults d) {
     }
     
     // retina
-    if (retina) {
-        length *= 2;
-    }
+    length *= dpr;
 }
 
 
@@ -195,7 +186,7 @@ void Edge::draw() {
         if (selected) {gl::color(cstrokes);}
         
         // line
-        glLineWidth(retina ? 2 : 1);
+        glLineWidth(dpr);
         gl::drawLine(node1->pos, node2->pos);
         
         // label
@@ -284,7 +275,7 @@ void Edge::show() {
             || (node2->isActive() && node1->isLoading())) {
             
             // label
-            font = Font("Helvetica-Bold",redux ? (retina ? 24 : 12) : (retina ? 26 : 13));
+            font = Font("Helvetica-Bold",redux ? (12 * dpr) : (13 * dpr));
             this->renderLabel(label);
             
             // state

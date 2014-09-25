@@ -75,7 +75,7 @@ class Tooltip {
     
     // config
     bool redux;
-    bool retina;
+    float dpr;
     
     // States
     bool active;

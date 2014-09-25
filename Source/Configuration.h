@@ -35,7 +35,7 @@ class Config;
 
 // constants
 const string  cDeviceRedux          = "conf_device_redux";
-const string  cDisplayRetina        = "conf_display_retina";
+const string  cDisplayResolution    = "conf_display_resolution";
 
 
 
@@ -53,6 +53,9 @@ class Configuration {
     // Accessors
     void setConfiguration(string key, string value);
     Config getConfiguration(string key);
+    
+    // Suffix
+    static string sfx(float dpr);
     
     // private
     private:

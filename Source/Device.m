@@ -28,7 +28,7 @@
 /**
  * Device resolution.
  */
-+ (CGFloat)resolution {
++ (float)resolution {
     
     // scale
     static CGFloat scale = 0.0;

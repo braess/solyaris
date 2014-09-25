@@ -39,8 +39,7 @@ Graph::Graph(int w, int h, int o) {
     orientation = o;
     portrait = (h > w) ? true : false; 
     
-    // retina
-    retina = false;
+    // device pixel ratio
     dpr = 1.0;
     
     // virtual offset
@@ -121,12 +120,9 @@ void Graph::config(Configuration c) {
         redux = confDeviceRedux.boolVal();
     }
     
-    // display retina
-    retina = false;
-    Config confDisplayRetina = conf.getConfiguration(cDisplayRetina);
-    if (confDisplayRetina.isSet()) {
-        retina = confDisplayRetina.boolVal();
-    }
+    // resolution
+    Config confDisplayResolution = conf.getConfiguration(cDisplayResolution);
+    dpr = confDisplayResolution.floatVal();
     
     // tooltip / action
     for (int t = 1; t <= nbtouch; t++) {
@@ -134,24 +130,17 @@ void Graph::config(Configuration c) {
         actions[t].config(conf);
     }
     
-    // device pixel ratio
-    dpr = retina ? 2.0 : 1.0;
+    // bound
+    mbound *= dpr;
     
-    // retina stuff
-    if (retina) {
-        
-        // bound
-        mbound *= 2;
-        
-        // hitarea
-        harea *= 2;
-    }
+    // hitarea
+    harea *= dpr;
     
     
     // background
-    float rin = (float)max(width,height) / (float)min(width,height);
-    string bg = redux ? (rin > 1.5 ? "Default-568h" : "Default") : "Default-Portrait";
-    bg += retina ? "@2x.png" : ".png";
+    float h = max(width,height) / dpr;
+    string bg = redux ? (h > 700 ? "Default-736h" : (h > 600 ? "Default-667h" : (h > 500 ? "Default-568h" : "Default"))) : "Default-Portrait";
+    bg += Configuration::sfx(dpr);
     
     // surface
     Surface surface_portrait = loadImage(loadResource(bg));
@@ -739,7 +728,7 @@ Vec3d Graph::coordinates(double px, double py, double d) {
     rpos.z = d * scale;
     
     // retina
-    rpos *= (retina ? 0.5 : 1.0);
+    rpos *= (1.0 / dpr);
     
     // back
     return rpos;

@@ -53,11 +53,13 @@ void Solyaris::setup() {
     dwidth = screen.size.width;
     dheight = screen.size.height;
     
-    // retina
+    // resolution
+    resolution = 1.0;
     if ([Device retina]) {
         retina = true;
-        dwidth *= 2;
-        dheight *= 2;
+        resolution = [Device resolution];
+        dwidth *= resolution;
+        dheight *= resolution;
     }
 
     
@@ -65,7 +67,7 @@ void Solyaris::setup() {
     bg = Color(30.0/255.0, 30.0/255.0, 30.0/255.0);
     
     // graph
-    graph = Graph(dwidth,dheight,UIDeviceOrientationPortrait);
+    graph = Graph(dwidth, dheight, UIDeviceOrientationPortrait);
     
     // vars
     pscale = 1.0;
@@ -77,8 +79,8 @@ void Solyaris::setup() {
     
     // configuration
     Configuration conf = Configuration();
-    conf.setConfiguration(cDeviceRedux,redux ? "1" : "0");
-    conf.setConfiguration(cDisplayRetina,retina ? "1" : "0");
+    conf.setConfiguration(cDeviceRedux, redux ? "1" : "0");
+    conf.setConfiguration(cDisplayResolution, [[[NSNumber numberWithFloat:resolution] stringValue] UTF8String]);
     graph.config(conf);
     
     

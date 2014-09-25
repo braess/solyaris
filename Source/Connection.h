@@ -81,7 +81,7 @@ class Connection {
     
     // config
     bool redux;
-    bool retina;
+    float dpr;
     
     // color
     Color cstroke;

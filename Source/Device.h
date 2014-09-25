@@ -23,7 +23,7 @@
  * Device resolution.
  * @return Resolution.
  */
-+ (CGFloat)resolution;
++ (float)resolution;
 
 /**
  * Device iPhone 4inch.

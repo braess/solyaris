@@ -182,8 +182,8 @@ class Node {
     int fcount;
     int minr,maxr;
     double rincg,rincs;
-    bool retina;
     bool redux;
+    float dpr;
     
     // Textures
     gl::Texture textureNode;
