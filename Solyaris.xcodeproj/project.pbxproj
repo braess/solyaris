@@ -327,6 +327,27 @@
 		24ACD20D19D44946009A57A3 /* node_action_close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24ACD20A19D44946009A57A3 /* node_action_close@3x.png */; };
 		24ACD20E19D44946009A57A3 /* node_action_info@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24ACD20B19D44946009A57A3 /* node_action_info@3x.png */; };
 		24ACD20F19D44946009A57A3 /* node_action_related@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24ACD20C19D44946009A57A3 /* node_action_related@3x.png */; };
+		24CC7FA219D470230079E18E /* node_crew_core@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F8D19D470230079E18E /* node_crew_core@3x.png */; };
+		24CC7FA319D470230079E18E /* node_crew_glow@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F8E19D470230079E18E /* node_crew_glow@3x.png */; };
+		24CC7FA419D470230079E18E /* node_crew@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F8F19D470230079E18E /* node_crew@3x.png */; };
+		24CC7FA519D470230079E18E /* node_movie_core_creativity@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9019D470230079E18E /* node_movie_core_creativity@3x.png */; };
+		24CC7FA619D470230079E18E /* node_movie_core_entertainment@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9119D470230079E18E /* node_movie_core_entertainment@3x.png */; };
+		24CC7FA719D470230079E18E /* node_movie_core_happiness@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9219D470230079E18E /* node_movie_core_happiness@3x.png */; };
+		24CC7FA819D470230079E18E /* node_movie_core_natural@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9319D470230079E18E /* node_movie_core_natural@3x.png */; };
+		24CC7FA919D470230079E18E /* node_movie_core_passion@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9419D470230079E18E /* node_movie_core_passion@3x.png */; };
+		24CC7FAA19D470230079E18E /* node_movie_core_violence@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9519D470230079E18E /* node_movie_core_violence@3x.png */; };
+		24CC7FAB19D470230079E18E /* node_movie_core@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9619D470230079E18E /* node_movie_core@3x.png */; };
+		24CC7FAC19D470230079E18E /* node_movie_glow_creativity@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9719D470230079E18E /* node_movie_glow_creativity@3x.png */; };
+		24CC7FAD19D470230079E18E /* node_movie_glow_entertainment@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9819D470230079E18E /* node_movie_glow_entertainment@3x.png */; };
+		24CC7FAE19D470230079E18E /* node_movie_glow_happiness@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9919D470230079E18E /* node_movie_glow_happiness@3x.png */; };
+		24CC7FAF19D470230079E18E /* node_movie_glow_natural@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9A19D470230079E18E /* node_movie_glow_natural@3x.png */; };
+		24CC7FB019D470230079E18E /* node_movie_glow_passion@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9B19D470230079E18E /* node_movie_glow_passion@3x.png */; };
+		24CC7FB119D470230079E18E /* node_movie_glow_violence@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9C19D470230079E18E /* node_movie_glow_violence@3x.png */; };
+		24CC7FB219D470230079E18E /* node_movie_glow@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9D19D470230079E18E /* node_movie_glow@3x.png */; };
+		24CC7FB319D470230079E18E /* node_movie@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9E19D470230079E18E /* node_movie@3x.png */; };
+		24CC7FB419D470230079E18E /* node_person_core@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7F9F19D470230079E18E /* node_person_core@3x.png */; };
+		24CC7FB519D470230079E18E /* node_person_glow@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7FA019D470230079E18E /* node_person_glow@3x.png */; };
+		24CC7FB619D470230079E18E /* node_person@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7FA119D470230079E18E /* node_person@3x.png */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		C725DFFE121DAC7F00FA186B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C727C02B121B400300192073 /* CoreMedia.framework */; settings = {ATTRIBUTES = (Required, ); }; };
@@ -756,6 +777,27 @@
 		24ACD20A19D44946009A57A3 /* node_action_close@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_action_close@3x.png"; path = "Assets/node_action_close@3x.png"; sourceTree = "<group>"; };
 		24ACD20B19D44946009A57A3 /* node_action_info@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_action_info@3x.png"; path = "Assets/node_action_info@3x.png"; sourceTree = "<group>"; };
 		24ACD20C19D44946009A57A3 /* node_action_related@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_action_related@3x.png"; path = "Assets/node_action_related@3x.png"; sourceTree = "<group>"; };
+		24CC7F8D19D470230079E18E /* node_crew_core@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_crew_core@3x.png"; path = "Assets/node_crew_core@3x.png"; sourceTree = "<group>"; };
+		24CC7F8E19D470230079E18E /* node_crew_glow@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_crew_glow@3x.png"; path = "Assets/node_crew_glow@3x.png"; sourceTree = "<group>"; };
+		24CC7F8F19D470230079E18E /* node_crew@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_crew@3x.png"; path = "Assets/node_crew@3x.png"; sourceTree = "<group>"; };
+		24CC7F9019D470230079E18E /* node_movie_core_creativity@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_movie_core_creativity@3x.png"; path = "Assets/node_movie_core_creativity@3x.png"; sourceTree = "<group>"; };
+		24CC7F9119D470230079E18E /* node_movie_core_entertainment@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_movie_core_entertainment@3x.png"; path = "Assets/node_movie_core_entertainment@3x.png"; sourceTree = "<group>"; };
+		24CC7F9219D470230079E18E /* node_movie_core_happiness@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_movie_core_happiness@3x.png"; path = "Assets/node_movie_core_happiness@3x.png"; sourceTree = "<group>"; };
+		24CC7F9319D470230079E18E /* node_movie_core_natural@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_movie_core_natural@3x.png"; path = "Assets/node_movie_core_natural@3x.png"; sourceTree = "<group>"; };
+		24CC7F9419D470230079E18E /* node_movie_core_passion@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_movie_core_passion@3x.png"; path = "Assets/node_movie_core_passion@3x.png"; sourceTree = "<group>"; };
+		24CC7F9519D470230079E18E /* node_movie_core_violence@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_movie_core_violence@3x.png"; path = "Assets/node_movie_core_violence@3x.png"; sourceTree = "<group>"; };
+		24CC7F9619D470230079E18E /* node_movie_core@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_movie_core@3x.png"; path = "Assets/node_movie_core@3x.png"; sourceTree = "<group>"; };
+		24CC7F9719D470230079E18E /* node_movie_glow_creativity@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_movie_glow_creativity@3x.png"; path = "Assets/node_movie_glow_creativity@3x.png"; sourceTree = "<group>"; };
+		24CC7F9819D470230079E18E /* node_movie_glow_entertainment@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_movie_glow_entertainment@3x.png"; path = "Assets/node_movie_glow_entertainment@3x.png"; sourceTree = "<group>"; };
+		24CC7F9919D470230079E18E /* node_movie_glow_happiness@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_movie_glow_happiness@3x.png"; path = "Assets/node_movie_glow_happiness@3x.png"; sourceTree = "<group>"; };
+		24CC7F9A19D470230079E18E /* node_movie_glow_natural@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_movie_glow_natural@3x.png"; path = "Assets/node_movie_glow_natural@3x.png"; sourceTree = "<group>"; };
+		24CC7F9B19D470230079E18E /* node_movie_glow_passion@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_movie_glow_passion@3x.png"; path = "Assets/node_movie_glow_passion@3x.png"; sourceTree = "<group>"; };
+		24CC7F9C19D470230079E18E /* node_movie_glow_violence@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_movie_glow_violence@3x.png"; path = "Assets/node_movie_glow_violence@3x.png"; sourceTree = "<group>"; };
+		24CC7F9D19D470230079E18E /* node_movie_glow@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_movie_glow@3x.png"; path = "Assets/node_movie_glow@3x.png"; sourceTree = "<group>"; };
+		24CC7F9E19D470230079E18E /* node_movie@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_movie@3x.png"; path = "Assets/node_movie@3x.png"; sourceTree = "<group>"; };
+		24CC7F9F19D470230079E18E /* node_person_core@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_person_core@3x.png"; path = "Assets/node_person_core@3x.png"; sourceTree = "<group>"; };
+		24CC7FA019D470230079E18E /* node_person_glow@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_person_glow@3x.png"; path = "Assets/node_person_glow@3x.png"; sourceTree = "<group>"; };
+		24CC7FA119D470230079E18E /* node_person@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_person@3x.png"; path = "Assets/node_person@3x.png"; sourceTree = "<group>"; };
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		C725E000121DAC8F00FA186B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -1316,46 +1358,67 @@
 				24ACD20C19D44946009A57A3 /* node_action_related@3x.png */,
 				18ED290D1446D80A005E7BDA /* node_movie.png */,
 				188333BB1523096B00F59E37 /* node_movie@2x.png */,
+				24CC7F9E19D470230079E18E /* node_movie@3x.png */,
 				18ED29051446CE4D005E7BDA /* node_movie_core.png */,
 				188333B91523096B00F59E37 /* node_movie_core@2x.png */,
+				24CC7F9619D470230079E18E /* node_movie_core@3x.png */,
 				18ED29061446CE4D005E7BDA /* node_movie_glow.png */,
 				188333BA1523096B00F59E37 /* node_movie_glow@2x.png */,
+				24CC7F9D19D470230079E18E /* node_movie_glow@3x.png */,
 				18ED29131446DEF9005E7BDA /* node_crew.png */,
 				188333B81523096B00F59E37 /* node_crew@2x.png */,
+				24CC7F8F19D470230079E18E /* node_crew@3x.png */,
 				18ED29111446DEF9005E7BDA /* node_crew_core.png */,
 				188333B61523096B00F59E37 /* node_crew_core@2x.png */,
+				24CC7F8D19D470230079E18E /* node_crew_core@3x.png */,
 				18ED29121446DEF9005E7BDA /* node_crew_glow.png */,
 				188333B71523096B00F59E37 /* node_crew_glow@2x.png */,
+				24CC7F8E19D470230079E18E /* node_crew_glow@3x.png */,
 				18ED290E1446D80A005E7BDA /* node_person.png */,
 				188333BE1523096B00F59E37 /* node_person@2x.png */,
+				24CC7FA119D470230079E18E /* node_person@3x.png */,
 				18ED29071446CE4D005E7BDA /* node_person_core.png */,
 				188333BC1523096B00F59E37 /* node_person_core@2x.png */,
+				24CC7F9F19D470230079E18E /* node_person_core@3x.png */,
 				18ED29081446CE4D005E7BDA /* node_person_glow.png */,
 				188333BD1523096B00F59E37 /* node_person_glow@2x.png */,
+				24CC7FA019D470230079E18E /* node_person_glow@3x.png */,
 				18AEF303155AB3D40053666E /* node_movie_core_creativity.png */,
 				18AEF304155AB3D40053666E /* node_movie_core_creativity@2x.png */,
-				18AEF305155AB3D40053666E /* node_movie_core_entertainment.png */,
-				18AEF306155AB3D40053666E /* node_movie_core_entertainment@2x.png */,
-				18AEF307155AB3D40053666E /* node_movie_core_happiness.png */,
-				18AEF308155AB3D40053666E /* node_movie_core_happiness@2x.png */,
-				18AEF309155AB3D40053666E /* node_movie_core_natural.png */,
-				18AEF30A155AB3D40053666E /* node_movie_core_natural@2x.png */,
-				18AEF30B155AB3D40053666E /* node_movie_core_passion.png */,
-				18AEF30C155AB3D40053666E /* node_movie_core_passion@2x.png */,
-				18AEF30D155AB3D40053666E /* node_movie_core_violence.png */,
-				18AEF30E155AB3D40053666E /* node_movie_core_violence@2x.png */,
+				24CC7F9019D470230079E18E /* node_movie_core_creativity@3x.png */,
 				18AEF31C155AB3ED0053666E /* node_movie_glow_creativity.png */,
 				18AEF31D155AB3ED0053666E /* node_movie_glow_creativity@2x.png */,
+				24CC7F9719D470230079E18E /* node_movie_glow_creativity@3x.png */,
+				18AEF305155AB3D40053666E /* node_movie_core_entertainment.png */,
+				18AEF306155AB3D40053666E /* node_movie_core_entertainment@2x.png */,
+				24CC7F9119D470230079E18E /* node_movie_core_entertainment@3x.png */,
 				18AEF31E155AB3ED0053666E /* node_movie_glow_entertainment.png */,
 				18AEF31F155AB3ED0053666E /* node_movie_glow_entertainment@2x.png */,
+				24CC7F9819D470230079E18E /* node_movie_glow_entertainment@3x.png */,
+				18AEF307155AB3D40053666E /* node_movie_core_happiness.png */,
+				18AEF308155AB3D40053666E /* node_movie_core_happiness@2x.png */,
+				24CC7F9219D470230079E18E /* node_movie_core_happiness@3x.png */,
 				18AEF320155AB3ED0053666E /* node_movie_glow_happiness.png */,
 				18AEF321155AB3ED0053666E /* node_movie_glow_happiness@2x.png */,
+				24CC7F9919D470230079E18E /* node_movie_glow_happiness@3x.png */,
+				18AEF309155AB3D40053666E /* node_movie_core_natural.png */,
+				18AEF30A155AB3D40053666E /* node_movie_core_natural@2x.png */,
+				24CC7F9319D470230079E18E /* node_movie_core_natural@3x.png */,
 				18AEF322155AB3ED0053666E /* node_movie_glow_natural.png */,
 				18AEF323155AB3ED0053666E /* node_movie_glow_natural@2x.png */,
+				24CC7F9A19D470230079E18E /* node_movie_glow_natural@3x.png */,
+				18AEF30B155AB3D40053666E /* node_movie_core_passion.png */,
+				18AEF30C155AB3D40053666E /* node_movie_core_passion@2x.png */,
+				24CC7F9419D470230079E18E /* node_movie_core_passion@3x.png */,
 				18AEF324155AB3ED0053666E /* node_movie_glow_passion.png */,
 				18AEF325155AB3ED0053666E /* node_movie_glow_passion@2x.png */,
+				24CC7F9B19D470230079E18E /* node_movie_glow_passion@3x.png */,
+				18AEF30D155AB3D40053666E /* node_movie_core_violence.png */,
+				18AEF30E155AB3D40053666E /* node_movie_core_violence@2x.png */,
+				24CC7F9519D470230079E18E /* node_movie_core_violence@3x.png */,
 				18AEF326155AB3ED0053666E /* node_movie_glow_violence.png */,
 				18AEF327155AB3ED0053666E /* node_movie_glow_violence@2x.png */,
+				24CC7F9C19D470230079E18E /* node_movie_glow_violence@3x.png */,
 			);
 			name = nodes;
 			sourceTree = "<group>";
@@ -1564,6 +1627,7 @@
 				1804E60213FCECE800B38FEF /* bg_settings.png in Resources */,
 				18F20016178C015D00AB4A8E /* app_button@2x.png in Resources */,
 				18A65CD8140EC58E009962D7 /* placeholder_info_movie.png in Resources */,
+				24CC7FA419D470230079E18E /* node_crew@3x.png in Resources */,
 				18FED097178D8C7400F3E010 /* app_navbar@2x.png in Resources */,
 				18A65CD9140EC58E009962D7 /* placeholder_info_person.png in Resources */,
 				18A65CDA140EC58E009962D7 /* placeholder_thumb_movie.png in Resources */,
@@ -1576,6 +1640,7 @@
 				1846328A1411234F00CC5B70 /* btn_reference.png in Resources */,
 				18BEF5EB1433B6B6003314FE /* app_fav.png in Resources */,
 				18ED29091446CE4D005E7BDA /* node_movie_core.png in Resources */,
+				24CC7FB519D470230079E18E /* node_person_glow@3x.png in Resources */,
 				18ED290A1446CE4D005E7BDA /* node_movie_glow.png in Resources */,
 				18ED290B1446CE4D005E7BDA /* node_person_core.png in Resources */,
 				18ED290C1446CE4D005E7BDA /* node_person_glow.png in Resources */,
@@ -1588,6 +1653,7 @@
 				185BEC0C14476AB00007BBCB /* icon_note_info.png in Resources */,
 				185BEC0D14476AB00007BBCB /* icon_note_success.png in Resources */,
 				185BEC0E14476AB00007BBCB /* icon_note_notification.png in Resources */,
+				24CC7FA219D470230079E18E /* node_crew_core@3x.png in Resources */,
 				18FD223914482FB2008F6B19 /* icon_image_error.png in Resources */,
 				181B1E69145066D1000D3882 /* action_help.png in Resources */,
 				181B1E6B1450777A000D3882 /* icon_note_glitch.png in Resources */,
@@ -1616,17 +1682,20 @@
 				182C670E15233FD50048E895 /* btn_save@2x.png in Resources */,
 				182C670F15233FD50048E895 /* btn_settings@2x.png in Resources */,
 				182C671015233FD50048E895 /* btn_trailer@2x.png in Resources */,
+				24CC7FB119D470230079E18E /* node_movie_glow_violence@3x.png in Resources */,
 				182C671B1523434E0048E895 /* icon_image_error@2x.png in Resources */,
 				182C671C1523434E0048E895 /* icon_note_error@2x.png in Resources */,
 				182C671D1523434E0048E895 /* icon_note_glitch@2x.png in Resources */,
 				1899D464178B2F7300A44269 /* Default-Landscape.png in Resources */,
 				182C671E1523434E0048E895 /* icon_note_info@2x.png in Resources */,
+				24CC7FB019D470230079E18E /* node_movie_glow_passion@3x.png in Resources */,
 				182C671F1523434E0048E895 /* icon_note_notification@2x.png in Resources */,
 				182C67201523434E0048E895 /* icon_note_success@2x.png in Resources */,
 				1899D454178B2EFF00A44269 /* Icon-Small-50.png in Resources */,
 				182C672C152345FE0048E895 /* action_feedback@2x.png in Resources */,
 				182C672D152345FE0048E895 /* action_help@2x.png in Resources */,
 				182C6731152345FE0048E895 /* action_recommend@2x.png in Resources */,
+				24CC7FA519D470230079E18E /* node_movie_core_creativity@3x.png in Resources */,
 				182C6734152346FA0048E895 /* app_fav@2x.png in Resources */,
 				182C6739152347FB0048E895 /* placeholder_info_movie@2x.png in Resources */,
 				182C673A152347FB0048E895 /* placeholder_info_person@2x.png in Resources */,
@@ -1638,6 +1707,7 @@
 				181AE2781548389C00401E11 /* btn_close.png in Resources */,
 				181AE2791548389C00401E11 /* btn_close@2x.png in Resources */,
 				188C6DFA154ABAC80033B942 /* app_segment_divider.png in Resources */,
+				24CC7FAE19D470230079E18E /* node_movie_glow_happiness@3x.png in Resources */,
 				188C6DFB154ABAC80033B942 /* app_segment_divider@2x.png in Resources */,
 				1899D465178B2F7300A44269 /* Default-Landscape@2x.png in Resources */,
 				188C6DFC154ABAC80033B942 /* app_segment-selected.png in Resources */,
@@ -1669,6 +1739,7 @@
 				188A56E715542B5600ACD98B /* placeholder_listing_person@2x.png in Resources */,
 				1834D56517B26A7D00FFBFC6 /* Icon-40.png in Resources */,
 				18AEF30F155AB3D40053666E /* node_movie_core_creativity.png in Resources */,
+				24CC7FAD19D470230079E18E /* node_movie_glow_entertainment@3x.png in Resources */,
 				1899D468178B2F7300A44269 /* Default.png in Resources */,
 				18AEF310155AB3D40053666E /* node_movie_core_creativity@2x.png in Resources */,
 				18AEF311155AB3D40053666E /* node_movie_core_entertainment.png in Resources */,
@@ -1688,6 +1759,7 @@
 				18AEF32A155AB3ED0053666E /* node_movie_glow_entertainment.png in Resources */,
 				18AEF32B155AB3ED0053666E /* node_movie_glow_entertainment@2x.png in Resources */,
 				1899D459178B2EFF00A44269 /* Icon@2x.png in Resources */,
+				24CC7FB419D470230079E18E /* node_person_core@3x.png in Resources */,
 				18AEF32C155AB3ED0053666E /* node_movie_glow_happiness.png in Resources */,
 				18AEF32D155AB3ED0053666E /* node_movie_glow_happiness@2x.png in Resources */,
 				18AEF32E155AB3ED0053666E /* node_movie_glow_natural.png in Resources */,
@@ -1705,9 +1777,13 @@
 				18042C10155C046E00A64425 /* placeholder_info_movie_redux@2x.png in Resources */,
 				18AB9524155D0DFC00B5680B /* tab_listing_selected.png in Resources */,
 				18AB9525155D0DFC00B5680B /* tab_listing_selected@2x.png in Resources */,
+				24CC7FAA19D470230079E18E /* node_movie_core_violence@3x.png in Resources */,
+				24CC7FAB19D470230079E18E /* node_movie_core@3x.png in Resources */,
 				18AB9526155D0DFC00B5680B /* tab_listing.png in Resources */,
+				24CC7FAC19D470230079E18E /* node_movie_glow_creativity@3x.png in Resources */,
 				18AB9527155D0DFC00B5680B /* tab_listing@2x.png in Resources */,
 				18AB952F155D434F00B5680B /* tab_tmdb_selected.png in Resources */,
+				24CC7FA819D470230079E18E /* node_movie_core_natural@3x.png in Resources */,
 				18AB9530155D434F00B5680B /* tab_tmdb_selected@2x.png in Resources */,
 				18AB9531155D434F00B5680B /* tab_tmdb.png in Resources */,
 				18AB9532155D434F00B5680B /* tab_tmdb@2x.png in Resources */,
@@ -1739,18 +1815,22 @@
 				1892F0EB15778AA3002AA93D /* btn_close_plain.png in Resources */,
 				1892F0EC15778AA3002AA93D /* btn_close_plain@2x.png in Resources */,
 				1887608B1695D0FA00C6588F /* btn_favorite-on.png in Resources */,
+				24CC7FA719D470230079E18E /* node_movie_core_happiness@3x.png in Resources */,
 				1887608C1695D0FA00C6588F /* btn_favorite-on@2x.png in Resources */,
+				24CC7FA919D470230079E18E /* node_movie_core_passion@3x.png in Resources */,
 				180911F01697310400015C96 /* btn_edit.png in Resources */,
 				180911F11697310400015C96 /* btn_edit@2x.png in Resources */,
 				181C272B178CAD1E006B0B44 /* Icon-76.png in Resources */,
 				180295E4169B272400DCD93A /* app_icon.png in Resources */,
 				180295E5169B272400DCD93A /* app_icon@2x.png in Resources */,
 				18F491A7169C6FB4001D3188 /* btn_email.png in Resources */,
+				24CC7FA619D470230079E18E /* node_movie_core_entertainment@3x.png in Resources */,
 				18F491A8169C6FB4001D3188 /* btn_email@2x.png in Resources */,
 				18F491AC169C74E6001D3188 /* icon_search_now.png in Resources */,
 				18F491AD169C74E6001D3188 /* icon_search_now@2x.png in Resources */,
 				18F491B4169C7E5E001D3188 /* icon_search_favorites.png in Resources */,
 				18F491B5169C7E5E001D3188 /* icon_search_favorites@2x.png in Resources */,
+				24CC7FB619D470230079E18E /* node_person@3x.png in Resources */,
 				18F491B6169C7E5E001D3188 /* icon_search_history.png in Resources */,
 				18F491B7169C7E5E001D3188 /* icon_search_history@2x.png in Resources */,
 				18F491B8169C7E5E001D3188 /* icon_search_popular.png in Resources */,
@@ -1765,8 +1845,10 @@
 				1841428A17131D760048C295 /* ios6_app_button_back_24-high.png in Resources */,
 				1841428B17131D760048C295 /* ios6_app_button_back_24-high@2x.png in Resources */,
 				1841428C17131D760048C295 /* ios6_app_button_back_30-high.png in Resources */,
+				24CC7FB219D470230079E18E /* node_movie_glow@3x.png in Resources */,
 				1841428D17131D760048C295 /* ios6_app_button_back_30-high@2x.png in Resources */,
 				1841428E17131D760048C295 /* ios6_app_navbar_32.png in Resources */,
+				24CC7FB319D470230079E18E /* node_movie@3x.png in Resources */,
 				1841428F17131D760048C295 /* ios6_app_navbar_32@2x.png in Resources */,
 				1841429017131D760048C295 /* ios6_app_navbar_44.png in Resources */,
 				1834D56617B26A7D00FFBFC6 /* Icon-40@2x.png in Resources */,
@@ -1774,12 +1856,14 @@
 				1841429217131D760048C295 /* app_navbar_shadow.png in Resources */,
 				1841429317131D760048C295 /* app_navbar_shadow@2x.png in Resources */,
 				1899D456178B2EFF00A44269 /* Icon-Small.png in Resources */,
+				24CC7FA319D470230079E18E /* node_crew_glow@3x.png in Resources */,
 				18EC66BF1714326D00EF760D /* btn_reset-high.png in Resources */,
 				24ACD20F19D44946009A57A3 /* node_action_related@3x.png in Resources */,
 				24ACD20919D445DE009A57A3 /* Default-736h@2x.png in Resources */,
 				18EC66C01714326D00EF760D /* btn_reset-high@2x.png in Resources */,
 				18D2D8A117181ED600A7676D /* btn_favorite.png in Resources */,
 				18D2D8A217181ED600A7676D /* btn_favorite@2x.png in Resources */,
+				24CC7FAF19D470230079E18E /* node_movie_glow_natural@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

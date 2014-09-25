@@ -63,7 +63,7 @@ string Configuration::sfx(float dpr) {
             break;
         }
         case 3: {
-            sfx = "@2x.png"; // @todo: update resources
+            sfx = "@3x.png";
             break;
         }
         default: {
