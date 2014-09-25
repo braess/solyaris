@@ -20,6 +20,12 @@
 + (BOOL)retina;
 
 /**
+ * Device resolution.
+ * @return Resolution.
+ */
++ (CGFloat)resolution;
+
+/**
  * Device iPhone 4inch.
  * @return True if 4inch.
  */

@@ -19,25 +19,30 @@
 #pragma mark Device
 
 /**
- * Detect retina display.
+ * Device retina.
  */
 + (BOOL)retina {
+    return [Device resolution] > 1.0;
+}
+
+/**
+ * Device resolution.
+ */
++ (CGFloat)resolution {
     
     // scale
     static CGFloat scale = 0.0;
     if (scale == 0.0) {
         
         // check
-        if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0)) {
-            scale = 2.0;
-            return YES;
+        if ([UIScreen instancesRespondToSelector:@selector(scale)]) {
+            scale = [UIScreen mainScreen].scale;
         } else {
             scale = 1.0;
-            return NO;
         }
         
     }
-    return scale > 1.0;
+    return scale;
 }
 
 /**
