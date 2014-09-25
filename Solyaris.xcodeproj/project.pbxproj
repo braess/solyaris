@@ -349,6 +349,8 @@
 		24CC7FB619D470230079E18E /* node_person@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7FA119D470230079E18E /* node_person@3x.png */; };
 		24CC7FB919D472EB0079E18E /* app_fav@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7FB719D472EB0079E18E /* app_fav@3x.png */; };
 		24CC7FBA19D472EB0079E18E /* app_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7FB819D472EB0079E18E /* app_icon@3x.png */; };
+		24CC7FBD19D476C70079E18E /* bg_content@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7FBB19D476C70079E18E /* bg_content@3x.png */; };
+		24CC7FBE19D476C70079E18E /* bg_settings@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24CC7FBC19D476C70079E18E /* bg_settings@3x.png */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		C725DFFE121DAC7F00FA186B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C727C02B121B400300192073 /* CoreMedia.framework */; settings = {ATTRIBUTES = (Required, ); }; };
@@ -800,6 +802,8 @@
 		24CC7FA119D470230079E18E /* node_person@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_person@3x.png"; path = "Assets/node_person@3x.png"; sourceTree = "<group>"; };
 		24CC7FB719D472EB0079E18E /* app_fav@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app_fav@3x.png"; path = "Assets/app_fav@3x.png"; sourceTree = "<group>"; };
 		24CC7FB819D472EB0079E18E /* app_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "app_icon@3x.png"; path = "Assets/app_icon@3x.png"; sourceTree = "<group>"; };
+		24CC7FBB19D476C70079E18E /* bg_content@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bg_content@3x.png"; path = "Assets/bg_content@3x.png"; sourceTree = "<group>"; };
+		24CC7FBC19D476C70079E18E /* bg_settings@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bg_settings@3x.png"; path = "Assets/bg_settings@3x.png"; sourceTree = "<group>"; };
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		C725E000121DAC8F00FA186B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -1048,8 +1052,10 @@
 				186B5BEB1552DFF1006E746F /* bg_transparent.png */,
 				1866139113F3FF9A006DDFFB /* bg_content.png */,
 				188333CC152326A300F59E37 /* bg_content@2x.png */,
+				24CC7FBB19D476C70079E18E /* bg_content@3x.png */,
 				1804E60113FCECE800B38FEF /* bg_settings.png */,
 				188333C81523267A00F59E37 /* bg_settings@2x.png */,
+				24CC7FBC19D476C70079E18E /* bg_settings@3x.png */,
 			);
 			name = background;
 			sourceTree = "<group>";
@@ -1682,6 +1688,7 @@
 				182C670C15233FD50048E895 /* btn_resize-default@2x.png in Resources */,
 				181C272A178CAD1E006B0B44 /* Icon-60@2x.png in Resources */,
 				182C670D15233FD50048E895 /* btn_resize-full@2x.png in Resources */,
+				24CC7FBD19D476C70079E18E /* bg_content@3x.png in Resources */,
 				182C670E15233FD50048E895 /* btn_save@2x.png in Resources */,
 				182C670F15233FD50048E895 /* btn_settings@2x.png in Resources */,
 				182C671015233FD50048E895 /* btn_trailer@2x.png in Resources */,
@@ -1726,6 +1733,7 @@
 				18B05244154FDE4000DF1600 /* btn_tmdb.png in Resources */,
 				18B05245154FDE4000DF1600 /* btn_tmdb@2x.png in Resources */,
 				186B5BEC1552DFF1006E746F /* bg_transparent.png in Resources */,
+				24CC7FBE19D476C70079E18E /* bg_settings@3x.png in Resources */,
 				188A56CE1554082900ACD98B /* ios6_app_button_24.png in Resources */,
 				188A56CF1554082900ACD98B /* ios6_app_button_24@2x.png in Resources */,
 				188A56D01554082900ACD98B /* ios6_app_button_30.png in Resources */,
