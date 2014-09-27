@@ -1221,7 +1221,7 @@
 /*
  * Search.
  */
-- (void)search:(NSString*)q type:(NSString*)type {
+- (void)search:(NSString*)q type:(NSString*)type animated:(BOOL)animated {
     FLog();
     
     // track
@@ -1232,7 +1232,7 @@
     // data    
     SearchViewController *searchViewController = [self controllerSearch];
     if (searchViewController) {
-        [searchViewController dbdata:YES];
+        [searchViewController dbdata:animated];
     }
     
     // api

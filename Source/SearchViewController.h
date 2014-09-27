@@ -34,7 +34,7 @@
  * Delegate.
  */
 @protocol SearchDelegate <NSObject>
-- (void)search:(NSString*)q type:(NSString*)type;
+- (void)search:(NSString*)q type:(NSString*)type animated:(BOOL)animated;
 - (void)popular:(NSString*)type more:(BOOL)more;
 - (void)nowPlaying:(NSString*)type more:(BOOL)more;
 - (void)history:(NSString*)type;

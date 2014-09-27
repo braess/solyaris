@@ -278,8 +278,8 @@
         
         // search
         if ([section isEqualToString:udvSectionSearch] && [_term length] > 0) {
-            if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
-                [delegate search:_term type:type];
+            if (delegate && [delegate respondsToSelector:@selector(search:type:animated:)]) {
+                [delegate search:_term type:type animated:NO];
             }
         }
         else if ([section isEqualToString:udvSectionNowPlaying]) {
@@ -770,8 +770,8 @@
     searchType = searchType ? searchType : typeMovie;
     
     // delegate
-    if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
-        [delegate search:_term type:searchType];
+    if (delegate && [delegate respondsToSelector:@selector(search:type:animated:)]) {
+        [delegate search:_term type:searchType animated:YES];
     }
 }
 
