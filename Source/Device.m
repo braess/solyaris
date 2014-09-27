@@ -75,6 +75,17 @@
     
 }
 
+/**
+ * Device screen portrait.
+ */
++ (CGRect)screen_portrait {
+    
+    // screen
+    CGRect screen = [Device screen];
+    return CGRectMake(0, 0, MIN(screen.size.width, screen.size.height), MAX(screen.size.width, screen.size.height));
+    
+}
+
 
 #pragma mark -
 #pragma mark Orientation

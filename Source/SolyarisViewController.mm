@@ -171,7 +171,7 @@
 	FLog();
     
     // screen
-    CGRect screen = [Device screen];
+    CGRect screen = [Device screen_portrait];
     
     // frames
     CGRect frame = CGRectMake(0, 0, screen.size.width, screen.size.height);
@@ -390,13 +390,18 @@
  * Rotate is the new black.
  */
 - (NSUInteger)supportedInterfaceOrientations {
-    return state_splash ? UIInterfaceOrientationMaskPortrait : UIInterfaceOrientationMaskAll;
+    if (iPad) {
+        return state_splash ? UIInterfaceOrientationMaskPortrait : UIInterfaceOrientationMaskAll;
+    } else {
+        return UIInterfaceOrientationMaskPortrait;
+    }
 }
 - (BOOL)shouldAutorotate {
-    return ! (state_splash || state_settings);
-}
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return UIInterfaceOrientationIsPortrait(interfaceOrientation) ? ! state_settings : ! (state_splash || state_settings);
+    if (iPad) {
+        return ! (state_splash || state_settings);
+    } else {
+        return NO;
+    }
 }
  
 

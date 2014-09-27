@@ -43,7 +43,7 @@ void Solyaris::setup() {
     DLog();
     
     // screen
-    CGRect screen = [Device screen];
+    CGRect screen = [Device screen_portrait];
     
     // redux
     redux = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? false : true;

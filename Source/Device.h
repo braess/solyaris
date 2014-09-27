@@ -38,6 +38,12 @@
 + (CGRect)screen;
 
 /**
+ * Device screen portrait.
+ * @return Dimension in portrait.
+ */
++ (CGRect)screen_portrait;
+
+/**
  * Device landscape.
  * @return True if landscape.
  */
