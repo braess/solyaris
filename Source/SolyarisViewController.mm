@@ -390,18 +390,10 @@
  * Rotate is the new black.
  */
 - (NSUInteger)supportedInterfaceOrientations {
-    if (iPad) {
-        return state_splash ? UIInterfaceOrientationMaskPortrait : UIInterfaceOrientationMaskAll;
-    } else {
-        return UIInterfaceOrientationMaskPortrait;
-    }
+    return UIInterfaceOrientationMaskPortrait;
 }
 - (BOOL)shouldAutorotate {
-    if (iPad) {
-        return ! (state_splash || state_settings);
-    } else {
-        return NO;
-    }
+    return NO;
 }
  
 
