@@ -1240,7 +1240,7 @@
     // data    
     SearchViewController *searchViewController = [self controllerSearch];
     if (searchViewController) {
-        [searchViewController dbdata];
+        [searchViewController dbdata:YES];
     }
     
     // api

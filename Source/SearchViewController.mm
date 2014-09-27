@@ -284,13 +284,13 @@
         }
         else if ([section isEqualToString:udvSectionNowPlaying]) {
             if (delegate && [delegate respondsToSelector:@selector(nowPlaying:more:)]) {
-                [self dbdata];
+                [self dbdata:NO];
                 [delegate nowPlaying:type more:NO];
             }
         }
         else if ([section isEqualToString:udvSectionPopular]) {
             if (delegate && [delegate respondsToSelector:@selector(popular:more:)]) {
-                [self dbdata];
+                [self dbdata:NO];
                 [delegate popular:type more:NO];
             }
         }
@@ -299,7 +299,7 @@
         }
         else if ([section isEqualToString:udvSectionHistory]) {
             if (delegate && [delegate respondsToSelector:@selector(history:)]) {
-                [self dbdata];
+                [self dbdata:NO];
                 [delegate history:type];
             }
         }
@@ -424,7 +424,7 @@
 /**
  * DBData.
  */
-- (void)dbdata {
+- (void)dbdata:(BOOL)animated {
     FLog();
     
     // controller
@@ -437,7 +437,7 @@
     
     // push
     [_searchNavigationController popToRootViewControllerAnimated:NO];
-    [_searchNavigationController pushViewController:dbDataViewController animated:YES];
+    [_searchNavigationController pushViewController:dbDataViewController animated:animated];
     [dbDataViewController release];
     
     // footer
@@ -601,7 +601,7 @@
     [Tracker trackEvent:TEventSearch action:@"Now Playing" label:type];
     
     // data
-    [self dbdata];
+    [self dbdata:YES];
     
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(nowPlaying:more:)]) {
@@ -619,7 +619,7 @@
     [Tracker trackEvent:TEventSearch action:@"Popular" label:type];
     
     // data
-    [self dbdata];
+    [self dbdata:YES];
     
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(popular:more:)]) {
@@ -650,7 +650,7 @@
     [Tracker trackEvent:TEventSearch action:@"History" label:type];
     
     // data
-    [self dbdata];
+    [self dbdata:YES];
     
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(history:)]) {

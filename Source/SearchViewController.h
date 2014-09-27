@@ -91,7 +91,7 @@
 - (id)initWithFrame:(CGRect)frame;
 
 // Controller
-- (void)dbdata;
+- (void)dbdata:(BOOL)animated;
 - (void)favorites:(NSString *)type;
 - (void)back;
 
