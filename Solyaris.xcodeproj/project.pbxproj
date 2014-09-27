@@ -321,6 +321,9 @@
 		249F33DB19D6DFE3004E77EA /* btn_reset@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 249F33D919D6DFE3004E77EA /* btn_reset@3x.png */; };
 		249F33DE19D6E2C0004E77EA /* btn_close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 249F33DC19D6E2C0004E77EA /* btn_close@3x.png */; };
 		249F33DF19D6E2C0004E77EA /* btn_settings@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 249F33DD19D6E2C0004E77EA /* btn_settings@3x.png */; };
+		249F33E619D6EABE004E77EA /* dsym_upload.sh in Resources */ = {isa = PBXBuildFile; fileRef = 249F33E419D6EABE004E77EA /* dsym_upload.sh */; };
+		249F33E719D6EABE004E77EA /* libCrittercism_v4_3_7.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 249F33E519D6EABE004E77EA /* libCrittercism_v4_3_7.a */; };
+		249F33EA19D6EAEC004E77EA /* Critter.m in Sources */ = {isa = PBXBuildFile; fileRef = 249F33E919D6EAEC004E77EA /* Critter.m */; };
 		24ACD20419D43371009A57A3 /* Default-667h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24ACD20219D43371009A57A3 /* Default-667h@2x.png */; };
 		24ACD20719D433B3009A57A3 /* Default-736h@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24ACD20619D433B3009A57A3 /* Default-736h@3x.png */; };
 		24ACD20D19D44946009A57A3 /* node_action_close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24ACD20A19D44946009A57A3 /* node_action_close@3x.png */; };
@@ -774,6 +777,13 @@
 		249F33D919D6DFE3004E77EA /* btn_reset@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn_reset@3x.png"; path = "Assets/btn_reset@3x.png"; sourceTree = "<group>"; };
 		249F33DC19D6E2C0004E77EA /* btn_close@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn_close@3x.png"; path = "Assets/btn_close@3x.png"; sourceTree = "<group>"; };
 		249F33DD19D6E2C0004E77EA /* btn_settings@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "btn_settings@3x.png"; path = "Assets/btn_settings@3x.png"; sourceTree = "<group>"; };
+		249F33E119D6EABE004E77EA /* CRFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRFilter.h; sourceTree = "<group>"; };
+		249F33E219D6EABE004E77EA /* Crittercism.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Crittercism.h; sourceTree = "<group>"; };
+		249F33E319D6EABE004E77EA /* CrittercismDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrittercismDelegate.h; sourceTree = "<group>"; };
+		249F33E419D6EABE004E77EA /* dsym_upload.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = dsym_upload.sh; sourceTree = "<group>"; };
+		249F33E519D6EABE004E77EA /* libCrittercism_v4_3_7.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libCrittercism_v4_3_7.a; sourceTree = "<group>"; };
+		249F33E819D6EAEC004E77EA /* Critter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Critter.h; path = Source/Critter.h; sourceTree = "<group>"; };
+		249F33E919D6EAEC004E77EA /* Critter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Critter.m; path = Source/Critter.m; sourceTree = "<group>"; };
 		24ACD20219D43371009A57A3 /* Default-667h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-667h@2x.png"; path = "Resources/Defaults/Default-667h@2x.png"; sourceTree = "<group>"; };
 		24ACD20619D433B3009A57A3 /* Default-736h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-736h@3x.png"; path = "Resources/Defaults/Default-736h@3x.png"; sourceTree = "<group>"; };
 		24ACD20A19D44946009A57A3 /* node_action_close@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "node_action_close@3x.png"; path = "Assets/node_action_close@3x.png"; sourceTree = "<group>"; };
@@ -829,6 +839,7 @@
 				C725E001121DAC8F00FA186B /* AVFoundation.framework in Frameworks */,
 				C725DFFE121DAC7F00FA186B /* CoreMedia.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
+				249F33E719D6EABE004E77EA /* libCrittercism_v4_3_7.a in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */,
 				28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */,
@@ -1100,6 +1111,8 @@
 				188A56D7155408B600ACD98B /* Appearance.m */,
 				18AC027F143F5A0D0096259D /* Tracker.h */,
 				18AC027D143F59F60096259D /* Tracker.m */,
+				249F33E819D6EAEC004E77EA /* Critter.h */,
+				249F33E919D6EAEC004E77EA /* Critter.m */,
 				18A26E64157CADB1006871B2 /* Rater.h */,
 				18A26E65157CADB1006871B2 /* Rater.m */,
 				187F5DBA1522EBE70003226F /* Utils.h */,
@@ -1185,6 +1198,7 @@
 		18AC0252143F2D3A0096259D /* 3rdparty */ = {
 			isa = PBXGroup;
 			children = (
+				249F33E019D6EABE004E77EA /* Crittercism */,
 				189A8156169D930A0065C5A7 /* GAI */,
 				18CE92F8169B10900020575A /* Base64 */,
 				18AC01F1143F2D1D0096259D /* SBJSON */,
@@ -1521,6 +1535,19 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		249F33E019D6EABE004E77EA /* Crittercism */ = {
+			isa = PBXGroup;
+			children = (
+				249F33E119D6EABE004E77EA /* CRFilter.h */,
+				249F33E219D6EABE004E77EA /* Crittercism.h */,
+				249F33E319D6EABE004E77EA /* CrittercismDelegate.h */,
+				249F33E419D6EABE004E77EA /* dsym_upload.sh */,
+				249F33E519D6EABE004E77EA /* libCrittercism_v4_3_7.a */,
+			);
+			name = Crittercism;
+			path = Source/Crittercism;
+			sourceTree = "<group>";
+		};
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
@@ -1673,6 +1700,7 @@
 				249F33DB19D6DFE3004E77EA /* btn_reset@3x.png in Resources */,
 				24ACD20D19D44946009A57A3 /* node_action_close@3x.png in Resources */,
 				188333BF1523096B00F59E37 /* node_crew_core@2x.png in Resources */,
+				249F33E619D6EABE004E77EA /* dsym_upload.sh in Resources */,
 				188333C01523096B00F59E37 /* node_crew_glow@2x.png in Resources */,
 				188333C11523096B00F59E37 /* node_crew@2x.png in Resources */,
 				188333C21523096B00F59E37 /* node_movie_core@2x.png in Resources */,
@@ -1949,6 +1977,7 @@
 				186B5BEF1552EF74006E746F /* CellData.m in Sources */,
 				186B5BF21552F132006E746F /* DashboardViewController.m in Sources */,
 				186B5BF515530BA0006E746F /* HeaderView.m in Sources */,
+				249F33EA19D6EAEC004E77EA /* Critter.m in Sources */,
 				18B3D3C317E8A191000DA4F0 /* NowPlaying.m in Sources */,
 				188A56D8155408B700ACD98B /* Appearance.m in Sources */,
 				188682C91557E0CC00223CDB /* DBData.m in Sources */,
@@ -2008,6 +2037,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/braess/Develop/iOS/Solyaris/project/Source/GAI,
+					"$(PROJECT_DIR)/Source/Crittercism",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
@@ -2044,6 +2074,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/braess/Develop/iOS/Solyaris/project/Source/GAI,
+					"$(PROJECT_DIR)/Source/Crittercism",
 				);
 				"OTHER_LDFLAGS[sdk=iphoneos*][arch=*]" = (
 					"\"$(CINDER_PATH)/lib/libcinder-iphone_d.a\"",
