@@ -2086,7 +2086,7 @@
 				);
 				PRODUCT_NAME = solyaris;
 				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "DB3C8651-5D03-4BF9-8037-76F3D2120DAB";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "75de7532-c6c7-43c1-b138-95cfe281432e";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = armv7;
 			};
