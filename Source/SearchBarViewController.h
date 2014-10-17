@@ -29,7 +29,7 @@
 @protocol SearchBarDelegate <NSObject>
 - (void)searchBarPrepare;
 - (void)searchBarCancel;
-- (void)search:(NSString*)q type:(NSString*)type;
+- (void)search:(NSString*)q type:(NSString*)type animated:(BOOL)animated;
 - (void)reset;
 - (void)logo;
 @end

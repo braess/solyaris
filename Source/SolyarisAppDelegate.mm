@@ -26,6 +26,7 @@
 #import "TMDb.h"
 #import "NoteView.h"
 #import "CacheImageView.h"
+#import "Critter.h"
 #import "Tracker.h"
 #import "Rater.h"
 #import "SolyarisViewController.h"
@@ -49,6 +50,9 @@
     // launch
 	NSString *appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
     NSLog(@"Solyaris version %@ launched.",appVersion);
+    
+    // crittercism
+    [Critter setup];
     
     // track
 	[Tracker startTracker];

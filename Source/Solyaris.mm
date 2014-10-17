@@ -21,7 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #include "Solyaris.h"
-#include "Utils.h"
+#include "Device.h"
 
 #pragma mark -
 #pragma mark Cinder
@@ -43,7 +43,7 @@ void Solyaris::setup() {
     DLog();
     
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen_portrait];
     
     // redux
     redux = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ? false : true;
@@ -53,11 +53,13 @@ void Solyaris::setup() {
     dwidth = screen.size.width;
     dheight = screen.size.height;
     
-    // retina
-    if ([Utils isRetina]) {
+    // resolution
+    resolution = 1.0;
+    if ([Device retina]) {
         retina = true;
-        dwidth *= 2;
-        dheight *= 2;
+        resolution = [Device resolution];
+        dwidth *= resolution;
+        dheight *= resolution;
     }
 
     
@@ -65,7 +67,7 @@ void Solyaris::setup() {
     bg = Color(30.0/255.0, 30.0/255.0, 30.0/255.0);
     
     // graph
-    graph = Graph(dwidth,dheight,UIDeviceOrientationPortrait);
+    graph = Graph(dwidth, dheight, UIDeviceOrientationPortrait);
     
     // vars
     pscale = 1.0;
@@ -77,8 +79,8 @@ void Solyaris::setup() {
     
     // configuration
     Configuration conf = Configuration();
-    conf.setConfiguration(cDeviceRedux,redux ? "1" : "0");
-    conf.setConfiguration(cDisplayRetina,retina ? "1" : "0");
+    conf.setConfiguration(cDeviceRedux, redux ? "1" : "0");
+    conf.setConfiguration(cDisplayResolution, [[[NSNumber numberWithFloat:resolution] stringValue] UTF8String]);
     graph.config(conf);
     
     

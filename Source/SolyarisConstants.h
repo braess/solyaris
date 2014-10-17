@@ -104,3 +104,7 @@
 #define iPad                            (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad)
 #define iPhone                          (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPhone)
 
+// Version
+#define iOS6     ([[[UIDevice currentDevice] systemVersion] compare:@"7.0" options:NSNumericSearch] == NSOrderedAscending)
+#define iOS7     ([[[UIDevice currentDevice] systemVersion] compare:@"8.0" options:NSNumericSearch] == NSOrderedAscending)
+

@@ -21,6 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "SplashView.h"
+#import "Device.h"
 
 /**
  * Splash Stack.
@@ -91,7 +92,7 @@
 - (void)layoutSubviews {
     
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen];
     
     // frame
     CGRect frame = CGRectMake(0, 0, screen.size.width, screen.size.height);
@@ -104,7 +105,9 @@
     }
     // redux
     else {
-        _splash.image = (screen.size.height / screen.size.width) > 1.5 ? [UIImage imageNamed:@"Default-568h.png"] : [UIImage imageNamed:@"Default.png"];
+        float h = MAX(screen.size.width, screen.size.height);
+        NSString *img = (h > 700 ? @"Default-736h.png" : (h > 600 ? @"Default-667h.png" : (h > 500 ? @"Default-568h.png" : @"Default.png")));
+        _splash.image = [UIImage imageNamed:img];
     }
     
 }

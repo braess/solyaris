@@ -28,6 +28,7 @@
 #import "Utils.h"
 #import "NSData+Base64.h"
 #import "Tracker.h"
+#import "Device.h"
 
 /**
  * Gesture Stack.
@@ -48,16 +49,6 @@
 - (void)swapRottenTomatoes;
 - (void)swapTrailer:(int)vndx;
 - (void)swapReset;
-@end
-
-
-/**
- * Resize Stack.
- */
-@interface InformationViewController (ResizeStack)
-- (void)resizeFull;
-- (void)resizeDefault;
-- (void)resizeDone;
 @end
 
 /**
@@ -95,10 +86,6 @@
 
 #pragma mark -
 #pragma mark Constants
-
-// constants
-#define kAnimateTimeResizeFull      0.3f
-#define kAnimateTimeResizeDefault	0.3f
 
 // share
 #define kShareTitle                 @"title"
@@ -209,14 +196,10 @@
 	DLog();
     
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen];
     
     // frame
     CGRect fSelf = screen;
-    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
-        fSelf.size.width = screen.size.height;
-        fSelf.size.height = screen.size.width;
-    }
     
     // frames
     CGRect contentFrame = CGRectMake(fSelf.size.width/2.0-vframe.size.width/2.0, fSelf.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
@@ -265,14 +248,6 @@
     [ctView addSubview:_informationPersonView];
     [nfoPersonView release];
     
-    // resize
-    UIButton *btnResize = [UIButton buttonWithType:UIButtonTypeCustom]; 
-    btnResize.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
-    btnResize.frame = CGRectMake(contentFrame.size.width-44, 0, 44, 44);
-    [btnResize setImage:[UIImage imageNamed:@"btn_resize-full.png"] forState:UIControlStateNormal];
-    [btnResize addTarget:self action:@selector(actionResize:) forControlEvents:UIControlEventTouchUpInside];
-    _buttonResize = [btnResize retain];
-    
     // close
     UIButton *btnClose = [UIButton buttonWithType:UIButtonTypeCustom]; 
     btnClose.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleBottomMargin;
@@ -280,14 +255,7 @@
     [btnClose setImage:[UIImage imageNamed:@"btn_close.png"] forState:UIControlStateNormal];
     [btnClose addTarget:self action:@selector(actionClose:) forControlEvents:UIControlEventTouchUpInside];
     _buttonClose = [btnClose retain];
-    
-    // ipad
-    if (iPad) {
-        [ctView  addSubview:_buttonResize];
-    }
-    else {
-        [ctView  addSubview:_buttonClose];
-    }
+    [ctView  addSubview:_buttonClose];
     
     
     // button favorite
@@ -485,8 +453,6 @@
     
 }
 
-
-
 /*
  * Prepares the view.
  */
@@ -518,19 +484,6 @@
 }
 
 
-/*
- * Cleanup rotation.
- */
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    FLog();
-    
-    // resize
-    [self resize];
-    
-}
-
-
-
 #pragma mark -
 #pragma mark Business
 
@@ -554,25 +507,6 @@
         [_loader stopAnimating];
         _loader.hidden = YES;
     }
-}
-
-
-/*
- * Resize.
- */
-- (void)resize {
-    FLog();
-    
-    // fullscreen
-    if (fullscreen) {
-        [self resizeFull];
-    }
-    
-    // resize components
-    [_componentListing resize];
-    [_componentTMDb resize];
-    [_componentHTML resize];
-    [_componentTrailer resize];
 }
 
 /*
@@ -946,93 +880,6 @@
 
 #pragma mark -
 #pragma mark Actions
-
-/*
- * Resize.
- */
-- (void)actionResize:(id)sender {
-    FLog();
-    
-    // resize
-    if (fullscreen) {
-        [self resizeDefault];
-    }
-    else {
-        [self resizeFull];
-    }
-    fullscreen = ! fullscreen;
-
-}
-- (void)resizeFull {
-    DLog();
-    
-    // layout
-    BOOL landscape = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]);
-    
-    // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
-    
-    // frame
-    CGRect fSelf = screen;
-    if (landscape) {
-        fSelf.size.width = screen.size.height;
-        fSelf.size.height = screen.size.width;
-    }
-
-    
-    // animate
-	[UIView beginAnimations:@"resize_full" context:nil];
-    [UIView setAnimationDuration:kAnimateTimeResizeFull];
-	_contentView.frame = fSelf;
-	[UIView commitAnimations];
-    
-    // button
-    [_buttonResize setImage:[UIImage imageNamed:@"btn_resize-default.png"] forState:UIControlStateNormal];
-    
-    // resize done
-	[self performSelector:@selector(resizeDone) withObject:nil afterDelay:kAnimateTimeResizeFull];
-    
-}
-- (void)resizeDefault {
-    GLog();
-    
-    // layout
-    BOOL landscape = UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]);
-    
-    // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
-    
-    // frame
-    CGRect fSelf = screen;
-    if (landscape) {
-        fSelf.size.width = screen.size.height;
-        fSelf.size.height = screen.size.width;
-    }
-    
-    // frame
-    CGRect fSmall = CGRectMake(fSelf.size.width/2.0-vframe.size.width/2.0, fSelf.size.height/2.0-vframe.size.height/2.0, vframe.size.width, vframe.size.height);
-    
-    // animate
-	[UIView beginAnimations:@"resize_default" context:nil];
-    [UIView setAnimationDuration:kAnimateTimeResizeDefault];
-	_contentView.frame = fSmall;
-	[UIView commitAnimations];
-    
-    // button
-    [_buttonResize setImage:[UIImage imageNamed:@"btn_resize-full.png"] forState:UIControlStateNormal];
-    
-    // resize done
-	[self performSelector:@selector(resizeDone) withObject:nil afterDelay:kAnimateTimeResizeDefault];
-}
-
-- (void)resizeDone {
-    
-    // resize components
-    [_componentListing resize];
-    [_componentTMDb resize];
-    [_componentHTML resize];
-    [_componentTrailer resize];
-}
 
 /*
  * Action close.
@@ -1745,7 +1592,6 @@
     [_actionBrowse release];
     
     // buttons
-    [_buttonResize release];
     [_buttonClose release];
     [_buttonFavorite release];
     [_buttonTrailer release];
@@ -2095,7 +1941,7 @@
     
     // poset
     NSString *poster = @"";
-    NSString *posterSize = [NSString stringWithFormat:@"%@",((iPad && [Utils isRetina]) ? assetSizeMid : assetSizeThumb)];
+    NSString *posterSize = [NSString stringWithFormat:@"%@",((iPad && [Device retina]) ? assetSizeMid : assetSizeThumb)];
     for (Asset *a in movie.asts) {
         
         // poster

@@ -68,19 +68,12 @@ Action::Action() {
  */
 void Action::config(Configuration c) {
     
-    // display retina
-    retina = false;
-    Config confDisplayRetina = c.getConfiguration(cDisplayRetina);
-    if (confDisplayRetina.isSet()) {
-        retina = confDisplayRetina.boolVal();
-    }
+    // resolution
+    Config confDisplayResolution = c.getConfiguration(cDisplayResolution);
+    dpr = confDisplayResolution.floatVal();
     
-    // retina stuff
-    if (retina) {
-        
-        // size
-        asize *= 2;
-    }
+    // size
+    asize *= dpr;
     
     // render
     this->renderAction();
@@ -315,7 +308,7 @@ void Action::renderAction() {
     GLog();
     
     // suffix
-    string sfx = retina ? "@2x.png" : ".png";
+    string sfx = Configuration::sfx(dpr);
     
     // textures
     textureActionInfo = gl::Texture(loadImage(loadResource("node_action_info"+sfx)));

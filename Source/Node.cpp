@@ -44,7 +44,6 @@ Node::Node(string idn, double x, double y) {
     category = "";
     action = "";
     
-    
     // fields
     perimeter = 420;
     zone = perimeter / 9.0;
@@ -58,9 +57,8 @@ Node::Node(string idn, double x, double y) {
     speed = 30;
     initial = 12;
     fcount = 0;
-    retina = false;
     redux = false;
-    
+    dpr = 1.0;
     
     // position
     pos.set(x,y);
@@ -155,12 +153,9 @@ void Node::config(Configuration c) {
         redux = confDeviceRedux.boolVal();
     }
     
-    // display retina
-    retina = false;
-    Config confDisplayRetina = c.getConfiguration(cDisplayRetina);
-    if (confDisplayRetina.isSet()) {
-        retina = confDisplayRetina.boolVal();
-    }
+    // resolution
+    Config confDisplayResolution = c.getConfiguration(cDisplayResolution);
+    dpr = confDisplayResolution.floatVal();
     
     // init redux
     if (redux) {
@@ -168,25 +163,21 @@ void Node::config(Configuration c) {
         maxr *= 0.8;
     }
     
-    // init retina
-    if (retina) {
-        
-        // params
-        core *= 2;
-        radius *= 2;
-        maxr *= 2;
-        minr *= 2;
-        
-        // inc
-        rincg *= 2;
-        rincs *= 2;
-        
-        // offset
-        loff *= 2;
-    }
+    // params
+    core *= dpr;
+    radius *= dpr;
+    maxr *= dpr;
+    minr *= dpr;
+    
+    // inc
+    rincg *= dpr;
+    rincs *= dpr;
+    
+    // offset
+    loff *= dpr;
     
     // font
-    font = Font("Helvetica",redux ? (retina ? 24 : 12) : (retina ? 26 : 13));
+    font = Font("Helvetica",redux ? (12 * dpr) : (13 * dpr));
 }
 
 
@@ -216,11 +207,9 @@ void Node::defaults(Defaults d) {
     zone = length / 9.0;
     
     // scale retina
-    if (retina) {
-        dist *= 2;
-        perimeter *= 2;
-        zone *= 2;
-    }
+    dist *= dpr;
+    perimeter *= dpr;
+    zone *= dpr;
 
 }
 
@@ -635,15 +624,15 @@ void Node::load() {
     loading = true;
     
     // radius
-    core = retina ? 30 : 15;
-    radius = retina ? 72 : 36;
+    core = 15 * dpr;
+    radius = 36 * dpr;
     
     // color
     ctxt = Color(0.6,0.6,0.6);
     
     // font
-    font = Font("Helvetica-Bold",retina ? 30 : 15);
-    loff.y = retina ? 12 : 6;
+    font = Font("Helvetica-Bold", 15 * dpr);
+    loff.y = 6 * dpr;
     this->renderLabel(label);
     this->renderNode();
     
@@ -656,15 +645,15 @@ void Node::unload() {
     loading = false;
     
     // radius
-    core = retina ? 18 : 9;
-    radius = retina ? 18 : 9;
+    core = 9 * dpr;
+    radius = 9 * dpr;
     
     // color
     ctxt = Color(0.75,0.75,0.75);
     
     // font
-    font = Font("Helvetica",redux ? (retina ? 24 : 12) : (retina ? 26 : 13));
-    loff.y = retina ? 10 : 5;
+    font = Font("Helvetica",redux ? (12 * dpr) : (13 * dpr));
+    loff.y = 5 * dpr;
     this->renderLabel(label);
     
     // parent
@@ -983,7 +972,7 @@ void Node::renderNode() {
     GLog();
     
     // suffix
-    string sfx = retina ? "@2x.png" : ".png";
+    string sfx = Configuration::sfx(dpr);
     
     // movie
     if (type == nodeMovie) {

@@ -28,6 +28,7 @@
 #import "SolyarisConstants.h"
 #import "SolyarisLocalization.h"
 #import "HelpView.h"
+#import "Device.h"
 #import "Tracker.h"
 #import "Rater.h"
 
@@ -41,7 +42,6 @@
 - (NSString*)makeConnectionId:(NSString*)sid to:(NSString*)nid;
 - (NSNumber*)toDBId:(NSString*)nid;
 - (void)randomTagline;
-- (CGRect)frameSelf;
 @end
 
 
@@ -171,7 +171,7 @@
 	FLog();
     
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen_portrait];
     
     // frames
     CGRect frame = CGRectMake(0, 0, screen.size.width, screen.size.height);
@@ -390,13 +390,10 @@
  * Rotate is the new black.
  */
 - (NSUInteger)supportedInterfaceOrientations {
-    return state_splash ? UIInterfaceOrientationMaskPortrait : UIInterfaceOrientationMaskAll;
+    return UIInterfaceOrientationMaskPortrait;
 }
 - (BOOL)shouldAutorotate {
-    return ! (state_splash || state_settings);
-}
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return UIInterfaceOrientationIsPortrait(interfaceOrientation) ? ! state_settings : ! (state_splash || state_settings);
+    return NO;
 }
  
 
@@ -416,36 +413,44 @@
  * Prepare rotation animation.
  */
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
- 
-    // animate cinder
-    [UIView beginAnimations:@"flip" context:nil];
-    [UIView setAnimationDuration:0]; // animation distorts view
     
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen];
     
-    // flip 
-    if (toInterfaceOrientation == UIInterfaceOrientationPortrait) {      
-        _cinderView.transform = CGAffineTransformIdentity;
-        _cinderView.transform = CGAffineTransformMakeRotation(0);
-        _cinderView.bounds = CGRectMake(0.0, 0.0, screen.size.width, screen.size.height);
+    // flip
+    if (iOS7) {
+        
+        // animate cinder
+        [UIView beginAnimations:@"flip" context:nil];
+        [UIView setAnimationDuration:0]; // animation distorts view
+        
+        // transform
+        _cinderView.bounds = screen;
+        if (toInterfaceOrientation == UIInterfaceOrientationPortrait) {
+            _cinderView.transform = CGAffineTransformIdentity;
+            _cinderView.transform = CGAffineTransformMakeRotation(0);
+        }
+        else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {
+            _cinderView.transform = CGAffineTransformIdentity;
+            _cinderView.transform = CGAffineTransformMakeRotation(M_PI * 0.5);
+        }
+        else if (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {
+            _cinderView.transform = CGAffineTransformIdentity;
+            _cinderView.transform = CGAffineTransformMakeRotation(M_PI);
+        }
+        else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
+            _cinderView.transform = CGAffineTransformIdentity;
+            _cinderView.transform = CGAffineTransformMakeRotation(- M_PI * 0.5);
+        }
+        
+        // make it so
+        [UIView commitAnimations];
     }
-    else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {      
-        _cinderView.transform = CGAffineTransformIdentity;
-        _cinderView.transform = CGAffineTransformMakeRotation(M_PI * 0.5);
-        _cinderView.bounds = CGRectMake(0.0, 0.0, screen.size.height, screen.size.width);
+    else {
+        
+        // reframe
+        _cinderView.frame = screen;
     }
-    else if (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {      
-        _cinderView.transform = CGAffineTransformIdentity;
-        _cinderView.transform = CGAffineTransformMakeRotation(M_PI);
-        _cinderView.bounds = CGRectMake(0.0, 0.0, screen.size.width, screen.size.height);
-    }
-    else if (toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft) {      
-        _cinderView.transform = CGAffineTransformIdentity;
-        _cinderView.transform = CGAffineTransformMakeRotation(- M_PI * 0.5);
-        _cinderView.bounds = CGRectMake(0.0, 0.0, screen.size.height, screen.size.width);
-    }
-    [UIView commitAnimations];
     
     // app
     solyaris->applyDeviceOrientation(toInterfaceOrientation);
@@ -1216,7 +1221,7 @@
 /*
  * Search.
  */
-- (void)search:(NSString*)q type:(NSString*)type {
+- (void)search:(NSString*)q type:(NSString*)type animated:(BOOL)animated {
     FLog();
     
     // track
@@ -1227,7 +1232,7 @@
     // data    
     SearchViewController *searchViewController = [self controllerSearch];
     if (searchViewController) {
-        [searchViewController dbdata];
+        [searchViewController dbdata:animated];
     }
     
     // api
@@ -1561,7 +1566,7 @@
         state_search = YES;
         
         // frames
-        CGRect fSelf = [self frameSelf];
+        CGRect fSelf = [Device screen];
         CGRect frameSearch = iPad ? CGRectMake(0, 40, 360,439) : CGRectMake(0, 40, 320,MAX(fSelf.size.width,fSelf.size.height)-40);
         
         // controller
@@ -1618,7 +1623,7 @@
         state_info = YES;
         
         // frame
-        CGRect fSelf = [self frameSelf];
+        CGRect fSelf = [Device screen];
         CGRect frameInformation = iPad ? CGRectMake(0, 0, 580, 624) : CGRectMake(0, 0, fSelf.size.width, fSelf.size.height);
         
         // information
@@ -1673,7 +1678,7 @@
         state_settings = YES;
         
         // frame
-        CGRect fSelf = [self frameSelf];
+        CGRect fSelf = [Device screen];
         CGRect frameSettings = iPad ? CGRectMake(0, 0, 708, kOffsetSettings) : CGRectMake(0, 0, fSelf.size.width, fSelf.size.height);
         
         // settings
@@ -1785,7 +1790,7 @@
     [self.view bringSubviewToFront:search.view];
     
     // prepare
-    CGRect fSelf = [self frameSelf];
+    CGRect fSelf = [Device screen];
     search.modalView.alpha = 0.0f;
     
     // content view
@@ -1811,7 +1816,7 @@
     FLog();
     
     // prepare
-    CGRect fSelf = [self frameSelf];
+    CGRect fSelf = [Device screen];
     CGRect contentFrame = search.contentView.frame;
     contentFrame.origin.y = fSelf.size.height;
     
@@ -1883,7 +1888,7 @@
     [information loading:NO];
     
     // prepare
-    CGRect fSelf = [self frameSelf];
+    CGRect fSelf = [Device screen];
     CGPoint informationCenter = information.contentView.center;
     informationCenter.y += fSelf.size.height;
     information.contentView.center = informationCenter;
@@ -1907,7 +1912,7 @@
     FLog();
     
     // prepare
-    CGRect fSelf = [self frameSelf];
+    CGRect fSelf = [Device screen];
     CGPoint informationCenter = information.contentView.center;
     informationCenter.y += fSelf.size.height;
     
@@ -2173,19 +2178,6 @@
     
     // set
     [_searchBarViewController claim:tagline];
-}
-
-/*
- * Frame self.
- */
-- (CGRect)frameSelf {
-    CGRect screen = [[UIScreen mainScreen] bounds];
-    CGRect fSelf = screen;
-    if (UIDeviceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
-        fSelf.size.width = screen.size.height;
-        fSelf.size.height = screen.size.width;
-    }
-    return fSelf;
 }
 
 

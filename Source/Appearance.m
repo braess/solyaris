@@ -21,7 +21,7 @@
 //  along with Solyaris.  If not, see www.gnu.org/licenses/.
 
 #import "Appearance.h"
-
+#import "SolyarisConstants.h"
 
 
 #pragma mark -
@@ -181,7 +181,7 @@
                                                               nil] forState:UIControlStateDisabled];
         
         // search
-        [[UISearchBar appearance] setBackgroundImage:[[[UIImage alloc] init] autorelease] forBarMetrics:UIBarMetricsDefault];
+        [[UISearchBar appearance] setBackgroundImage:[[[UIImage alloc] init] autorelease] forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
         [[UIBarButtonItem appearanceWhenContainedIn:[UISearchBar class], nil] setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                                                                       [UIFont fontWithName:@"Helvetica" size:15], UITextAttributeFont,
                                                                                                       [UIColor colorWithRed:120/255.0 green:120/255.0 blue:120/255.0 alpha:1.0], UITextAttributeTextColor,

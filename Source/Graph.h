@@ -111,7 +111,6 @@ class Graph {
     int width;
     int height;
     int orientation;
-    bool retina;
     bool redux;
     bool portrait;
     float dpr;

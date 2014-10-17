@@ -22,6 +22,7 @@
 
 #import "SearchViewController.h"
 #import "SolyarisConstants.h"
+#import "Device.h"
 #import "Tracker.h"
 
 /*
@@ -277,19 +278,19 @@
         
         // search
         if ([section isEqualToString:udvSectionSearch] && [_term length] > 0) {
-            if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
-                [delegate search:_term type:type];
+            if (delegate && [delegate respondsToSelector:@selector(search:type:animated:)]) {
+                [delegate search:_term type:type animated:NO];
             }
         }
         else if ([section isEqualToString:udvSectionNowPlaying]) {
             if (delegate && [delegate respondsToSelector:@selector(nowPlaying:more:)]) {
-                [self dbdata];
+                [self dbdata:NO];
                 [delegate nowPlaying:type more:NO];
             }
         }
         else if ([section isEqualToString:udvSectionPopular]) {
             if (delegate && [delegate respondsToSelector:@selector(popular:more:)]) {
-                [self dbdata];
+                [self dbdata:NO];
                 [delegate popular:type more:NO];
             }
         }
@@ -298,7 +299,7 @@
         }
         else if ([section isEqualToString:udvSectionHistory]) {
             if (delegate && [delegate respondsToSelector:@selector(history:)]) {
-                [self dbdata];
+                [self dbdata:NO];
                 [delegate history:type];
             }
         }
@@ -328,10 +329,10 @@
     float cheight = iPad ? (vframe.size.height-kheight) : (landscape ? vframe.size.width-vframe.origin.y-kheight : vframe.size.height-kheight);
     
     // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
+    CGRect screen = [Device screen];
     
     // frames
-    CGRect selfFrame = landscape ? CGRectMake(0,vframe.origin.y,screen.size.height,screen.size.width-vframe.origin.y) : CGRectMake(0,vframe.origin.y,screen.size.width,screen.size.height-vframe.origin.y);
+    CGRect selfFrame = CGRectMake(0, vframe.origin.y, screen.size.width, screen.size.height-vframe.origin.y);
     CGRect modalFrame = CGRectMake(0,0,selfFrame.size.width,selfFrame.size.height);
     CGRect contentFrame = CGRectMake(0, 0, selfFrame.size.width, cheight);
     CGRect footerFrame = CGRectMake(10+(selfFrame.size.width-vframe.size.width)/2.0,contentFrame.size.height-fheight,vframe.size.width-20,fheight);
@@ -423,7 +424,7 @@
 /**
  * DBData.
  */
-- (void)dbdata {
+- (void)dbdata:(BOOL)animated {
     FLog();
     
     // controller
@@ -436,7 +437,7 @@
     
     // push
     [_searchNavigationController popToRootViewControllerAnimated:NO];
-    [_searchNavigationController pushViewController:dbDataViewController animated:YES];
+    [_searchNavigationController pushViewController:dbDataViewController animated:animated];
     [dbDataViewController release];
     
     // footer
@@ -600,7 +601,7 @@
     [Tracker trackEvent:TEventSearch action:@"Now Playing" label:type];
     
     // data
-    [self dbdata];
+    [self dbdata:YES];
     
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(nowPlaying:more:)]) {
@@ -618,7 +619,7 @@
     [Tracker trackEvent:TEventSearch action:@"Popular" label:type];
     
     // data
-    [self dbdata];
+    [self dbdata:YES];
     
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(popular:more:)]) {
@@ -649,7 +650,7 @@
     [Tracker trackEvent:TEventSearch action:@"History" label:type];
     
     // data
-    [self dbdata];
+    [self dbdata:YES];
     
     // delegate
     if (delegate && [delegate respondsToSelector:@selector(history:)]) {
@@ -769,8 +770,8 @@
     searchType = searchType ? searchType : typeMovie;
     
     // delegate
-    if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
-        [delegate search:_term type:searchType];
+    if (delegate && [delegate respondsToSelector:@selector(search:type:animated:)]) {
+        [delegate search:_term type:searchType animated:YES];
     }
 }
 

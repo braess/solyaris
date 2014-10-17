@@ -168,7 +168,6 @@ enum {
     ActionBarButtonItem *_actionBrowse;
     
     // buttons
-    UIButton *_buttonResize;
     UIButton *_buttonClose;
     UIButton *_buttonTrailer;
     UIButton *_buttonFavorite;
@@ -212,19 +211,15 @@ enum {
     
 }
 
-
 // Properties
 @property (assign) id<InformationDelegate> delegate;
 @property (nonatomic, retain) UIView *modalView;
 @property (nonatomic, retain) UIView *contentView;
 
-
-
 // Object Methods
 - (id)initWithFrame:(CGRect)frame;
 
 // Actions
-- (void)actionResize:(id)sender;
 - (void)actionClose:(id)sender;
 - (void)actionFavorite:(id)sender;
 - (void)actionTrailer:(id)sender;
@@ -233,7 +228,6 @@ enum {
 - (void)actionReference:(id)sender;
 
 // Business Methods
-- (void)resize;
 - (void)informationMovie:(Movie*)movie nodes:(NSArray*)nodes;
 - (void)informationPerson:(Person*)person nodes:(NSArray*)nodes;
 - (void)loading:(BOOL)loading;

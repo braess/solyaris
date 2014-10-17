@@ -91,7 +91,7 @@ class Action {
     int reminder;
     
     // config
-    bool retina;
+    float dpr;
     
     // position
     Vec2d pos;

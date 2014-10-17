@@ -24,7 +24,6 @@
 #import "SearchBarViewController.h"
 #import "SolyarisConstants.h"
 #import "Tracker.h"
-#import "iOS6.h"
 
 
 /**
@@ -396,8 +395,8 @@
     searchType = searchType ? searchType : typeMovie;
     
     // search
-    if (delegate && [delegate respondsToSelector:@selector(search:type:)]) {
-        [delegate search:[_searchBar text] type:searchType];
+    if (delegate && [delegate respondsToSelector:@selector(search:type:animated:)]) {
+        [delegate search:[_searchBar text] type:searchType animated:YES];
     }
     
 }

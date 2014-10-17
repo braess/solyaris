@@ -35,7 +35,7 @@ Tooltip::Tooltip(Vec2d b) {
     
     // config
     redux = false;
-    retina = false;
+    dpr = 1.0;
     
     // state
     active = false;
@@ -78,28 +78,21 @@ void Tooltip::config(Configuration c) {
         redux = confDeviceRedux.boolVal();
     }
     
-    // display retina
-    retina = false;
-    Config confDisplayRetina = c.getConfiguration(cDisplayRetina);
-    if (confDisplayRetina.isSet()) {
-        retina = confDisplayRetina.boolVal();
-    }
+    // resolution
+    Config confDisplayResolution = c.getConfiguration(cDisplayResolution);
+    dpr = confDisplayResolution.floatVal();
     
-    // retina stuff
-    if (retina) {
-        
-        // position
-        border *= 2;
-        
-        // offset
-        off *= 2;
-        inset *= 2;
-        maxed *= 2;
-    }
+    // position
+    border *= dpr;
+    
+    // offset
+    off *= dpr;
+    inset *= dpr;
+    maxed *= dpr;
     
     // font
-    font = Font("Helvetica",redux ? (retina ? 24 : 12) : (retina ? 26 : 13));
-    sfont = Font("Helvetica",retina ? 6 : 3);
+    font = Font("Helvetica", redux ? (12 * dpr) : (13 * dpr));
+    sfont = Font("Helvetica", 3 * dpr);
    
 }
 
@@ -267,7 +260,7 @@ void Tooltip::position(Vec2d p) {
  * Offset.
  */
 void Tooltip::offset(double o) {
-    off.set(0,- max(o,retina ? 150.0 : 75.0));
+    off.set(0,- max(o, (75.0 * dpr)));
 }
 
 

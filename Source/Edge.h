@@ -110,7 +110,7 @@ class Edge {
     
     // config
     bool redux;
-    bool retina;
+    float dpr;
     
     // position
     Vec2d pos;

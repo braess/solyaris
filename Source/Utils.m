@@ -29,41 +29,6 @@
 
 
 /**
- * Detect retina display.
- */
-+ (BOOL)isRetina {
-    
-    // scale
-    static CGFloat scale = 0.0;
-    if (scale == 0.0) {
-        
-        // check
-        if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] && ([UIScreen mainScreen].scale == 2.0)) {
-            scale = 2.0;
-            return YES;
-        } else {
-            scale = 1.0;
-            return NO;
-        }   
-        
-    }
-    return scale > 1.0;
-}
-
-/**
- * Detect 4inch iphone5.
- */
-+ (BOOL)is4in {
-    
-    // screen
-    CGRect screen = [[UIScreen mainScreen] bounds];
-    
-    // ratio
-    return (screen.size.height / screen.size.width) > 1.5;
-}
-
-
-/**
  * Detect WiFi.
  */
 + (BOOL)isWiFi {
